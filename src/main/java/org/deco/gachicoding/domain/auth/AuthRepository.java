@@ -1,4 +1,4 @@
-package org.deco.gachicoding.domain.utils.auth;
+package org.deco.gachicoding.domain.auth;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

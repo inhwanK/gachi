@@ -49,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected void configure(HttpSecurity http) throws Exception {
+        /*
         http.cors().disable()        //cors방지
                 .csrf().disable()        //csrf방지
                 .formLogin().disable()    //기본 로그인 페이지 없애기
@@ -66,6 +67,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // JwtAuthenticationFilter 는 UsernamePasswordAuthenticationFilter 전에 넣
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        */
+
+        http
+                .csrf().disable()
+                .headers().frameOptions().disable()
+                .and()
+                .authorizeRequests().antMatchers()
+                .authenticated().anyRequest()
+                .permitAll();
     }
 
 //    public void configure(WebSecurity web) throws Exception {

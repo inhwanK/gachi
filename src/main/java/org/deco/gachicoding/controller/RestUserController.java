@@ -1,5 +1,8 @@
 package org.deco.gachicoding.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.jwt.JwtRequestDto;
@@ -27,21 +30,25 @@ public class RestUserController {
         return userService.login(dto);
     }
 
+    @ApiOperation(value = "회원가입")
     @PostMapping("/user")
     public Long registerUser(@Valid @RequestBody UserSaveRequestDto dto) {
         return userService.registerUser(dto);
     }
 
+    @ApiOperation(value = "유저 정보 업데이트")
     @PutMapping("/user/{idx}")
-    public Long updateUser(@PathVariable Long idx,@RequestBody UserUpdateRequestDto dto){
+    public Long updateUser(@PathVariable Long idx, @RequestBody UserUpdateRequestDto dto) {
         return userService.updateUser(idx, dto);
     }
 
+    @ApiOperation(value = "유저 삭제")
     @DeleteMapping("/user/{idx}")
-    public Long deleteUser(@PathVariable Long idx){
+    public Long deleteUser(@PathVariable Long idx) {
         return userService.deleteUser(idx);
     }
 
+    @ApiOperation(value = "카카오 로그인")
     @GetMapping("/user/kakaoLogin")
     public JwtResponseDto kakaoUserLogin(String code) throws Exception {
         System.out.println("kakaoCode" + code);
@@ -59,19 +66,19 @@ public class RestUserController {
         jwtRequestDto.setEmail(socialSaveRequestDto.getSocialId());
 
         // 카카오 소셜 인증이 없으면
-        if(socialService.getSocialTypeAndEmail(socialSaveRequestDto).isEmpty()) {
+        if (socialService.getSocialTypeAndEmail(socialSaveRequestDto).isEmpty()) {
 
             // 같은 이메일로 가입된 회원이 없으면
             if (user.isEmpty()) {
                 // 유저 회원 가입
                 UserSaveRequestDto userSaveRequestDto = UserSaveRequestDto.builder()
-                                                        .userName(socialSaveRequestDto.getUserName())
-                                                        .userEmail(socialSaveRequestDto.getSocialId())
-                                                        .userPassword("a123456789a")    // -> 정해야함 암호화된 문자열을 쓰든, 비밀번호 확인 못하게 고정된 키 값을 만들어 두든
-                                                        .userNick(socialSaveRequestDto.getUserName())   // -> 따로 닉네임을 받든(이쪽이 좋을듯 -> 그럼 null값으로 닉네임 넣어두고 업데이트 하는 형태로 가야할 듯), 초기 닉네임을 이름으로 하든
-                                                        .userPicture("userPicture")     // -> 프로필 사진, 수정해야됨
+                        .userName(socialSaveRequestDto.getUserName())
+                        .userEmail(socialSaveRequestDto.getSocialId())
+                        .userPassword("a123456789a")    // -> 정해야함 암호화된 문자열을 쓰든, 비밀번호 확인 못하게 고정된 키 값을 만들어 두든
+                        .userNick(socialSaveRequestDto.getUserName())   // -> 따로 닉네임을 받든(이쪽이 좋을듯 -> 그럼 null값으로 닉네임 넣어두고 업데이트 하는 형태로 가야할 듯), 초기 닉네임을 이름으로 하든
+                        .userPicture("userPicture")     // -> 프로필 사진, 수정해야됨
 //                                                        .userRole(UserRole.USER)
-                                                        .build();
+                        .build();
 
                 idx = userService.registerUser(userSaveRequestDto);
 
@@ -88,7 +95,7 @@ public class RestUserController {
             // 유저 idx를 몰랐기 때문에 지금 set
             socialSaveRequestDto.setUserIdx(idx);
             socialService.registerSocial(socialSaveRequestDto);
-        } 
+        }
         // 있으면 로그인 처리(이메일 만을 사용해야함)
         else {
             jwtRequestDto.setPassword(user.get().getUserPassword());

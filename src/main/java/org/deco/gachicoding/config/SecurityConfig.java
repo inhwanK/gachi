@@ -1,4 +1,4 @@
-package org.deco.gachicoding.config.auth;
+package org.deco.gachicoding.config;
 
 import lombok.AllArgsConstructor;
 import org.deco.gachicoding.config.jwt.JwtAuthenticationFilter;

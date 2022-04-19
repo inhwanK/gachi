@@ -20,8 +20,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .select()
                 .apis(RequestHandlerSelectors.any()) // 현재 RequestMapping으로 할당된 모든 URL 리스트를 추출
                 //    RequestHandlerSelectors.basePackage("com.app.api") -> 지정된 패키지만 API 화
-                .paths(PathSelectors.any()) // 그중 /api/** 인 URL들만 필터링
-                //     PathSelectors.ant("/apis/*") -> 특정 경로에 있는 컨트롤러만 포함
+                .paths(PathSelectors.ant("/api/**")) // 그중 /api/** 인 URL들만 필터링
+//                     PathSelectors.any() 모든 URL 적용
                 .build();
     }
 

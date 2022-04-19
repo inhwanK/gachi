@@ -1,5 +1,8 @@
 package org.deco.gachicoding.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.notice.NoticeDetailResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeListResponseDto;
@@ -15,6 +18,16 @@ import org.springframework.web.bind.annotation.*;
 public class RestNoticeController {
 
     private final NoticeService noticeService;
+
+    @GetMapping("/swagger/test")
+    @ApiOperation(value = "스웨거 테스트")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "OK"),
+            @ApiResponse(code = 500, message = "Exception")
+    })
+    public String test() {
+        return "swagger test";
+    }
 
     @GetMapping("/notice/detail/{idx}")
     public NoticeDetailResponseDto findNoticeDetailById(@PathVariable Long idx) {

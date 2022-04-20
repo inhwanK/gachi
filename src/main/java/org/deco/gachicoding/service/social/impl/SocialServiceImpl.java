@@ -3,8 +3,8 @@ package org.deco.gachicoding.service.social.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.domain.social.SocialAuth;
-import org.deco.gachicoding.domain.social.SocialAuthRepository;
+import org.deco.gachicoding.domain.social.Social;
+import org.deco.gachicoding.domain.social.SocialRepository;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.service.social.SocialService;
 import org.springframework.stereotype.Service;
@@ -18,21 +18,21 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SocialServiceImpl implements SocialService {
 
-    private final SocialAuthRepository socialAuthRepository;
+    private final SocialRepository socialAuthRepository;
 
     // 소셜 인증 테이블 input
     @Override
     public Long registerSocial(SocialSaveRequestDto dto) {
         System.out.println("Social Save 수행");
 
-        Long idx = socialAuthRepository.save(dto.toEntity()).getIdx();
+        Long idx = socialAuthRepository.save(dto.toEntity()).getSocialIdx();
 
         return idx;
     }
 
     // SocialType(kakao, google, github) SocialId(Email)로 회원 검색
-    public Optional<SocialAuth> getSocialTypeAndEmail(SocialSaveRequestDto dto) {
-        return socialAuthRepository.findByTypeAndSocialId(dto.getType(), dto.getSocial_id());
+    public Optional<Social> getSocialTypeAndEmail(SocialSaveRequestDto dto) {
+        return socialAuthRepository.findBySocialTypeAndSocialId(dto.getSocialType(), dto.getSocialId());
     }
 
     // 카카오 엑세스 토큰 가져오기
@@ -139,10 +139,10 @@ public class SocialServiceImpl implements SocialService {
             System.out.println("nickname : " + nickname);
             System.out.println("email : " + email);
 
-            social.setName(nickname);
-            social.setSocial_id(email);
+            social.setUserName(nickname);
+            social.setSocialId(email);
             // 패스워드 어케할지 고민
-            social.setType("kakao");
+            social.setSocialType("kakao");
 
             br.close();
         } catch (IOException e) {

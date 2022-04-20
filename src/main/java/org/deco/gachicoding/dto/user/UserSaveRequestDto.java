@@ -5,43 +5,54 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.deco.gachicoding.domain.user.Role;
+import org.deco.gachicoding.domain.user.UserRole;
 import org.deco.gachicoding.domain.user.User;
 import org.springframework.lang.Nullable;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserSaveRequestDto {
 
-    private String name;
-    @Nullable
+    @NotNull
+    private String userName;
+
+    @NotNull
+    private String userNick;
+
+    @NotNull
     @Email(message = "올바른 형식의 아이디가 아닙니다.")
-    private String email;
-    private String password;
-    private Role role;
+    private String userEmail;
+
+    @NotNull
+    private String userPassword;
+
+    @Nullable
+    private String userPicture;
 
     @Builder
-    public UserSaveRequestDto(String name, String email, String password, Role role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
+    public UserSaveRequestDto(String userName, String userEmail, String userPassword, String userNick, String userPicture) {
+        this.userName = userName;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
+        this.userNick = userNick;
+        this.userPicture = userPicture;
     }
 
-    public User toEntity(){
+    public User toEntity() {
         return User.builder()
-                .name(name)
-                .email(email)
-                .password(password)
-                .role(role)
+                .userName(userName)
+                .userNick(userNick)
+                .userEmail(userEmail)
+                .userPassword(userPassword)
+                .userPicture(userPicture)
                 .build();
     }
 
     public void encryptPassword(PasswordEncoder passwordEncoder) {
-        password = passwordEncoder.encode(password);
+        userPassword = passwordEncoder.encode(userPassword);
     }
 }

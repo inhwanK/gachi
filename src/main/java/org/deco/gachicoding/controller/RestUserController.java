@@ -1,5 +1,6 @@
 package org.deco.gachicoding.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -25,6 +26,7 @@ public class RestUserController {
 
     private final SocialService socialService;
 
+    @ApiOperation(value = "로그인")
     @PostMapping("/user/login")
     public JwtResponseDto login(@RequestBody JwtRequestDto dto) throws Exception {
         return userService.login(dto);

@@ -6,12 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
+@DynamicUpdate
 @Entity(name = "notice")
 @NoArgsConstructor
 public class Notice {
@@ -54,12 +56,9 @@ public class Notice {
     }
 
     public Notice update(String notTitle, String notContent, Boolean notPin) {
-        if(notTitle != null)
-            this.notTitle = notTitle;
-        if(notContent != null)
-            this.notContent = notContent;
-        if(notPin != null)
-            this.notPin = notPin;
+        this.notTitle = notTitle;
+        this.notContent = notContent;
+        this.notPin = notPin;
         return this;
     }
 

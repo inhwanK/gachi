@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Getter
 @DynamicInsert
+@DynamicUpdate
 @Entity
 @NoArgsConstructor
 @Table(name = "user")

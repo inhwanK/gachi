@@ -55,5 +55,5 @@
 * Spring Data JPA - [DynamicInsert,DynamicUpdate 어노테이션의 용도(작성 전)]()
 * CORS - [CORS 정책 위반과 이를 올바르게 해결하는 방법(작성 전)]()
 * UnexpectedRollbackException - [아이디(이메일) 중복처리에서 @Transactional 에 의한 롤백 예외 발생(작성 전)]()
-* Spring Security & OAuth2 - [기존의 일반 회원과 중복되는 아이디일 경우 로그인 연동(구글, 카카오, 깃허브) 처리(작성 전)]()
+* Spring Security & OAuth2 - [로그인 연동(구글, 카카오, 깃허브)시 기존 아이디와 중복 처리(작성 전)]()
 * AWS Access Denied - [IAM 계정으로 로그인 시 RDS 접근이 안되는 현상(작성 전)]()

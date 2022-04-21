@@ -37,6 +37,39 @@ DROP TABLE IF EXISTS `gachicoding`.`q_tag` RESTRICT;
 -- 가치트렌드
 DROP TABLE IF EXISTS `gachicoding`.`gachi_trend` RESTRICT;
 
+-- 아고라
+DROP TABLE IF EXISTS `gachicoding`.`gachi_agora` RESTRICT;
+
+-- 투표현황
+DROP TABLE IF EXISTS `gachicoding`.`agora_vote` RESTRICT;
+
+-- 프로필
+DROP TABLE IF EXISTS `gachicoding`.`profile` RESTRICT;
+
+-- 수상내역
+DROP TABLE IF EXISTS `gachicoding`.`award` RESTRICT;
+
+-- 자격내역
+DROP TABLE IF EXISTS `gachicoding`.`certificate` RESTRICT;
+
+-- 학력
+DROP TABLE IF EXISTS `gachicoding`.`degree` RESTRICT;
+
+-- 포트폴리오
+DROP TABLE IF EXISTS `gachicoding`.`portfolio` RESTRICT;
+
+-- 기술
+DROP TABLE IF EXISTS `gachicoding`.`skill` RESTRICT;
+
+-- 프로필기술
+DROP TABLE IF EXISTS `gachicoding`.`profile_skills` RESTRICT;
+
+-- 파일
+DROP TABLE IF EXISTS `gachicoding`.`file` RESTRICT;
+
+-- 자유게시판
+DROP TABLE IF EXISTS `gachicoding`.`board` RESTRICT;
+
 -- 유저
 CREATE TABLE `gachicoding`.`user`
 (
@@ -49,7 +82,7 @@ CREATE TABLE `gachicoding`.`user`
     `user_activated` BOOLEAN             NOT NULL DEFAULT true COMMENT '활성상태',  -- 활성상태
     `user_role`      VARCHAR(15)         NOT NULL DEFAULT 'GUEST' COMMENT '권한', -- 권한
     `user_auth`      BOOLEAN             NOT NULL DEFAULT false COMMENT '인증여부', -- 인증여부
-    `user_picture`   TEXT                NULL COMMENT '사진'                      -- 사진
+    `user_picture`   TEXT                NOT NULL COMMENT '사진'                  -- 사진
 )
     COMMENT '유저';
 
@@ -115,6 +148,7 @@ CREATE TABLE `gachicoding`.`notice`
     `user_idx`      BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호',             -- 작성자번호
     `not_title`     VARCHAR(255)        NOT NULL COMMENT '제목',                -- 제목
     `not_content`   TEXT                NOT NULL COMMENT '본문',                -- 본문
+    `not_views`     INT(20) UNSIGNED    NOT NULL COMMENT '조회수',               -- 조회수
     `not_pin`       BOOLEAN             NOT NULL COMMENT '고정',                -- 고정
     `not_regdate`   DATETIME            NOT NULL DEFAULT now() COMMENT '작성일', -- 작성일
     `not_activated` BOOLEAN             NOT NULL DEFAULT true COMMENT '활성상태'  -- 활성상태
@@ -244,15 +278,15 @@ ALTER TABLE `gachicoding`.`q_tag`
 -- 가치트렌드
 CREATE TABLE `gachicoding`.`gachi_trend`
 (
-    `news_idx`       BIGINT(20) UNSIGNED NOT NULL COMMENT '뉴스번호', -- 뉴스번호
-    `user_idx`       BIGINT(20) UNSIGNED NULL COMMENT '작성자번호',    -- 작성자번호
-    `news_title`     VARCHAR(255)        NULL COMMENT '뉴스제목',     -- 뉴스제목
-    `news_content`   TEXT                NULL COMMENT '뉴스내용',     -- 뉴스내용
-    `news_ref`       TEXT                NULL COMMENT '출처',       -- 출처
-    `news_regdate`   DATETIME            NOT NULL COMMENT '작성일',  -- 작성일
-    `news_url`       VARCHAR(255)        NULL COMMENT '링크',       -- 링크
-    `news_pin`       BOOLEAN             NOT NULL COMMENT '고정',   -- 고정
-    `news_thumbnail` VARCHAR(255)        NOT NULL COMMENT '썸네일'   -- 썸네일
+    `news_idx`       BIGINT(20) UNSIGNED NOT NULL COMMENT '뉴스번호',  -- 뉴스번호
+    `user_idx`       BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호', -- 작성자번호
+    `news_title`     VARCHAR(255)        NOT NULL COMMENT '뉴스제목',  -- 뉴스제목
+    `news_content`   TEXT                NOT NULL COMMENT '뉴스내용',  -- 뉴스내용
+    `news_ref`       TEXT                NULL COMMENT '출처',        -- 출처
+    `news_regdate`   DATETIME            NOT NULL COMMENT '작성일',   -- 작성일
+    `news_url`       VARCHAR(255)        NULL COMMENT '링크',        -- 링크
+    `news_pin`       BOOLEAN             NOT NULL COMMENT '고정',    -- 고정
+    `news_thumbnail` VARCHAR(255)        NOT NULL COMMENT '썸네일'    -- 썸네일
 )
     COMMENT '가치트렌드';
 
@@ -262,6 +296,223 @@ ALTER TABLE `gachicoding`.`gachi_trend`
         PRIMARY KEY (
                      `news_idx` -- 뉴스번호
             );
+
+-- 아고라
+CREATE TABLE `gachicoding`.`gachi_agora`
+(
+    `agora_idx`       BIGINT(23) UNSIGNED NOT NULL COMMENT '아고라번호', -- 아고라번호
+    `user_idx`        BIGINT(20) UNSIGNED NULL COMMENT '작성자번호',     -- 작성자번호
+    `agora_title`     VARCHAR(255)        NOT NULL COMMENT '제목',    -- 제목
+    `agora_content`   TEXT                NOT NULL COMMENT '본문',    -- 본문
+    `agora_thumbnail` VARCHAR(255)        NOT NULL COMMENT '썸네일',   -- 썸네일
+    `agora_startdate` DATETIME            NOT NULL COMMENT '시작일',   -- 시작일
+    `agora_enddate`   DATETIME            NOT NULL COMMENT '종료일',   -- 종료일
+    `agora_regdate`   DATETIME            NOT NULL COMMENT '작성일',   -- 작성일
+    `agora_views`     INT(20) UNSIGNED    NOT NULL COMMENT '조회수'    -- 조회수
+)
+    COMMENT '아고라';
+
+-- 아고라
+ALTER TABLE `gachicoding`.`gachi_agora`
+    ADD CONSTRAINT `PK_gachi_agora` -- 아고라 기본키
+        PRIMARY KEY (
+                     `agora_idx` -- 아고라번호
+            );
+
+-- 투표현황
+CREATE TABLE `gachicoding`.`agora_vote`
+(
+    `vote_idx`   BIGINT(23) UNSIGNED NOT NULL COMMENT '투표번호',  -- 투표번호
+    `agora_idx`  BIGINT(23) UNSIGNED NOT NULL COMMENT '아고라번호', -- 아고라번호
+    `user_idx`   BIGINT(20) UNSIGNED NOT NULL COMMENT '투표자번호', -- 투표자번호
+    `vote_agree` BOOLEAN             NOT NULL COMMENT '찬반'     -- 찬반
+)
+    COMMENT '투표현황';
+
+-- 투표현황
+ALTER TABLE `gachicoding`.`agora_vote`
+    ADD CONSTRAINT `PK_agora_vote` -- 투표현황 기본키
+        PRIMARY KEY (
+                     `vote_idx` -- 투표번호
+            );
+
+-- 프로필
+CREATE TABLE `gachicoding`.`profile`
+(
+    `user_idx`          BIGINT(20) UNSIGNED NOT NULL COMMENT '유저번호',   -- 유저번호
+    `profile_name`      VARCHAR(255)        NOT NULL COMMENT '이름',     -- 이름
+    `profile_picture`   TEXT                NOT NULL COMMENT '사진',     -- 사진
+    `profile_position`  VARCHAR(255)        NOT NULL COMMENT '간단직무',   -- 간단직무
+    `profile_career`    VARCHAR(255)        NOT NULL COMMENT '간단경력',   -- 간단경력
+    `profile_introduce` TEXT                NOT NULL COMMENT '한줄소개',   -- 한줄소개
+    `profile_contime`   VARCHAR(255)        NOT NULL COMMENT '연락가능시간', -- 연락가능시간
+    `profile_region`    VARCHAR(255)        NOT NULL COMMENT '지역',     -- 지역
+    `profile_award`     VARCHAR(255)        NOT NULL COMMENT '수상내역'    -- 수상내역
+)
+    COMMENT '프로필';
+
+-- 프로필
+ALTER TABLE `gachicoding`.`profile`
+    ADD CONSTRAINT `PK_profile` -- 프로필 기본키
+        PRIMARY KEY (
+                     `user_idx` -- 유저번호
+            );
+
+-- 수상내역
+CREATE TABLE `gachicoding`.`award`
+(
+    `award_idx`   BIGINT(23) UNSIGNED NOT NULL COMMENT '수상번호', -- 수상번호
+    `user_idx`    BIGINT(20) UNSIGNED NOT NULL COMMENT '유저번호', -- 유저번호
+    `award_title` VARCHAR(255)        NOT NULL COMMENT '대회명',  -- 대회명
+    `award_rank`  VARCHAR(255)        NOT NULL COMMENT '입상내역', -- 입상내역
+    `award_date`  DATE                NOT NULL COMMENT '수상날짜', -- 수상날짜
+    `award_place` VARCHAR(255)        NOT NULL COMMENT '주최기관'  -- 주최기관
+)
+    COMMENT '수상내역';
+
+-- 수상내역
+ALTER TABLE `gachicoding`.`award`
+    ADD CONSTRAINT `PK_award` -- 수상내역 기본키
+        PRIMARY KEY (
+                     `award_idx` -- 수상번호
+            );
+
+-- 자격내역
+CREATE TABLE `gachicoding`.`certificate`
+(
+    `certificate_idx`   BIGINT(23) UNSIGNED NOT NULL COMMENT '자격번호',  -- 자격번호
+    `user_idx`          BIGINT(20) UNSIGNED NOT NULL COMMENT '유저번호',  -- 유저번호
+    `certificate_title` VARCHAR(255)        NOT NULL COMMENT '자격증명',  -- 자격증명
+    `certificate_rank`  VARCHAR(255)        NOT NULL COMMENT '자격증등급', -- 자격증등급
+    `certificate_date`  DATE                NOT NULL COMMENT '발급날짜',  -- 발급날짜
+    `certificate_place` VARCHAR(255)        NOT NULL COMMENT '발급기관'   -- 발급기관
+)
+    COMMENT '자격내역';
+
+-- 자격내역
+ALTER TABLE `gachicoding`.`certificate`
+    ADD CONSTRAINT `PK_certificate` -- 자격내역 기본키
+        PRIMARY KEY (
+                     `certificate_idx` -- 자격번호
+            );
+
+-- 학력
+CREATE TABLE `gachicoding`.`degree`
+(
+    `degree_idx`          BIGINT(23) UNSIGNED NOT NULL COMMENT '학력번호', -- 학력번호
+    `user_idx`            BIGINT(20) UNSIGNED NOT NULL COMMENT '유저번호', -- 유저번호
+    `degree_state`        VARCHAR(255)        NOT NULL COMMENT '학력구분', -- 학력구분
+    `degree_title`        VARCHAR(225)        NOT NULL COMMENT '학교명',  -- 학교명
+    `degree_major`        VARCHAR(255)        NOT NULL COMMENT '전공계열', -- 전공계열
+    `degree_major_detail` VARCHAR(255)        NOT NULL COMMENT '전공',   -- 전공
+    `degree_enter_date`   DATE                NOT NULL COMMENT '입학년',  -- 입학년
+    `degree_gradu_date`   DATE                NOT NULL COMMENT '졸업년',  -- 졸업년
+    `degree_gradu_state`  VARCHAR(255)        NOT NULL COMMENT '졸업구분'  -- 졸업구분
+)
+    COMMENT '학력';
+
+-- 학력
+ALTER TABLE `gachicoding`.`degree`
+    ADD CONSTRAINT `PK_degree` -- 학력 기본키
+        PRIMARY KEY (
+                     `degree_idx` -- 학력번호
+            );
+
+-- 포트폴리오
+CREATE TABLE `gachicoding`.`portfolio`
+(
+    `port_idx`      BIGINT(23) UNSIGNED NOT NULL COMMENT '포트폴리오번호', -- 포트폴리오번호
+    `user_idx`      BIGINT(20) UNSIGNED NOT NULL COMMENT '유저번호',    -- 유저번호
+    `port_link`     VARCHAR(255)        NULL COMMENT '포트폴리오링크',     -- 포트폴리오링크
+    `port_filepath` VARCHAR(255)        NULL COMMENT '파일경로',        -- 파일경로
+    `port_comment`  TEXT                NULL COMMENT '포트폴리오설명'      -- 포트폴리오설명
+)
+    COMMENT '포트폴리오';
+
+-- 포트폴리오
+ALTER TABLE `gachicoding`.`portfolio`
+    ADD CONSTRAINT `PK_portfolio` -- 포트폴리오 기본키
+        PRIMARY KEY (
+                     `port_idx` -- 포트폴리오번호
+            );
+
+-- 기술
+CREATE TABLE `gachicoding`.`skill`
+(
+    `skill_idx`  BIGINT(23) UNSIGNED NOT NULL COMMENT '기술번호', -- 기술번호
+    `skill_name` VARCHAR(255)        NOT NULL COMMENT '기술명'   -- 기술명
+)
+    COMMENT '기술';
+
+-- 기술
+ALTER TABLE `gachicoding`.`skill`
+    ADD CONSTRAINT `PK_skill` -- 기술 기본키
+        PRIMARY KEY (
+                     `skill_idx` -- 기술번호
+            );
+
+-- 프로필기술
+CREATE TABLE `gachicoding`.`profile_skills`
+(
+    `user_idx`  BIGINT(20) UNSIGNED NOT NULL COMMENT '유저번호', -- 유저번호
+    `skill_idx` BIGINT(23) UNSIGNED NOT NULL COMMENT '기술번호'  -- 기술번호
+)
+    COMMENT '프로필기술';
+
+-- 프로필기술
+ALTER TABLE `gachicoding`.`profile_skills`
+    ADD CONSTRAINT `PK_profile_skills` -- 프로필기술 기본키
+        PRIMARY KEY (
+                     `user_idx`, -- 유저번호
+                     `skill_idx` -- 기술번호
+            );
+
+-- 파일
+CREATE TABLE `gachicoding`.`file`
+(
+    `file_idx`       BIGINT(21)   NOT NULL COMMENT '파일번호',              -- 파일번호
+    `board_idx`      BIGINT(21)   NOT NULL COMMENT '게시글번호',             -- 게시글번호
+    `board_category` VARCHAR(20)  NOT NULL COMMENT '게시판카테고리',           -- 게시판카테고리
+    `orig_filename`  VARCHAR(255) NOT NULL COMMENT '원본파일이름',            -- 원본파일이름
+    `save_filename`  VARCHAR(255) NOT NULL COMMENT '저장파일이름',            -- 저장파일이름
+    `file_size`      INT          NOT NULL COMMENT '파일크기',              -- 파일크기
+    `file_ext`       VARCHAR(20)  NOT NULL COMMENT '파일확장자',             -- 파일확장자
+    `file_path`      VARCHAR(255) NOT NULL COMMENT '파일경로',              -- 파일경로
+    `file_activated` BOOLEAN      NOT NULL DEFAULT TRUE COMMENT '활성상태', -- 활성상태
+    `file_regdate`   DATETIME     NOT NULL DEFAULT NOW() COMMENT '생성일자' -- 생성일자
+)
+    COMMENT '파일';
+
+-- 파일
+ALTER TABLE `gachicoding`.`file`
+    ADD CONSTRAINT `PK_file` -- 파일 기본키
+        PRIMARY KEY (
+                     `file_idx` -- 파일번호
+            );
+
+-- 자유게시판
+CREATE TABLE `gachicoding`.`board`
+(
+    `board_idx`       BIGINT(21) UNSIGNED NOT NULL COMMENT '자유게시판번호',           -- 자유게시판번호
+    `user_idx`        BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호',             -- 작성자번호
+    `board_title`     VARCHAR(255)        NOT NULL COMMENT '제목',                -- 제목
+    `board_content`   TEXT                NOT NULL COMMENT '본문',                -- 본문
+    `board_views`     INT(20) UNSIGNED    NOT NULL COMMENT '조회수',               -- 조회수
+    `board_pin`       BOOLEAN             NOT NULL COMMENT '고정',                -- 고정
+    `board_regdate`   DATETIME            NOT NULL DEFAULT now() COMMENT '작성일', -- 작성일
+    `board_activated` BOOLEAN             NOT NULL DEFAULT true COMMENT '활성상태'  -- 활성상태
+)
+    COMMENT '자유게시판';
+
+-- 자유게시판
+ALTER TABLE `gachicoding`.`board`
+    ADD CONSTRAINT `PK_board` -- 자유게시판 기본키
+        PRIMARY KEY (
+                     `board_idx` -- 자유게시판번호
+            );
+
+ALTER TABLE `gachicoding`.`board`
+    MODIFY COLUMN `board_idx` BIGINT(21) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '자유게시판번호';
 
 -- 소셜
 ALTER TABLE `gachicoding`.`social`
@@ -376,6 +627,116 @@ ALTER TABLE `gachicoding`.`q_tag`
 -- 가치트렌드
 ALTER TABLE `gachicoding`.`gachi_trend`
     ADD CONSTRAINT `FK_user_TO_gachi_trend` -- 유저 -> 가치트렌드
+        FOREIGN KEY (
+                     `user_idx` -- 작성자번호
+            )
+            REFERENCES `gachicoding`.`user` ( -- 유저
+                                             `user_idx` -- 유저번호
+                );
+
+-- 아고라
+ALTER TABLE `gachicoding`.`gachi_agora`
+    ADD CONSTRAINT `FK_user_TO_gachi_agora` -- 유저 -> 아고라
+        FOREIGN KEY (
+                     `user_idx` -- 작성자번호
+            )
+            REFERENCES `gachicoding`.`user` ( -- 유저
+                                             `user_idx` -- 유저번호
+                );
+
+-- 투표현황
+ALTER TABLE `gachicoding`.`agora_vote`
+    ADD CONSTRAINT `FK_gachi_agora_TO_agora_vote` -- 아고라 -> 투표현황
+        FOREIGN KEY (
+                     `agora_idx` -- 아고라번호
+            )
+            REFERENCES `gachicoding`.`gachi_agora` ( -- 아고라
+                                                    `agora_idx` -- 아고라번호
+                );
+
+-- 투표현황
+ALTER TABLE `gachicoding`.`agora_vote`
+    ADD CONSTRAINT `FK_user_TO_agora_vote` -- 유저 -> 투표현황
+        FOREIGN KEY (
+                     `user_idx` -- 투표자번호
+            )
+            REFERENCES `gachicoding`.`user` ( -- 유저
+                                             `user_idx` -- 유저번호
+                );
+
+-- 프로필
+ALTER TABLE `gachicoding`.`profile`
+    ADD CONSTRAINT `FK_user_TO_profile` -- 유저 -> 프로필
+        FOREIGN KEY (
+                     `user_idx` -- 유저번호
+            )
+            REFERENCES `gachicoding`.`user` ( -- 유저
+                                             `user_idx` -- 유저번호
+                );
+
+-- 수상내역
+ALTER TABLE `gachicoding`.`award`
+    ADD CONSTRAINT `FK_profile_TO_award` -- 프로필 -> 수상내역
+        FOREIGN KEY (
+                     `user_idx` -- 유저번호
+            )
+            REFERENCES `gachicoding`.`profile` ( -- 프로필
+                                                `user_idx` -- 유저번호
+                );
+
+-- 자격내역
+ALTER TABLE `gachicoding`.`certificate`
+    ADD CONSTRAINT `FK_profile_TO_certificate` -- 프로필 -> 자격내역
+        FOREIGN KEY (
+                     `user_idx` -- 유저번호
+            )
+            REFERENCES `gachicoding`.`profile` ( -- 프로필
+                                                `user_idx` -- 유저번호
+                );
+
+-- 학력
+ALTER TABLE `gachicoding`.`degree`
+    ADD CONSTRAINT `FK_profile_TO_degree` -- 프로필 -> 학력
+        FOREIGN KEY (
+                     `user_idx` -- 유저번호
+            )
+            REFERENCES `gachicoding`.`profile` ( -- 프로필
+                                                `user_idx` -- 유저번호
+                );
+
+-- 포트폴리오
+ALTER TABLE `gachicoding`.`portfolio`
+    ADD CONSTRAINT `FK_profile_TO_portfolio` -- 프로필 -> 포트폴리오
+        FOREIGN KEY (
+                     `user_idx` -- 유저번호
+            )
+            REFERENCES `gachicoding`.`profile` ( -- 프로필
+                                                `user_idx` -- 유저번호
+                );
+
+-- 프로필기술
+ALTER TABLE `gachicoding`.`profile_skills`
+    ADD CONSTRAINT `FK_skill_TO_profile_skills` -- 기술 -> 프로필기술
+        FOREIGN KEY (
+                     `skill_idx` -- 기술번호
+            )
+            REFERENCES `gachicoding`.`skill` ( -- 기술
+                                              `skill_idx` -- 기술번호
+                );
+
+-- 프로필기술
+ALTER TABLE `gachicoding`.`profile_skills`
+    ADD CONSTRAINT `FK_profile_TO_profile_skills` -- 프로필 -> 프로필기술
+        FOREIGN KEY (
+                     `user_idx` -- 유저번호
+            )
+            REFERENCES `gachicoding`.`profile` ( -- 프로필
+                                                `user_idx` -- 유저번호
+                );
+
+-- 자유게시판
+ALTER TABLE `gachicoding`.`board`
+    ADD CONSTRAINT `FK_user_TO_board` -- 유저 -> 자유게시판
         FOREIGN KEY (
                      `user_idx` -- 작성자번호
             )

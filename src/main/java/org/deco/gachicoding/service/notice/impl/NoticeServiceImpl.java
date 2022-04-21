@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.notice.NoticeRepository;
 import org.deco.gachicoding.domain.user.UserRepository;
-import org.deco.gachicoding.dto.notice.NoticeDetailResponseDto;
-import org.deco.gachicoding.dto.notice.NoticeListResponseDto;
+import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.service.notice.NoticeService;
@@ -32,9 +31,9 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional(readOnly = true)
-    public NoticeDetailResponseDto findNoticeDetailById(Long idx) {
+    public NoticeResponseDto findNoticeDetailById(Long idx) {
         Optional<Notice> notice = noticeRepository.findById(idx);
-        NoticeDetailResponseDto noticeDetail = NoticeDetailResponseDto.builder()
+        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
                 .notIdx(notice.get().getNotIdx())
                 .userIdx(notice.get().getUser().getUserIdx())
                 .userNick(notice.get().getUser().getUserNick())
@@ -49,10 +48,10 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<NoticeListResponseDto> findNoticeByKeyword(String keyword, int page) {
-        Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivateTrueOrNotTitleContainingIgnoreCaseAndNotActivateTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-        Page<NoticeListResponseDto> noticeList = notice.map(
-                result -> new NoticeListResponseDto(result.getNotIdx(),
+    public Page<NoticeResponseDto> findNoticeByKeyword(String keyword, int page) {
+        Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
+        Page<NoticeResponseDto> noticeList = notice.map(
+                result -> new NoticeResponseDto(result.getNotIdx(),
                         result.getUser().getUserIdx(),
                         result.getUser().getUserNick(),
                         result.getUser().getUserPicture(),
@@ -78,14 +77,14 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public NoticeDetailResponseDto updateNoticeById(Long idx, NoticeUpdateRequestDto dto) {
+    public NoticeResponseDto updateNoticeById(Long idx, NoticeUpdateRequestDto dto) {
 
         Notice notice = findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
 
         notice = notice.update(dto.getNotTitle(), dto.getNotContent(), dto.getNotPin());
 
-        NoticeDetailResponseDto noticeDetail = NoticeDetailResponseDto.builder()
+        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
                 .notIdx(notice.getNotIdx())
                 .userIdx(notice.getUser().getUserIdx())
                 .userNick(notice.getUser().getUserNick())

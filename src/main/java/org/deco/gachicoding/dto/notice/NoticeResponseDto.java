@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NoticeDetailResponseDto {
+public class NoticeResponseDto {
 
     private Long notIdx;
     private Long userIdx;
@@ -23,7 +23,7 @@ public class NoticeDetailResponseDto {
     private LocalDateTime notRegdate;
 
     @Builder
-    public NoticeDetailResponseDto(Long notIdx, Long userIdx, String userNick, String userPicture, String notTitle, String notContent, Boolean notPin, LocalDateTime notRegdate) {
+    public NoticeResponseDto(Long notIdx, Long userIdx, String userNick, String userPicture, String notTitle, String notContent, Boolean notPin, LocalDateTime notRegdate) {
         this.notIdx = notIdx;
         this.userIdx = userIdx;
         this.userNick = userNick;

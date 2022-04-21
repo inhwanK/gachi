@@ -1,11 +1,7 @@
 package org.deco.gachicoding.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.dto.notice.NoticeDetailResponseDto;
-import org.deco.gachicoding.dto.notice.NoticeListResponseDto;
+import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.service.notice.NoticeService;
@@ -20,12 +16,12 @@ public class RestNoticeController {
     private final NoticeService noticeService;
 
     @GetMapping("/notice/detail/{idx}")
-    public NoticeDetailResponseDto findNoticeDetailById(@PathVariable Long idx) {
+    public NoticeResponseDto findNoticeDetailById(@PathVariable Long idx) {
         return noticeService.findNoticeDetailById(idx);
     }
 
     @GetMapping("/notice/list/{page}")
-    public Page<NoticeListResponseDto> findNoticeByKeyword(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PathVariable int page) {
+    public Page<NoticeResponseDto> findNoticeByKeyword(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PathVariable int page) {
         return noticeService.findNoticeByKeyword(keyword, page);
     }
 
@@ -35,7 +31,7 @@ public class RestNoticeController {
     }
 
     @PutMapping("/notice/update/{idx}")
-    public NoticeDetailResponseDto updateNotice(@PathVariable Long idx, @RequestBody NoticeUpdateRequestDto dto){
+    public NoticeResponseDto updateNotice(@PathVariable Long idx, @RequestBody NoticeUpdateRequestDto dto){
         return noticeService.updateNoticeById(idx, dto);
     }
 

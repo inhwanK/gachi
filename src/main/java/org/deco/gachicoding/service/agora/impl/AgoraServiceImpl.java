@@ -10,6 +10,7 @@ import org.deco.gachicoding.service.agora.AgoraService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class AgoraServiceImpl implements AgoraService {
 
     private final AgoraRepository agoraRepository;
 
+    @Transactional
     @Override
     public Page<AgoraResponseDto> getAgoraList(Pageable pageable) {
         Page<AgoraResponseDto> agoraList = agoraRepository.findAllByOrderByAgoraIdxAsc(pageable)
@@ -25,6 +27,7 @@ public class AgoraServiceImpl implements AgoraService {
         return agoraList;
     }
 
+    @Transactional
     @Override
     public AgoraResponseDto getAgoraDetail(Long agoraIdx) {
         Agora entity = agoraRepository.findById(agoraIdx)
@@ -32,11 +35,13 @@ public class AgoraServiceImpl implements AgoraService {
         return new AgoraResponseDto(entity);
     }
 
+    @Transactional
     @Override
     public Long registerAgora(AgoraSaveRequestDto dto) {
         return agoraRepository.save(dto.toEntity()).getAgoraIdx();
     }
 
+    @Transactional
     @Override
     public Long removeAgora(Long agoraIdx) {
         agoraRepository.deleteById(agoraIdx);

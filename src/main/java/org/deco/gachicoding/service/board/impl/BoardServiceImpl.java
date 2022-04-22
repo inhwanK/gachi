@@ -9,6 +9,7 @@ import org.deco.gachicoding.service.board.BoardService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
 
+    @Transactional
     @Override
     public Page<BoardResponseDto> getBoardList(Pageable pageable) {
         Page<BoardResponseDto> boardList =
@@ -26,6 +28,7 @@ public class BoardServiceImpl implements BoardService {
         return boardList;
     }
 
+    @Transactional
     @Override
     public BoardResponseDto getBoardDetail(Long boardIdx) {
 
@@ -35,12 +38,14 @@ public class BoardServiceImpl implements BoardService {
         return new BoardResponseDto(entity);
     }
 
+    @Transactional
     @Override
     public Long registerBoard(BoardSaveRequestDto dto) {
 
         return boardRepository.save(dto.toEntity()).getBoardIdx();
     }
 
+    @Transactional
     @Override
     public Long removeBoard(Long boardIdx) {
         boardRepository.deleteById(boardIdx);

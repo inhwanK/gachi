@@ -25,23 +25,10 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Notice> findById(Long idx) {
-        return noticeRepository.findById(idx);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public NoticeResponseDto findNoticeDetailById(Long idx) {
         Optional<Notice> notice = noticeRepository.findById(idx);
         NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-                .notIdx(notice.get().getNotIdx())
-                .userIdx(notice.get().getUser().getUserIdx())
-                .userNick(notice.get().getUser().getUserNick())
-                .userPicture(notice.get().getUser().getUserPicture())
-                .notTitle(notice.get().getNotTitle())
-                .notContent(notice.get().getNotContent())
-                .notPin(notice.get().getNotPin())
-                .notRegdate(notice.get().getNotRegdate())
+                .notice(notice.get())
                 .build();
         return noticeDetail;
     }
@@ -49,16 +36,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public Page<NoticeResponseDto> findNoticeByKeyword(String keyword, int page) {
-        Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-        Page<NoticeResponseDto> noticeList = notice.map(
-                result -> new NoticeResponseDto(result.getNotIdx(),
-                        result.getUser().getUserIdx(),
-                        result.getUser().getUserNick(),
-                        result.getUser().getUserPicture(),
-                        result.getNotTitle(),
-                        result.getNotContent(),
-                        result.getNotPin(),
-                        result.getNotRegdate())
+        Page<Notice> notices = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
+        Page<NoticeResponseDto> noticeList = notices.map(
+                result -> new NoticeResponseDto(result)
         );
         return noticeList;
     }
@@ -79,20 +59,13 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public NoticeResponseDto updateNoticeById(Long idx, NoticeUpdateRequestDto dto) {
 
-        Notice notice = findById(idx)
+        Notice notice = noticeRepository.findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
 
-        notice = notice.update(dto.getNotTitle(), dto.getNotContent(), dto.getNotPin());
+        notice = notice.update(dto.getNotTitle(), dto.getNotContent(), dto.isNotPin());
 
         NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-                .notIdx(notice.getNotIdx())
-                .userIdx(notice.getUser().getUserIdx())
-                .userNick(notice.getUser().getUserNick())
-                .userPicture(notice.getUser().getUserPicture())
-                .notTitle(notice.getNotTitle())
-                .notContent(notice.getNotContent())
-                .notPin(notice.getNotPin())
-                .notRegdate(notice.getNotRegdate())
+                .notice(notice)
                 .build();
 
         return noticeDetail;
@@ -102,9 +75,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public Long deleteNoticeById(Long idx) {
 
-        Notice notice = findById(idx)
+        Notice notice = noticeRepository.findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
 
-        return notice.delete(false).getNotIdx();
+        return notice.delete().getNotIdx();
     }
 }

@@ -1,22 +1,14 @@
 package org.deco.gachicoding.controller;
 
-import com.google.gson.JsonObject;
-import com.nimbusds.jose.shaded.json.JSONObject;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileUtils;
-import org.deco.gachicoding.service.file.FileService;
 import org.deco.gachicoding.service.file.impl.FileServiceImpl;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.UUID;
 
+// 리팩토링 필요 구현 덜 됬다 건들면 손모가지,,
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -61,6 +53,7 @@ public class RestFileController {
 
     private static final String filePath = "C:\\mp\\whiteRecordImg";
 
+    @ApiOperation(value = "파일 임시 저장")
     @PostMapping("/file/upload")
     public String fileUploadImageFile(MultipartHttpServletRequest mpRequest) throws IOException {
 

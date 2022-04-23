@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import java.io.IOException;
+import java.net.URI;
 
 // 리팩토링 필요 구현 덜 됬다 건들면 손모가지,,
 @RestController
@@ -54,8 +55,8 @@ public class RestFileController {
     private static final String filePath = "C:\\mp\\whiteRecordImg";
 
     @ApiOperation(value = "파일 임시 저장")
-    @PostMapping("/file/upload")
-    public String fileUploadImageFile(MultipartHttpServletRequest mpRequest) throws IOException {
+    @PostMapping(value = "/file/upload",  produces = "application/json; charset=utf8")
+    public URI fileUploadImageFile(MultipartHttpServletRequest mpRequest) throws IOException {
 
         return fileService.copyTempImage(mpRequest);
     }

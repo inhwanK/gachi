@@ -494,11 +494,11 @@ ALTER TABLE `gachicoding`.`file`
 CREATE TABLE `gachicoding`.`board`
 (
     `board_idx`       BIGINT(21) UNSIGNED NOT NULL COMMENT '자유게시판번호',           -- 자유게시판번호
-    `user_idx`        BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호',             -- 작성자번호
+    `user_idx`        BIGINT(20) UNSIGNED NULL COMMENT '작성자번호',                 -- 작성자번호
     `board_title`     VARCHAR(255)        NOT NULL COMMENT '제목',                -- 제목
     `board_content`   TEXT                NOT NULL COMMENT '본문',                -- 본문
-    `board_views`     INT(20) UNSIGNED    NOT NULL COMMENT '조회수',               -- 조회수
-    `board_pin`       BOOLEAN             NOT NULL COMMENT '고정',                -- 고정
+    `board_views`     INT(20) UNSIGNED    NOT NULL DEFAULT 0 COMMENT '조회수',     -- 조회수
+    `board_pin`       BOOLEAN             NOT NULL DEFAULT false COMMENT '고정',  -- 고정
     `board_regdate`   DATETIME            NOT NULL DEFAULT now() COMMENT '작성일', -- 작성일
     `board_activated` BOOLEAN             NOT NULL DEFAULT true COMMENT '활성상태'  -- 활성상태
 )

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.deco.gachicoding.domain.notice.Notice;
 
 import java.time.LocalDateTime;
 
@@ -19,18 +20,19 @@ public class NoticeResponseDto {
     private String notTitle;
     private String notContent;
     private int notViews;
-    private Boolean notPin;
+    private boolean notPin;
     private LocalDateTime notRegdate;
 
     @Builder
-    public NoticeResponseDto(Long notIdx, Long userIdx, String userNick, String userPicture, String notTitle, String notContent, Boolean notPin, LocalDateTime notRegdate) {
-        this.notIdx = notIdx;
-        this.userIdx = userIdx;
-        this.userNick = userNick;
-        this.userPicture = userPicture;
-        this.notTitle = notTitle;
-        this.notContent = notContent;
-        this.notPin = notPin;
-        this.notRegdate = notRegdate;
+    public NoticeResponseDto(Notice notice) {
+        this.notIdx = notice.getNotIdx();
+        this.userIdx = notice.getUser().getUserIdx();
+        this.userNick = notice.getUser().getUserNick();
+        this.userPicture = notice.getUser().getUserPicture();
+        this.notTitle = notice.getNotTitle();
+        this.notContent = notice.getNotTitle();
+        this.notViews = notice.getNotViews();
+        this.notPin = notice.isNotPin();
+        this.notRegdate = notice.getNotRegdate();
     }
 }

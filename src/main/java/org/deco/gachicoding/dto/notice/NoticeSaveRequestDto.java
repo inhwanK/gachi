@@ -22,10 +22,10 @@ public class NoticeSaveRequestDto {
     private String notContent;
 
     @Nullable
-    private Boolean notPin;
+    private boolean notPin;
 
     @Builder
-    public NoticeSaveRequestDto(Long userIdx, String notTitle, String notContent, Boolean notPin) {
+    public NoticeSaveRequestDto(Long userIdx, String notTitle, String notContent, boolean notPin) {
         this.userIdx = userIdx;
         this.notTitle = notTitle;
         this.notContent = notContent;

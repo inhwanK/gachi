@@ -61,14 +61,14 @@ public class UserRepositoryTest {
         assertEquals("테스트", user.get().getUserName());
     }
 
-    @Test
-    public void 닉네임으로_유저조회() {
-        Long userIdx = createUserMock("테스트", "테스트 별명", "test@test.com", "1234");
-
-        Optional<User> findUser = userRepository.findByUserNick("테스트 별명");
-        Optional<User> createUser = userRepository.findById(userIdx);
-        assertEquals(createUser, findUser);
-    }
+//    @Test
+//    public void 닉네임으로_유저조회() {
+//        Long userIdx = createUserMock("테스트", "테스트 별명", "test@test.com", "1234");
+//
+//        Optional<User> findUser = userRepository.findByUserNick("테스트 별명");
+//        Optional<User> createUser = userRepository.findById(userIdx);
+//        assertEquals(createUser, findUser);
+//    }
 
     @Test
     public void 유저_저장() {
@@ -128,11 +128,11 @@ public class UserRepositoryTest {
         String updateNick = "수정된 별명";
         String updatePassword = "수정된 비밀번호";
         boolean updateAuth = true;
-        int updateAct = 0;
+        boolean updateActivated = false;
         String updatePicture = "수정된 사진";
         UserRole updateRole = UserRole.GUEST;
 
-        User testUser = user.update(updateName, updateNick, updatePassword, updateAct, updateAuth, updatePicture, updateRole);
+        User testUser = user.update(updateNick, updatePassword, updateActivated, updateAuth, updateRole, updatePicture);
 
         Optional<User> updateUser = userRepository.findById(userIdx);
 

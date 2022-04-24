@@ -57,3 +57,4 @@
 * UnexpectedRollbackException - [아이디(이메일) 중복처리에서 @Transactional 에 의한 롤백 예외 발생(작성 전)]()
 * Spring Security & OAuth2 - [로그인 연동(구글, 카카오, 깃허브)시 기존 아이디와 중복 처리(작성 전)]()
 * AWS Access Denied - [IAM 계정으로 로그인 시 RDS 접근이 안되는 현상(작성 전)]()
+* WebMvcConfigurationSupport - [스웨거, pageable 사용을 위해 해당 클래스를 상속받아 오버라이딩(작성 전)]()

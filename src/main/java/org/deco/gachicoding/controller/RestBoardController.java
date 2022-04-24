@@ -17,7 +17,7 @@ public class RestBoardController {
     private final BoardService boardService;
 
     @GetMapping("/board/list")
-    public Page<BoardResponseDto> getBoardList(@PageableDefault(size = 10)Pageable pageable){
+    public Page<BoardResponseDto> getBoardList(@PageableDefault(size = 10) Pageable pageable){
         return boardService.getBoardList(pageable);
     }
 

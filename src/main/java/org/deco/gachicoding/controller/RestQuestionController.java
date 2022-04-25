@@ -1,5 +1,6 @@
 package org.deco.gachicoding.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.question.QuestionResponseDto;
@@ -9,9 +10,12 @@ import org.deco.gachicoding.service.question.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
+@Api
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-@RequiredArgsConstructor
 public class RestQuestionController {
     private final QuestionService questionService;
 
@@ -29,7 +33,7 @@ public class RestQuestionController {
 
     @ApiOperation(value = "질문 등록")
     @PostMapping("/question")
-    public Long registerQuestion(@RequestBody QuestionSaveRequestDto dto){
+    public Long registerQuestion(@Valid @RequestBody QuestionSaveRequestDto dto){
         return questionService.registerQuestion(dto);
     }
 

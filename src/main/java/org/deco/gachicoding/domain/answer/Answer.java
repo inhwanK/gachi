@@ -18,9 +18,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @DynamicUpdate
-@Table(name = "gachiA")
+@Table(name = "gachi_a")
 public class Answer {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long aIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)

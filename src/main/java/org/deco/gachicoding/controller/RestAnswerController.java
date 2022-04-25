@@ -1,5 +1,6 @@
 package org.deco.gachicoding.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
@@ -9,6 +10,7 @@ import org.deco.gachicoding.service.answer.AnswerService;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+@Api
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

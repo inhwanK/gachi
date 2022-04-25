@@ -16,32 +16,32 @@ public class QuestionSaveRequestDto {
     private Long userIdx;
 
     @NotNull
-    private String qTitle;
+    private String q_title;
 
     @NotNull
-    private String qContent;
+    private String q_content;
 
     @Nullable
-    private String qError;
+    private String q_error;
 
     @Nullable
-    private String qCategory;
+    private String q_category;
 
     @Builder
     public QuestionSaveRequestDto(Long userIdx, String qTitle, String qContent, String qError, String qCategory) {
         this.userIdx = userIdx;
-        this.qTitle = qTitle;
-        this.qContent = qContent;
-        this.qError = qError;
-        this.qCategory = qCategory;
+        this.q_title = qTitle;
+        this.q_content = qContent;
+        this.q_error = qError;
+        this.q_category = qCategory;
     }
 
     public Question toEntity(){
         return Question.builder()
-                .qTitle(qTitle)
-                .qContent(qContent)
-                .qError(qError)
-                .qCategory(qCategory)
+                .qTitle(q_title)
+                .qContent(q_content)
+                .qError(q_error)
+                .qCategory(q_category)
                 .build();
     }
 }

@@ -54,7 +54,7 @@ public class AnswerServiceImpl implements AnswerService {
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
         answer.setUser(userRepository.getOne(dto.getUserIdx()));
 
-        answer.setQuestion(questionRepository.getOne(dto.getQIdx()));
+        answer.setQuestion(questionRepository.getOne(dto.getQ_idx()));
 
         return answerRepository.save(answer).getAIdx();
     }

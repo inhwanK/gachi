@@ -1,15 +1,13 @@
 package org.deco.gachicoding.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.jwt.JwtRequestDto;
 import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
-import org.deco.gachicoding.dto.user.*;
+import org.deco.gachicoding.dto.user.UserSaveRequestDto;
+import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
 import org.deco.gachicoding.service.social.SocialService;
 import org.deco.gachicoding.service.user.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+@Api
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -26,31 +25,34 @@ public class RestUserController {
 
     private final SocialService socialService;
 
-    @ApiOperation(value = "로그인")
+    @ApiOperation(value = "로그인", notes = "email, password 값을 받아 로그인 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "accessToken 으로 변조된 로그인 정보 반환")
+    )
     @PostMapping("/user/login")
-    public JwtResponseDto login(@RequestBody JwtRequestDto dto) throws Exception {
+    public JwtResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody JwtRequestDto dto) throws Exception {
         return userService.login(dto);
     }
 
-    @ApiOperation(value = "회원가입")
+    @ApiOperation(value = "회원가입", notes = "UserSaveRequestDto 타입으로 값을 받아 회원가입 수행")
     @PostMapping("/user")
     public Long registerUser(@Valid @RequestBody UserSaveRequestDto dto) {
         return userService.registerUser(dto);
     }
 
-    @ApiOperation(value = "유저 정보 업데이트")
-    @PutMapping("/user/{idx}")
-    public Long updateUser(@PathVariable Long idx, @RequestBody UserUpdateRequestDto dto) {
-        return userService.updateUser(idx, dto);
+    @ApiOperation(value = "유저 정보 업데이트", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
+    @PutMapping("/user/{userIdx}")
+    public Long updateUser(@PathVariable Long userIdx, @RequestBody UserUpdateRequestDto dto) {
+        return userService.updateUser(userIdx, dto);
     }
 
-    @ApiOperation(value = "유저 삭제")
-    @DeleteMapping("/user/{idx}")
-    public Long deleteUser(@PathVariable Long idx) {
-        return userService.deleteUser(idx);
+    @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
+    @DeleteMapping("/user/{userIdx}")
+    public Long deleteUser(@PathVariable Long userIdx) {
+        return userService.deleteUser(userIdx);
     }
 
-    @ApiOperation(value = "카카오 로그인")
+    @ApiOperation(value = "카카오 로그인", notes = "잘 모름..")
     @GetMapping("/user/kakaoLogin")
     public JwtResponseDto kakaoUserLogin(String code) throws Exception {
         System.out.println("kakaoCode" + code);

@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import springfox.documentation.builders.PathSelectors;
@@ -17,7 +16,7 @@ import java.util.List;
 
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig extends WebMvcConfigurationSupport {
+public class WebConfig extends WebMvcConfigurationSupport {
 
     /**
      *  swagger 설정 <br>
@@ -35,6 +34,10 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
                 .build();
     }
 
+    /**
+     * swagger-ui 설정 포함
+     * @param registry
+     */
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
@@ -44,7 +47,8 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     }
 
     /**
-     * pageable 사용을 위한 resolver 추가.
+     * pageable 사용을 위한 {@link PageableHandlerMethodArgumentResolver} 추가
+     * @param argumentResolvers
      */
     @Override
     protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {

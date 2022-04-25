@@ -1,6 +1,6 @@
 package org.deco.gachicoding.controller;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.jwt.JwtRequestDto;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+@Api
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -24,9 +25,12 @@ public class RestUserController {
 
     private final SocialService socialService;
 
-    @ApiOperation(value = "로그인", notes = "JwtRequestDto 타입으로 값을 받아 로그인 수행")
+    @ApiOperation(value = "로그인", notes = "email, password 값을 받아 로그인 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "accessToken 으로 변조된 로그인 정보 반환")
+    )
     @PostMapping("/user/login")
-    public JwtResponseDto login(@RequestBody JwtRequestDto dto) throws Exception {
+    public JwtResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody JwtRequestDto dto) throws Exception {
         return userService.login(dto);
     }
 
@@ -42,14 +46,13 @@ public class RestUserController {
         return userService.updateUser(userIdx, dto);
     }
 
-    @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행")
-
+    @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
     @DeleteMapping("/user/{userIdx}")
     public Long deleteUser(@PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);
     }
 
-    @ApiOperation(value = "카카오 로그인")
+    @ApiOperation(value = "카카오 로그인", notes = "잘 모름..")
     @GetMapping("/user/kakaoLogin")
     public JwtResponseDto kakaoUserLogin(String code) throws Exception {
         System.out.println("kakaoCode" + code);

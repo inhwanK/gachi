@@ -3,6 +3,7 @@ package org.deco.gachicoding.domain.board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "board")
+@DynamicInsert
 public class Board {
 
     @Id

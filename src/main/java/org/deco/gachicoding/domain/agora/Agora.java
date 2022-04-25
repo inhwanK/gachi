@@ -3,6 +3,7 @@ package org.deco.gachicoding.domain.agora;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "gachi_agora")
+@DynamicInsert
 public class Agora {
 
     @Id

@@ -13,22 +13,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AnswerResponseDto {
 
-    private Long aIdx;
+    private Long asIdx;
     private Long userIdx;
-    private Long qIdx;
-    private String aContent;
-    private boolean aSelect;
-    private boolean aActivated;
-    private LocalDateTime aRegdate;
+    private Long qsIdx;
+    private String asContent;
+    private boolean asSelect;
+    private boolean asActivated;
+    private LocalDateTime asRegdate;
 
     @Builder
     public AnswerResponseDto(Answer answer) {
-        this.aIdx = answer.getAIdx();
+        this.asIdx = answer.getAsIdx();
         this.userIdx = answer.getUser().getUserIdx();
-        this.qIdx = answer.getQuestion().getQIdx();
-        this.aContent = answer.getAContent();
-        this.aSelect = answer.isASelect();
-        this.aActivated = answer.isAActivated();
-        this.aRegdate = answer.getARegdate();
+        this.qsIdx = answer.getQuestion().getQsIdx();
+        this.asContent = answer.getAsContent();
+        this.asSelect = answer.isAsSelect();
+        this.asActivated = answer.isAsActivated();
+        this.asRegdate = answer.getAsRegdate();
     }
 }

@@ -9,9 +9,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AnswerUpdateRequestDto {
 
-    private String aContent;
+    private String asContent;
 
-    public AnswerUpdateRequestDto(String aContent) {
-        this.aContent = aContent;
+    public AnswerUpdateRequestDto(String asContent) {
+        this.asContent = asContent;
     }
 }

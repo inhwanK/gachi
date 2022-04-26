@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.question.Question;
+import org.deco.gachicoding.domain.user.User;
 
 import java.time.LocalDateTime;
 
@@ -13,26 +14,28 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class QuestionResponseDto {
 
-    private Long qIdx;
+    private Long qsIdx;
     private Long userIdx;
-    private String qTitle;
-    private String qContent;
-    private String qError;
-    private String qCategory;
-    private boolean qSolve;
-    private boolean qActivated;
-    private LocalDateTime qRegdate;
+    private String qsTitle;
+    private String qsContent;
+    private String qsError;
+    private String qsCategory;
+    private boolean qsSolve;
+    private boolean qsActivated;
+    private LocalDateTime qsRegdate;
 
     @Builder
     public QuestionResponseDto(Question question) {
-        this.qIdx = question.getQIdx();
-        this.userIdx = question.getUser().getUserIdx();
-        this.qTitle = question.getQTitle();
-        this.qContent = question.getQContent();
-        this.qError = question.getQError();
-        this.qCategory = question.getQCategory();
-        this.qSolve = question.isQSolve();
-        this.qActivated = question.isQActivated();
-        this.qRegdate = question.getQRegdate();
+        User user = question.getUser();
+        this.userIdx = user.getUserIdx();
+
+        this.qsIdx = question.getQsIdx();
+        this.qsTitle = question.getQsTitle();
+        this.qsContent = question.getQsContent();
+        this.qsError = question.getQsError();
+        this.qsCategory = question.getQsCategory();
+        this.qsSolve = question.isQsSolve();
+        this.qsActivated = question.isQsActivated();
+        this.qsRegdate = question.getQsRegdate();
     }
 }

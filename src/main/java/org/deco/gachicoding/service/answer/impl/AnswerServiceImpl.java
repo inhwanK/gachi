@@ -38,7 +38,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional(readOnly = true)
     public Page<AnswerResponseDto> getAnswerListByKeyword(String keyword, int page) {
-        Page<Answer> answers = answerRepository.findByAContentContainingIgnoreCaseAndAActivatedTrueOrderByAIdxDesc(keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "qIdx")));
+        Page<Answer> answers = answerRepository.findByAsContentContainingIgnoreCaseAndAsActivatedTrueOrderByAsIdxDesc(keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "asIdx")));
         Page<AnswerResponseDto> answersList = answers.map(
                 result -> new AnswerResponseDto(result)
         );
@@ -54,9 +54,9 @@ public class AnswerServiceImpl implements AnswerService {
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
         answer.setUser(userRepository.getOne(dto.getUserIdx()));
 
-        answer.setQuestion(questionRepository.getOne(dto.getQ_idx()));
+        answer.setQuestion(questionRepository.getOne(dto.getQsIdx()));
 
-        return answerRepository.save(answer).getAIdx();
+        return answerRepository.save(answer).getAsIdx();
     }
 
     @Override
@@ -66,7 +66,7 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(answerIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
 
-        answer = answer.update(dto.getAContent());
+        answer = answer.update(dto.getAsContent());
 
         AnswerResponseDto answerDetail = AnswerResponseDto.builder()
                 .answer(answer)
@@ -82,6 +82,6 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(answerIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
 
-        return answer.delete().getAIdx();
+        return answer.isDisable().getAsIdx();
     }
 }

@@ -21,8 +21,9 @@ import java.time.LocalDateTime;
 @Table(name = "gachi_a")
 public class Answer {
     @Id
+    @Column(name = "as_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long aIdx;
+    private Long asIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
@@ -30,23 +31,30 @@ public class Answer {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "q_idx")
+    @JoinColumn(name = "qs_idx")
     @JsonManagedReference
     private Question question;
 
-    private String aContent;
-    private boolean aSelect;
-    private boolean aActivated;
-    private LocalDateTime aRegdate;
+    @JoinColumn(name = "as_content")
+    private String asContent;
+
+    @JoinColumn(name = "as_select")
+    private boolean asSelect;
+
+    @JoinColumn(name = "as_activated")
+    private boolean asActivated;
+
+    @JoinColumn(name = "as_regdate")
+    private LocalDateTime asRegdate;
 
     @Builder
-    public Answer(User user, Question question, String aContent, boolean aSelect, boolean aActivated, LocalDateTime aRegdate) {
+    public Answer(User user, Question question, String asContent, boolean asSelect, boolean asActivated, LocalDateTime asRegdate) {
         this.user = user;
         this.question = question;
-        this.aContent = aContent;
-        this.aSelect = aSelect;
-        this.aActivated = aActivated;
-        this.aRegdate = aRegdate;
+        this.asContent = asContent;
+        this.asSelect = asSelect;
+        this.asActivated = asActivated;
+        this.asRegdate = asRegdate;
     }
 
     public void setUser(User user) {
@@ -57,13 +65,13 @@ public class Answer {
         this.question = question;
     }
 
-    public Answer update(String aContent) {
-        this.aContent = aContent;
+    public Answer update(String asContent) {
+        this.asContent = asContent;
         return this;
     }
 
-    public Answer delete() {
-        this.aActivated = false;
+    public Answer isDisable() {
+        this.asActivated = false;
         return this;
     }
 }

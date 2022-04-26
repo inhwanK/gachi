@@ -37,11 +37,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public Page<QuestionResponseDto> getQuestionListByKeyword(String keyword, int page) {
-        Page<Question> questions = questionRepository.findByQContentContainingIgnoreCaseAndQActivatedTrueOrQTitleContainingIgnoreCaseAndQActivatedTrueOrderByQIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "qIdx")));
+        Page<Question> questions = questionRepository.findByQsContentContainingIgnoreCaseAndQsActivatedTrueOrQsTitleContainingIgnoreCaseAndQsActivatedTrueOrderByQsIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "qsIdx")));
+//        System.out.println("qContent : "+questions.getContent().get(0).getQsContent());
+//        System.out.println("qTitle : "+questions.getContent().get(0).getQsTitle());
         Page<QuestionResponseDto> questionList = questions.map(
                 result -> new QuestionResponseDto(result)
         );
         return questionList;
+//        return null;
     }
 
     @Override
@@ -53,7 +56,7 @@ public class QuestionServiceImpl implements QuestionService {
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
         question.setUser(userRepository.getOne(dto.getUserIdx()));
 
-        return questionRepository.save(question).getQIdx();
+        return questionRepository.save(question).getQsIdx();
     }
 
     @Override
@@ -63,7 +66,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
-        question = question.update(dto.getQTitle(), dto.getQContent(), dto.getQError(), dto.getQCategory());
+        question = question.update(dto.getQsTitle(), dto.getQsContent(), dto.getQsError(), dto.getQsCategory());
 
         QuestionResponseDto questionDetail = QuestionResponseDto.builder()
                 .question(question)
@@ -79,6 +82,6 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
-        return question.delete().getQIdx();
+        return question.isDisable().getQsIdx();
     }
 }

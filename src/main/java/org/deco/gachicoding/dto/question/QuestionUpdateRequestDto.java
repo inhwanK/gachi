@@ -9,15 +9,15 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QuestionUpdateRequestDto {
 
-    private String qTitle;
-    private String qContent;
-    private String qError;
-    private String qCategory;
+    private String qsTitle;
+    private String qsContent;
+    private String qsError;
+    private String qsCategory;
 
-    public QuestionUpdateRequestDto(String qTitle, String qContent, String qError, String qCategory) {
-        this.qTitle = qTitle;
-        this.qContent = qContent;
-        this.qError = qError;
-        this.qCategory = qCategory;
+    public QuestionUpdateRequestDto(String qsTitle, String qsContent, String qsError, String qsCategory) {
+        this.qsTitle = qsTitle;
+        this.qsContent = qsContent;
+        this.qsError = qsError;
+        this.qsCategory = qsCategory;
     }
 }

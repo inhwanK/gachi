@@ -11,9 +11,9 @@ public class NoticeUpdateRequestDto {
 
     private String notTitle;
     private String notContent;
-    private boolean notPin;
+    private Boolean notPin;
 
-    public NoticeUpdateRequestDto(String notTitle, String notContent, boolean notPin) {
+    public NoticeUpdateRequestDto(String notTitle, String notContent, Boolean notPin) {
         this.notTitle = notTitle;
         this.notContent = notContent;
         this.notPin = notPin;

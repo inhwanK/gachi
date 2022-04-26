@@ -24,9 +24,9 @@ import java.util.List;
 @Table(name = "gachi_q")
 public class Question {
     @Id
-    @Column(name = "qs_idx")
+    @Column(name = "que_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long qsIdx;
+    private Long queIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
@@ -34,41 +34,42 @@ public class Question {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
+    @JoinColumn(insertable = false, updatable = false)
     @JsonBackReference
     private List<Answer> answers = new ArrayList<>();
 
-    @Column(name = "qs_title")
-    private String qsTitle;
+    @Column(name = "que_title")
+    private String queTitle;
 
-    @Column(name = "qs_content")
-    private String qsContent;
+    @Column(name = "que_content")
+    private String queContent;
 
-    @Column(name = "qs_error")
-    private String qsError;
+    @Column(name = "que_error")
+    private String queError;
 
-    @Column(name = "qs_category")
-    private String qsCategory;
+    @Column(name = "que_category")
+    private String queCategory;
 
-    @Column(name = "qs_solve")
-    private boolean qsSolve;
+    @Column(name = "que_solve")
+    private Boolean queSolve;
 
-    @Column(name = "qs_activated")
-    private boolean qsActivated;
+    @Column(name = "que_activated")
+    private Boolean queActivated;
 
-    @Column(name = "qs_regdate")
-    private LocalDateTime qsRegdate;
+    @Column(name = "que_regdate")
+    private LocalDateTime queRegdate;
 
     @Builder
-    public Question(User user, String qsTitle, String qsContent, String qsError, String qsCategory, boolean qsSolve, boolean qsActivated, LocalDateTime qsRegdate) {
+    public Question(User user, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
         this.user = user;
-        this.qsTitle = qsTitle;
-        this.qsContent = qsContent;
-        this.qsError = qsError;
-        this.qsCategory = qsCategory;
-        this.qsSolve = qsSolve;
-        this.qsActivated = qsActivated;
-        this.qsRegdate = qsRegdate;
+        this.queIdx = queIdx;
+        this.queTitle = queTitle;
+        this.queContent = queContent;
+        this.queError = queError;
+        this.queCategory = queCategory;
+        this.queSolve = queSolve;
+        this.queActivated = queActivated;
+        this.queRegdate = queRegdate;
     }
 
     public void setUser(User user) {
@@ -79,16 +80,21 @@ public class Question {
         this.answers.add(answer);
     }
 
-    public Question update(String qsTitle, String qsContent, String qsError, String qsCategory) {
-        this.qsTitle = qsTitle;
-        this.qsContent = qsContent;
-        this.qsError = qsError;
-        this.qsCategory = qsCategory;
+    public Question update(String queTitle, String queContent, String queError, String queCategory) {
+        this.queTitle = queTitle;
+        this.queContent = queContent;
+        this.queError = queError;
+        this.queCategory = queCategory;
         return this;
     }
 
     public Question isDisable() {
-        this.qsActivated = false;
+        this.queActivated = false;
+        return this;
+    }
+
+    public Question isEnable() {
+        this.queActivated = true;
         return this;
     }
 

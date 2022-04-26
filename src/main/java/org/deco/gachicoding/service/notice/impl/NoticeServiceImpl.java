@@ -25,6 +25,12 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<Notice> findById(Long idx) {
+        return noticeRepository.findById(idx);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public NoticeResponseDto findNoticeDetailById(Long idx) {
         Optional<Notice> notice = noticeRepository.findById(idx);
         NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
@@ -36,8 +42,8 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public Page<NoticeResponseDto> findNoticeByKeyword(String keyword, int page) {
-        Page<Notice> notices = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-        Page<NoticeResponseDto> noticeList = notices.map(
+        Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
+        Page<NoticeResponseDto> noticeList = notice.map(
                 result -> new NoticeResponseDto(result)
         );
         return noticeList;
@@ -59,10 +65,10 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public NoticeResponseDto updateNoticeById(Long idx, NoticeUpdateRequestDto dto) {
 
-        Notice notice = noticeRepository.findById(idx)
+        Notice notice = findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
 
-        notice = notice.update(dto.getNotTitle(), dto.getNotContent(), dto.isNotPin());
+        notice = notice.update(dto.getNotTitle(), dto.getNotContent(), dto.getNotPin());
 
         NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
                 .notice(notice)
@@ -73,11 +79,28 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public Long deleteNoticeById(Long idx) {
-
-        Notice notice = noticeRepository.findById(idx)
+    public void disableNotice(Long idx) {
+        Notice notice = findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
 
-        return notice.delete().getNotIdx();
+        notice.disableNotice();
+    }
+
+    @Override
+    @Transactional
+    public void enableNotice(Long idx) {
+        Notice notice = findById(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
+        notice.enableNotice();
+    }
+
+    @Override
+    @Transactional
+    public void deleteNoticeById(Long idx) {
+        findById(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
+        noticeRepository.deleteById(idx);
     }
 }

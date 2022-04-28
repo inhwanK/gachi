@@ -27,14 +27,16 @@ public class NoticeServiceIntegrationTest {
 
     Long noticeIdx;
 
-    String notTitle = "공지사항 테스트 제목 고양이 병아리";
-    String notContent = "공지사항 테스트 내용 강아지 병아리";
+    Long userIdx = Long.valueOf(1);
+
+    String notTitle = "공지사항 테스트 제목 고양이 병아리(테스트)";
+    String notContent = "공지사항 테스트 내용 강아지 병아리(테스트)";
     Boolean notPin = false;
 
     @BeforeEach
     void before() {
         NoticeSaveRequestDto entity = NoticeSaveRequestDto.builder()
-                .userIdx(Long.valueOf(1))
+                .userIdx(userIdx)
                 .notTitle(notTitle)
                 .notContent(notContent)
                 .notPin(notPin)
@@ -63,11 +65,11 @@ public class NoticeServiceIntegrationTest {
     @Test
     @DisplayName("공지사항_리스트_조회")
     public void Notice_Integration_Testcase_2() {
-        String keyword = "병아리";
+        String keyword = "병아리(테스트)";
 
         Page<NoticeResponseDto> noticeList = noticeService.findNoticeByKeyword(keyword, 0);
 
-        assertNotEquals(noticeList.getTotalElements(), 1);
+        assertEquals(noticeList.getTotalElements(), 1);
     }
 
     // 같은 비즈니스 로직의 다른 사용법을 테스트 케이스로 작성한 것..

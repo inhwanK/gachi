@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class AnswerResponseDto {
-
     private Long ansIdx;
     private Long userIdx;
     private Long queIdx;

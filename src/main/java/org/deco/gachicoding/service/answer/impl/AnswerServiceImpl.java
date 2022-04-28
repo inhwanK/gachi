@@ -21,7 +21,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
-
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
@@ -29,20 +28,25 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional(readOnly = true)
     public AnswerResponseDto getAnswerDetailById(Long answerIdx) {
-        Optional<Answer> answer = answerRepository.findById(answerIdx);
+        Answer answer = answerRepository.findByAnsIdxAndAnsActivatedTrue(answerIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
+
         AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-                .answer(answer.get())
+                .answer(answer)
                 .build();
+
         return answerDetail;
     }
 
     @Override
     @Transactional(readOnly = true)
     public Page<AnswerResponseDto> getAnswerListByKeyword(String keyword, int page) {
-        Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "asIdx")));
+        Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
+
         Page<AnswerResponseDto> answersList = answers.map(
                 result -> new AnswerResponseDto(result)
         );
+
         return answersList;
     }
 
@@ -63,7 +67,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public AnswerResponseDto modifyAnswerById(Long answerIdx, AnswerUpdateRequestDto dto) {
-
         Answer answer = answerRepository.findById(answerIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
 

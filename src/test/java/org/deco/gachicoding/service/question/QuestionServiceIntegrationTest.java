@@ -21,6 +21,8 @@ public class QuestionServiceIntegrationTest {
 
     Long queIdx;
 
+    Long userIdx = Long.valueOf(1);
+
     String queTitle = "질문 테스트 제목 고양이 병아리(테스트)";
     String queContent = "질문 테스트 내용 강아지 병아리(테스트)";
     String queError = "질문 테스트 에러 소스";
@@ -29,7 +31,7 @@ public class QuestionServiceIntegrationTest {
     @BeforeEach
     void before() {
         QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
-                .userIdx(Long.valueOf(1))
+                .userIdx(userIdx)
                 .queTitle(queTitle)
                 .queContent(queContent)
                 .queError(queError)
@@ -65,7 +67,7 @@ public class QuestionServiceIntegrationTest {
 
         Page<QuestionResponseDto> questionList = questionService.getQuestionListByKeyword(keyword, 0);
 
-        assertNotEquals(questionList.getTotalElements(), 1);
+        assertEquals(questionList.getTotalElements(), 1);
     }
 
     @Test

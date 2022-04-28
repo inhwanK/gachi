@@ -44,8 +44,20 @@ public class RestQuestionController {
     }
 
     @ApiOperation(value = "질문 비활성화")
+    @PutMapping("/question/disable/{questionIdx}")
+    public void disableQuestion(@PathVariable Long questionIdx){
+        questionService.disableQuestion(questionIdx);
+    }
+
+    @ApiOperation(value = "질문 활성화")
+    @PutMapping("/question/enable/{questionIdx}")
+    public void enableQuestion(@PathVariable Long questionIdx){
+        questionService.enableQuestion(questionIdx);
+    }
+
+    @ApiOperation(value = "질문 삭제")
     @DeleteMapping("/question/{questionIdx}")
-    public Long removeQuestion(@PathVariable Long questionIdx){
-        return questionService.removeQuestion(questionIdx);
+    public void removeQuestion(@PathVariable Long questionIdx){
+        questionService.removeQuestion(questionIdx);
     }
 }

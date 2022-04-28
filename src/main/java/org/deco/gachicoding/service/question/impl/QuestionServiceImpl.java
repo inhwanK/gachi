@@ -26,10 +26,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public QuestionResponseDto getQuestionDetailById(Long questionIdx) {
-        Optional<Question> question = questionRepository.findById(questionIdx);
+        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(questionIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
+
         QuestionResponseDto questionDetail = QuestionResponseDto.builder()
-                .question(question.get())
+                .question(question)
                 .build();
+
         return questionDetail;
     }
 
@@ -37,14 +40,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public Page<QuestionResponseDto> getQuestionListByKeyword(String keyword, int page) {
-        Page<Question> questions = questionRepository.findByQsContentContainingIgnoreCaseAndQsActivatedTrueOrQsTitleContainingIgnoreCaseAndQsActivatedTrueOrderByQsIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "qsIdx")));
-//        System.out.println("qContent : "+questions.getContent().get(0).getQsContent());
-//        System.out.println("qTitle : "+questions.getContent().get(0).getQsTitle());
+        Page<Question> questions = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
+
         Page<QuestionResponseDto> questionList = questions.map(
                 result -> new QuestionResponseDto(result)
         );
+
         return questionList;
-//        return null;
     }
 
     @Override
@@ -56,17 +58,16 @@ public class QuestionServiceImpl implements QuestionService {
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
         question.setUser(userRepository.getOne(dto.getUserIdx()));
 
-        return questionRepository.save(question).getQsIdx();
+        return questionRepository.save(question).getQueIdx();
     }
 
     @Override
     @Transactional
     public QuestionResponseDto modifyQuestionById(Long questionIdx, QuestionUpdateRequestDto dto) {
-
         Question question = questionRepository.findById(questionIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
-        question = question.update(dto.getQsTitle(), dto.getQsContent(), dto.getQsError(), dto.getQsCategory());
+        question = question.update(dto.getQueTitle(), dto.getQueContent(), dto.getQueError(), dto.getQueCategory());
 
         QuestionResponseDto questionDetail = QuestionResponseDto.builder()
                 .question(question)
@@ -77,11 +78,28 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public Long removeQuestion(Long questionIdx) {
+    public void disableQuestion(Long questionIdx) {
+        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(questionIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
+        question.isDisable();
+    }
+
+    @Override
+    @Transactional
+    public void enableQuestion(Long questionIdx) {
         Question question = questionRepository.findById(questionIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
-        return question.isDisable().getQsIdx();
+        question.isEnable();
+    }
+
+    @Override
+    @Transactional
+    public void removeQuestion(Long questionIdx) {
+        Question question = questionRepository.findById(questionIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
+
+        questionRepository.delete(question);
     }
 }

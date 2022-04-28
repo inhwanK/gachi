@@ -25,8 +25,8 @@ public class Notice {
     private String notTitle;
     private String notContent;
     private int notViews;
-    private boolean notPin;
-    private boolean notActivated;
+    private Boolean notPin;
+    private Boolean notActivated;
     private LocalDateTime notRegdate;
 
     // FetchType.EAGER 즉시 로딩
@@ -41,7 +41,7 @@ public class Notice {
     private User user;
 
     @Builder
-    public Notice(User user, String notTitle, String notContent, int notViews, boolean notPin, boolean notActivated, LocalDateTime notRegdate) {
+    public Notice(User user, String notTitle, String notContent, int notViews, Boolean notPin, Boolean notActivated, LocalDateTime notRegdate) {
         this.user = user;
         this.notTitle = notTitle;
         this.notContent = notContent;
@@ -55,15 +55,20 @@ public class Notice {
         this.user = user;
     }
 
-    public Notice update(String notTitle, String notContent, boolean notPin) {
+    public Notice update(String notTitle, String notContent, Boolean notPin) {
         this.notTitle = notTitle;
         this.notContent = notContent;
         this.notPin = notPin;
         return this;
     }
 
-    public Notice delete() {
+    public Notice disableNotice() {
         this.notActivated = false;
+        return this;
+    }
+
+    public Notice enableNotice() {
+        this.notActivated = true;
         return this;
     }
 }

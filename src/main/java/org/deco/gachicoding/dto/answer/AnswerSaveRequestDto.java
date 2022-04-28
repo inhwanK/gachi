@@ -15,21 +15,21 @@ public class AnswerSaveRequestDto {
     private Long userIdx;
 
     @NotNull
-    private Long qsIdx;
+    private Long queIdx;
 
     @NotNull
-    private String asContent;
+    private String ansContent;
 
     @Builder
-    public AnswerSaveRequestDto(Long userIdx, Long qsIdx, String asContent) {
+    public AnswerSaveRequestDto(Long userIdx, Long queIdx, String ansContent) {
         this.userIdx = userIdx;
-        this.qsIdx = qsIdx;
-        this.asContent = asContent;
+        this.queIdx = queIdx;
+        this.ansContent = ansContent;
     }
 
     public Answer toEntity(){
         return Answer.builder()
-                .asContent(asContent)
+                .ansContent(ansContent)
                 .build();
     }
 }

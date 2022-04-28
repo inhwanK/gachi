@@ -4,38 +4,55 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class QuestionResponseDto {
 
-    private Long qsIdx;
+    private Long queIdx;
     private Long userIdx;
-    private String qsTitle;
-    private String qsContent;
-    private String qsError;
-    private String qsCategory;
-    private boolean qsSolve;
-    private boolean qsActivated;
-    private LocalDateTime qsRegdate;
+    private List<AnswerResponseDto> answerList = new ArrayList<>();
+    private String queTitle;
+    private String queContent;
+    private String queError;
+    private String queCategory;
+    private Boolean queSolve;
+    private Boolean queActivated;
+    private LocalDateTime queRegdate;
 
     @Builder
     public QuestionResponseDto(Question question) {
+        setWriterInfo(question);
+        setAnswerList(question);
+        this.queIdx = question.getQueIdx();
+        this.queTitle = question.getQueTitle();
+        this.queContent = question.getQueContent();
+        this.queError = question.getQueError();
+        this.queCategory = question.getQueCategory();
+        this.queSolve = question.getQueSolve();
+        this.queActivated = question.getQueActivated();
+        this.queRegdate = question.getQueRegdate();
+    }
+
+    public void setWriterInfo(Question question) {
         User user = question.getUser();
         this.userIdx = user.getUserIdx();
+    }
 
-        this.qsIdx = question.getQsIdx();
-        this.qsTitle = question.getQsTitle();
-        this.qsContent = question.getQsContent();
-        this.qsError = question.getQsError();
-        this.qsCategory = question.getQsCategory();
-        this.qsSolve = question.isQsSolve();
-        this.qsActivated = question.isQsActivated();
-        this.qsRegdate = question.getQsRegdate();
+    public void setAnswerList(Question question) {
+        for(Answer ans : question.getAnswer()) {
+            AnswerResponseDto answerResponseDto = AnswerResponseDto.builder()
+                    .answer(ans).build();
+            answerList.add(answerResponseDto);
+        }
     }
 }

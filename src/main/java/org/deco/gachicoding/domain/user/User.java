@@ -40,8 +40,9 @@ public class User {
     private List<Notice> notices;
 
     @Builder
-    public User(String userName, String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
+    public User(String userName, Long userIdx, String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
         this.userName = userName;
+        this.userIdx = userIdx;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;

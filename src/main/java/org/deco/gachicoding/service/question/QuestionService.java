@@ -16,5 +16,9 @@ public interface QuestionService {
 
     QuestionResponseDto modifyQuestionById(Long questionIdx, QuestionUpdateRequestDto dto);
 
-    Long removeQuestion(Long questionIdx);
+    void disableQuestion(Long questionIdx);
+
+    void enableQuestion(Long questionIdx);
+
+    void removeQuestion(Long questionIdx);
 }

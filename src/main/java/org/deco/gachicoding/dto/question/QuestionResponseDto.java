@@ -43,13 +43,13 @@ public class QuestionResponseDto {
         this.queRegdate = question.getQueRegdate();
     }
 
-    private void setWriterInfo(Question question) {
+    public void setWriterInfo(Question question) {
         User user = question.getUser();
         this.userIdx = user.getUserIdx();
     }
 
-    private void setAnswerList(Question question) {
-        for(Answer ans : question.getAnswers()) {
+    public void setAnswerList(Question question) {
+        for(Answer ans : question.getAnswer()) {
             AnswerResponseDto answerResponseDto = AnswerResponseDto.builder()
                     .answer(ans).build();
             answerList.add(answerResponseDto);

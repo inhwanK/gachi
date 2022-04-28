@@ -26,10 +26,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public QuestionResponseDto getQuestionDetailById(Long questionIdx) {
-        Optional<Question> question = questionRepository.findById(questionIdx);
+        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(questionIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
+
         QuestionResponseDto questionDetail = QuestionResponseDto.builder()
-                .question(question.get())
+                .question(question)
                 .build();
+
         return questionDetail;
     }
 
@@ -42,6 +45,7 @@ public class QuestionServiceImpl implements QuestionService {
         Page<QuestionResponseDto> questionList = questions.map(
                 result -> new QuestionResponseDto(result)
         );
+
         return questionList;
     }
 
@@ -60,7 +64,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionResponseDto modifyQuestionById(Long questionIdx, QuestionUpdateRequestDto dto) {
-
         Question question = questionRepository.findById(questionIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
@@ -75,11 +78,28 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public Long removeQuestion(Long questionIdx) {
+    public void disableQuestion(Long questionIdx) {
+        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(questionIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
+        question.isDisable();
+    }
+
+    @Override
+    @Transactional
+    public void enableQuestion(Long questionIdx) {
         Question question = questionRepository.findById(questionIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
 
-        return question.isDisable().getQueIdx();
+        question.isEnable();
+    }
+
+    @Override
+    @Transactional
+    public void removeQuestion(Long questionIdx) {
+        Question question = questionRepository.findById(questionIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + questionIdx));
+
+        questionRepository.delete(question);
     }
 }

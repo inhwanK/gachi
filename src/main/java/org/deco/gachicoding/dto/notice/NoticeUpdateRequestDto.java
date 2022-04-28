@@ -1,5 +1,6 @@
 package org.deco.gachicoding.dto.notice;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ public class NoticeUpdateRequestDto {
     private String notContent;
     private Boolean notPin;
 
+    @Builder
     public NoticeUpdateRequestDto(String notTitle, String notContent, Boolean notPin) {
         this.notTitle = notTitle;
         this.notContent = notContent;

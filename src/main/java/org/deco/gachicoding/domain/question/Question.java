@@ -34,9 +34,9 @@ public class Question {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(insertable = false, updatable = false)
+    @JoinColumn(name = "que_idx", insertable = false, updatable = false)
     @JsonBackReference
-    private List<Answer> answers = new ArrayList<>();
+    private List<Answer> answer = new ArrayList<>();
 
     @Column(name = "que_title")
     private String queTitle;
@@ -77,7 +77,7 @@ public class Question {
     }
 
     public void setAnswers(Answer answer) {
-        this.answers.add(answer);
+        this.answer.add(answer);
     }
 
     public Question update(String queTitle, String queContent, String queError, String queCategory) {

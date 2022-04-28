@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.answer.Answer;
+import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.user.User;
 
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ public class AnswerResponseDto {
 
     private Long ansIdx;
     private Long userIdx;
+    private Long queIdx;
     private String ansContent;
     private Boolean ansSelect;
     private Boolean ansActivated;
@@ -24,11 +26,17 @@ public class AnswerResponseDto {
     @Builder
     public AnswerResponseDto(Answer answer) {
         setWriterInfo(answer);
+        setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
         this.ansContent = answer.getAnsContent();
         this.ansSelect = answer.getAnsSelect();
         this.ansActivated = answer.getAnsActivated();
         this.ansRegdate = answer.getAnsRegdate();
+    }
+
+    private void setQuestionInfo(Answer answer) {
+        Question question = answer.getQuestion();
+        this.queIdx = question.getQueIdx();
     }
 
     private void setWriterInfo(Answer answer) {

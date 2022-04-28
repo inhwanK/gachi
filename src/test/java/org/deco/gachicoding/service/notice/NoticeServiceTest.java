@@ -62,9 +62,9 @@ public class NoticeServiceTest {
     public void 공지사항_리스트_조회() {
         String keyword = "병아리";
 
-        Page<NoticeResponseDto> listNotice = noticeService.findNoticeByKeyword(keyword, 0);
+        Page<NoticeResponseDto> noticeList = noticeService.findNoticeByKeyword(keyword, 0);
 
-        assertNotEquals(listNotice.getTotalElements(), 1);
+        assertNotEquals(noticeList.getTotalElements(), 1);
     }
 
     // 같은 비즈니스 로직의 다른 사용법을 테스트 케이스로 작성한 것..
@@ -84,7 +84,11 @@ public class NoticeServiceTest {
         String updateContent = "공지사항 수정된 테스트 내용";
         Boolean updatePin = true;
 
-        NoticeUpdateRequestDto updateNotice = new NoticeUpdateRequestDto(updateTitle, updateContent, updatePin);
+        NoticeUpdateRequestDto updateNotice = NoticeUpdateRequestDto.builder()
+                .notTitle(updateTitle)
+                .notContent(updateContent)
+                .notPin(updatePin)
+                .build();
 
         noticeService.updateNoticeById(noticeIdx, updateNotice);
 

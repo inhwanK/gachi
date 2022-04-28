@@ -3,9 +3,7 @@ package org.deco.gachicoding.service.question;
 import org.deco.gachicoding.dto.question.QuestionResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@TestMethodOrder(MethodOrderer.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 public class QuestionServiceTest {
@@ -49,7 +48,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    void 질문_작성() {
+    @DisplayName("질문_작성_테스트")
+    void Question_Testcase_1() {
         QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
 
         assertEquals(queTitle, responseDto.getQueTitle());
@@ -59,7 +59,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void 질문_리스트_조회() {
+    @DisplayName("질문_리스트_조회")
+    public void Question_Testcase_2() {
         String keyword = "병아리(테스트)";
 
         Page<QuestionResponseDto> questionList = questionService.getQuestionListByKeyword(keyword, 0);
@@ -68,7 +69,8 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void 인덱스로_질문_수정() {
+    @DisplayName("인덱스로_질문_수정")
+    public void Question_Testcase_3() {
         String updateTitle = "질문 테스트 제목 고양이 병아리(수정 테스트)";
         String updateContent = "질문 테스트 내용 고양이 병아리(수정 테스트)";
         String updateError = "질문 테스트 에러 소스(수정)";
@@ -99,16 +101,16 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void 인덱스로_질문_비활성화() {
+    @DisplayName("인덱스로_질문_비활성화")
+    public void Question_Testcase_4() {
         questionService.disableQuestion(queIdx);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
-
-        assertEquals(responseDto.getQueActivated(), false);
+        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
     }
 
     @Test
-    public void 인덱스로_공지사항_활성화() {
+    @DisplayName("인덱스로_질문_활성화")
+    public void Question_Testcase_5() {
         questionService.enableQuestion(queIdx);
 
         QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
@@ -117,11 +119,10 @@ public class QuestionServiceTest {
     }
 
     @Test
-    public void 공지사항_삭제() {
+    @DisplayName("질문_삭제")
+    public void Question_Testcase_6() {
         questionService.removeQuestion(queIdx);
         assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
         queIdx = null;
     }
-    
-    // 테스트 순서 정하기
 }

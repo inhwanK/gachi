@@ -51,7 +51,7 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("질문_작성_테스트")
-    void Question_Integration_Testcase_1() {
+    void Question_Integration_Test_1() {
         QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
 
         assertEquals(queTitle, responseDto.getQueTitle());
@@ -62,7 +62,7 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("질문_리스트_조회")
-    public void Question_Integration_Testcase_2() {
+    public void Question_Integration_Test_2() {
         String keyword = "병아리(테스트)";
 
         Page<QuestionResponseDto> questionList = questionService.getQuestionListByKeyword(keyword, 0);
@@ -72,7 +72,7 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("인덱스로_질문_수정")
-    public void Question_Integration_Testcase_3() {
+    public void Question_Integration_Test_3() {
         String updateTitle = "질문 테스트 제목 고양이 병아리(수정 테스트)";
         String updateContent = "질문 테스트 내용 고양이 병아리(수정 테스트)";
         String updateError = "질문 테스트 에러 소스(수정)";
@@ -104,7 +104,7 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("인덱스로_질문_비활성화")
-    public void Question_Integration_Testcase_4() {
+    public void Question_Integration_Test_4() {
         questionService.disableQuestion(queIdx);
 
         assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
@@ -112,7 +112,7 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("인덱스로_질문_활성화")
-    public void Question_Integration_Testcase_5() {
+    public void Question_Integration_Test_5() {
         questionService.enableQuestion(queIdx);
 
         QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
@@ -122,7 +122,7 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("질문_삭제")
-    public void Question_Integration_Testcase_6() {
+    public void Question_Integration_Test_6() {
         questionService.removeQuestion(queIdx);
         assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
         queIdx = null;

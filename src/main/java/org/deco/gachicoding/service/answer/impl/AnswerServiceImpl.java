@@ -3,6 +3,7 @@ package org.deco.gachicoding.service.answer.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.answer.AnswerRepository;
+import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
@@ -77,11 +78,28 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public Long removeAnswer(Long answerIdx) {
+    public void disableAnswer(Long answerIdx) {
+        Answer answer = answerRepository.findByAnsIdxAndAnsActivatedTrue(answerIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
 
+        answer.isDisable();
+    }
+
+    @Override
+    @Transactional
+    public void enableAnswer(Long answerIdx) {
         Answer answer = answerRepository.findById(answerIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
 
-        return answer.isDisable().getAnsIdx();
+        answer.isEnable();
+    }
+
+    @Override
+    @Transactional
+    public void removeAnswer(Long answerIdx) {
+        Answer answer = answerRepository.findById(answerIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
+
+        answerRepository.delete(answer);
     }
 }

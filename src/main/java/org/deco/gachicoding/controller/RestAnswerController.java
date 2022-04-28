@@ -42,8 +42,20 @@ public class RestAnswerController {
     }
 
     @ApiOperation(value = "답변 비활성화")
-    @DeleteMapping("/answer/{answerIdx}")
-    public Long removeAnswer(@PathVariable Long answerIdx){
-        return answerService.removeAnswer(answerIdx);
+    @PutMapping("/answer/disable/{answerIdx}")
+    public void disableAnswer(@PathVariable Long answerIdx){
+        answerService.disableAnswer(answerIdx);
+    }
+
+    @ApiOperation(value = "답변 활성화")
+    @PutMapping("/answer/enable/{answerIdx}")
+    public void enableAnswer(@PathVariable Long answerIdx){
+        answerService.enableAnswer(answerIdx);
+    }
+
+    @ApiOperation(value = "답변 삭제")
+    @DeleteMapping("/answer/remove/{answerIdx}")
+    public void removeAnswer(@PathVariable Long answerIdx){
+        answerService.removeAnswer(answerIdx);
     }
 }

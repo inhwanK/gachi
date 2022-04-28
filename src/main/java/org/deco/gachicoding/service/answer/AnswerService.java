@@ -16,5 +16,9 @@ public interface AnswerService {
 
     AnswerResponseDto modifyAnswerById(Long answerIdx, AnswerUpdateRequestDto dto);
 
-    Long removeAnswer(Long answerIdx);
+    void disableAnswer(Long answerIdx);
+
+    void enableAnswer(Long answerIdx);
+
+    void removeAnswer(Long answerIdx);
 }

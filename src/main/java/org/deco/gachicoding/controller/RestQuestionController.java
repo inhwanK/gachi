@@ -56,7 +56,7 @@ public class RestQuestionController {
     }
 
     @ApiOperation(value = "질문 삭제")
-    @DeleteMapping("/question/{questionIdx}")
+    @DeleteMapping("/question/remove/{questionIdx}")
     public void removeQuestion(@PathVariable Long questionIdx){
         questionService.removeQuestion(questionIdx);
     }

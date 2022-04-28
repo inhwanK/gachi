@@ -6,6 +6,7 @@ import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class NoticeServiceTest {
+public class NoticeServiceIntegrationTest {
 
     @Autowired
     NoticeService noticeService;
@@ -51,7 +52,8 @@ public class NoticeServiceTest {
     }
 
     @Test
-    void 공지사항_작성() {
+    @DisplayName("공지사항_작성")
+    void Notice_Integration_Testcase_1() {
         Optional<Notice> notice = noticeService.findById(noticeIdx);
 
         assertEquals(notTitle, notice.get().getNotTitle());
@@ -59,7 +61,8 @@ public class NoticeServiceTest {
     }
 
     @Test
-    public void 공지사항_리스트_조회() {
+    @DisplayName("공지사항_리스트_조회")
+    public void Notice_Integration_Testcase_2() {
         String keyword = "병아리";
 
         Page<NoticeResponseDto> noticeList = noticeService.findNoticeByKeyword(keyword, 0);
@@ -70,7 +73,8 @@ public class NoticeServiceTest {
     // 같은 비즈니스 로직의 다른 사용법을 테스트 케이스로 작성한 것..
     // 필요한 테스트 케이스 일까(통합 시켜도 될까)?
     @Test
-    public void 검색어로_공지사항_검색() {
+    @DisplayName("검색어로_공지사항_검색")
+    public void Notice_Integration_Testcase_3() {
         String keyword = "병아리";
 
         Page<NoticeResponseDto> searchNotice = noticeService.findNoticeByKeyword(keyword, 0);
@@ -79,7 +83,8 @@ public class NoticeServiceTest {
     }
 
     @Test
-    public void 인덱스로_공지사항_수정() {
+    @DisplayName("인덱스로_공지사항_수정")
+    public void Notice_Integration_Testcase_4() {
         String updateTitle = "공지사항 수정된 테스트 제목";
         String updateContent = "공지사항 수정된 테스트 내용";
         Boolean updatePin = true;
@@ -105,16 +110,16 @@ public class NoticeServiceTest {
     }
 
     @Test
-    public void 인덱스로_공지사항_비활성화() {
+    @DisplayName("인덱스로_공지사항_비활성화")
+    public void Notice_Integration_Testcase_5() {
         noticeService.disableNotice(noticeIdx);
 
-        Optional<Notice> notice = noticeService.findById(noticeIdx);
-
-        assertEquals(notice.get().getNotActivated(), false);
+        assertThrows(IllegalArgumentException.class, () -> noticeService.findNoticeDetailById(noticeIdx));
     }
 
     @Test
-    public void 인덱스로_공지사항_활성화() {
+    @DisplayName("인덱스로_공지사항_활성화")
+    public void Notice_Integration_Testcase_6() {
         noticeService.enableNotice(noticeIdx);
 
         Optional<Notice> notice = noticeService.findById(noticeIdx);
@@ -123,7 +128,8 @@ public class NoticeServiceTest {
     }
 
     @Test
-    public void 공지사항_삭제() {
+    @DisplayName("공지사항_삭제")
+    public void Notice_Integration_Testcase_7() {
         noticeService.deleteNoticeById(noticeIdx);
         assertTrue(noticeService.findById(noticeIdx).isEmpty());
         noticeIdx = null;

@@ -32,10 +32,13 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(readOnly = true)
     public NoticeResponseDto findNoticeDetailById(Long idx) {
-        Optional<Notice> notice = noticeRepository.findById(idx);
+        Notice notice = noticeRepository.findByNotIdxAndNotActivatedTrue(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
         NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-                .notice(notice.get())
+                .notice(notice)
                 .build();
+
         return noticeDetail;
     }
 
@@ -43,9 +46,11 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(readOnly = true)
     public Page<NoticeResponseDto> findNoticeByKeyword(String keyword, int page) {
         Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
+
         Page<NoticeResponseDto> noticeList = notice.map(
                 result -> new NoticeResponseDto(result)
         );
+
         return noticeList;
     }
 
@@ -64,7 +69,6 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public NoticeResponseDto updateNoticeById(Long idx, NoticeUpdateRequestDto dto) {
-
         Notice notice = findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
 

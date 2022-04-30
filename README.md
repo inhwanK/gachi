@@ -36,6 +36,8 @@
 * aws
 * terraform 1.1.7
 * Spring Data JPA
+* Spring Security
+* swagger2
 
 <br>
 

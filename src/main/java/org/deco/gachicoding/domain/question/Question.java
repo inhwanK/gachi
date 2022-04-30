@@ -24,8 +24,9 @@ import java.util.List;
 @Table(name = "gachi_q")
 public class Question {
     @Id
+    @Column(name = "que_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long qIdx;
+    private Long queIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
@@ -33,44 +34,67 @@ public class Question {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "q_idx", insertable = false, updatable = false)
+    @JoinColumn(name = "que_idx", insertable = false, updatable = false)
     @JsonBackReference
-    private List<Answer> answers = new ArrayList<>();
+    private List<Answer> answer = new ArrayList<>();
 
-    private String qTitle;
-    private String qContent;
-    private String qError;
-    private String qCategory;
-    private boolean qSolve;
-    private boolean qActivated;
-    private LocalDateTime qRegdate;
+    @Column(name = "que_title")
+    private String queTitle;
+
+    @Column(name = "que_content")
+    private String queContent;
+
+    @Column(name = "que_error")
+    private String queError;
+
+    @Column(name = "que_category")
+    private String queCategory;
+
+    @Column(name = "que_solve")
+    private Boolean queSolve;
+
+    @Column(name = "que_activated")
+    private Boolean queActivated;
+
+    @Column(name = "que_regdate")
+    private LocalDateTime queRegdate;
 
     @Builder
-    public Question(User user, String qTitle, String qContent, String qError, String qCategory, boolean qSolve, boolean qActivated, LocalDateTime qRegdate) {
+    public Question(User user, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
         this.user = user;
-        this.qTitle = qTitle;
-        this.qContent = qContent;
-        this.qError = qError;
-        this.qCategory = qCategory;
-        this.qSolve = qSolve;
-        this.qActivated = qActivated;
-        this.qRegdate = qRegdate;
+        this.queIdx = queIdx;
+        this.queTitle = queTitle;
+        this.queContent = queContent;
+        this.queError = queError;
+        this.queCategory = queCategory;
+        this.queSolve = queSolve;
+        this.queActivated = queActivated;
+        this.queRegdate = queRegdate;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
 
-    public Question update(String qTitle, String qContent, String qError, String qCategory) {
-        this.qTitle = qTitle;
-        this.qContent = qContent;
-        this.qError = qError;
-        this.qCategory = qCategory;
+    public void setAnswers(Answer answer) {
+        this.answer.add(answer);
+    }
+
+    public Question update(String queTitle, String queContent, String queError, String queCategory) {
+        this.queTitle = queTitle;
+        this.queContent = queContent;
+        this.queError = queError;
+        this.queCategory = queCategory;
         return this;
     }
 
-    public Question delete() {
-        this.qActivated = false;
+    public Question isDisable() {
+        this.queActivated = false;
+        return this;
+    }
+
+    public Question isEnable() {
+        this.queActivated = true;
         return this;
     }
 

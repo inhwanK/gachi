@@ -20,13 +20,13 @@ public class RestQuestionController {
     private final QuestionService questionService;
 
     @ApiOperation(value = "질문 리스트")
-    @GetMapping("/question/list")
+    @GetMapping("/question/list/{page}")
     public Page<QuestionResponseDto> getQuestionListByKeyword(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PathVariable int page){
         return questionService.getQuestionListByKeyword(keyword, page);
     }
 
     @ApiOperation(value = "질문 디테일")
-    @GetMapping("/question/{questionIdx}")
+    @GetMapping("/question/detail/{questionIdx}")
     public QuestionResponseDto getQuestionDetailById(@PathVariable Long questionIdx){
         return questionService.getQuestionDetailById(questionIdx);
     }
@@ -38,14 +38,26 @@ public class RestQuestionController {
     }
 
     @ApiOperation(value = "질문 수정")
-    @PutMapping("/question/modify/{idx}")
+    @PutMapping("/question/modify/{questionIdx}")
     public QuestionResponseDto modifyQuestionById(@PathVariable Long questionIdx, @RequestBody QuestionUpdateRequestDto dto){
         return questionService.modifyQuestionById(questionIdx, dto);
     }
 
     @ApiOperation(value = "질문 비활성화")
+    @PutMapping("/question/disable/{questionIdx}")
+    public void disableQuestion(@PathVariable Long questionIdx){
+        questionService.disableQuestion(questionIdx);
+    }
+
+    @ApiOperation(value = "질문 활성화")
+    @PutMapping("/question/enable/{questionIdx}")
+    public void enableQuestion(@PathVariable Long questionIdx){
+        questionService.enableQuestion(questionIdx);
+    }
+
+    @ApiOperation(value = "질문 삭제")
     @DeleteMapping("/question/{questionIdx}")
-    public Long removeQuestion(@PathVariable Long questionIdx){
-        return questionService.removeQuestion(questionIdx);
+    public void removeQuestion(@PathVariable Long questionIdx){
+        questionService.removeQuestion(questionIdx);
     }
 }

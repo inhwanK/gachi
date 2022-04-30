@@ -1,5 +1,6 @@
 package org.deco.gachicoding.dto.question;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -9,15 +10,16 @@ import lombok.Setter;
 @NoArgsConstructor
 public class QuestionUpdateRequestDto {
 
-    private String qTitle;
-    private String qContent;
-    private String qError;
-    private String qCategory;
+    private String queTitle;
+    private String queContent;
+    private String queError;
+    private String queCategory;
 
-    public QuestionUpdateRequestDto(String qTitle, String qContent, String qError, String qCategory) {
-        this.qTitle = qTitle;
-        this.qContent = qContent;
-        this.qError = qError;
-        this.qCategory = qCategory;
+    @Builder
+    public QuestionUpdateRequestDto(String queTitle, String queContent, String queError, String queCategory) {
+        this.queTitle = queTitle;
+        this.queContent = queContent;
+        this.queError = queError;
+        this.queCategory = queCategory;
     }
 }

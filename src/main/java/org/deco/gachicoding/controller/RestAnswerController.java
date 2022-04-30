@@ -18,13 +18,13 @@ public class RestAnswerController {
     private final AnswerService answerService;
 
     @ApiOperation(value = "답변 리스트")
-    @GetMapping("/answer/list")
+    @GetMapping("/answer/list/{page}")
     public Page<AnswerResponseDto> getAnswerListByKeyword(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PathVariable int page){
         return answerService.getAnswerListByKeyword(keyword, page);
     }
 
     @ApiOperation(value = "답변 디테일")
-    @GetMapping("/answer/{answerIdx}")
+    @GetMapping("/answer/detail/{answerIdx}")
     public AnswerResponseDto getAnswerDetailById(@PathVariable Long answerIdx){
         return answerService.getAnswerDetailById(answerIdx);
     }

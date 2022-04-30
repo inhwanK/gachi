@@ -21,8 +21,9 @@ import java.time.LocalDateTime;
 @Table(name = "gachi_a")
 public class Answer {
     @Id
+    @Column(name = "ans_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long aIdx;
+    private Long ansIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
@@ -30,23 +31,30 @@ public class Answer {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "q_idx")
+    @JoinColumn(name = "que_idx")
     @JsonManagedReference
     private Question question;
 
-    private String aContent;
-    private boolean aSelect;
-    private boolean aActivated;
-    private LocalDateTime aRegdate;
+    @JoinColumn(name = "ans_content")
+    private String ansContent;
+
+    @JoinColumn(name = "ans_select")
+    private Boolean ansSelect;
+
+    @JoinColumn(name = "ans_activated")
+    private Boolean ansActivated;
+
+    @JoinColumn(name = "ans_regdate")
+    private LocalDateTime ansRegdate;
 
     @Builder
-    public Answer(User user, Question question, String aContent, boolean aSelect, boolean aActivated, LocalDateTime aRegdate) {
+    public Answer(User user, Question question, String ansContent, Boolean ansSelect, Boolean ansActivated, LocalDateTime ansRegdate) {
         this.user = user;
         this.question = question;
-        this.aContent = aContent;
-        this.aSelect = aSelect;
-        this.aActivated = aActivated;
-        this.aRegdate = aRegdate;
+        this.ansContent = ansContent;
+        this.ansSelect = ansSelect;
+        this.ansActivated = ansActivated;
+        this.ansRegdate = ansRegdate;
     }
 
     public void setUser(User user) {
@@ -57,13 +65,18 @@ public class Answer {
         this.question = question;
     }
 
-    public Answer update(String aContent) {
-        this.aContent = aContent;
+    public Answer update(String ansContent) {
+        this.ansContent = ansContent;
         return this;
     }
 
-    public Answer delete() {
-        this.aActivated = false;
+    public Answer isDisable() {
+        this.ansActivated = false;
+        return this;
+    }
+
+    public Answer isEnable() {
+        this.ansActivated = true;
         return this;
     }
 }

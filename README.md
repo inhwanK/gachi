@@ -48,7 +48,9 @@
 <br>
 
 ## ERD
+- 2022.05.05 업데이트
 
+![가치코딩 ERD](document/ERD.png)
 <br>
 
 ## 핵심 기능

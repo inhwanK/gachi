@@ -22,6 +22,7 @@ public class BoardResponseDto {
     private boolean boardPin;
     private boolean boardActivated;
 
+    @Builder
     public BoardResponseDto(Board board) {
         this.boardIdx = board.getBoardIdx();
         this.boardTitle = board.getBoardTitle();

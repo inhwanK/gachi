@@ -3,6 +3,7 @@ package org.deco.gachicoding.domain.board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.domain.notice.Notice;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 
@@ -35,5 +36,21 @@ public class Board {
         this.boardRegdate = boardRegdate;
         this.boardPin = boardPin;
         this.boardActivated = boardActivated;
+    }
+
+    public Board update(String boardTitle, String boardContent) {
+        this.boardTitle = boardTitle;
+        this.boardContent = boardContent;
+        return this;
+    }
+
+    public Board disableBoard() {
+        this.boardActivated = false;
+        return this;
+    }
+
+    public Board enableBoard() {
+        this.boardActivated = true;
+        return this;
     }
 }

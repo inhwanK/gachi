@@ -5,13 +5,12 @@ import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.board.BoardRepository;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
+import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.service.board.BoardService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -45,10 +44,45 @@ public class BoardServiceImpl implements BoardService {
         return boardRepository.save(dto.toEntity()).getBoardIdx();
     }
 
-    @Transactional
     @Override
-    public Long removeBoard(Long boardIdx) {
-        boardRepository.deleteById(boardIdx);
-        return boardIdx;
+    @Transactional
+    public BoardResponseDto modifyBoard(Long idx, BoardUpdateRequestDto dto) {
+        Board board = boardRepository.findById(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
+        board = board.update(dto.getBoardTitle(), dto.getBoardContent());
+
+        BoardResponseDto boardDetail = BoardResponseDto.builder()
+                .board(board)
+                .build();
+
+        return boardDetail;
+    }
+
+    @Override
+    @Transactional
+    public void disableBoard(Long idx) {
+        Board board = boardRepository.findById(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
+        board.disableBoard();
+    }
+
+    @Override
+    @Transactional
+    public void enableBoard(Long idx) {
+        Board board = boardRepository.findById(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
+        board.enableBoard();
+    }
+
+    @Override
+    @Transactional
+    public void removeBoard(Long idx) {
+        Board board = boardRepository.findById(idx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+
+        boardRepository.deleteById(idx);
     }
 }

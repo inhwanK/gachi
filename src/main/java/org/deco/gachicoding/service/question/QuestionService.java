@@ -4,21 +4,23 @@ import org.deco.gachicoding.dto.question.QuestionResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface QuestionService {
-    QuestionResponseDto getQuestionDetailById(Long questionIdx);
-
-    Page<QuestionResponseDto> getQuestionListByKeyword(String keyword, int page);
 
     Long registerQuestion(QuestionSaveRequestDto dto);
 
-    QuestionResponseDto modifyQuestionById(Long questionIdx, QuestionUpdateRequestDto dto);
+    Page<QuestionResponseDto> getQuestionList(String keyword, Pageable pageable);
 
-    void disableQuestion(Long questionIdx);
+    QuestionResponseDto getQuestionDetail(Long queIdx);
 
-    void enableQuestion(Long questionIdx);
+    QuestionResponseDto modifyQuestion(QuestionUpdateRequestDto dto);
 
-    void removeQuestion(Long questionIdx);
+    void disableQuestion(Long queIdx);
+
+    void enableQuestion(Long queIdx);
+
+    Long removeQuestion(Long queIdx);
 }

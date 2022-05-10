@@ -56,7 +56,7 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 삭제")
     @DeleteMapping("/board/{boardIdx}")
-    public void removeBoard(@PathVariable Long boardIdx){
-        boardService.removeBoard(boardIdx);
+    public Long removeBoard(@PathVariable Long boardIdx){
+        return boardService.removeBoard(boardIdx);
     }
 }

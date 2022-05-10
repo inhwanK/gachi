@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class BoardUpdateRequestDto {
-
     private Long boardIdx;
     private String boardTitle;
     private String boardContent;

@@ -8,6 +8,8 @@ import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.deco.gachicoding.service.question.QuestionService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,45 +21,45 @@ import javax.validation.Valid;
 public class RestQuestionController {
     private final QuestionService questionService;
 
-    @ApiOperation(value = "질문 리스트")
-    @GetMapping("/question/list/{page}")
-    public Page<QuestionResponseDto> getQuestionListByKeyword(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PathVariable int page){
-        return questionService.getQuestionListByKeyword(keyword, page);
-    }
-
-    @ApiOperation(value = "질문 디테일")
-    @GetMapping("/question/detail/{questionIdx}")
-    public QuestionResponseDto getQuestionDetailById(@PathVariable Long questionIdx){
-        return questionService.getQuestionDetailById(questionIdx);
-    }
-
     @ApiOperation(value = "질문 등록")
     @PostMapping("/question")
     public Long registerQuestion(@Valid @RequestBody QuestionSaveRequestDto dto){
         return questionService.registerQuestion(dto);
     }
 
+    @ApiOperation(value = "질문 리스트")
+    @GetMapping("/question/list")
+    public Page<QuestionResponseDto> getQuestionList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable){
+        return questionService.getQuestionList(keyword, pageable);
+    }
+
+    @ApiOperation(value = "질문 디테일")
+    @GetMapping("/question/{queIdx}")
+    public QuestionResponseDto getQuestionDetail(@PathVariable Long queIdx){
+        return questionService.getQuestionDetail(queIdx);
+    }
+
     @ApiOperation(value = "질문 수정")
-    @PutMapping("/question/modify/{questionIdx}")
-    public QuestionResponseDto modifyQuestionById(@PathVariable Long questionIdx, @RequestBody QuestionUpdateRequestDto dto){
-        return questionService.modifyQuestionById(questionIdx, dto);
+    @PutMapping("/question/modify")
+    public QuestionResponseDto modifyQuestion(@RequestBody QuestionUpdateRequestDto dto){
+        return questionService.modifyQuestion(dto);
     }
 
     @ApiOperation(value = "질문 비활성화")
-    @PutMapping("/question/disable/{questionIdx}")
-    public void disableQuestion(@PathVariable Long questionIdx){
-        questionService.disableQuestion(questionIdx);
+    @PutMapping("/question/disable/{queIdx}")
+    public void disableQuestion(@PathVariable Long queIdx){
+        questionService.disableQuestion(queIdx);
     }
 
     @ApiOperation(value = "질문 활성화")
-    @PutMapping("/question/enable/{questionIdx}")
-    public void enableQuestion(@PathVariable Long questionIdx){
-        questionService.enableQuestion(questionIdx);
+    @PutMapping("/question/enable/{queIdx}")
+    public void enableQuestion(@PathVariable Long queIdx){
+        questionService.enableQuestion(queIdx);
     }
 
     @ApiOperation(value = "질문 삭제")
-    @DeleteMapping("/question/{questionIdx}")
-    public void removeQuestion(@PathVariable Long questionIdx){
-        questionService.removeQuestion(questionIdx);
+    @DeleteMapping("/question/{queIdx}")
+    public Long removeQuestion(@PathVariable Long queIdx){
+        return questionService.removeQuestion(queIdx);
     }
 }

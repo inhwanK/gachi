@@ -8,6 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,7 +53,7 @@ public class QuestionServiceIntegrationTest {
     @Test
     @DisplayName("질문_작성_테스트")
     void Question_Integration_Testcase_1() {
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
+        QuestionResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertEquals(queTitle, responseDto.getQueTitle());
         assertEquals(queContent, responseDto.getQueContent());
@@ -63,9 +66,10 @@ public class QuestionServiceIntegrationTest {
     public void Question_Integration_Testcase_2() {
         String keyword = "병아리(테스트)";
 
-        Page<QuestionResponseDto> questionList = questionService.getQuestionListByKeyword(keyword, 0);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx"));
+        Page<QuestionResponseDto> questionList = questionService.getQuestionList(keyword, pageable);
 
-        assertNotEquals(questionList.getTotalElements(), 1);
+        assertEquals(questionList.getTotalElements(), 1);
     }
 
     @Test
@@ -77,15 +81,16 @@ public class QuestionServiceIntegrationTest {
         String updateCategory = "파이썬";
 
         QuestionUpdateRequestDto updateQuestion = QuestionUpdateRequestDto.builder()
+                .queIdx(queIdx)
                 .queTitle(updateTitle)
                 .queContent(updateContent)
                 .queError(updateError)
                 .queCategory(updateCategory)
                 .build();
 
-        questionService.modifyQuestionById(queIdx, updateQuestion);
+        questionService.modifyQuestion(updateQuestion);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
+        QuestionResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertNotEquals(queTitle, responseDto.getQueTitle());
         assertEquals(updateTitle, responseDto.getQueTitle());
@@ -105,7 +110,7 @@ public class QuestionServiceIntegrationTest {
     public void Question_Integration_Testcase_4() {
         questionService.disableQuestion(queIdx);
 
-        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
+        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetail(queIdx));
     }
 
     @Test
@@ -113,7 +118,7 @@ public class QuestionServiceIntegrationTest {
     public void Question_Integration_Testcase_5() {
         questionService.enableQuestion(queIdx);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
+        QuestionResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertEquals(responseDto.getQueActivated(), true);
     }
@@ -122,7 +127,7 @@ public class QuestionServiceIntegrationTest {
     @DisplayName("질문_삭제")
     public void Question_Integration_Testcase_6() {
         questionService.removeQuestion(queIdx);
-        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
+        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetail(queIdx));
         queIdx = null;
     }
 }

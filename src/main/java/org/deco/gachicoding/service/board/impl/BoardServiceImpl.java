@@ -80,10 +80,11 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void removeBoard(Long boardIdx) {
+    public Long removeBoard(Long boardIdx) {
         Board board = boardRepository.findById(boardIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + boardIdx));
 
         boardRepository.deleteById(boardIdx);
+        return boardIdx;
     }
 }

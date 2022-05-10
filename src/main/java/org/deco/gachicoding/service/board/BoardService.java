@@ -22,5 +22,5 @@ public interface BoardService {
 
     void enableBoard(Long boardIdx);
 
-    void removeBoard(Long boardIdx);
+    Long removeBoard(Long boardIdx);
 }

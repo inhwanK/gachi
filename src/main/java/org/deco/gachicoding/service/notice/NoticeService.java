@@ -27,5 +27,5 @@ public interface NoticeService {
 
     void enableNotice(Long notIdx);
 
-    void removeNotice(Long notIdx);
+    Long removeNotice(Long notIdx);
 }

@@ -56,8 +56,8 @@ public class RestNoticeController {
 
     @ApiOperation(value = "공지사항 삭제")
     @DeleteMapping("/notice/remove/{notIdx}")
-    public void removeNotice(@PathVariable Long notIdx){
-        noticeService.removeNotice(notIdx);
+    public Long removeNotice(@PathVariable Long notIdx){
+        return noticeService.removeNotice(notIdx);
     }
 
 }

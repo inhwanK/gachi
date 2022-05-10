@@ -55,10 +55,9 @@ public class Notice {
         this.user = user;
     }
 
-    public Notice update(String notTitle, String notContent, Boolean notPin) {
+    public Notice update(String notTitle, String notContent) {
         this.notTitle = notTitle;
         this.notContent = notContent;
-        this.notPin = notPin;
         return this;
     }
 

@@ -20,6 +20,13 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
+    public Long registerBoard(BoardSaveRequestDto dto) {
+
+        return boardRepository.save(dto.toEntity()).getBoardIdx();
+    }
+
+    @Transactional
+    @Override
     public Page<BoardResponseDto> getBoardList(Pageable pageable) {
         Page<BoardResponseDto> boardList =
                 boardRepository.findAllByOrderByBoardIdxAsc(pageable).map(entity -> new BoardResponseDto(entity));
@@ -35,13 +42,6 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다. boardIdx = " + boardIdx));
 
         return new BoardResponseDto(entity);
-    }
-
-    @Transactional
-    @Override
-    public Long registerBoard(BoardSaveRequestDto dto) {
-
-        return boardRepository.save(dto.toEntity()).getBoardIdx();
     }
 
     @Override

@@ -9,15 +9,14 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class NoticeUpdateRequestDto {
-
+    private Long notIdx;
     private String notTitle;
     private String notContent;
-    private Boolean notPin;
 
     @Builder
-    public NoticeUpdateRequestDto(String notTitle, String notContent, Boolean notPin) {
+    public NoticeUpdateRequestDto(Long notIdx, String notTitle, String notContent) {
+        this.notIdx = notIdx;
         this.notTitle = notTitle;
         this.notContent = notContent;
-        this.notPin = notPin;
     }
 }

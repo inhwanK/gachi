@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BoardService {
 
+    Long registerBoard(BoardSaveRequestDto dto);
+
     Page<BoardResponseDto> getBoardList(Pageable pageable);
 
     BoardResponseDto getBoardDetail(Long boardIdx);
-
-    Long registerBoard(BoardSaveRequestDto dto);
 
     BoardResponseDto modifyBoard(BoardUpdateRequestDto dto);
 

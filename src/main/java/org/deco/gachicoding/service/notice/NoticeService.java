@@ -5,6 +5,7 @@ import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,19 +13,19 @@ import java.util.Optional;
 
 @Service
 public interface NoticeService {
-    Optional<Notice> findById(Long idx);
-
-    NoticeResponseDto findNoticeDetailById(Long idx);
-
-    Page<NoticeResponseDto> findNoticeByKeyword(String keyword, int page);
+    Optional<Notice> findById(Long notIdx);
 
     Long registerNotice(NoticeSaveRequestDto dto);
 
-    NoticeResponseDto updateNoticeById(Long idx, NoticeUpdateRequestDto dto);
+    Page<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable);
 
-    void disableNotice(Long idx);
+    NoticeResponseDto getNoticeDetail(Long notIdx);
 
-    void enableNotice(Long idx);
+    NoticeResponseDto modifyNotice(NoticeUpdateRequestDto dto);
 
-    void deleteNoticeById(Long idx);
+    void disableNotice(Long notIdx);
+
+    void enableNotice(Long notIdx);
+
+    void removeNotice(Long notIdx);
 }

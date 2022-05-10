@@ -18,6 +18,12 @@ public class RestBoardController {
 
     private final BoardService boardService;
 
+    @ApiOperation(value = "자유게시판 게시글 쓰기")
+    @PostMapping("/board")
+    public Long registerBoard(@RequestBody BoardSaveRequestDto dto){
+        return boardService.registerBoard(dto);
+    }
+
     @ApiOperation(value = "자유게시판 게시글 목록")
     @GetMapping("/board/list")
     public Page<BoardResponseDto> getBoardList(@PageableDefault(size = 10) Pageable pageable){
@@ -28,12 +34,6 @@ public class RestBoardController {
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
         return boardService.getBoardDetail(boardIdx);
-    }
-
-    @ApiOperation(value = "자유게시판 게시글 쓰기")
-    @PostMapping("/board")
-    public Long registerBoard(@RequestBody BoardSaveRequestDto dto){
-        return boardService.registerBoard(dto);
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정")

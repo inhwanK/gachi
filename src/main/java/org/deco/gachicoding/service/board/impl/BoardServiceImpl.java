@@ -62,28 +62,28 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public void disableBoard(Long idx) {
-        Board board = boardRepository.findById(idx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+    public void disableBoard(Long boardIdx) {
+        Board board = boardRepository.findById(boardIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + boardIdx));
 
         board.disableBoard();
     }
 
     @Override
     @Transactional
-    public void enableBoard(Long idx) {
-        Board board = boardRepository.findById(idx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+    public void enableBoard(Long boardIdx) {
+        Board board = boardRepository.findById(boardIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + boardIdx));
 
         board.enableBoard();
     }
 
     @Override
     @Transactional
-    public void removeBoard(Long idx) {
-        Board board = boardRepository.findById(idx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+    public void removeBoard(Long boardIdx) {
+        Board board = boardRepository.findById(boardIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + boardIdx));
 
-        boardRepository.deleteById(idx);
+        boardRepository.deleteById(boardIdx);
     }
 }

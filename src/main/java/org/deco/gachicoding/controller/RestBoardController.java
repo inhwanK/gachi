@@ -43,20 +43,20 @@ public class RestBoardController {
     }
 
     @ApiOperation(value = "자유게시판 게시글 비활성화")
-    @PutMapping("/board/disable/{idx}")
-    public void disableBoard(@PathVariable Long idx){
-        boardService.disableBoard(idx);
+    @PutMapping("/board/disable/{boardIdx}")
+    public void disableBoard(@PathVariable Long boardIdx){
+        boardService.disableBoard(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 활성화")
-    @PutMapping("/board/enable/{idx}")
-    public void enableBoard(@PathVariable Long idx){
-        boardService.enableBoard(idx);
+    @PutMapping("/board/enable/{boardIdx}")
+    public void enableBoard(@PathVariable Long boardIdx){
+        boardService.enableBoard(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 삭제")
     @DeleteMapping("/board/{boardIdx}")
-    public void removeBoard(@PathVariable Long idx){
-        boardService.removeBoard(idx);
+    public void removeBoard(@PathVariable Long boardIdx){
+        boardService.removeBoard(boardIdx);
     }
 }

@@ -18,9 +18,9 @@ public interface BoardService {
 
     BoardResponseDto modifyBoard(BoardUpdateRequestDto dto);
 
-    void disableBoard(Long idx);
+    void disableBoard(Long boardIdx);
 
-    void enableBoard(Long idx);
+    void enableBoard(Long boardIdx);
 
-    void removeBoard(Long idx);
+    void removeBoard(Long boardIdx);
 }

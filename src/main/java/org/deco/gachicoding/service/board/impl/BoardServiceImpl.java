@@ -46,9 +46,10 @@ public class BoardServiceImpl implements BoardService {
 
     @Override
     @Transactional
-    public BoardResponseDto modifyBoard(Long idx, BoardUpdateRequestDto dto) {
-        Board board = boardRepository.findById(idx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + idx));
+    public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
+        Long boardIdx = dto.getBoardIdx();
+        Board board = boardRepository.findById(boardIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + boardIdx));
 
         board = board.update(dto.getBoardTitle(), dto.getBoardContent());
 

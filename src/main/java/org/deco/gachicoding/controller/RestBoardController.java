@@ -37,9 +37,9 @@ public class RestBoardController {
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정")
-    @PutMapping("/board/modify/{boardIdx}")
-    public BoardResponseDto modifyBoard(@PathVariable Long boardIdx, @RequestBody BoardUpdateRequestDto dto){
-        return boardService.modifyBoard(boardIdx, dto);
+    @PutMapping("/board/modify")
+    public BoardResponseDto modifyBoard(@RequestBody BoardUpdateRequestDto dto){
+        return boardService.modifyBoard(dto);
     }
 
     @ApiOperation(value = "자유게시판 게시글 비활성화")

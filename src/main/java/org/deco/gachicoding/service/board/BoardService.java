@@ -16,7 +16,7 @@ public interface BoardService {
 
     Long registerBoard(BoardSaveRequestDto dto);
 
-    BoardResponseDto modifyBoard(Long idx, BoardUpdateRequestDto dto);
+    BoardResponseDto modifyBoard(BoardUpdateRequestDto dto);
 
     void disableBoard(Long idx);
 

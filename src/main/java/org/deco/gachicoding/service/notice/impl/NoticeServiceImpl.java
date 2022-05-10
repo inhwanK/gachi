@@ -103,10 +103,10 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional
     public Long removeNotice(Long notIdx) {
-        findById(notIdx)
+        Notice notice = findById(notIdx)
                 .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + notIdx));
 
-        noticeRepository.deleteById(notIdx);
+        noticeRepository.delete(notice);
         return notIdx;
     }
 }

@@ -11,6 +11,7 @@ import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
 import org.deco.gachicoding.service.answer.AnswerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,26 +25,6 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-
-    @Override
-    @Transactional(readOnly = true)
-    public AnswerResponseDto getAnswerDetailById(Long answerIdx) {
-        Optional<Answer> answer = answerRepository.findById(answerIdx);
-        AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-                .answer(answer.get())
-                .build();
-        return answerDetail;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<AnswerResponseDto> getAnswerListByKeyword(String keyword, int page) {
-        Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "asIdx")));
-        Page<AnswerResponseDto> answersList = answers.map(
-                result -> new AnswerResponseDto(result)
-        );
-        return answersList;
-    }
 
     @Override
     @Transactional
@@ -60,11 +41,31 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    @Transactional
-    public AnswerResponseDto modifyAnswerById(Long answerIdx, AnswerUpdateRequestDto dto) {
+    @Transactional(readOnly = true)
+    public Page<AnswerResponseDto> getAnswerList(String keyword, Pageable pageable) {
+        Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, pageable);
+        Page<AnswerResponseDto> answersList = answers.map(
+                result -> new AnswerResponseDto(result)
+        );
+        return answersList;
+    }
 
-        Answer answer = answerRepository.findById(answerIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
+    @Override
+    @Transactional(readOnly = true)
+    public AnswerResponseDto getAnswerDetail(Long ansIdx) {
+        Optional<Answer> answer = answerRepository.findById(ansIdx);
+        AnswerResponseDto answerDetail = AnswerResponseDto.builder()
+                .answer(answer.get())
+                .build();
+        return answerDetail;
+    }
+
+    @Override
+    @Transactional
+    public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) {
+
+        Answer answer = answerRepository.findById(dto.getAnsIdx())
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + dto.getAnsIdx()));
 
         answer = answer.update(dto.getAnsContent());
 
@@ -77,11 +78,29 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public Long removeAnswer(Long answerIdx) {
+    public void disableAnswer(Long ansIdx) {
+        Answer answer = answerRepository.findById(ansIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + ansIdx));
 
-        Answer answer = answerRepository.findById(answerIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + answerIdx));
+        answer.disableAnswer();
+    }
 
-        return answer.isDisable().getAnsIdx();
+    @Override
+    @Transactional
+    public void enableAnswer(Long ansIdx) {
+        Answer answer = answerRepository.findById(ansIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + ansIdx));
+
+        answer.enableAnswer();
+    }
+
+    @Override
+    @Transactional
+    public Long removeAnswer(Long ansIdx) {
+        Answer answer = answerRepository.findById(ansIdx)
+                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + ansIdx));
+
+        answerRepository.delete(answer);
+        return ansIdx;
     }
 }

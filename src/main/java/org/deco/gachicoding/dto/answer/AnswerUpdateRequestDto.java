@@ -1,5 +1,6 @@
 package org.deco.gachicoding.dto.answer;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,10 +9,12 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class AnswerUpdateRequestDto {
-
+    private Long ansIdx;
     private String ansContent;
 
-    public AnswerUpdateRequestDto(String asContent) {
+    @Builder
+    public AnswerUpdateRequestDto(Long ansIdx, String asContent) {
+        this.ansIdx = ansIdx;
         this.ansContent = asContent;
     }
 }

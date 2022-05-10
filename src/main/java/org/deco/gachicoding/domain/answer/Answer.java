@@ -70,12 +70,12 @@ public class Answer {
         return this;
     }
 
-    public Answer isDisable() {
+    public Answer disableAnswer() {
         this.ansActivated = false;
         return this;
     }
 
-    public Answer isEnable() {
+    public Answer enableAnswer() {
         this.ansActivated = true;
         return this;
     }

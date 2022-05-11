@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.question.impl;
+package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.question.Question;
@@ -7,15 +7,11 @@ import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.question.QuestionResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
-import org.deco.gachicoding.service.question.QuestionService;
+import org.deco.gachicoding.service.QuestionService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

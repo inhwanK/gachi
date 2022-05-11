@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.agora.impl;
+package org.deco.gachicoding.service.impl;
 
 
 import lombok.RequiredArgsConstructor;
@@ -6,7 +6,7 @@ import org.deco.gachicoding.domain.agora.Agora;
 import org.deco.gachicoding.domain.agora.AgoraRepository;
 import org.deco.gachicoding.dto.agora.AgoraResponseDto;
 import org.deco.gachicoding.dto.agora.AgoraSaveRequestDto;
-import org.deco.gachicoding.service.agora.AgoraService;
+import org.deco.gachicoding.service.AgoraService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

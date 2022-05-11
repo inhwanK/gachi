@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.agora;
+package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.dto.agora.AgoraResponseDto;
 import org.deco.gachicoding.dto.agora.AgoraSaveRequestDto;

@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.social.impl;
+package org.deco.gachicoding.service.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.social.Social;
 import org.deco.gachicoding.domain.social.SocialRepository;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
-import org.deco.gachicoding.service.social.SocialService;
+import org.deco.gachicoding.service.SocialService;
 import org.springframework.stereotype.Service;
 
 import java.io.*;

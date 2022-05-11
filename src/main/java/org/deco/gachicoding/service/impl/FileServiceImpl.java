@@ -1,9 +1,8 @@
-package org.deco.gachicoding.service.file.impl;
+package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.file.FileRepository;
-import org.deco.gachicoding.service.file.FileService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.deco.gachicoding.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;

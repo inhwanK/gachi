@@ -3,7 +3,7 @@ package org.deco.gachicoding.controller;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.agora.AgoraResponseDto;
 import org.deco.gachicoding.dto.agora.AgoraSaveRequestDto;
-import org.deco.gachicoding.service.agora.AgoraService;
+import org.deco.gachicoding.service.AgoraService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

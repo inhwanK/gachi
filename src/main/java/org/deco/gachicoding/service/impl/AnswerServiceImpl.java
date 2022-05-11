@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.answer.impl;
+package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.answer.Answer;
@@ -8,11 +8,9 @@ import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
-import org.deco.gachicoding.service.answer.AnswerService;
+import org.deco.gachicoding.service.AnswerService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

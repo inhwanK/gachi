@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.user.impl;
+package org.deco.gachicoding.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.deco.gachicoding.domain.user.UserRole;

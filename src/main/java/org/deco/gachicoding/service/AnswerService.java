@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.answer;
+package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;

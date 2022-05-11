@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.board;
+package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;

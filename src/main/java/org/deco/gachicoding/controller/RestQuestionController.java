@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.question.QuestionResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
-import org.deco.gachicoding.service.question.QuestionService;
+import org.deco.gachicoding.service.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

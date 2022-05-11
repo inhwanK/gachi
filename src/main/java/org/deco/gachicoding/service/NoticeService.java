@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.notice;
+package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;

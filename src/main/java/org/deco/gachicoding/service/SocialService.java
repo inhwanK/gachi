@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.social;
+package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.domain.social.Social;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;

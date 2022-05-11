@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.file.impl;
+package org.deco.gachicoding.service.impl;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;

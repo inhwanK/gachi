@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.auth;
+package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;

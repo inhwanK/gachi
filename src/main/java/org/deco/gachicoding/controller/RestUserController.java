@@ -8,8 +8,8 @@ import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
-import org.deco.gachicoding.service.social.SocialService;
-import org.deco.gachicoding.service.user.UserService;
+import org.deco.gachicoding.service.SocialService;
+import org.deco.gachicoding.service.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

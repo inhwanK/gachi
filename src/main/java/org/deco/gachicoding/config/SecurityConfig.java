@@ -25,25 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    // 정적인 파일에 대한 요청들
-    // 우리한텐 필요 없을 듯
-//    private static final String[] AUTH_WHITELIST = {
-//            // -- swagger ui
-//            "/v2/api-docs",
-//            "/v3/api-docs/**",
-//            "/configuration/ui",
-//            "/swagger-resources/**",
-//            "/configuration/security",
-//            "/swagger-ui.html",
-//            "/webjars/**",
-//            "/file/**",
-//            "/image/**",
-//            "/swagger/**",
-//            "/swagger-ui/**",
-//            // other public endpoints of your API may be appended to this array
-//            "/h2/**"
-//    };
-
     // 회원가입 시 비밀번호 암호화에 사용할 Encode 빈 등록
     @Bean
     public BCryptPasswordEncoder encoderPassword() {
@@ -62,11 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
     }
-
-//    public void configure(WebSecurity web) throws Exception {
-//        // 정적인 파일 요청에 대해 무시
-//        web.ignoring().antMatchers(AUTH_WHITELIST);
-//    }
 
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {

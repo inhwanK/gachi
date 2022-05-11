@@ -25,28 +25,24 @@ public class FileServiceImpl implements FileService {
         private final FileRepository fileRepository;
         private final S3ServiceImpl s3Service;
 
-        private final static String tmpRoot = "/src/main/resources/tempImg/";
+        private final static String tempRoot = "/src/main/resources/tempImg/";
         // 절대 경로를 위한 absolutePath
-        private final String absolutePath = new File("").getAbsolutePath() + "\\";
+        private final static String absolutePath = new File("").getAbsolutePath() + "\\";
+        private final static Path path = Path.of(absolutePath + tempRoot);
 
         @PostConstruct
         public void init() {
-                Path tmpPath = Path.of(tmpRoot);
                 try {
-                        createPath(tmpPath);
+                        if (!Files.exists(path)) {
+                                Files.createDirectories(path);
+                        }
                 } catch (IOException e) {
                         e.printStackTrace();
                 }
         }
 
-        public void createPath(Path path) throws IOException {
-                if (!Files.exists(path)) {
-                        Files.createDirectories(path);
-                }
-        }
-
         // 리팩토링 - 이미지 이름이 중복되면 안올라감
-        public URI copyTempImage(MultipartHttpServletRequest mpRequest) throws IOException {
+        public String copyTempImage(MultipartHttpServletRequest mpRequest) throws IOException {
                 MultipartFile multipartFile = null;
                 String origFileName = null;
                 String origFileExtension = null;
@@ -58,12 +54,11 @@ public class FileServiceImpl implements FileService {
 //                origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
 //                saveFileName = origFileName + origFileExtension;
 
-                File file = new File(absolutePath + tmpRoot + origFileName);
+                File file = new File(absolutePath + tempRoot + origFileName);
                 multipartFile.transferTo(file);         // 저장
 
-
-                URI tempImageURI = file.toURI();
-                return tempImageURI;
+//                URI tempImageURI = file.toURI();
+                return file.getAbsolutePath();
         }
 
         public String moveImg(String content)throws Exception{

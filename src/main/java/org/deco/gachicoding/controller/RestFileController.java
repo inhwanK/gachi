@@ -52,11 +52,9 @@ public class RestFileController {
 //        return jsonObject;
 //    }
 
-    private static final String filePath = "C:\\mp\\whiteRecordImg";
-
     @ApiOperation(value = "파일 임시 저장")
     @PostMapping(value = "/file/upload",  produces = "application/json; charset=utf8")
-    public URI fileUploadImageFile(MultipartHttpServletRequest mpRequest) throws IOException {
+    public String fileUploadImageFile(MultipartHttpServletRequest mpRequest) throws IOException {
 
         return fileService.copyTempImage(mpRequest);
     }

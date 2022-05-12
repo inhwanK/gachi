@@ -2,6 +2,7 @@ package org.deco.gachicoding.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
@@ -9,6 +10,7 @@ import org.deco.gachicoding.service.BoardService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
-    public Long registerBoard(@RequestBody BoardSaveRequestDto dto){
+    public ResponseEntity<ResponseState> registerBoard(@RequestBody BoardSaveRequestDto dto){
         return boardService.registerBoard(dto);
     }
 
@@ -44,19 +46,19 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 비활성화")
     @PutMapping("/board/disable/{boardIdx}")
-    public void disableBoard(@PathVariable Long boardIdx){
-        boardService.disableBoard(boardIdx);
+    public ResponseEntity<ResponseState> disableBoard(@PathVariable Long boardIdx){
+        return boardService.disableBoard(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 활성화")
     @PutMapping("/board/enable/{boardIdx}")
-    public void enableBoard(@PathVariable Long boardIdx){
-        boardService.enableBoard(boardIdx);
+    public ResponseEntity<ResponseState> enableBoard(@PathVariable Long boardIdx){
+        return boardService.enableBoard(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 삭제")
     @DeleteMapping("/board/{boardIdx}")
-    public Long removeBoard(@PathVariable Long boardIdx){
+    public ResponseEntity<ResponseState> removeBoard(@PathVariable Long boardIdx){
         return boardService.removeBoard(boardIdx);
     }
 }

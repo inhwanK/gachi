@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
-import org.deco.gachicoding.service.NoticeService;
+import org.deco.gachicoding.dto.response.ResponseState;
+import org.deco.gachicoding.service.notice.NoticeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -44,19 +46,19 @@ public class RestNoticeController {
 
     @ApiOperation(value = "공지사항 비활성화")
     @PutMapping("/notice/disable/{notIdx}")
-    public void disableNotice(@PathVariable Long notIdx){
-        noticeService.disableNotice(notIdx);
+    public ResponseEntity<ResponseState> disableNotice(@PathVariable Long notIdx){
+        return noticeService.disableNotice(notIdx);
     }
 
     @ApiOperation(value = "공지사항 활성화")
     @PutMapping("/notice/enable/{notIdx}")
-    public void enableNotice(@PathVariable Long notIdx){
-        noticeService.enableNotice(notIdx);
+    public ResponseEntity<ResponseState> enableNotice(@PathVariable Long notIdx){
+        return noticeService.enableNotice(notIdx);
     }
 
     @ApiOperation(value = "공지사항 삭제")
     @DeleteMapping("/notice/remove/{notIdx}")
-    public Long removeNotice(@PathVariable Long notIdx){
+    public ResponseEntity<ResponseState> removeNotice(@PathVariable Long notIdx){
         return noticeService.removeNotice(notIdx);
     }
 

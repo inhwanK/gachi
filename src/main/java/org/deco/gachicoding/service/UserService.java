@@ -2,10 +2,11 @@ package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
-import org.deco.gachicoding.dto.jwt.JwtResponseDto;
-import org.deco.gachicoding.dto.user.*;
+import org.deco.gachicoding.dto.user.UserSaveRequestDto;
+import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.util.Optional;
 
 @Service
@@ -15,7 +16,7 @@ public interface UserService {
 
     Optional<User> getUserByUserEmail(String email);
 
-    JwtResponseDto login(LoginRequestDto requestDto);
+    String login(LoginRequestDto requestDto, HttpSession httpSession);
 
     Long registerUser(UserSaveRequestDto dto);
 

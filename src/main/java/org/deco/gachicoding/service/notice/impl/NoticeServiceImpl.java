@@ -7,15 +7,20 @@ import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
+import org.deco.gachicoding.dto.response.CustomException;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.notice.NoticeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -58,7 +63,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional(readOnly = true)
     public NoticeResponseDto getNoticeDetail(Long notIdx) {
         Notice notice = noticeRepository.findByNotIdxAndNotActivatedTrue(notIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + notIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
                 .notice(notice)
@@ -71,7 +76,7 @@ public class NoticeServiceImpl implements NoticeService {
     @Transactional
     public NoticeResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
         Notice notice = findById(dto.getNotIdx())
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + dto.getNotIdx()));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         notice = notice.update(dto.getNotTitle(), dto.getNotContent());
 
@@ -84,29 +89,31 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Override
     @Transactional
-    public void disableNotice(Long notIdx) {
+    public ResponseEntity<ResponseState> disableNotice(Long notIdx) {
         Notice notice = findById(notIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + notIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         notice.disableNotice();
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Override
     @Transactional
-    public void enableNotice(Long notIdx) {
+    public ResponseEntity<ResponseState> enableNotice(Long notIdx) {
         Notice notice = findById(notIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + notIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         notice.enableNotice();
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Override
     @Transactional
-    public Long removeNotice(Long notIdx) {
+    public ResponseEntity<ResponseState> removeNotice(Long notIdx) {
         Notice notice = findById(notIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + notIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         noticeRepository.delete(notice);
-        return notIdx;
+        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 }

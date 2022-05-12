@@ -56,8 +56,8 @@ public class FileServiceImpl implements FileService {
 
                 File file = new File(absolutePath + tempRoot + origFileName);
                 multipartFile.transferTo(file);         // 저장
+//                s3Service.upload(multipartFile);
 
-//                URI tempImageURI = file.toURI();
                 return file.getAbsolutePath();
         }
 

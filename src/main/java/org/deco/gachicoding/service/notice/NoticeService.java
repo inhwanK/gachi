@@ -4,8 +4,10 @@ import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -23,9 +25,9 @@ public interface NoticeService {
 
     NoticeResponseDto modifyNotice(NoticeUpdateRequestDto dto);
 
-    void disableNotice(Long notIdx);
+    ResponseEntity<ResponseState> disableNotice(Long notIdx);
 
-    void enableNotice(Long notIdx);
+    ResponseEntity<ResponseState> enableNotice(Long notIdx);
 
-    Long removeNotice(Long notIdx);
+    ResponseEntity<ResponseState> removeNotice(Long notIdx);
 }

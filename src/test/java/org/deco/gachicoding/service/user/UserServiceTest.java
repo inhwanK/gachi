@@ -1,6 +1,6 @@
 package org.deco.gachicoding.service.user;
 
-import org.deco.gachicoding.dto.jwt.JwtRequestDto;
+import org.deco.gachicoding.dto.user.LoginRequestDto;
 import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.service.UserService;
@@ -26,7 +26,7 @@ public class UserServiceTest {
     @DisplayName("UserService - JWT 로그인 테스트")
     void login() {
         // Given
-        JwtRequestDto requestDto = new JwtRequestDto();
+        LoginRequestDto requestDto = new LoginRequestDto();
         requestDto.setEmail("ay9564@naver.com");
         requestDto.setPassword("ay789456");
 
@@ -41,7 +41,7 @@ public class UserServiceTest {
     @DisplayName("UserService - JWT 아이디 없음 로그인 테스트")
     void notFindEmailLogin() {
         // Given
-        JwtRequestDto requestDto = new JwtRequestDto();
+        LoginRequestDto requestDto = new LoginRequestDto();
         requestDto.setEmail("ay7871@naver.com");
         requestDto.setPassword("ay789456");
 
@@ -56,7 +56,7 @@ public class UserServiceTest {
     @DisplayName("UserService - JWT 비밀번호 틀림 로그인 테스트")
     void notFindPasswordLogin() {
         // Given
-        JwtRequestDto requestDto = new JwtRequestDto();
+        LoginRequestDto requestDto = new LoginRequestDto();
         requestDto.setEmail("ay7871@naver.com");
         requestDto.setPassword("인환이바보");
 

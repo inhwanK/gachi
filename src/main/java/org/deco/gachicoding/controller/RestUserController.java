@@ -3,7 +3,7 @@ package org.deco.gachicoding.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.dto.jwt.JwtRequestDto;
+import org.deco.gachicoding.dto.user.LoginRequestDto;
 import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
@@ -30,7 +30,7 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "accessToken 으로 변조된 로그인 정보 반환")
     )
     @PostMapping("/user/login")
-    public JwtResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody JwtRequestDto dto) throws Exception {
+    public JwtResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto) throws Exception {
         return userService.login(dto);
     }
 
@@ -65,7 +65,7 @@ public class RestUserController {
         // 회원 확인
         Optional<User> user = userService.getUserByUserEmail(socialSaveRequestDto.getSocialId());
 
-        JwtRequestDto jwtRequestDto = new JwtRequestDto();
+        LoginRequestDto jwtRequestDto = new LoginRequestDto();
 
         jwtRequestDto.setEmail(socialSaveRequestDto.getSocialId());
 

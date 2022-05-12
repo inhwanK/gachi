@@ -3,15 +3,17 @@ package org.deco.gachicoding.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.dto.jwt.JwtRequestDto;
 import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
+import org.deco.gachicoding.dto.user.LoginRequestDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
-import org.deco.gachicoding.service.social.SocialService;
-import org.deco.gachicoding.service.user.UserService;
+import org.deco.gachicoding.service.SocialService;
+import org.deco.gachicoding.service.UserService;
+import org.deco.gachicoding.service.impl.UserDetailsImpl;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -30,8 +32,42 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "accessToken 으로 변조된 로그인 정보 반환")
     )
     @PostMapping("/user/login")
-    public JwtResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody JwtRequestDto dto) throws Exception {
-        return userService.login(dto);
+    public String login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
+                        @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) throws Exception {
+
+        return userService.login(dto, httpSession);
+    }
+
+    /**
+     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
+     *
+     * @param httpSession
+     * @return UserDetailsImpl
+     */
+    @GetMapping("/user/info")
+    public UserDetailsImpl getUserInfo(HttpSession httpSession){
+        UserDetailsImpl userInfo = (UserDetailsImpl) httpSession.getAttribute("user");
+        System.out.println(userInfo.getUsername());
+        System.out.println(userInfo.getUserEmail());
+        return userInfo;
+    }
+
+    /**
+     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
+     *
+     * @param httpSession
+     * @return String
+     */
+    @GetMapping("/user/logout")
+    public String logout(HttpSession httpSession) {
+        UserDetailsImpl a = (UserDetailsImpl) httpSession.getAttribute("user");
+        System.out.println(a.getUserEmail());
+        System.out.println(a.getUsername());
+        httpSession.invalidate();
+
+        UserDetailsImpl b = (UserDetailsImpl) httpSession.getAttribute("user");
+        System.out.println(b.getUserEmail());
+        return "로그아웃";
     }
 
     @ApiOperation(value = "회원가입", notes = "UserSaveRequestDto 타입으로 값을 받아 회원가입 수행")
@@ -65,7 +101,7 @@ public class RestUserController {
         // 회원 확인
         Optional<User> user = userService.getUserByUserEmail(socialSaveRequestDto.getSocialId());
 
-        JwtRequestDto jwtRequestDto = new JwtRequestDto();
+        LoginRequestDto jwtRequestDto = new LoginRequestDto();
 
         jwtRequestDto.setEmail(socialSaveRequestDto.getSocialId());
 
@@ -107,7 +143,8 @@ public class RestUserController {
         }
 
         // => email - socialId, password - 유저 검색을 통해 알아야함
-        return userService.login(jwtRequestDto);
+//        return userService.login(jwtRequestDto);
+        return null;
     }
 
 }

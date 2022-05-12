@@ -6,7 +6,7 @@ import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
-import org.deco.gachicoding.service.board.BoardService;
+import org.deco.gachicoding.service.BoardService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

@@ -5,9 +5,14 @@ import lombok.*;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -53,13 +58,6 @@ public class User {
         this.userRole = userRole;
     }
 
-    // 소셜 로그인 시 업데이트 되는 정보, 수정 필요
-    public User socialUpdate(String userName, String userEmail) {
-        this.userName = userName;
-        this.userEmail = userEmail;
-        return this;
-    }
-
     public User update(String userNick, String userPassword, boolean userActivated, boolean userAuth, UserRole userRole, String userPicture) {
         this.userNick = userNick;
         this.userPassword = userPassword;
@@ -70,6 +68,5 @@ public class User {
         return this;
     }
 
-//    삭제 업데이트 메서드 구현 해야함.
 
 }

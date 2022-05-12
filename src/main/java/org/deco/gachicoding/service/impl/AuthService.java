@@ -13,6 +13,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AuthService {
 
+
     private final AuthRepository authRepository;
     private final EmailSenderService emailSenderService;
 

@@ -1,6 +1,6 @@
 package org.deco.gachicoding.controller;
 
-import org.deco.gachicoding.config.jwt.JwtTokenProvider;
+
 import org.deco.gachicoding.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,12 +22,6 @@ public class RestUserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @InjectMocks
-    UserServiceImpl userServiceImpl;
-
-    @InjectMocks
-    JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("UserService - 이메일 형식이 아닌 아이디 회원가입 테스트")

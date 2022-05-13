@@ -6,7 +6,7 @@ import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
-import org.deco.gachicoding.service.notice.NoticeService;
+import org.deco.gachicoding.service.NoticeService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

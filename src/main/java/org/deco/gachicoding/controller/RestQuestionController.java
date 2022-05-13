@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.question.QuestionResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -47,19 +49,19 @@ public class RestQuestionController {
 
     @ApiOperation(value = "질문 비활성화")
     @PutMapping("/question/disable/{queIdx}")
-    public void disableQuestion(@PathVariable Long queIdx){
-        questionService.disableQuestion(queIdx);
+    public ResponseEntity<ResponseState> disableQuestion(@PathVariable Long queIdx){
+        return questionService.disableQuestion(queIdx);
     }
 
     @ApiOperation(value = "질문 활성화")
     @PutMapping("/question/enable/{queIdx}")
-    public void enableQuestion(@PathVariable Long queIdx){
-        questionService.enableQuestion(queIdx);
+    public ResponseEntity<ResponseState> enableQuestion(@PathVariable Long queIdx){
+        return questionService.enableQuestion(queIdx);
     }
 
     @ApiOperation(value = "질문 삭제")
     @DeleteMapping("/question/{queIdx}")
-    public Long removeQuestion(@PathVariable Long queIdx){
+    public ResponseEntity<ResponseState> removeQuestion(@PathVariable Long queIdx){
         return questionService.removeQuestion(queIdx);
     }
 }

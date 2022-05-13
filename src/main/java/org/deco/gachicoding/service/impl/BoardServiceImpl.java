@@ -25,10 +25,8 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public ResponseEntity<ResponseState> registerBoard(BoardSaveRequestDto dto) {
-        boardRepository.save(dto.toEntity());
-
-        return ResponseState.toResponseEntity(SAVE_SUCCESS);
+    public Long registerBoard(BoardSaveRequestDto dto) {
+        return boardRepository.save(dto.toEntity()).getBoardIdx();
     }
 
     @Transactional

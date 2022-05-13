@@ -22,50 +22,6 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
-    @Test
-    @DisplayName("UserService - JWT 로그인 테스트")
-    void login() {
-        // Given
-        LoginRequestDto requestDto = new LoginRequestDto();
-        requestDto.setEmail("ay9564@naver.com");
-        requestDto.setPassword("ay789456");
-
-        // When
-        JwtResponseDto token = userService.login(requestDto);
-
-        // Then
-        System.out.println(token.getAccessToken());
-    }
-
-    @Test
-    @DisplayName("UserService - JWT 아이디 없음 로그인 테스트")
-    void notFindEmailLogin() {
-        // Given
-        LoginRequestDto requestDto = new LoginRequestDto();
-        requestDto.setEmail("ay7871@naver.com");
-        requestDto.setPassword("ay789456");
-
-        // When
-        JwtResponseDto token = userService.login(requestDto);
-
-        // Then
-        assertEquals(token.getAccessToken(), "아이디 또는 비밀번호를 확인해 주세요.");
-    }
-
-    @Test
-    @DisplayName("UserService - JWT 비밀번호 틀림 로그인 테스트")
-    void notFindPasswordLogin() {
-        // Given
-        LoginRequestDto requestDto = new LoginRequestDto();
-        requestDto.setEmail("ay7871@naver.com");
-        requestDto.setPassword("인환이바보");
-
-        // When
-        JwtResponseDto token = userService.login(requestDto);
-
-        // Then
-        assertEquals(token, "아이디 또는 비밀번호를 확인해 주세요.");
-    }
 
     @Test
     @DisplayName("UserService - 회원가입 테스트")

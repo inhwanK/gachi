@@ -8,13 +8,18 @@ import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
+import org.deco.gachicoding.dto.response.CustomException;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.AnswerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+
+import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +56,11 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional(readOnly = true)
     public AnswerResponseDto getAnswerDetail(Long ansIdx) {
-        Optional<Answer> answer = answerRepository.findById(ansIdx);
+        Answer answer = answerRepository.findById(ansIdx)
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+
         AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-                .answer(answer.get())
+                .answer(answer)
                 .build();
         return answerDetail;
     }
@@ -61,9 +68,8 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) {
-
         Answer answer = answerRepository.findById(dto.getAnsIdx())
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + dto.getAnsIdx()));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         answer = answer.update(dto.getAnsContent());
 
@@ -76,29 +82,31 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public void disableAnswer(Long ansIdx) {
+    public ResponseEntity<ResponseState> disableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + ansIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         answer.disableAnswer();
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Override
     @Transactional
-    public void enableAnswer(Long ansIdx) {
+    public ResponseEntity<ResponseState> enableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + ansIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         answer.enableAnswer();
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Override
     @Transactional
-    public Long removeAnswer(Long ansIdx) {
+    public ResponseEntity<ResponseState> removeAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + ansIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         answerRepository.delete(answer);
-        return ansIdx;
+        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 }

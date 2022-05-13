@@ -5,6 +5,7 @@ import org.deco.gachicoding.domain.auth.Auth;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
+import org.deco.gachicoding.dto.user.UserResponseDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
 import org.deco.gachicoding.service.UserService;
@@ -44,24 +45,29 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public String login(LoginRequestDto requestDto, HttpSession httpSession) {
+    public UserResponseDto login(LoginRequestDto requestDto, HttpSession httpSession) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
 
             UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
-            httpSession.setAttribute("user", principal);
-            System.out.println("유저 이름 > "+principal.getUsername());
 
-            UserDetailsImpl obj = (UserDetailsImpl) httpSession.getAttribute("user");
+
+            System.out.println("유저 이름 > " + principal.getUsername());
+
+            Optional<User> user = userRepository.findByUserEmail(principal.getUserEmail());
+            UserResponseDto userResponseDto = new UserResponseDto(user.get());
+            httpSession.setAttribute(principal.getUserEmail(), userResponseDto);
 
             // return 값으로 sessionID를 넘겨 주어야 함.
-            return obj.getUsername();
+            return userResponseDto;
+
+
             // BadCredentialsException - 스프링 시큐리티 에서 아이디 또는 비밀번호가 틀렸을 경우 나오는 예외
         } catch (BadCredentialsException e) {
             e.printStackTrace();
 //            return new JwtResponseDto("아이디 또는 비밀번호를 확인해 주세요.");
-            return "세션 안됨.";
+            return new UserResponseDto(null);
         }
     }
 
@@ -95,6 +101,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * 이메일 인증 로직
+     *
      * @param authEmail
      */
 

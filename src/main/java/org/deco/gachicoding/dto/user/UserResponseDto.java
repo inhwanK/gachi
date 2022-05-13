@@ -36,5 +36,4 @@ public class UserResponseDto {
         this.userAuth = user.isUserAuth();
         this.userRole = user.getUserRole();
     }
-
 }

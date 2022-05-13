@@ -6,6 +6,7 @@ import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
+import org.deco.gachicoding.dto.user.UserResponseDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
 import org.deco.gachicoding.service.SocialService;
@@ -35,39 +36,42 @@ public class RestUserController {
     public String login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
                         @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) throws Exception {
 
-        return userService.login(dto, httpSession);
+        UserResponseDto userResponseDto = userService.login(dto, httpSession);
+        return userResponseDto.getUserEmail();
     }
 
     /**
-     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
-     *
      * @param httpSession
      * @return UserDetailsImpl
+     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
     @GetMapping("/user/info")
-    public UserDetailsImpl getUserInfo(HttpSession httpSession){
-        UserDetailsImpl userInfo = (UserDetailsImpl) httpSession.getAttribute("user");
-        System.out.println(userInfo.getUsername());
+    public UserResponseDto getUserInfo(@ApiParam(value = "세션 key로 쓰이는 유저 이메일", required = true) @RequestParam String userEmail,
+                                       @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) {
+
+        UserResponseDto userInfo = (UserResponseDto) httpSession.getAttribute(userEmail);
+        System.out.println(userInfo.getUserName());
         System.out.println(userInfo.getUserEmail());
+
         return userInfo;
     }
 
     /**
-     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
-     *
      * @param httpSession
      * @return String
+     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
     @GetMapping("/user/logout")
-    public String logout(HttpSession httpSession) {
-        UserDetailsImpl a = (UserDetailsImpl) httpSession.getAttribute("user");
-        System.out.println(a.getUserEmail());
-        System.out.println(a.getUsername());
-        httpSession.invalidate();
+    public String logout(@ApiParam(value = "세션 key로 쓰이는 유저 이메일", required = true) @RequestParam String userEmail,
+                         @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) {
 
-        UserDetailsImpl b = (UserDetailsImpl) httpSession.getAttribute("user");
-        System.out.println(b.getUserEmail());
-        return "로그아웃";
+        UserResponseDto a = (UserResponseDto) httpSession.getAttribute("user");
+
+        System.out.println(a.getUserEmail());
+        System.out.println(a.getUserName());
+        httpSession.removeAttribute(userEmail);
+        System.out.println("로그아웃");
+        return "logout";
     }
 
     @ApiOperation(value = "회원가입", notes = "UserSaveRequestDto 타입으로 값을 받아 회원가입 수행")

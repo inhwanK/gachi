@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 // api에도 시큐리티 접근 권한 설정이 먹힘
+// 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity

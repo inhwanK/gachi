@@ -13,6 +13,7 @@ import org.deco.gachicoding.service.SocialService;
 import org.deco.gachicoding.service.UserService;
 import org.deco.gachicoding.service.impl.UserDetailsImpl;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,11 +38,7 @@ public class RestUserController {
     )
     @PostMapping("/user/login")
     public String login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
-                        @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession,
-                        HttpServletResponse response) throws Exception {
-
-        Cookie cookie = new Cookie("memberId", dto.getEmail());
-        response.addCookie(cookie);
+                        @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) throws Exception {
 
         UserResponseDto userResponseDto = userService.login(dto, httpSession);
         return userResponseDto.getUserEmail();
@@ -49,35 +46,25 @@ public class RestUserController {
 
     /**
      * @param httpSession
-     * @return UserDetailsImpl
+     * @return UserResponseDto
      * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
+    @ApiModelProperty(value = "세션", required = false, hidden = true)
     @GetMapping("/user/info")
-    public UserResponseDto getUserInfo(@ApiParam(value = "세션 key로 쓰이는 유저 이메일", required = true) @RequestParam String userEmail,
-                                       @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession,
-                                       @CookieValue(value = "memberId", required = false) Cookie cookie) {
-
-        UserResponseDto userInfo = (UserResponseDto) httpSession.getAttribute(userEmail);
-        System.out.println(userInfo.getUserName());
-        System.out.println(userInfo.getUserEmail());
-
+    public UserResponseDto getUserInfo(HttpSession httpSession) {
+        UserResponseDto userInfo = (UserResponseDto) httpSession.getAttribute("user");
         return userInfo;
     }
 
     /**
-     * @param httpSession
-     * @return String
+     * @return void
      * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
+    @ApiModelProperty(value = "요청", required = false, hidden = true)
     @GetMapping("/user/logout")
-    public String logout(@ApiParam(value = "세션 key로 쓰이는 유저 이메일", required = true) @RequestParam String userEmail,
-                         @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) {
-
-        UserResponseDto a = (UserResponseDto) httpSession.getAttribute(userEmail);
-
-        httpSession.removeAttribute(userEmail);
-        System.out.println("로그아웃");
-        return "logout";
+    public void logout(HttpServletRequest request) {
+        HttpSession httpSession = request.getSession(false);
+        httpSession.invalidate();
     }
 
     @ApiOperation(value = "회원가입", notes = "UserSaveRequestDto 타입으로 값을 받아 회원가입 수행")

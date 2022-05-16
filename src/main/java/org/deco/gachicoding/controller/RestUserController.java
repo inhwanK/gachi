@@ -14,6 +14,9 @@ import org.deco.gachicoding.service.UserService;
 import org.deco.gachicoding.service.impl.UserDetailsImpl;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
@@ -34,7 +37,11 @@ public class RestUserController {
     )
     @PostMapping("/user/login")
     public String login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
-                        @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) throws Exception {
+                        @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession,
+                        HttpServletResponse response) throws Exception {
+
+        Cookie cookie = new Cookie("memberId", dto.getEmail());
+        response.addCookie(cookie);
 
         UserResponseDto userResponseDto = userService.login(dto, httpSession);
         return userResponseDto.getUserEmail();
@@ -47,7 +54,8 @@ public class RestUserController {
      */
     @GetMapping("/user/info")
     public UserResponseDto getUserInfo(@ApiParam(value = "세션 key로 쓰이는 유저 이메일", required = true) @RequestParam String userEmail,
-                                       @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) {
+                                       @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession,
+                                       @CookieValue(value = "memberId", required = false) Cookie cookie) {
 
         UserResponseDto userInfo = (UserResponseDto) httpSession.getAttribute(userEmail);
         System.out.println(userInfo.getUserName());

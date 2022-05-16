@@ -65,10 +65,8 @@ public class RestUserController {
     public String logout(@ApiParam(value = "세션 key로 쓰이는 유저 이메일", required = true) @RequestParam String userEmail,
                          @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) {
 
-        UserResponseDto a = (UserResponseDto) httpSession.getAttribute("user");
+        UserResponseDto a = (UserResponseDto) httpSession.getAttribute(userEmail);
 
-        System.out.println(a.getUserEmail());
-        System.out.println(a.getUserName());
         httpSession.removeAttribute(userEmail);
         System.out.println("로그아웃");
         return "logout";

@@ -22,7 +22,7 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
-    public ResponseEntity<ResponseState> registerBoard(@RequestBody BoardSaveRequestDto dto){
+    public Long registerBoard(@RequestBody BoardSaveRequestDto dto){
         return boardService.registerBoard(dto);
     }
 

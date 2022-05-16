@@ -3,8 +3,10 @@ package org.deco.gachicoding.service;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,9 +20,9 @@ public interface AnswerService {
 
     AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto);
 
-    void disableAnswer(Long ansIdx);
+    ResponseEntity<ResponseState> disableAnswer(Long ansIdx);
 
-    void enableAnswer(Long ansIdx);
+    ResponseEntity<ResponseState> enableAnswer(Long ansIdx);
 
-    Long removeAnswer(Long ansIdx);
+    ResponseEntity<ResponseState> removeAnswer(Long ansIdx);
 }

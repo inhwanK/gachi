@@ -7,11 +7,16 @@ import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.question.QuestionResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
+import org.deco.gachicoding.dto.response.CustomException;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -49,7 +54,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public QuestionResponseDto getQuestionDetail(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + queIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         QuestionResponseDto questionDetail = QuestionResponseDto.builder()
                 .question(question)
@@ -62,7 +67,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
         Question question = questionRepository.findById(dto.getQueIdx())
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + dto.getQueIdx()));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         question = question.update(dto.getQueTitle(), dto.getQueContent(), dto.getQueError(), dto.getQueCategory());
 
@@ -75,29 +80,31 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public void disableQuestion(Long queIdx) {
+    public ResponseEntity<ResponseState> disableQuestion(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + queIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         question.isDisable();
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Override
     @Transactional
-    public void enableQuestion(Long queIdx) {
+    public ResponseEntity<ResponseState> enableQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + queIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         question.isEnable();
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Override
     @Transactional
-    public Long removeQuestion(Long queIdx) {
+    public ResponseEntity<ResponseState> removeQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
-                .orElseThrow(() -> new IllegalArgumentException("게시글이 존재하지 않습니다. 글번호 = " + queIdx));
+                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         questionRepository.delete(question);
-        return queIdx;
+        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 }

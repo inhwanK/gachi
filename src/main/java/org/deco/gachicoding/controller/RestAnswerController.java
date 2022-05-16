@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.AnswerService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Api
@@ -45,19 +47,19 @@ public class RestAnswerController {
 
     @ApiOperation(value = "답변 비활성화")
     @PutMapping("/answer/disable/{ansIdx}")
-    public void disableAnswer(@PathVariable Long ansIdx){
-        answerService.disableAnswer(ansIdx);
+    public ResponseEntity<ResponseState> disableAnswer(@PathVariable Long ansIdx){
+        return answerService.disableAnswer(ansIdx);
     }
 
     @ApiOperation(value = "답변 활성화")
     @PutMapping("/answer/enable/{ansIdx}")
-    public void enableAnswer(@PathVariable Long ansIdx){
-        answerService.enableAnswer(ansIdx);
+    public ResponseEntity<ResponseState> enableAnswer(@PathVariable Long ansIdx){
+        return answerService.enableAnswer(ansIdx);
     }
 
     @ApiOperation(value = "답변 삭제")
     @DeleteMapping("/answer/{ansIdx}")
-    public Long removeAnswer(@PathVariable Long ansIdx){
+    public ResponseEntity<ResponseState> removeAnswer(@PathVariable Long ansIdx){
         return answerService.removeAnswer(ansIdx);
     }
 }

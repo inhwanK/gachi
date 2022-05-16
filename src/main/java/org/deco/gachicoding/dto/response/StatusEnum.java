@@ -18,7 +18,9 @@ public enum StatusEnum {
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 내부 오류. 웹 서버가 요청사항을 수행할 수 없을 경우 발생  */
-    RESOURCE_NOT_EXIST(INTERNAL_SERVER_ERROR, "데이터가 존재하지 않습니다.");
+    RESOURCE_NOT_EXIST(INTERNAL_SERVER_ERROR, "데이터가 존재하지 않습니다."),
+    NULL_POINTER(INTERNAL_SERVER_ERROR, "참조 변수에 값이 존재하지 않습니다."),
+    INPUT_OUTPUT_EXCEPTION(INTERNAL_SERVER_ERROR, "파일 읽기, 쓰기 실패");
 
     private final HttpStatus httpStatus;
     private final String detail;

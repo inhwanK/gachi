@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.deco.gachicoding.dto.response.StatusEnum.DUPLICATE_RESOURCE;
+import static org.deco.gachicoding.dto.response.StatusEnum.INPUT_OUTPUT_EXCEPTION;
 
 @Slf4j
 @RestControllerAdvice
@@ -28,7 +30,7 @@ public class ApiControllerAdvice {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(value = { ConstraintViolationException.class, DataIntegrityViolationException.class})
+    @ExceptionHandler(value = { ConstraintViolationException.class, DataIntegrityViolationException.class, IOException.class})
     protected ResponseEntity<ResponseState> handleDataException() {
         log.error("handleDataException throw Exception : {}", DUPLICATE_RESOURCE);
         return ResponseState.toResponseEntity(DUPLICATE_RESOURCE);

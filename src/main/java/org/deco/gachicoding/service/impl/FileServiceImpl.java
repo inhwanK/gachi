@@ -49,15 +49,16 @@ public class FileServiceImpl implements FileService {
 
                 multipartFile = mpRequest.getFile("file");
 
-                origFileName = multipartFile.getOriginalFilename();
+//                origFileName = multipartFile.getOriginalFilename();
 //                origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
 //                saveFileName = origFileName + origFileExtension;
 
-                File file = new File(absolutePath + tempRoot + origFileName);
-                multipartFile.transferTo(file);         // 저장
-//                s3Service.upload(multipartFile);
+//                File file = new File(absolutePath + tempRoot + origFileName);
+//                multipartFile.transferTo(file);         // 저장
 
-                return file.getAbsolutePath();
+//                return file.getAbsolutePath();
+
+                return s3Service.upload(multipartFile);
         }
 
         public String moveImg(String content)throws Exception{

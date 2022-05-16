@@ -49,7 +49,7 @@ public class RestUserController {
      * @return UserResponseDto
      * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
-    @ApiModelProperty(value = "세션", required = false, hidden = true)
+    @ApiModelProperty(hidden = true)
     @GetMapping("/user/info")
     public UserResponseDto getUserInfo(HttpSession httpSession) {
         UserResponseDto userInfo = (UserResponseDto) httpSession.getAttribute("user");
@@ -60,7 +60,7 @@ public class RestUserController {
      * @return void
      * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
-    @ApiModelProperty(value = "요청", required = false, hidden = true)
+    @ApiModelProperty(hidden = true)
     @GetMapping("/user/logout")
     public void logout(HttpServletRequest request) {
         HttpSession httpSession = request.getSession(false);

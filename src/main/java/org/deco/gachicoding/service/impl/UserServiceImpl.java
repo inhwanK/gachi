@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
             Optional<User> user = userRepository.findByUserEmail(principal.getUserEmail());
             UserResponseDto userResponseDto = new UserResponseDto(user.get());
-            httpSession.setAttribute(principal.getUserEmail(), userResponseDto);
+            httpSession.setAttribute("user", userResponseDto);
 
             // return 값으로 sessionID를 넘겨 주어야 함.
             return userResponseDto;

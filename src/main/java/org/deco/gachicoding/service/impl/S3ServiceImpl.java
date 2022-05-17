@@ -57,23 +57,24 @@ public class S3ServiceImpl {
         String saveFileName = null;
         Long fileSize = null;  // bytes size
         String filePath = null;
-
+        
+        // 저장 경로 바꿔야 함 (날짜도 추가)
         for(MultipartFile f : files) {
+            // 파일 정보 추출 (이걸 dto 생성 시 바로 해버리면?)
             origFileName = f.getOriginalFilename();
             origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
             tamperingFileName = UUID.randomUUID().toString();
             saveFileName = tamperingFileName + origFileExtension;
             fileSize = f.getSize();
+            
+            // s3 저장 경로
+            String saveFilePath = category + "/" + boardIdx + "/" + saveFileName;
 
-//                System.out.println("origFileName : " + origFileName);
-//                System.out.println("origFileExtension : " + origFileExtension);
-//                System.out.println("tamperingFileName : " + tamperingFileName);
-//                System.out.println("saveFileName : " + saveFileName);
-//                System.out.println("fileSize : " + fileSize);
-
-            s3Client.putObject(new PutObjectRequest(bucket, saveFileName, f.getInputStream(), null)
+            // s3 저장
+            s3Client.putObject(new PutObjectRequest(bucket, saveFilePath, f.getInputStream(), null)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
 
+            // s3 객체 URL
             filePath = s3Client.getUrl(bucket, saveFileName).toString();
 
             FileSaveDto dto = FileSaveDto.builder()
@@ -86,14 +87,7 @@ public class S3ServiceImpl {
                     .filePath(filePath)
                     .build();
 
-            fileService.saveFile(dto);
-
-//                System.out.println("filePath : " + filePath);
+            fileService.registerFile(dto);
         }
-    }
-
-    public void readObject(String filePath) throws IOException {
-        S3Object o = s3Client.getObject(bucket, filePath);
-
     }
 }

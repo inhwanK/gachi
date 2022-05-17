@@ -1,19 +1,21 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.domain.file.File;
 import org.deco.gachicoding.domain.file.FileRepository;
+import org.deco.gachicoding.dto.file.FileResponseDto;
 import org.deco.gachicoding.dto.file.FileSaveDto;
 import org.deco.gachicoding.service.FileService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -25,26 +27,38 @@ import java.util.regex.Pattern;
 public class FileServiceImpl implements FileService {
         private final FileRepository fileRepository;
 
-        private final static String tempRoot = "/src/main/resources/tempImg/";
-        // 절대 경로를 위한 absolutePath
-        private final static String absolutePath = new File("").getAbsolutePath() + "\\";
-        private final static Path path = Path.of(absolutePath + tempRoot);
+//        private final static String tempRoot = "/src/main/resources/tempImg/";
+//        // 절대 경로를 위한 absolutePath
+//        private final static String absolutePath = new File("").getAbsolutePath() + "\\";
+//        private final static Path path = Path.of(absolutePath + tempRoot);
 
-        @PostConstruct
-        public void init() {
-                try {
-                        if (!Files.exists(path)) {
-                                Files.createDirectories(path);
-                        }
-                } catch (IOException e) {
-                        e.printStackTrace();
-                }
-        }
+//        @PostConstruct
+//        public void init() {
+//                try {
+//                        if (!Files.exists(path)) {
+//                                Files.createDirectories(path);
+//                        }
+//                } catch (IOException e) {
+//                        e.printStackTrace();
+//                }
+//        }
 
         // 리팩토링 - 이미지 이름이 중복되면 안올라감
-        public String saveFile(FileSaveDto fileSaveDto) throws IOException {
+        @Transactional
+        public void registerFile(FileSaveDto fileSaveDto) throws IOException {
                 fileRepository.save(fileSaveDto.toEntity());
-                return null;
+        }
+
+        @Transactional
+        public List<FileResponseDto> getFileList(String boardCategory, Long boardIdx) {
+                List<FileResponseDto> result = new ArrayList<>();
+                List<File> fileList = fileRepository.findAllByBoardCategoryAndBoardIdx(boardCategory, boardIdx);
+
+                for (File f : fileList) {
+                        result.add(new FileResponseDto(f));
+                }
+
+                return result;
         }
 
         // 리팩토링 - 이미지 이름이 중복되면 안올라감

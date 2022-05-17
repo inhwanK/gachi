@@ -25,6 +25,7 @@ import java.util.List;
 public class RestBoardController {
 
     private final BoardService boardService;
+    private final FileServiceImpl fileService;
     private final S3ServiceImpl s3Service;
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
@@ -51,7 +52,10 @@ public class RestBoardController {
     @ApiOperation(value = "자유게시판 상세 게시글")
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
-        return boardService.getBoardDetail(boardIdx);
+        BoardResponseDto result = boardService.getBoardDetail(boardIdx);
+        result.setFileList(fileService.getFileList("board", boardIdx));
+        return result;
+
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정")

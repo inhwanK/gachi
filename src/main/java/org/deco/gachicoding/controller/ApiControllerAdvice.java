@@ -29,11 +29,11 @@ public class ApiControllerAdvice {
         return ResponseEntity.badRequest().body(errors);
     }
 
-    @ExceptionHandler(NullPointerException.class)
-    protected ResponseEntity<ResponseState> handleNullPointerException() {
-        log.error("handleNullPointerException throw Exception : {}", NULL_POINTER);
-        return ResponseState.toResponseEntity(NULL_POINTER);
-    }
+//    @ExceptionHandler(NullPointerException.class)
+//    protected ResponseEntity<ResponseState> handleNullPointerException() {
+//        log.error("handleNullPointerException throw Exception : {}", NULL_POINTER);
+//        return ResponseState.toResponseEntity(NULL_POINTER);
+//    }
 
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ResponseState> handleIOException() {

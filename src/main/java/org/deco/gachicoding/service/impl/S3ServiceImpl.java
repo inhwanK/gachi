@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -89,5 +90,30 @@ public class S3ServiceImpl {
 
             fileService.registerFile(dto);
         }
+    }
+
+    public List<String> copyTempImage(List<MultipartFile> files) throws IOException {
+        List<String> result = new ArrayList<>();
+        String origFileName = null;
+        String filePath = null;
+
+        // 저장 경로 바꿔야 함 (날짜도 추가)
+        for(MultipartFile f : files) {
+            System.out.println("f : "+f.getOriginalFilename());
+            // 파일 정보 추출 (이걸 dto 생성 시 바로 해버리면?)
+            origFileName = f.getOriginalFilename();
+
+            // s3 저장 경로
+            String saveFilePath = "temp/" + origFileName;
+
+            // s3 저장
+            s3Client.putObject(new PutObjectRequest(bucket, saveFilePath, f.getInputStream(), null)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+
+            // s3 객체 URL
+            filePath = s3Client.getUrl(bucket, origFileName).toString();
+            result.add(filePath);
+        }
+        return result;
     }
 }

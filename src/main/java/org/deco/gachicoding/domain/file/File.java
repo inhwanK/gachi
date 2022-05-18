@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,22 +17,23 @@ import java.time.LocalDateTime;
 public class File {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileIdx;
 
     private Long boardIdx;
     private String boardCategory;
     private String origFilename;
     private String saveFilename;
-    private int fileSize;
+    private Long fileSize;
     private String fileExt;
     private String filePath;
-    private boolean fileActivated;
+    private Boolean fileActivated;
 
     private LocalDateTime fileRegdate;
 //    private LocalDateTime fileModdate;
 
     @Builder
-    public File(Long fileIdx, Long boardIdx, String boardCategory, String origFilename, String saveFilename, int fileSize, String fileExt, String filePath, boolean fileActivated, LocalDateTime fileRegdate) {
+    public File(Long fileIdx, Long boardIdx, String boardCategory, String origFilename, String saveFilename, Long fileSize, String fileExt, String filePath, Boolean fileActivated, LocalDateTime fileRegdate) {
         this.fileIdx = fileIdx;
         this.boardIdx = boardIdx;
         this.boardCategory = boardCategory;

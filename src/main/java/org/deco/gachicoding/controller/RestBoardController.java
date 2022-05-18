@@ -7,11 +7,17 @@ import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.service.BoardService;
+import org.deco.gachicoding.service.impl.FileServiceImpl;
+import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,11 +25,22 @@ import org.springframework.web.bind.annotation.*;
 public class RestBoardController {
 
     private final BoardService boardService;
+    private final FileServiceImpl fileService;
+    private final S3ServiceImpl s3Service;
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
-    public Long registerBoard(@RequestBody BoardSaveRequestDto dto){
-        return boardService.registerBoard(dto);
+    public Long registerBoard(@ModelAttribute BoardSaveRequestDto dto, @ModelAttribute("files") List<MultipartFile> files) {
+        Long boardIdx = boardService.registerBoard(dto);
+
+        // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
+        try {
+            s3Service.upload(files, boardIdx, "board");
+        } catch (IOException | NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @ApiOperation(value = "자유게시판 게시글 목록")
@@ -35,7 +52,10 @@ public class RestBoardController {
     @ApiOperation(value = "자유게시판 상세 게시글")
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
-        return boardService.getBoardDetail(boardIdx);
+        BoardResponseDto result = boardService.getBoardDetail(boardIdx);
+        result.setFileList(fileService.getFileList("board", boardIdx));
+        return result;
+
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정")

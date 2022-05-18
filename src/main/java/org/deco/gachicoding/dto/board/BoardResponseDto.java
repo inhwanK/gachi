@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.board.Board;
+import org.deco.gachicoding.dto.file.FileResponseDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -21,6 +23,8 @@ public class BoardResponseDto {
     private LocalDateTime boardRegdate;
     private boolean boardPin;
     private boolean boardActivated;
+
+    private List<FileResponseDto> fileList;
 
     @Builder
     public BoardResponseDto(Board board) {

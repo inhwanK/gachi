@@ -31,9 +31,9 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public Page<BoardResponseDto> getBoardList(Pageable pageable) {
+    public Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable) {
         Page<BoardResponseDto> boardList =
-                boardRepository.findAllByOrderByBoardIdxAsc(pageable).map(entity -> new BoardResponseDto(entity));
+                boardRepository.findByBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(keyword, keyword, pageable).map(entity -> new BoardResponseDto(entity));
 
         return boardList;
     }

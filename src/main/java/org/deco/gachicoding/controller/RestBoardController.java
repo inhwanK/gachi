@@ -45,8 +45,8 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 목록")
     @GetMapping("/board/list")
-    public Page<BoardResponseDto> getBoardList(@PageableDefault(size = 10) Pageable pageable){
-        return boardService.getBoardList(pageable);
+    public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable){
+        return boardService.getBoardList(keyword, pageable);
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")

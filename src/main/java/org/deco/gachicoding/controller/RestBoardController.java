@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -30,13 +31,14 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
-    public Long registerBoard(@ModelAttribute BoardSaveRequestDto dto, @ModelAttribute("files") List<MultipartFile> files) {
-        Long boardIdx = boardService.registerBoard(dto);
+    public Long registerBoard(@ModelAttribute BoardSaveRequestDto dto, @ModelAttribute("files") List<String> files) {
+//        Long boardIdx = boardService.registerBoard(dto);
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
-            s3Service.upload(files, boardIdx, "board");
-        } catch (IOException | NullPointerException e) {
+//            s3Service.upload(files, boardIdx, "board");
+            s3Service.replaceRealPath(files, Long.valueOf(75), "board");
+        } catch (IOException | NullPointerException | URISyntaxException e) {
             e.printStackTrace();
         }
 

@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.board.Board;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,6 +20,9 @@ public class BoardSaveRequestDto {
     private LocalDateTime boardRegdate;
     private boolean boardPin;
     private boolean boardActivated;
+
+    @Nullable
+    private List<String> files;
 
     public Board toEntity() {
         return Board.builder()

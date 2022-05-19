@@ -20,9 +20,7 @@ public class RestFileController {
     @ApiOperation(value = "파일 임시 저장")
     @PostMapping("/file/upload")
     public List<String> fileUploadImageFile(@ModelAttribute("files") List<MultipartFile> files) throws IOException {
-        for(MultipartFile f : files) {
-            System.out.println("f : " + f.getOriginalFilename());
-        }
-        return s3Service.copyTempImage(files);
+
+        return s3Service.uploadTempImg(files);
     }
 }

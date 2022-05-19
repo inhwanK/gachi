@@ -8,5 +8,5 @@ import java.net.URI;
 
 @Service
 public interface FileService {
-    String copyTempImage(MultipartHttpServletRequest mpRequest) throws IOException;
+
 }

@@ -31,13 +31,12 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
-    public Long registerBoard(@ModelAttribute BoardSaveRequestDto dto, @ModelAttribute("files") List<String> files) {
-//        Long boardIdx = boardService.registerBoard(dto);
+    public Long registerBoard(@RequestBody BoardSaveRequestDto dto) {
+        Long boardIdx = boardService.registerBoard(dto);
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
-//            s3Service.upload(files, boardIdx, "board");
-            s3Service.replaceRealPath(files, Long.valueOf(75), "board");
+            s3Service.uploadRealImg(dto.getFiles(), boardIdx, "board");
         } catch (IOException | NullPointerException | URISyntaxException e) {
             e.printStackTrace();
         }

@@ -25,11 +25,11 @@ public class Board {
     private String boardContent;
     private Long boardViews;
     private LocalDateTime boardRegdate;
-    private boolean boardPin;
-    private boolean boardActivated;
+    private Boolean boardPin;
+    private Boolean boardActivated;
 
     @Builder
-    public Board(String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, boolean boardPin, boolean boardActivated) {
+    public Board(String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardViews = boardViews;

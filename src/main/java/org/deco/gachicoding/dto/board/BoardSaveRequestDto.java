@@ -18,8 +18,8 @@ public class BoardSaveRequestDto {
     private String boardContent;
     private Long boardViews;
     private LocalDateTime boardRegdate;
-    private boolean boardPin;
-    private boolean boardActivated;
+    private Boolean boardPin;
+    private Boolean boardActivated;
 
     @Nullable
     private List<String> files;

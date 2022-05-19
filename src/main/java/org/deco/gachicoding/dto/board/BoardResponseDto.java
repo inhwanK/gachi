@@ -21,8 +21,8 @@ public class BoardResponseDto {
     private String boardContent;
     private Long boardViews;
     private LocalDateTime boardRegdate;
-    private boolean boardPin;
-    private boolean boardActivated;
+    private Boolean boardPin;
+    private Boolean boardActivated;
 
     private List<FileResponseDto> fileList;
 
@@ -33,7 +33,7 @@ public class BoardResponseDto {
         this.boardContent = board.getBoardContent();
         this.boardViews = board.getBoardViews();
         this.boardRegdate = board.getBoardRegdate();
-        this.boardPin = board.isBoardPin();
-        this.boardActivated = board.isBoardActivated();
+        this.boardPin = board.getBoardPin();
+        this.boardActivated = board.getBoardActivated();
     }
 }

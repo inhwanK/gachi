@@ -7,6 +7,7 @@ import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.service.BoardService;
+import org.deco.gachicoding.service.TagService;
 import org.deco.gachicoding.service.impl.FileServiceImpl;
 import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ public class RestBoardController {
     private final BoardService boardService;
     private final FileServiceImpl fileService;
     private final S3ServiceImpl s3Service;
+    private final TagService tagService;
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
@@ -37,11 +39,12 @@ public class RestBoardController {
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
             s3Service.uploadRealImg(dto.getFiles(), boardIdx, "board");
+            tagService.registerBoardTag(boardIdx, dto.getTags());
         } catch (IOException | NullPointerException | URISyntaxException e) {
             e.printStackTrace();
         }
 
-        return null;
+        return boardIdx;
     }
 
     @ApiOperation(value = "자유게시판 게시글 목록")

@@ -24,6 +24,9 @@ public class BoardSaveRequestDto {
     @Nullable
     private List<String> files;
 
+    @Nullable
+    private List<String> tags;
+
     public Board toEntity() {
         return Board.builder()
                 .boardTitle(boardTitle)

@@ -1,18 +1,21 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.domain.tag.BoardTag;
+import org.deco.gachicoding.domain.tag.BoardTagRepository;
 import org.deco.gachicoding.domain.tag.Tag;
 import org.deco.gachicoding.domain.tag.TagRepository;
-import org.deco.gachicoding.dto.tag.TagSaveRequestDto;
 import org.deco.gachicoding.service.TagService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
     private final TagRepository tagRepository;
+    private final BoardTagRepository boardTagRepository;
 
     private Optional<Tag> isDuplicateKeyword(String keyword) {
         Optional<Tag> tag = tagRepository.findByTagKeyword(keyword);
@@ -20,13 +23,28 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Long registerTag(TagSaveRequestDto dto) {
-        Optional<Tag> findTag = isDuplicateKeyword(dto.getKeyword());
+    public Long registerTag(String keyword) {
+        Optional<Tag> findTag = isDuplicateKeyword(keyword);
 
         if(findTag.isPresent()) {
             return findTag.get().getTagIdx();
         }
 
-        return tagRepository.save(dto.toEntity()).getTagIdx();
+        Tag entity = Tag.builder()
+                    .keyword(keyword)
+                    .build();
+
+        return tagRepository.save(entity).getTagIdx();
+    }
+
+    @Override
+    public void registerBoardTag(Long boardIdx, List<String> tags) {
+        for (String tag : tags) {
+            BoardTag entity = BoardTag.builder()
+                    .boardIdx(boardIdx)
+                    .tagIdx(registerTag(tag))
+                    .build();
+            boardTagRepository.save(entity);
+        }
     }
 }

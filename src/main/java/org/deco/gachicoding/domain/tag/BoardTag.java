@@ -11,17 +11,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "board_tag")
 public class BoardTag {
-    
-    // id 2개 쓰는법 알아보기
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardTagIdx;
     private Long boardIdx;
     private Long tagIdx;
+    private String boardType;
 
     @Builder
-    public BoardTag (Long boardIdx, Long tagIdx) {
+    public BoardTag (Long boardIdx, Long tagIdx, String boardType) {
         this.boardIdx = boardIdx;
         this.tagIdx = tagIdx;
+        this.boardType = boardType;
     }
 }

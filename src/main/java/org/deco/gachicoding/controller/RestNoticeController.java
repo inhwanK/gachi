@@ -7,11 +7,16 @@ import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.NoticeService;
+import org.deco.gachicoding.service.TagService;
+import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,11 +24,23 @@ import org.springframework.web.bind.annotation.*;
 public class RestNoticeController {
 
     private final NoticeService noticeService;
+    private final S3ServiceImpl s3Service;
+    private final TagService tagService;
+    private final String type = "notice";
 
     @ApiOperation(value = "공지사항 등록")
     @PostMapping("/notice")
     public Long registerNotice(@RequestBody NoticeSaveRequestDto dto) {
-        return noticeService.registerNotice(dto);
+        Long noticeIdx = noticeService.registerNotice(dto);
+
+        // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
+        try {
+            s3Service.uploadRealImg(dto.getFiles(), noticeIdx, type);
+            tagService.registerBoardTag(noticeIdx, dto.getTags(), type);
+        } catch (IOException | NullPointerException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+        return noticeIdx;
     }
 
     @ApiOperation(value = "공지사항 리스트 보기")

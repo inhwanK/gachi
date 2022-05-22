@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.springframework.lang.Nullable;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,6 +25,12 @@ public class NoticeSaveRequestDto {
 
     @Nullable
     private Boolean notPin;
+
+    @Nullable
+    private List<String> files;
+
+    @Nullable
+    private List<String> tags;
 
     @Builder
     public NoticeSaveRequestDto(Long userIdx, String notTitle, String notContent, Boolean notPin) {

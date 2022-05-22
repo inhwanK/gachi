@@ -4,9 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -16,6 +14,8 @@ public class BoardTag {
     
     // id 2개 쓰는법 알아보기
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long boardTagIdx;
     private Long boardIdx;
     private Long tagIdx;
 

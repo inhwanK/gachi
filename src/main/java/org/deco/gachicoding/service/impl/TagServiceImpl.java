@@ -41,9 +41,10 @@ public class TagServiceImpl implements TagService {
     public void registerBoardTag(Long boardIdx, List<String> tags, String type) {
         for (String tag : tags) {
             BoardTag entity = BoardTag.builder()
+                    .boardType(type)
                     .boardIdx(boardIdx)
                     .tagIdx(registerTag(tag))
-                    .boardType(type)
+                    .tagKeyword(tag)
                     .build();
             boardTagRepository.save(entity);
         }

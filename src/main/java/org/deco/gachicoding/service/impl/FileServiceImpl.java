@@ -40,7 +40,7 @@ public class FileServiceImpl implements FileService {
         }
 
         @Transactional
-        public List<FileResponseDto> getFileList(String boardCategory, Long boardIdx) {
+        public List<FileResponseDto> getFiles(String boardCategory, Long boardIdx) {
                 List<FileResponseDto> result = new ArrayList<>();
                 List<File> fileList = fileRepository.findAllByBoardCategoryAndBoardIdx(boardCategory, boardIdx);
 

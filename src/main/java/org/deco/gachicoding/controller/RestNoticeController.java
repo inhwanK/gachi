@@ -6,6 +6,7 @@ import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
+import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.NoticeService;
 import org.deco.gachicoding.service.TagService;
 import org.deco.gachicoding.service.impl.S3ServiceImpl;
@@ -26,6 +27,7 @@ public class RestNoticeController {
     private final NoticeService noticeService;
     private final S3ServiceImpl s3Service;
     private final TagService tagService;
+    private final FileService fileService;
     private final String type = "notice";
 
     @ApiOperation(value = "공지사항 등록")
@@ -52,7 +54,10 @@ public class RestNoticeController {
     @ApiOperation(value = "공지사항 상세 보기")
     @GetMapping("/notice/{notIdx}")
     public NoticeResponseDto getNoticeDetail(@PathVariable Long notIdx) {
-        return noticeService.getNoticeDetail(notIdx);
+        NoticeResponseDto result = noticeService.getNoticeDetail(notIdx);
+        result.setFiles(fileService.getFiles(type, notIdx));
+        result.setTags(tagService.getTags(notIdx, type));
+        return result;
     }
 
     @ApiOperation(value = "공지사항 수정")

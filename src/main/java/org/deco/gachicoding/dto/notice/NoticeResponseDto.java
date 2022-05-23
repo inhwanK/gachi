@@ -6,8 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.file.FileResponseDto;
+import org.deco.gachicoding.dto.tag.TagResponseDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,6 +26,10 @@ public class NoticeResponseDto {
     private int notViews;
     private Boolean notPin;
     private LocalDateTime notRegdate;
+
+    List<FileResponseDto> files;
+
+    List<TagResponseDto> tags;
 
     @Builder
     public NoticeResponseDto(Notice notice) {

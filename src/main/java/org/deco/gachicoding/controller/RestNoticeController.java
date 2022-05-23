@@ -55,8 +55,8 @@ public class RestNoticeController {
     @GetMapping("/notice/{notIdx}")
     public NoticeResponseDto getNoticeDetail(@PathVariable Long notIdx) {
         NoticeResponseDto result = noticeService.getNoticeDetail(notIdx);
-        result.setFiles(fileService.getFiles(type, notIdx));
-        result.setTags(tagService.getTags(notIdx, type));
+        fileService.getFiles(notIdx, type, result);
+        tagService.getTags(notIdx, type, result);
         return result;
     }
 

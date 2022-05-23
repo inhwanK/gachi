@@ -5,6 +5,7 @@ import org.deco.gachicoding.domain.tag.BoardTag;
 import org.deco.gachicoding.domain.tag.BoardTagRepository;
 import org.deco.gachicoding.domain.tag.Tag;
 import org.deco.gachicoding.domain.tag.TagRepository;
+import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.tag.TagResponseDto;
 import org.deco.gachicoding.service.TagService;
 import org.springframework.stereotype.Service;
@@ -53,13 +54,15 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List<TagResponseDto> getTags(Long boardIdx, String type) {
+    public ResponseDto getTags(Long boardIdx, String type, ResponseDto dto) {
         List<TagResponseDto> result = new ArrayList<>();
         List<BoardTag> tags = boardTagRepository.findAllByBoardIdxAndBoardType(boardIdx, type);
 
         for (BoardTag tag : tags) {
             result.add(new TagResponseDto(tag.getTagKeyword()));
         }
-        return result;
+
+        dto.setTags(result);
+        return dto;
     }
 }

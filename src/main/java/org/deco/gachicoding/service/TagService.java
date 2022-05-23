@@ -1,6 +1,6 @@
 package org.deco.gachicoding.service;
 
-import org.deco.gachicoding.dto.tag.TagResponseDto;
+import org.deco.gachicoding.dto.ResponseDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,5 +11,5 @@ public interface TagService {
 
     public void registerBoardTag(Long boardIdx, List<String> tags, String type);
 
-    public List<TagResponseDto> getTags(Long boardIdx, String type);
+    public ResponseDto getTags(Long boardIdx, String type, ResponseDto dto);
 }

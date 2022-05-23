@@ -56,7 +56,8 @@ public class RestBoardController {
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
-        result.setFiles(fileService.getFiles(type, boardIdx));
+        fileService.getFiles(boardIdx, type, result);
+        tagService.getTags(boardIdx, type, result);
         return result;
 
     }

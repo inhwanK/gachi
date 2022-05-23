@@ -7,26 +7,24 @@ import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.service.BoardService;
+import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.TagService;
-import org.deco.gachicoding.service.impl.FileServiceImpl;
 import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class RestBoardController {
     private final BoardService boardService;
-    private final FileServiceImpl fileService;
+    private final FileService fileService;
     private final S3ServiceImpl s3Service;
     private final TagService tagService;
 
@@ -58,7 +56,7 @@ public class RestBoardController {
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
-        result.setFileList(fileService.getFileList("board", boardIdx));
+        result.setFiles(fileService.getFiles(type, boardIdx));
         return result;
 
     }

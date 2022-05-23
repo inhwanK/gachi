@@ -24,7 +24,7 @@ public class BoardResponseDto {
     private Boolean boardPin;
     private Boolean boardActivated;
 
-    private List<FileResponseDto> fileList;
+    private List<FileResponseDto> files;
 
     @Builder
     public BoardResponseDto(Board board) {

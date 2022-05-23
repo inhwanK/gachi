@@ -8,5 +8,5 @@ import java.util.List;
 public interface TagService {
     public Long registerTag(String keyword);
 
-    public void registerBoardTag(Long boardIdx, List<String> tags);
+    public void registerBoardTag(Long boardIdx, List<String> tags, String type);
 }

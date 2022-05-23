@@ -38,11 +38,13 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public void registerBoardTag(Long boardIdx, List<String> tags) {
+    public void registerBoardTag(Long boardIdx, List<String> tags, String type) {
         for (String tag : tags) {
             BoardTag entity = BoardTag.builder()
+                    .boardType(type)
                     .boardIdx(boardIdx)
                     .tagIdx(registerTag(tag))
+                    .tagKeyword(tag)
                     .build();
             boardTagRepository.save(entity);
         }

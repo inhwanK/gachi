@@ -25,11 +25,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class RestBoardController {
-
     private final BoardService boardService;
     private final FileServiceImpl fileService;
     private final S3ServiceImpl s3Service;
     private final TagService tagService;
+
+    private final String type = "board";
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
@@ -38,8 +39,8 @@ public class RestBoardController {
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
-            s3Service.uploadRealImg(dto.getFiles(), boardIdx, "board");
-            tagService.registerBoardTag(boardIdx, dto.getTags());
+            s3Service.uploadRealImg(dto.getFiles(), boardIdx, type);
+            tagService.registerBoardTag(boardIdx, dto.getTags(), type);
         } catch (IOException | NullPointerException | URISyntaxException e) {
             e.printStackTrace();
         }

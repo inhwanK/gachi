@@ -3,6 +3,7 @@ package org.deco.gachicoding.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.file.File;
 import org.deco.gachicoding.domain.file.FileRepository;
+import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.file.FileResponseDto;
 import org.deco.gachicoding.dto.file.FileSaveDto;
 import org.deco.gachicoding.service.FileService;
@@ -40,7 +41,7 @@ public class FileServiceImpl implements FileService {
         }
 
         @Transactional
-        public List<FileResponseDto> getFiles(String boardCategory, Long boardIdx) {
+        public ResponseDto getFiles(Long boardIdx, String boardCategory, ResponseDto dto) {
                 List<FileResponseDto> result = new ArrayList<>();
                 List<File> fileList = fileRepository.findAllByBoardCategoryAndBoardIdx(boardCategory, boardIdx);
 
@@ -48,7 +49,8 @@ public class FileServiceImpl implements FileService {
                         result.add(new FileResponseDto(f));
                 }
 
-                return result;
+                dto.setFiles(result);
+                return dto;
         }
 
 //        // 리팩토링 - 이미지 이름이 중복되면 안올라감

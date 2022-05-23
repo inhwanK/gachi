@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.file.FileResponseDto;
 import org.deco.gachicoding.dto.tag.TagResponseDto;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class NoticeResponseDto {
+public class NoticeResponseDto implements ResponseDto {
 
     private Long notIdx;
     private Long userIdx;
@@ -27,9 +28,9 @@ public class NoticeResponseDto {
     private Boolean notPin;
     private LocalDateTime notRegdate;
 
-    List<FileResponseDto> files;
+    private List<FileResponseDto> files;
 
-    List<TagResponseDto> tags;
+    private List<TagResponseDto> tags;
 
     @Builder
     public NoticeResponseDto(Notice notice) {
@@ -46,5 +47,15 @@ public class NoticeResponseDto {
         this.userIdx = user.getUserIdx();
         this.userNick = user.getUserNick();
         this.userPicture = user.getUserPicture();
+    }
+
+    @Override
+    public void setFiles(List<FileResponseDto> files) {
+        this.files = files;
+    }
+
+    @Override
+    public void setTags(List<TagResponseDto> tags) {
+        this.tags = tags;
     }
 }

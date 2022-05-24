@@ -25,7 +25,7 @@
 
 ## 저장소
 * [백엔드 저장소 (현재 저장소)](https://github.com/inhwanK/gachicoding)
-* [프론트엔드 저장소](https://github.com/kiminpyo/gachicoding-front)
+* [프론트엔드 저장소](https://github.com/kiminpyo/gachicoding-front-next)
 * [DevOps 저장소](https://github.com/BAE-JI-WANG/gachicoding_DevOps)
 
 <br>

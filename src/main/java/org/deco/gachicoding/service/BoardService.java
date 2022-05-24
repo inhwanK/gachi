@@ -14,7 +14,7 @@ public interface BoardService {
 
     Long registerBoard(BoardSaveRequestDto dto);
 
-    Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable);
+    Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable, String boardType);
 
     BoardResponseDto getBoardDetail(Long boardIdx);
 

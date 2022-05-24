@@ -27,16 +27,19 @@ public class Board {
     private User writer;
     private String boardTitle;
     private String boardContent;
+    private String boardType;
     private Long boardViews;
     private LocalDateTime boardRegdate;
     private Boolean boardPin;
     private Boolean boardActivated;
 
     @Builder
+
     public Board(User writer, String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
         this.writer = writer;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
+        this.boardType = boardType;
         this.boardViews = boardViews;
         this.boardRegdate = boardRegdate;
         this.boardPin = boardPin;

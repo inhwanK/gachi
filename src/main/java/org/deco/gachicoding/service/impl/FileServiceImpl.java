@@ -1,6 +1,7 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.file.File;
 import org.deco.gachicoding.domain.file.FileRepository;
 import org.deco.gachicoding.dto.ResponseDto;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // 리팩토링1 @Autowired -> @RequiredArgsConstructor
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
@@ -37,7 +39,15 @@ public class FileServiceImpl implements FileService {
 
         @Transactional
         public void registerFile(FileSaveDto fileSaveDto) {
-                fileRepository.save(fileSaveDto.toEntity());
+                try {
+                        log.info("tried Save File");
+                        fileRepository.save(fileSaveDto.toEntity());
+                        log.info("Success Save File");
+                        // 구체적인 익셉션?
+                } catch (Exception e) {
+                        log.info("Error Save File");
+                        e.printStackTrace();
+                }
         }
 
         @Transactional

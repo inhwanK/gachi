@@ -2,6 +2,7 @@ package org.deco.gachicoding.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -28,18 +30,17 @@ public class RestBoardController {
     private final S3ServiceImpl s3Service;
     private final TagService tagService;
 
-    private final String type = "board";
-
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
     public Long registerBoard(@RequestBody BoardSaveRequestDto dto) {
+        log.info("{} Register Controller", "Board");
         Long boardIdx = boardService.registerBoard(dto);
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
-            s3Service.uploadRealImg(dto.getFiles(), boardIdx, type);
-            tagService.registerBoardTag(boardIdx, dto.getTags(), type);
-        } catch (IOException | NullPointerException | URISyntaxException e) {
+            s3Service.uploadRealImg(boardIdx, dto.getFiles(), dto.getBoardType());
+            tagService.registerBoardTag(boardIdx, dto.getTags(), dto.getBoardType());
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -48,16 +49,16 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 목록")
     @GetMapping("/board/list")
-    public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable){
-        return boardService.getBoardList(keyword, pageable);
+    public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable, @RequestParam String boardType){
+        return boardService.getBoardList(keyword, pageable, boardType);
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
-        fileService.getFiles(boardIdx, type, result);
-        tagService.getTags(boardIdx, type, result);
+        fileService.getFiles(boardIdx, result.getBoardType(), result);
+        tagService.getTags(boardIdx, result.getBoardType(), result);
         return result;
 
     }

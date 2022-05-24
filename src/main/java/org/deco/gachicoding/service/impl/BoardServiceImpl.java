@@ -3,6 +3,8 @@ package org.deco.gachicoding.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.board.BoardRepository;
+import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
@@ -15,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
 @Service
@@ -22,11 +26,16 @@ import static org.deco.gachicoding.dto.response.StatusEnum.*;
 public class BoardServiceImpl implements BoardService {
 
     private final BoardRepository boardRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     @Override
     public Long registerBoard(BoardSaveRequestDto dto) {
-        return boardRepository.save(dto.toEntity()).getBoardIdx();
+
+        User writer = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        return boardRepository.save(dto.toEntity(writer)).getBoardIdx();
     }
 
     @Transactional

@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.domain.notice.Notice;
+import org.deco.gachicoding.domain.user.User;
 import org.hibernate.annotations.DynamicInsert;
 import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 
@@ -20,7 +21,10 @@ public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long boardIdx;
-    //    private Long userIdx; <- User 엔터티와 조인해야하는 컬럼
+
+    @ManyToOne
+    @JoinColumn(name = "user_idx")
+    private User writer;
     private String boardTitle;
     private String boardContent;
     private Long boardViews;
@@ -29,7 +33,8 @@ public class Board {
     private Boolean boardActivated;
 
     @Builder
-    public Board(String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
+    public Board(User writer, String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
+        this.writer = writer;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardViews = boardViews;

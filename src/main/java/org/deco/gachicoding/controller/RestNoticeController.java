@@ -2,6 +2,7 @@ package org.deco.gachicoding.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
@@ -19,11 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
 public class RestNoticeController {
-
     private final NoticeService noticeService;
     private final S3ServiceImpl s3Service;
     private final TagService tagService;
@@ -33,13 +34,24 @@ public class RestNoticeController {
     @ApiOperation(value = "공지사항 등록")
     @PostMapping("/notice")
     public Long registerNotice(@RequestBody NoticeSaveRequestDto dto) {
+        log.info("{} Register Controller", "Notice");
         Long noticeIdx = noticeService.registerNotice(dto);
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
+        // try catch 부분(위치)을 바꿔보자
+//        try {
+//            log.info("tried File Upload {}", "Notice");
+//            s3Service.uploadRealImg(noticeIdx, dto.getFiles(), type);
+//        } catch (IOException | NullPointerException | URISyntaxException e) {
+//            log.error("{}  Board File Upload Error", "Notice");
+//            e.printStackTrace();
+//        }
+
         try {
-            s3Service.uploadRealImg(dto.getFiles(), noticeIdx, type);
+            log.info("tried Tag Upload {}", "Notice");
             tagService.registerBoardTag(noticeIdx, dto.getTags(), type);
-        } catch (IOException | NullPointerException | URISyntaxException e) {
+        } catch (NullPointerException e) {
+            log.error("{} Board Tags Error", "Notice");
             e.printStackTrace();
         }
         return noticeIdx;

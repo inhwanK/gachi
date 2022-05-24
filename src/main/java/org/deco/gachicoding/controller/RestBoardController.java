@@ -2,6 +2,7 @@ package org.deco.gachicoding.controller;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -33,13 +35,14 @@ public class RestBoardController {
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
     public Long registerBoard(@RequestBody BoardSaveRequestDto dto) {
+        log.info("{} Register Controller", "Board");
         Long boardIdx = boardService.registerBoard(dto);
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
-            s3Service.uploadRealImg(dto.getFiles(), boardIdx, type);
-            tagService.registerBoardTag(boardIdx, dto.getTags(), type);
-        } catch (IOException | NullPointerException | URISyntaxException e) {
+            s3Service.uploadRealImg(boardIdx, dto.getFiles(), dto.getBoardType());
+            tagService.registerBoardTag(boardIdx, dto.getTags(), dto.getBoardType());
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 

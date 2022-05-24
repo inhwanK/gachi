@@ -8,6 +8,7 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.dto.file.FileSaveDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @NoArgsConstructor
 public class S3ServiceImpl {
@@ -80,7 +83,7 @@ public class S3ServiceImpl {
         return result;
     }
 
-    public void uploadRealImg(List<String> paths, Long boardIdx, String category) throws IOException, URISyntaxException {
+    public void uploadRealImg(Long boardIdx, List<String> paths, String category) {
         String origFileName = null;
         String origFileExtension = null;
         String tamperingFileName = null;
@@ -94,7 +97,12 @@ public class S3ServiceImpl {
             System.out.println("path : " + path);
 
             // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
-            oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
+            try {
+                oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                log.error("{} Error", "URLDecoder");
+                e.printStackTrace();
+            }
             tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
 
             origFileName = tamperingFileName.substring(tamperingFileName.indexOf("_")).replaceFirst("_", "");
@@ -135,23 +143,33 @@ public class S3ServiceImpl {
 //        return null;
 //    }
 
-    private Long convertFile(String filePath, String tamperingFileName) throws IOException {
-        URL url = new URL(filePath);
-        String canonicalPath = new File("").getCanonicalPath();
-        Path savePath = Paths.get(canonicalPath + "/src/main/resources/tempImg/", tamperingFileName);
+    private Long convertFile(String filePath, String tamperingFileName) {
+        try {
+            log.info("tried Convert File");
 
-        InputStream is = url.openStream();
-        Files.copy(is, savePath);
+            URL url = new URL(filePath);
+            String canonicalPath = new File("").getCanonicalPath();
+            Path savePath = Paths.get(canonicalPath + "/src/main/resources/tempImg/", tamperingFileName);
 
-        is.close();
+            InputStream is = url.openStream();
+            Files.copy(is, savePath);
 
-        Long bytes = Files.size(savePath);
-        Long kilobyte = bytes/1024;
-        Long megabyte = kilobyte/1024;
+            is.close();
 
-        Files.delete(savePath);
+            Long bytes = Files.size(savePath);
+            Long kilobyte = bytes/1024;
+            Long megabyte = kilobyte/1024;
 
-        return bytes;
+            Files.delete(savePath);
+
+            log.info("Success Convert File");
+
+            return bytes;
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("Convert File Error");
+            return null;
+        }
     }
 
     private String update(String oldPath, String newPath) {

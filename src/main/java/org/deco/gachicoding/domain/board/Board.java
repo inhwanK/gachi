@@ -23,15 +23,17 @@ public class Board {
     //    private Long userIdx; <- User 엔터티와 조인해야하는 컬럼
     private String boardTitle;
     private String boardContent;
+    private String boardType;
     private Long boardViews;
     private LocalDateTime boardRegdate;
     private Boolean boardPin;
     private Boolean boardActivated;
 
     @Builder
-    public Board(String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
+    public Board(String boardTitle, String boardContent, String boardType, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
+        this.boardType = boardType;
         this.boardViews = boardViews;
         this.boardRegdate = boardRegdate;
         this.boardPin = boardPin;

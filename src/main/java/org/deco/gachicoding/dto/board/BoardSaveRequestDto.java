@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.board.Board;
+import org.deco.gachicoding.domain.user.User;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -14,6 +15,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class BoardSaveRequestDto {
+
+
+    private String userEmail;
 
     @NotNull
     private String boardTitle;
@@ -43,8 +47,9 @@ public class BoardSaveRequestDto {
     @Nullable
     private List<String> tags;
 
-    public Board toEntity() {
+    public Board toEntity(User writer) {
         return Board.builder()
+                .writer(writer)
                 .boardTitle(boardTitle)
                 .boardContent(boardContent)
                 .boardType(boardType)

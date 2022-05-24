@@ -59,10 +59,7 @@ public class UserServiceImpl implements UserService {
             UserResponseDto userResponseDto = new UserResponseDto(user.get());
             httpSession.setAttribute("user", userResponseDto);
 
-            // return 값으로 sessionID를 넘겨 주어야 함.
             return userResponseDto;
-
-
             // BadCredentialsException - 스프링 시큐리티 에서 아이디 또는 비밀번호가 틀렸을 경우 나오는 예외
         } catch (BadCredentialsException e) {
             e.printStackTrace();

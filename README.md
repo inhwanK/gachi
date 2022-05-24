@@ -50,7 +50,7 @@
 ## ERD
 - 2022.05.24 업데이트
 
-![가치코딩 ERD](document/ERD.png)
+![가치코딩 ERD](document/ERD-0524.png)
 <br>
 
 ## 핵심 기능

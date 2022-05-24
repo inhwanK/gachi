@@ -20,6 +20,7 @@ public class BoardResponseDto implements ResponseDto {
     private Long boardIdx;
     private String boardTitle;
     private String boardContent;
+    private String boardType;
     private Long boardViews;
     private LocalDateTime boardRegdate;
     private Boolean boardPin;
@@ -34,6 +35,7 @@ public class BoardResponseDto implements ResponseDto {
         this.boardIdx = board.getBoardIdx();
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
+        this.boardType = board.getBoardType();
         this.boardViews = board.getBoardViews();
         this.boardRegdate = board.getBoardRegdate();
         this.boardPin = board.getBoardPin();

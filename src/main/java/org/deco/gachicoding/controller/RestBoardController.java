@@ -30,8 +30,6 @@ public class RestBoardController {
     private final S3ServiceImpl s3Service;
     private final TagService tagService;
 
-    private final String type = "board";
-
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
     public Long registerBoard(@RequestBody BoardSaveRequestDto dto) {
@@ -51,16 +49,16 @@ public class RestBoardController {
 
     @ApiOperation(value = "자유게시판 게시글 목록")
     @GetMapping("/board/list")
-    public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable){
-        return boardService.getBoardList(keyword, pageable);
+    public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable, @RequestParam String boardType){
+        return boardService.getBoardList(keyword, pageable, boardType);
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx){
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
-        fileService.getFiles(boardIdx, type, result);
-        tagService.getTags(boardIdx, type, result);
+        fileService.getFiles(boardIdx, result.getBoardType(), result);
+        tagService.getTags(boardIdx, result.getBoardType(), result);
         return result;
 
     }

@@ -29,7 +29,6 @@ public class User implements UserDetails{
 
     private String userName;
     private String userNick;
-
     private String userEmail;
     private String userPassword;
     private String userPicture;
@@ -68,6 +67,9 @@ public class User implements UserDetails{
         return this;
     }
 
+    public String getUserName(){
+        return this.getUserName();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -10,15 +10,11 @@ import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.NoticeService;
 import org.deco.gachicoding.service.TagService;
-import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +22,6 @@ import java.net.URISyntaxException;
 @RequestMapping("/api")
 public class RestNoticeController {
     private final NoticeService noticeService;
-    private final S3ServiceImpl s3Service;
     private final TagService tagService;
     private final FileService fileService;
     private final String type = "notice";

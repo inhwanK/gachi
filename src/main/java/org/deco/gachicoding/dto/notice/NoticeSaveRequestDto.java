@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.notice.Notice;
+import org.deco.gachicoding.domain.user.User;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -37,8 +38,9 @@ public class NoticeSaveRequestDto {
         this.notPin = notPin;
     }
 
-    public Notice toEntity(){
+    public Notice toEntity(User user){
         return Notice.builder()
+                .user(user)
                 .notTitle(notTitle)
                 .notContent(notContent)
                 .notPin(notPin)

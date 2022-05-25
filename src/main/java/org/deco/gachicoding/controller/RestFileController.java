@@ -3,7 +3,6 @@ package org.deco.gachicoding.controller;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.service.FileService;
-import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 

@@ -26,8 +26,8 @@ public class BoardSaveRequestDto {
     private String boardContent;
 
     // 게시판 유형(공지 사항, 자유 게시판)
-    @NotNull
-    private String boardType;
+//    @NotNull
+//    private String boardType;
 
     @Nullable
     private Long boardViews;
@@ -52,7 +52,7 @@ public class BoardSaveRequestDto {
                 .writer(writer)
                 .boardTitle(boardTitle)
                 .boardContent(boardContent)
-                .boardType(boardType)
+                .boardType("board")
                 .boardViews(boardViews)
                 .boardRegdate(boardRegdate)
                 .boardPin(boardPin)

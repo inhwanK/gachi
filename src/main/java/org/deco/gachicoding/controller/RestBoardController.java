@@ -10,7 +10,6 @@ import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.service.BoardService;
 import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.TagService;
-import org.deco.gachicoding.service.impl.S3ServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 public class RestBoardController {
     private final BoardService boardService;
     private final FileService fileService;
-    private final S3ServiceImpl s3Service;
     private final TagService tagService;
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
@@ -36,7 +34,7 @@ public class RestBoardController {
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
 //            s3Service.uploadRealImg(boardIdx, dto.getFiles(), dto.getBoardType());
-            tagService.registerBoardTag(boardIdx, dto.getTags(), dto.getBoardType());
+            tagService.registerBoardTag(boardIdx, dto.getTags(), "board");
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

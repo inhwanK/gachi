@@ -1,5 +1,13 @@
 package org.deco.gachicoding.service.impl;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.file.File;
@@ -8,34 +16,80 @@ import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.file.FileResponseDto;
 import org.deco.gachicoding.dto.file.FileSaveDto;
 import org.deco.gachicoding.service.FileService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 // 리팩토링1 @Autowired -> @RequiredArgsConstructor
 @Slf4j
 @Service
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class FileServiceImpl implements FileService {
-        private final FileRepository fileRepository;
+        @Autowired
+        private FileRepository fileRepository;
 
-//        private final static String tempRoot = "/src/main/resources/tempImg/";
-//        // 절대 경로를 위한 absolutePath
-//        private final static String absolutePath = new File("").getAbsolutePath() + "\\";
-//        private final static Path path = Path.of(absolutePath + tempRoot);
+        private AmazonS3 s3Client;
 
-//        @PostConstruct
-//        public void init() {
-//                try {
-//                        if (!Files.exists(path)) {
-//                                Files.createDirectories(path);
-//                        }
-//                } catch (IOException e) {
-//                        e.printStackTrace();
-//                }
-//        }
+        @Value("${cloud.aws.credentials.accessKey}")
+        private String accessKey;
+
+        @Value("${cloud.aws.credentials.secretKey}")
+        private String secretKey;
+
+        @Value("${cloud.aws.s3.bucket}")
+        private String bucket;
+
+        @Value("${cloud.aws.region.static}")
+        private String region;
+
+        @PostConstruct
+        public void setS3Client() {
+                AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+
+                s3Client = AmazonS3ClientBuilder.standard()
+                        .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                        .withRegion(this.region)
+                        .build();
+        }
+
+        public List<String> uploadTempImg(List<MultipartFile> files) throws IOException {
+                List<String> result = new ArrayList<>();
+
+                // 저장 경로 바꿔야 함 (날짜도 추가)
+                for(MultipartFile f : files) {
+                        String origFileName = null;
+                        String saveFileName = null;
+                        String filePath = null;
+
+                        System.out.println("f : "+f.getOriginalFilename());
+                        // 파일 정보 추출 (이걸 dto 생성 시 바로 해버리면?)
+                        origFileName = f.getOriginalFilename();
+                        // 경로에 userId 추가
+                        saveFileName = "temp/" + UUID.randomUUID() + "_" + origFileName;
+
+                        filePath = putS3(f, saveFileName);
+
+                        result.add(filePath);
+                }
+                return result;
+        }
 
         @Transactional
         public void registerFile(FileSaveDto fileSaveDto) {
@@ -63,54 +117,145 @@ public class FileServiceImpl implements FileService {
                 return dto;
         }
 
-//        // 리팩토링 - 이미지 이름이 중복되면 안올라감
-//        public String copyTempImage(MultipartHttpServletRequest mpRequest) throws IOException {
-//                MultipartFile multipartFile = null;
-//                String origFileName = null;
-//                String origFileExtension = null;
-//                String saveFileName = null;
-//
-//                multipartFile = mpRequest.getFile("file");
-//
-////                origFileName = multipartFile.getOriginalFilename();
-////                origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
-////                saveFileName = origFileName + origFileExtension;
-//
-////                File file = new File(absolutePath + tempRoot + origFileName);
-////                multipartFile.transferTo(file);         // 저장
-//
-////                return file.getAbsolutePath();
-//
-////                return s3Service.upload(multipartFile);
-//                return null;
-//        }
+        public String extractImgSrc(Long boardIdx, String content, String category) {
+                // 정규 표현식 공부하자
+                System.out.println("정규 표현식 공부하자");
+                System.out.println("beforeContent : " + content);
+                Pattern nonValidPattern = Pattern
+                        .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
+                Matcher matcher = nonValidPattern.matcher(content);
+                String beforeImg = "";
+                String afterImg = "";
 
-//        public String moveImg(String content) {
-//                // 정규 표현식 공부하자
-//                Pattern nonValidPattern = Pattern
-//                        .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
-//                Matcher matcher = nonValidPattern.matcher(content);
-//                String img = "";
-//                while (matcher.find()) {
-//                        img = matcher.group(1);
-//                        System.out.println("img : " + img);
-//                        // 구현 절차
-//                        // img(이미지 경로가 될듯)가 실제 존재 하는 파일인가 검사?
-//                        // 존재한다면 s3업로드
-//                        // 업로드 후 리플레이스
-//                        // ==> 존나 어렵겠네 ㅅㅂ
-//
-////                        img = img.replace("/img", "");
-////                        content = content.replace("/img", "/image");
-////                        File file =new File("C:\\mp\\tempImg\\"+img);
-////                        file.renameTo(new File(filePath+img));
-//
-//
-//
-////                s3Service.upload(multipartFile);
-//
-//                }
-//                return content;
-//        }
+                while (matcher.find()) {
+                        beforeImg = matcher.group(1);
+                        System.out.println("img : " + beforeImg);
+                        // 구현 절차
+                        // img(이미지 경로가 될듯)가 실제 존재 하는 파일인가 검사?
+                        // 존재한다면 s3업로드
+                        // 업로드 후 리플레이스
+                        // ==> 존나 어렵겠네 ㅅㅂ
+                        afterImg = uploadRealImg(boardIdx, beforeImg, category);
+                        content = content.replace(beforeImg, afterImg);
+                }
+
+                System.out.println("afterContent : " + content);
+                return content;
+        }
+
+        private String uploadRealImg(Long boardIdx, String path, String category) {
+                String origFileName = null;
+                String origFileExtension = null;
+                String tamperingFileName = null;
+                String filePath = null;
+                String oldPath = null;
+                String newPath = null;
+                Long fileSize = null;  // bytes size    -> 이 세키가 골때리네
+
+                // 저장 경로 바꿔야 함 (날짜도 추가)
+                System.out.println("path : " + path);
+
+                // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
+                try {
+                        oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                        log.error("{} Error", "URLDecoder");
+                        e.printStackTrace();
+                }
+                tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
+
+                origFileName = tamperingFileName.substring(tamperingFileName.indexOf("_")).replaceFirst("_", "");
+                origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
+
+                // 날짜 추가
+                newPath = category + "/" + boardIdx + "/" + tamperingFileName;
+
+                fileSize = convertFile(path, tamperingFileName);
+
+                filePath = updateS3(oldPath, newPath);
+
+                System.out.println("oldPath : " + oldPath);
+                System.out.println("tamperingFileName : " + tamperingFileName);
+                System.out.println("origFileName : " + origFileName);
+                System.out.println("origFileExtension : " + origFileExtension);
+                System.out.println("newPath : " + newPath);
+                System.out.println("fileSize : " + fileSize);
+                System.out.println("filePath : " + filePath);
+
+                FileSaveDto dto = FileSaveDto.builder()
+                        .boardIdx(boardIdx)
+                        .boardCategory(category)
+                        .origFilename(origFileName)
+                        .fileExt(origFileExtension)
+                        .saveFilename(tamperingFileName)
+                        .fileSize(fileSize)
+                        .filePath(filePath)
+                        .build();
+
+                registerFile(dto);
+
+                System.out.println("----------------------------------------------------");
+                return newPath;
+        }
+
+        private Long convertFile(String filePath, String tamperingFileName) {
+                try {
+                        log.info("tried Convert File");
+
+                        URL url = new URL(filePath);
+                        String canonicalPath = new java.io.File("").getCanonicalPath();
+                        Path savePath = Paths.get(canonicalPath + "/src/main/resources/tempImg/", tamperingFileName);
+
+                        InputStream is = url.openStream();
+                        Files.copy(is, savePath);
+
+                        is.close();
+
+                        Long bytes = Files.size(savePath);
+                        Long kilobyte = bytes/1024;
+                        Long megabyte = kilobyte/1024;
+
+                        Files.delete(savePath);
+
+                        log.info("Success Convert File");
+
+                        return bytes;
+                } catch (IOException e) {
+                        e.printStackTrace();
+                        log.error("Convert File Error");
+                        // 반환이 널이 맞을까?
+                        return null;
+                }
+        }
+
+        private String updateS3(String oldPath, String newPath) {
+                String result = copyS3(oldPath, newPath);
+                deleteS3(oldPath);
+
+                return result;
+        }
+
+        private String getS3Url(String filePath) {
+                // s3 객체 URL
+                return s3Client.getUrl(bucket, filePath).toString();
+        }
+
+        private String putS3(MultipartFile file, String saveFilePath) throws IOException {
+                // s3 저장
+                s3Client.putObject(new PutObjectRequest(bucket, saveFilePath, file.getInputStream(), null)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+
+                return getS3Url(saveFilePath);
+        }
+
+        private String copyS3(String oldPath, String newPath) {
+                s3Client.copyObject(bucket, oldPath, bucket, newPath);
+
+                return getS3Url(newPath);
+        }
+
+        private void deleteS3(String source) {
+                s3Client.deleteObject(bucket, source);
+        }
 
 }

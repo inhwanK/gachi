@@ -7,9 +7,9 @@ import java.util.List;
 
 @Service
 public interface TagService {
-    public Long registerTag(String keyword);
+    Long registerTag(String keyword);
 
-    public void registerBoardTag(Long boardIdx, List<String> tags, String type);
+    void registerBoardTag(Long boardIdx, List<String> tags, String type);
 
-    public ResponseDto getTags(Long boardIdx, String type, ResponseDto dto);
+    ResponseDto getTags(Long boardIdx, String type, ResponseDto dto);
 }

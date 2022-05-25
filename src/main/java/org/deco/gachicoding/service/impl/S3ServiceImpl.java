@@ -83,61 +83,62 @@ public class S3ServiceImpl {
         return result;
     }
 
-    public void uploadRealImg(Long boardIdx, List<String> paths, String category) {
-        String origFileName = null;
-        String origFileExtension = null;
-        String tamperingFileName = null;
-        String filePath = null;
-        String oldPath = null;
-        String newPath = null;
-        Long fileSize = null;  // bytes size    -> 이 세키가 골때리네
-
-        // 저장 경로 바꿔야 함 (날짜도 추가)
-        for(String path : paths) {
-            System.out.println("path : " + path);
-
-            // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
-            try {
-                oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                log.error("{} Error", "URLDecoder");
-                e.printStackTrace();
-            }
-            tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
-
-            origFileName = tamperingFileName.substring(tamperingFileName.indexOf("_")).replaceFirst("_", "");
-            origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
-
-            // 날짜 추가
-            newPath = category + "/" + boardIdx + "/" + tamperingFileName;
-
-            fileSize = convertFile(path, tamperingFileName);
-
-            filePath = update(oldPath, newPath);
-
-            System.out.println("oldPath : " + oldPath);
-            System.out.println("tamperingFileName : " + tamperingFileName);
-            System.out.println("origFileName : " + origFileName);
-            System.out.println("origFileExtension : " + origFileExtension);
-            System.out.println("newPath : " + newPath);
-            System.out.println("fileSize : " + fileSize);
-            System.out.println("filePath : " + filePath);
-
-            FileSaveDto dto = FileSaveDto.builder()
-                    .boardIdx(boardIdx)
-                    .boardCategory(category)
-                    .origFilename(origFileName)
-                    .fileExt(origFileExtension)
-                    .saveFilename(tamperingFileName)
-                    .fileSize(fileSize)
-                    .filePath(filePath)
-                    .build();
-
-            fileService.registerFile(dto);
-
-            System.out.println("----------------------------------------------------");
-        }
-    }
+//    public void uploadRealImg(Long boardIdx, String boardContent, String category) {
+//        String origFileName = null;
+//        String origFileExtension = null;
+//        String tamperingFileName = null;
+//        String filePath = null;
+//        String oldPath = null;
+//        String newPath = null;
+//        Long fileSize = null;  // bytes size    -> 이 세키가 골때리네
+//
+//        fileService.extractImgSrc(boardContent);
+//        // 저장 경로 바꿔야 함 (날짜도 추가)
+//        for(String path : paths) {
+//            System.out.println("path : " + path);
+//
+//            // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
+//            try {
+//                oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
+//            } catch (UnsupportedEncodingException e) {
+//                log.error("{} Error", "URLDecoder");
+//                e.printStackTrace();
+//            }
+//            tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
+//
+//            origFileName = tamperingFileName.substring(tamperingFileName.indexOf("_")).replaceFirst("_", "");
+//            origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
+//
+//            // 날짜 추가
+//            newPath = category + "/" + boardIdx + "/" + tamperingFileName;
+//
+//            fileSize = convertFile(path, tamperingFileName);
+//
+//            filePath = update(oldPath, newPath);
+//
+//            System.out.println("oldPath : " + oldPath);
+//            System.out.println("tamperingFileName : " + tamperingFileName);
+//            System.out.println("origFileName : " + origFileName);
+//            System.out.println("origFileExtension : " + origFileExtension);
+//            System.out.println("newPath : " + newPath);
+//            System.out.println("fileSize : " + fileSize);
+//            System.out.println("filePath : " + filePath);
+//
+//            FileSaveDto dto = FileSaveDto.builder()
+//                    .boardIdx(boardIdx)
+//                    .boardCategory(category)
+//                    .origFilename(origFileName)
+//                    .fileExt(origFileExtension)
+//                    .saveFilename(tamperingFileName)
+//                    .fileSize(fileSize)
+//                    .filePath(filePath)
+//                    .build();
+//
+//            fileService.registerFile(dto);
+//
+//            System.out.println("----------------------------------------------------");
+//        }
+//    }
 
 //    private Long getFileSize() {
 //        return null;

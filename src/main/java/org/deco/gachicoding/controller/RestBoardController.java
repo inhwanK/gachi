@@ -35,7 +35,7 @@ public class RestBoardController {
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
-            s3Service.uploadRealImg(boardIdx, dto.getFiles(), dto.getBoardType());
+//            s3Service.uploadRealImg(boardIdx, dto.getFiles(), dto.getBoardType());
             tagService.registerBoardTag(boardIdx, dto.getTags(), dto.getBoardType());
         } catch (NullPointerException e) {
             e.printStackTrace();

@@ -27,9 +27,6 @@ public class NoticeSaveRequestDto {
     private Boolean notPin;
 
     @Nullable
-    private List<String> files;
-
-    @Nullable
     private List<String> tags;
 
     @Builder

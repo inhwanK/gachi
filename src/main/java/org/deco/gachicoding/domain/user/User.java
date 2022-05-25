@@ -21,15 +21,15 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "user")
-public class User {
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userIdx;
 
-    private String userName;
+    @Column(name = "user_name")
+    private String userRealName;
     private String userNick;
-
     private String userEmail;
     private String userPassword;
     private String userPicture;
@@ -46,7 +46,7 @@ public class User {
 
     @Builder
     public User(String userName, Long userIdx, String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
-        this.userName = userName;
+        this.userRealName = userName;
         this.userIdx = userIdx;
         this.userNick = userNick;
         this.userEmail = userEmail;
@@ -68,5 +68,46 @@ public class User {
         return this;
     }
 
+//    public String getUserName(){
+//        return this.getUserName();
+//    }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        UserRole role = this.userRole;
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
+        Collection<GrantedAuthority> authorities = new ArrayList<>(); // List인 이유 : 여러개의 권한을 가질 수 있다
+        authorities.add(authority);
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.userPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userEmail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

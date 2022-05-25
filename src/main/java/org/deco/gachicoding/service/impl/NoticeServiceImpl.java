@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.notice.NoticeRepository;
+import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
@@ -43,8 +44,9 @@ public class NoticeServiceImpl implements NoticeService {
         log.info("tried Register {}", "Notice");
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
-        notice.setUser(userRepository.getOne(dto.getUserIdx()));
-
+//        notice.setUser(userRepository.getOne(dto.getUserIdx()));
+        Optional<User> user = userRepository.findByUserEmail(dto.getUserEmail());
+        notice.setUser(user.get());
         return noticeRepository.save(notice).getNotIdx();
     }
 

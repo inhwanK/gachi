@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class NoticeSaveRequestDto {
     @NotNull
-    private Long userIdx;
+    private String userEmail;
 
     @NotNull
     private String notTitle;
@@ -33,8 +33,8 @@ public class NoticeSaveRequestDto {
     private List<String> tags;
 
     @Builder
-    public NoticeSaveRequestDto(Long userIdx, String notTitle, String notContent, Boolean notPin) {
-        this.userIdx = userIdx;
+    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContent, Boolean notPin) {
+        this.userEmail = userEmail;
         this.notTitle = notTitle;
         this.notContent = notContent;
         this.notPin = notPin;

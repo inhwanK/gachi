@@ -34,8 +34,7 @@ public class Board {
     private Boolean boardActivated;
 
     @Builder
-
-    public Board(User writer, String boardTitle, String boardContent, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
+    public Board(User writer, String boardTitle, String boardContent, String boardType, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
         this.writer = writer;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;

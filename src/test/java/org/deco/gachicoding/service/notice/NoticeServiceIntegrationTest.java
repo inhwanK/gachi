@@ -38,7 +38,7 @@ public class NoticeServiceIntegrationTest {
     @BeforeEach
     void before() {
         NoticeSaveRequestDto entity = NoticeSaveRequestDto.builder()
-                .userIdx(Long.valueOf(1))
+//                .userIdx(Long.valueOf(1))
                 .notTitle(notTitle)
                 .notContent(notContent)
                 .notPin(notPin)

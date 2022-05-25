@@ -19,7 +19,7 @@ import java.util.List;
 public class NoticeResponseDto implements ResponseDto {
 
     private Long notIdx;
-    private Long userIdx;
+    private String userEmail;
     private String userNick;
     private String userPicture;
     private String notTitle;
@@ -40,11 +40,12 @@ public class NoticeResponseDto implements ResponseDto {
         this.notContent = notice.getNotContent();
         this.notPin = notice.getNotPin();
         this.notRegdate = notice.getNotRegdate();
+
     }
 
     private void setWriterInfo(Notice notice) {
         User user = notice.getUser();
-        this.userIdx = user.getUserIdx();
+        this.userEmail = user.getUserEmail();
         this.userNick = user.getUserNick();
         this.userPicture = user.getUserPicture();
     }

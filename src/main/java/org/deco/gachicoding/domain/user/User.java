@@ -21,7 +21,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @Table(name = "user")
-public class User {
+public class User implements UserDetails{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,4 +69,42 @@ public class User {
     }
 
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        UserRole role = this.userRole;
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
+        Collection<GrantedAuthority> authorities = new ArrayList<>(); // List인 이유 : 여러개의 권한을 가질 수 있다
+        authorities.add(authority);
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.userPassword;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.userEmail;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

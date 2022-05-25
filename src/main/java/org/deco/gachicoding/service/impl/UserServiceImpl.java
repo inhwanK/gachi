@@ -58,12 +58,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
 
-            UserDetailsImpl principal = (UserDetailsImpl) authentication.getPrincipal();
 
+            UserDetails principal = (User) authentication.getPrincipal();
 
-            System.out.println("유저 이름 > " + principal.getUsername());
+            System.out.println("유저 이메일 > " + principal.getUsername());
 
-            Optional<User> user = userRepository.findByUserEmail(principal.getUserEmail());
+            System.out.println("유저 비밀번호 > " + principal.getPassword());
+            Optional<User> user = userRepository.findByUserEmail(principal.getUsername());
             UserResponseDto userResponseDto = new UserResponseDto(user.get());
             httpSession.setAttribute("user", userResponseDto);
 
@@ -141,10 +142,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByUserEmail(email)
+//        User user = userRepository.findByUserEmail(email)
+//                .orElseThrow(()-> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
+
+        UserDetails userDetails =  userRepository.findByUserEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
 
-        UserDetails userDetails = new UserDetails() {
+        /*new UserDetails() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {
                 UserRole role = user.getUserRole();
@@ -161,7 +165,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
             @Override
             public String getUsername() {
-                return user.getUserName();
+                return user.getUserEmail();
             }
 
             @Override
@@ -184,7 +188,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 return true;
             }
         };
-
+*/
         return userDetails;
     }
 }

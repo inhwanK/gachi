@@ -27,7 +27,8 @@ public class User implements UserDetails{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userIdx;
 
-    private String userName;
+    @Column(name = "user_name")
+    private String userRealName;
     private String userNick;
     private String userEmail;
     private String userPassword;
@@ -45,7 +46,7 @@ public class User implements UserDetails{
 
     @Builder
     public User(String userName, Long userIdx, String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
-        this.userName = userName;
+        this.userRealName = userName;
         this.userIdx = userIdx;
         this.userNick = userNick;
         this.userEmail = userEmail;
@@ -67,9 +68,9 @@ public class User implements UserDetails{
         return this;
     }
 
-    public String getUserName(){
-        return this.getUserName();
-    }
+//    public String getUserName(){
+//        return this.getUserName();
+//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

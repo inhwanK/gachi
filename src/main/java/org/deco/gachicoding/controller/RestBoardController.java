@@ -17,9 +17,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -60,7 +57,6 @@ public class RestBoardController {
         fileService.getFiles(boardIdx, result.getBoardType(), result);
         tagService.getTags(boardIdx, result.getBoardType(), result);
         return result;
-
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정")

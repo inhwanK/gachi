@@ -39,13 +39,13 @@ public class RestNoticeController {
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         // try catch 부분(위치)을 바꿔보자
-//        try {
-//            log.info("tried File Upload {}", "Notice");
-//            s3Service.uploadRealImg(noticeIdx, dto.getFiles(), type);
-//        } catch (IOException | NullPointerException | URISyntaxException e) {
-//            log.error("{}  Board File Upload Error", "Notice");
-//            e.printStackTrace();
-//        }
+        try {
+            log.info("tried File Upload {}", "Notice");
+            s3Service.uploadRealImg(noticeIdx, dto.getFiles(), type);
+        } catch (NullPointerException e) {
+            log.error("{}  Board File Upload Error", "Notice");
+            e.printStackTrace();
+        }
 
         try {
             log.info("tried Tag Upload {}", "Notice");

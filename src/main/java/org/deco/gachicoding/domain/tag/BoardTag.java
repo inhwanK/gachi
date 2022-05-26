@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "board_tag")
+@Table(name = "tag_rel")
 public class BoardTag {
 
     // 테그 테이터들이 태그 * 글갯수로 쌓인다
@@ -20,14 +20,17 @@ public class BoardTag {
     private Long boardTagIdx;
     private String boardType;
     private Long boardIdx;
-    private Long tagIdx;
-    private String tagKeyword;
+
+    @ManyToOne
+    @JoinColumn(name = "tag_idx")
+    private Tag tag;
+//    private String tagKeyword;
 
     @Builder
-    public BoardTag (Long boardIdx, Long tagIdx, String boardType, String tagKeyword) {
+    public BoardTag (Long boardIdx, Tag tag, String boardType, String tagKeyword) {
         this.boardIdx = boardIdx;
-        this.tagIdx = tagIdx;
+        this.tag = tag;
         this.boardType = boardType;
-        this.tagKeyword = tagKeyword;
+//        this.tagKeyword = tagKeyword;
     }
 }

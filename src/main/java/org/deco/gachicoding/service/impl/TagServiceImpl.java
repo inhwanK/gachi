@@ -26,18 +26,18 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Long registerTag(String keyword) {
+    public Tag registerTag(String keyword) {
         Optional<Tag> findTag = isDuplicateKeyword(keyword);
 
         if(findTag.isPresent()) {
-            return findTag.get().getTagIdx();
+            return findTag.get();
         }
 
         Tag entity = Tag.builder()
                     .keyword(keyword)
                     .build();
 
-        return tagRepository.save(entity).getTagIdx();
+        return tagRepository.save(entity);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TagServiceImpl implements TagService {
             BoardTag entity = BoardTag.builder()
                     .boardType(type)
                     .boardIdx(boardIdx)
-                    .tagIdx(registerTag(tag))
+                    .tag(registerTag(tag))
                     .tagKeyword(tag)
                     .build();
             boardTagRepository.save(entity);
@@ -59,7 +59,7 @@ public class TagServiceImpl implements TagService {
         List<BoardTag> tags = boardTagRepository.findAllByBoardIdxAndBoardType(boardIdx, type);
 
         for (BoardTag tag : tags) {
-            result.add(new TagResponseDto(tag.getTagKeyword()));
+            result.add(new TagResponseDto(tag.getTag().getTagKeyword()));
         }
 
         dto.setTags(result);

@@ -55,7 +55,14 @@ public class RestNoticeController {
     @ApiOperation(value = "공지사항 리스트 보기")
     @GetMapping("/notice/list")
     public Page<BoardResponseDto> getNoticeList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable) {
-        return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
+        Page<BoardResponseDto> result = boardService.getBoardList(keyword, pageable, BOARD_TYPE);
+        // 리팩토링 중복 코드 제거
+        // 리팩토링 글 삭제시 관련 태그 삭제 (-> db테이블 생성시 설정 해주면 될듯)
+        result.forEach(
+                BoardResponseDto ->
+                        tagService.getTags(BoardResponseDto.getBoardIdx(), BOARD_TYPE, BoardResponseDto)
+        );
+        return result;
     }
 
     @ApiOperation(value = "공지사항 상세 보기")

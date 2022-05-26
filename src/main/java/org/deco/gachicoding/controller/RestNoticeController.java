@@ -59,7 +59,7 @@ public class RestNoticeController {
     }
 
     @ApiOperation(value = "공지사항 상세 보기")
-    @GetMapping("/notice/{notIdx}")
+    @GetMapping("/notice/{boardIdx}")
     public BoardResponseDto getNoticeDetail(@PathVariable Long boardIdx) {
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
         fileService.getFiles(boardIdx, BOARD_TYPE, result);
@@ -74,19 +74,19 @@ public class RestNoticeController {
     }
 
     @ApiOperation(value = "공지사항 비활성화")
-    @PutMapping("/notice/disable/{notIdx}")
+    @PutMapping("/notice/disable/{boardIdx}")
     public ResponseEntity<ResponseState> disableNotice(@PathVariable Long boardIdx){
         return boardService.disableBoard(boardIdx);
     }
 
     @ApiOperation(value = "공지사항 활성화")
-    @PutMapping("/notice/enable/{notIdx}")
+    @PutMapping("/notice/enable/{boardIdx}")
     public ResponseEntity<ResponseState> enableNotice(@PathVariable Long boardIdx){
         return boardService.enableBoard(boardIdx);
     }
 
     @ApiOperation(value = "공지사항 삭제")
-    @DeleteMapping("/notice/remove/{notIdx}")
+    @DeleteMapping("/notice/remove/{boardIdx}")
     public ResponseEntity<ResponseState> removeNotice(@PathVariable Long boardIdx){
         return boardService.removeBoard(boardIdx);
     }

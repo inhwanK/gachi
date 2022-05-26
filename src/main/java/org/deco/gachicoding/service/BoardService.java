@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface BoardService {
 
-    Long registerBoard(BoardSaveRequestDto dto);
+    Long registerBoard(BoardSaveRequestDto dto, String boardType);
 
     Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable, String boardType);
 

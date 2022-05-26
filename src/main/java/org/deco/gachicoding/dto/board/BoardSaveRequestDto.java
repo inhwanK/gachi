@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class BoardSaveRequestDto {
 
-
+    @NotNull
     private String userEmail;
 
     @NotNull
@@ -47,12 +47,12 @@ public class BoardSaveRequestDto {
     @Nullable
     private List<String> tags;
 
-    public Board toEntity(User writer) {
+    public Board toEntity(User writer, String boardType) {
         return Board.builder()
                 .writer(writer)
                 .boardTitle(boardTitle)
                 .boardContent(boardContent)
-                .boardType("board")
+                .boardType(boardType)
                 .boardViews(boardViews)
                 .boardRegdate(boardRegdate)
                 .boardPin(boardPin)

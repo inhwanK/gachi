@@ -33,11 +33,11 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "세션 사용")
     )
     @PostMapping("/user/login")
-    public String login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
+    public UserResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
                         @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) throws Exception {
 
         UserResponseDto userResponseDto = userService.login(dto, httpSession);
-        return userResponseDto.getUserEmail();
+        return userResponseDto;
     }
 
     /**

@@ -11,6 +11,7 @@ import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
+import org.deco.gachicoding.service.BoardService;
 import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.NoticeService;
 import org.springframework.data.domain.Page;

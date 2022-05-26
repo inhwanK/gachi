@@ -19,6 +19,8 @@ public class BoardResponseDto implements ResponseDto {
 
     private Long boardIdx;
     private String userEmail;
+    private String userNick;
+
     private String boardTitle;
     private String boardContent;
     private String boardType;
@@ -28,13 +30,14 @@ public class BoardResponseDto implements ResponseDto {
     private Boolean boardActivated;
 
     private List<FileResponseDto> files;
-
     private List<TagResponseDto> tags;
 
     @Builder
     public BoardResponseDto(Board board) {
         this.boardIdx = board.getBoardIdx();
         this.userEmail = board.getWriter().getUserEmail();
+        this.userNick = board.getWriter().getUserNick();
+
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
         this.boardType = board.getBoardType();

@@ -21,7 +21,7 @@ public class NoticeResponseDto implements ResponseDto {
     private Long notIdx;
     private String userEmail;
     private String userNick;
-    private String userPicture;
+
     private String notTitle;
     private String notContent;
     private int notViews;
@@ -29,25 +29,19 @@ public class NoticeResponseDto implements ResponseDto {
     private LocalDateTime notRegdate;
 
     private List<FileResponseDto> files;
-
     private List<TagResponseDto> tags;
 
     @Builder
     public NoticeResponseDto(Notice notice) {
-        setWriterInfo(notice);
         this.notIdx = notice.getNotIdx();
+        this.userEmail = notice.getWriter().getUserEmail();
+        this.userNick = notice.getWriter().getUserNick();
+
         this.notTitle = notice.getNotTitle();
         this.notContent = notice.getNotContent();
+        this.notViews = notice.getNotViews();
         this.notPin = notice.getNotPin();
         this.notRegdate = notice.getNotRegdate();
-
-    }
-
-    private void setWriterInfo(Notice notice) {
-        User user = notice.getUser();
-        this.userEmail = user.getUserEmail();
-        this.userNick = user.getUserNick();
-        this.userPicture = user.getUserPicture();
     }
 
     @Override

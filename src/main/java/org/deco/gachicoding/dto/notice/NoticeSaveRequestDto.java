@@ -38,9 +38,9 @@ public class NoticeSaveRequestDto {
         this.notPin = notPin;
     }
 
-    public Notice toEntity(User user){
+    public Notice toEntity(User writer){
         return Notice.builder()
-                .user(user)
+                .writer(writer)
                 .notTitle(notTitle)
                 .notContent(notContent)
                 .notPin(notPin)

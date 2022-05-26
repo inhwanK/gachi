@@ -24,17 +24,18 @@ public class RestBoardController {
     private final BoardService boardService;
     private final FileService fileService;
     private final TagService tagService;
+    private final String BOARD_TYPE = "BOARD";
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @PostMapping("/board")
     public Long registerBoard(@RequestBody BoardSaveRequestDto dto) {
         log.info("{} Register Controller", "Board");
-        Long boardIdx = boardService.registerBoard(dto);
+        Long boardIdx = boardService.registerBoard(dto, BOARD_TYPE);
 
         // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
         try {
 //            s3Service.uploadRealImg(boardIdx, dto.getFiles(), dto.getBoardType());
-            tagService.registerBoardTag(boardIdx, dto.getTags(), "board");
+            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD_TYPE);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -45,7 +46,7 @@ public class RestBoardController {
     @ApiOperation(value = "자유게시판 게시글 목록")
     @GetMapping("/board/list")
     public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable, @RequestParam String boardType){
-        return boardService.getBoardList(keyword, pageable, boardType);
+        return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")

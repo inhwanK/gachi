@@ -1,8 +1,8 @@
 package org.deco.gachicoding.domain.user;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.*;
-import org.deco.gachicoding.domain.notice.Notice;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +13,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Getter
 @DynamicInsert
@@ -32,22 +31,22 @@ public class User implements UserDetails{
     private String userNick;
     private String userEmail;
     private String userPassword;
-    private String userPicture;
     private LocalDateTime userRegdate;
     private boolean userActivated;
     private boolean userAuth;
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
+    private String userPicture;
 
-    @JsonBackReference
-    @OneToMany(mappedBy = "user")
-    private List<Notice> notices;
+//    @JsonBackReference
+//    @OneToMany(mappedBy = "user")
+//    private List<Notice> notices;
 
     @Builder
-    public User(String userName, Long userIdx, String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
-        this.userRealName = userName;
+    public User(Long userIdx, String userName,  String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
         this.userIdx = userIdx;
+        this.userRealName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
@@ -67,10 +66,6 @@ public class User implements UserDetails{
         this.userPicture = userPicture;
         return this;
     }
-
-//    public String getUserName(){
-//        return this.getUserName();
-//    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

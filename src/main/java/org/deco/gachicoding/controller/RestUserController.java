@@ -30,7 +30,7 @@ public class RestUserController {
 
     @ApiOperation(value = "로그인", notes = "email, password 값을 받아 로그인 수행")
     @ApiResponses(
-            @ApiResponse(code = 200, message = "accessToken 으로 변조된 로그인 정보 반환")
+            @ApiResponse(code = 200, message = "세션 사용")
     )
     @PostMapping("/user/login")
     public String login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,

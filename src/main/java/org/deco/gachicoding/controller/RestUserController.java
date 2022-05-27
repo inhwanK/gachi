@@ -3,7 +3,6 @@ package org.deco.gachicoding.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
 import org.deco.gachicoding.dto.user.UserResponseDto;
@@ -25,16 +24,16 @@ import java.util.Optional;
 public class RestUserController {
 
     private final UserService userService;
-
     private final SocialService socialService;
+
 
     @ApiOperation(value = "로그인", notes = "email, password 값을 받아 로그인 수행")
     @ApiResponses(
-            @ApiResponse(code = 200, message = "세션 사용")
+            @ApiResponse(code = 200, message = "")
     )
     @PostMapping("/user/login")
     public UserResponseDto login(@ApiParam(value = "이메일과 비밀번호", required = true) @RequestBody LoginRequestDto dto,
-                        @ApiParam(value = "세션을 위한 파라미터", required = false) HttpSession httpSession) throws Exception {
+                                 @ApiParam(value = "세션을 위한 파라미터", required = false, hidden = true) HttpSession httpSession) throws Exception {
 
         UserResponseDto userResponseDto = userService.login(dto, httpSession);
         return userResponseDto;
@@ -81,9 +80,9 @@ public class RestUserController {
         return userService.deleteUser(userIdx);
     }
 
-    @ApiOperation(value = "카카오 로그인", notes = "잘 모름..")
+    @ApiOperation(value = "카카오 로그인", notes = "개발 중...")
     @GetMapping("/user/kakaoLogin")
-    public JwtResponseDto kakaoUserLogin(String code) throws Exception {
+    public void kakaoUserLogin(String code) throws Exception {
         System.out.println("kakaoCode" + code);
 
         Long idx;
@@ -135,9 +134,6 @@ public class RestUserController {
             System.out.println("기존 회원 로그인 입니다." + user.get().getUserPassword());
         }
 
-        // => email - socialId, password - 유저 검색을 통해 알아야함
-//        return userService.login(jwtRequestDto);
-        return null;
     }
 
 }

@@ -23,7 +23,7 @@ import javax.validation.Valid;
 public class RestQuestionController {
     private final QuestionService questionService;
 
-    @ApiOperation(value = "질문 등록")
+    @ApiOperation(value = "질문 등록", notes = "")
     @PostMapping("/question")
     public Long registerQuestion(@Valid @RequestBody QuestionSaveRequestDto dto){
         return questionService.registerQuestion(dto);

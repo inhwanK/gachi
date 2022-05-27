@@ -1,6 +1,7 @@
 package org.deco.gachicoding.service;
 
-import org.deco.gachicoding.dto.question.QuestionResponseDto;
+import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
+import org.deco.gachicoding.dto.question.QuestionListResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
@@ -14,11 +15,11 @@ public interface QuestionService {
 
     Long registerQuestion(QuestionSaveRequestDto dto);
 
-    Page<QuestionResponseDto> getQuestionList(String keyword, Pageable pageable);
+    Page<QuestionListResponseDto> getQuestionList(String keyword, Pageable pageable);
 
-    QuestionResponseDto getQuestionDetail(Long queIdx);
+    QuestionDetailResponseDto getQuestionDetail(Long queIdx);
 
-    QuestionResponseDto modifyQuestion(QuestionUpdateRequestDto dto);
+    QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto);
 
     ResponseEntity<ResponseState> disableQuestion(Long queIdx);
 

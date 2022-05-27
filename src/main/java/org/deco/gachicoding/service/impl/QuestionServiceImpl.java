@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.UserRepository;
-import org.deco.gachicoding.dto.question.QuestionResponseDto;
+import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
+import org.deco.gachicoding.dto.question.QuestionListResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
@@ -40,11 +41,11 @@ public class QuestionServiceImpl implements QuestionService {
     // 리팩토링 - 검색 조건에 error도 추가
     @Override
     @Transactional(readOnly = true)
-    public Page<QuestionResponseDto> getQuestionList(String keyword, Pageable pageable) {
+    public Page<QuestionListResponseDto> getQuestionList(String keyword, Pageable pageable) {
         Page<Question> questions = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(keyword, keyword, pageable);
 
-        Page<QuestionResponseDto> questionList = questions.map(
-                result -> new QuestionResponseDto(result)
+        Page<QuestionListResponseDto> questionList = questions.map(
+                result -> new QuestionListResponseDto(result)
         );
 
         return questionList;
@@ -52,11 +53,11 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public QuestionResponseDto getQuestionDetail(Long queIdx) {
+    public QuestionDetailResponseDto getQuestionDetail(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
                 .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
-        QuestionResponseDto questionDetail = QuestionResponseDto.builder()
+        QuestionDetailResponseDto questionDetail = QuestionDetailResponseDto.builder()
                 .question(question)
                 .build();
 
@@ -65,13 +66,13 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
+    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
         Question question = questionRepository.findById(dto.getQueIdx())
                 .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
         question = question.update(dto.getQueTitle(), dto.getQueContent(), dto.getQueError(), dto.getQueCategory());
 
-        QuestionResponseDto questionDetail = QuestionResponseDto.builder()
+        QuestionDetailResponseDto questionDetail = QuestionDetailResponseDto.builder()
                 .question(question)
                 .build();
 

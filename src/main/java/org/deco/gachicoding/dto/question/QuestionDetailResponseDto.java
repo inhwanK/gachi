@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionResponseDto {
+public class QuestionDetailResponseDto {
 
     private Long queIdx;
     private Long userIdx;
@@ -30,7 +30,7 @@ public class QuestionResponseDto {
     private LocalDateTime queRegdate;
 
     @Builder
-    public QuestionResponseDto(Question question) {
+    public QuestionDetailResponseDto(Question question) {
         setWriterInfo(question);
         setAnswerList(question);
         this.queIdx = question.getQueIdx();
@@ -49,7 +49,9 @@ public class QuestionResponseDto {
     }
 
     public void setAnswerList(Question question) {
-        for(Answer ans : question.getAnswer()) {
+        System.out.println("0");
+        for(Answer ans : question.getAnswers()) {
+            System.out.println("1");
             AnswerResponseDto answerResponseDto = AnswerResponseDto.builder()
                     .answer(ans).build();
             answerList.add(answerResponseDto);

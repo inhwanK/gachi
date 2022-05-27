@@ -35,16 +35,16 @@ public class Answer {
     @JsonManagedReference
     private Question question;
 
-    @JoinColumn(name = "as_content")
+    @Column(name = "as_content")
     private String ansContent;
 
-    @JoinColumn(name = "as_select")
+    @Column(name = "as_select")
     private Boolean ansSelect;
 
-    @JoinColumn(name = "as_activated")
+    @Column(name = "as_activated")
     private Boolean ansActivated;
 
-    @JoinColumn(name = "as_regdate")
+    @Column(name = "as_regdate")
     private LocalDateTime ansRegdate;
 
     @Builder

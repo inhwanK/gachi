@@ -33,15 +33,6 @@ public class RestNoticeController {
         log.info("{} Register Controller", "Notice");
         Long noticeIdx = boardService.registerBoard(dto, BOARD_TYPE);
 
-        // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
-        // try catch 부분(위치)을 바꿔보자
-        try {
-            log.info("tried File Upload {}", "Notice");
-        } catch (NullPointerException e) {
-            log.error("{}  Board File Upload Error", "Notice");
-            e.printStackTrace();
-        }
-
         try {
             log.info("tried Tag Upload {}", "Notice");
             tagService.registerBoardTag(noticeIdx, dto.getTags(), BOARD_TYPE);

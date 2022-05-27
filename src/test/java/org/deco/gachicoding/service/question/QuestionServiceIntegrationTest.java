@@ -1,6 +1,7 @@
 package org.deco.gachicoding.service.question;
 
-import org.deco.gachicoding.dto.question.QuestionResponseDto;
+import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
+import org.deco.gachicoding.dto.question.QuestionListResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.deco.gachicoding.service.QuestionService;
@@ -54,7 +55,7 @@ public class QuestionServiceIntegrationTest {
     @Test
     @DisplayName("질문_작성_테스트")
     void Question_Integration_Testcase_1() {
-        QuestionResponseDto responseDto = questionService.getQuestionDetail(queIdx);
+        QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertEquals(queTitle, responseDto.getQueTitle());
         assertEquals(queContent, responseDto.getQueContent());
@@ -68,7 +69,7 @@ public class QuestionServiceIntegrationTest {
         String keyword = "병아리(테스트)";
 
         Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx"));
-        Page<QuestionResponseDto> questionList = questionService.getQuestionList(keyword, pageable);
+        Page<QuestionListResponseDto> questionList = questionService.getQuestionList(keyword, pageable);
 
         assertEquals(questionList.getTotalElements(), 1);
     }
@@ -91,7 +92,7 @@ public class QuestionServiceIntegrationTest {
 
         questionService.modifyQuestion(updateQuestion);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetail(queIdx);
+        QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertNotEquals(queTitle, responseDto.getQueTitle());
         assertEquals(updateTitle, responseDto.getQueTitle());
@@ -119,7 +120,7 @@ public class QuestionServiceIntegrationTest {
     public void Question_Integration_Testcase_5() {
         questionService.enableQuestion(queIdx);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetail(queIdx);
+        QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertEquals(responseDto.getQueActivated(), true);
     }

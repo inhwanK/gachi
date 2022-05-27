@@ -3,7 +3,8 @@ package org.deco.gachicoding.controller;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.dto.question.QuestionResponseDto;
+import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
+import org.deco.gachicoding.dto.question.QuestionListResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
@@ -31,19 +32,19 @@ public class RestQuestionController {
 
     @ApiOperation(value = "질문 리스트")
     @GetMapping("/question/list")
-    public Page<QuestionResponseDto> getQuestionList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable){
+    public Page<QuestionListResponseDto> getQuestionList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable){
         return questionService.getQuestionList(keyword, pageable);
     }
 
     @ApiOperation(value = "질문 디테일")
     @GetMapping("/question/{queIdx}")
-    public QuestionResponseDto getQuestionDetail(@PathVariable Long queIdx){
+    public QuestionDetailResponseDto getQuestionDetail(@PathVariable Long queIdx){
         return questionService.getQuestionDetail(queIdx);
     }
 
     @ApiOperation(value = "질문 수정")
     @PutMapping("/question/modify")
-    public QuestionResponseDto modifyQuestion(@RequestBody QuestionUpdateRequestDto dto){
+    public QuestionDetailResponseDto modifyQuestion(@RequestBody QuestionUpdateRequestDto dto){
         return questionService.modifyQuestion(dto);
     }
 

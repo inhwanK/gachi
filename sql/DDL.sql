@@ -365,16 +365,16 @@ ALTER TABLE `gachicoding`.`gachi_a`
 -- 파일
 CREATE TABLE `gachicoding`.`file`
 (
-    `file_idx`       BIGINT(21)   NOT NULL COMMENT '파일번호',              -- 파일번호
-    `board_idx`      BIGINT(21)   NOT NULL COMMENT '게시글번호',             -- 게시글번호
-    `board_category` VARCHAR(20)  NOT NULL COMMENT '게시판카테고리',           -- 게시판카테고리
-    `orig_filename`  VARCHAR(255) NOT NULL COMMENT '원본파일이름',            -- 원본파일이름
-    `save_filename`  VARCHAR(255) NOT NULL COMMENT '저장파일이름',            -- 저장파일이름
-    `file_size`      INT          NOT NULL COMMENT '파일크기',              -- 파일크기
-    `file_ext`       VARCHAR(20)  NOT NULL COMMENT '파일확장자',             -- 파일확장자
-    `file_path`      VARCHAR(255) NOT NULL COMMENT '파일경로',              -- 파일경로
-    `file_activated` BOOLEAN      NOT NULL DEFAULT TRUE COMMENT '활성상태', -- 활성상태
-    `file_regdate`   DATETIME     NOT NULL DEFAULT NOW() COMMENT '생성일자' -- 생성일자
+    `file_idx`       BIGINT(21) UNSIGNED NOT NULL COMMENT '파일번호',              -- 파일번호
+    `board_idx`      BIGINT(21) UNSIGNED NOT NULL COMMENT '게시글번호',             -- 게시글번호
+    `board_category` VARCHAR(20)         NOT NULL COMMENT '게시판카테고리',           -- 게시판카테고리
+    `orig_filename`  VARCHAR(255)        NOT NULL COMMENT '원본파일이름',            -- 원본파일이름
+    `save_filename`  VARCHAR(255)        NOT NULL COMMENT '저장파일이름',            -- 저장파일이름
+    `file_size`      INT                 NOT NULL COMMENT '파일크기',              -- 파일크기
+    `file_ext`       VARCHAR(20)         NOT NULL COMMENT '파일확장자',             -- 파일확장자
+    `file_path`      VARCHAR(255)        NOT NULL COMMENT '파일경로',              -- 파일경로
+    `file_activated` BOOLEAN             NOT NULL DEFAULT TRUE COMMENT '활성상태', -- 활성상태
+    `file_regdate`   DATETIME            NOT NULL DEFAULT NOW() COMMENT '생성일자' -- 생성일자
 )
     COMMENT '파일';
 
@@ -384,6 +384,9 @@ ALTER TABLE `gachicoding`.`file`
         PRIMARY KEY (
                      `file_idx` -- 파일번호
             );
+
+ALTER TABLE `gachicoding`.`file`
+    MODIFY COLUMN `file_idx` BIGINT(21) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '파일번호';
 
 -- 관계태그
 CREATE TABLE `gachicoding`.`tag_rel`

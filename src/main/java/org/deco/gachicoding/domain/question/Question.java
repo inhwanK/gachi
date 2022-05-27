@@ -24,7 +24,7 @@ import java.util.List;
 @Table(name = "gachi_q")
 public class Question {
     @Id
-    @Column(name = "que_idx")
+    @Column(name = "qs_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long queIdx;
 
@@ -34,29 +34,29 @@ public class Question {
     private User user;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "que_idx", insertable = false, updatable = false)
+    @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
     @JsonBackReference
     private List<Answer> answer = new ArrayList<>();
 
-    @Column(name = "que_title")
+    @Column(name = "qs_title")
     private String queTitle;
 
-    @Column(name = "que_content")
+    @Column(name = "qs_content")
     private String queContent;
 
-    @Column(name = "que_error")
+    @Column(name = "qs_error")
     private String queError;
 
-    @Column(name = "que_category")
+    @Column(name = "qs_category")
     private String queCategory;
 
-    @Column(name = "que_solve")
+    @Column(name = "qs_solve")
     private Boolean queSolve;
 
-    @Column(name = "que_activated")
+    @Column(name = "qs_activated")
     private Boolean queActivated;
 
-    @Column(name = "que_regdate")
+    @Column(name = "qs_regdate")
     private LocalDateTime queRegdate;
 
     @Builder

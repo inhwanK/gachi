@@ -174,6 +174,9 @@ ALTER TABLE `gachicoding`.`gachi_q`
                      `qs_idx` -- 가치고민번호
             );
 
+ALTER TABLE `gachicoding`.`gachi_q`
+    MODIFY COLUMN `qs_idx` BIGINT(22) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '가치고민번호';
+
 -- 프로필
 CREATE TABLE `gachicoding`.`profile`
 (
@@ -313,16 +316,16 @@ ALTER TABLE `gachicoding`.`gachi_agora`
 -- 게시판
 CREATE TABLE `gachicoding`.`board`
 (
-    `board_idx`       BIGINT(21) UNSIGNED NOT NULL COMMENT '게시판번호',             -- 게시판번호
-    `user_idx`        BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호',             -- 작성자번호
-    `board_title`     VARCHAR(255)        NOT NULL COMMENT '제목',                -- 제목
-    `board_content`   TEXT                NOT NULL COMMENT '본문',                -- 본문
-    `board_views`     INT(20) UNSIGNED    NOT NULL DEFAULT 0 COMMENT '조회수',     -- 조회수
-    `board_pin`       BOOLEAN             NOT NULL DEFAULT FALSE COMMENT '고정',  -- 고정
-    `board_regdate`   DATETIME            NOT NULL DEFAULT NOW() COMMENT '작성일', -- 작성일
-    `board_type`      VARCHAR(20)         NOT NULL DEFAULT 'BOARD' COMMENT '유형',  -- 유형
-    `board_activated` BOOLEAN             NOT NULL DEFAULT TRUE COMMENT '활성상태', -- 활성상태
-    `board_thumbnail` VARCHAR(255)        NULL COMMENT '썸네일'                    -- 썸네일
+    `board_idx`       BIGINT(21) UNSIGNED NOT NULL COMMENT '게시판번호',              -- 게시판번호
+    `user_idx`        BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호',              -- 작성자번호
+    `board_title`     VARCHAR(255)        NOT NULL COMMENT '제목',                 -- 제목
+    `board_content`   TEXT                NOT NULL COMMENT '본문',                 -- 본문
+    `board_views`     INT(20) UNSIGNED    NOT NULL DEFAULT 0 COMMENT '조회수',      -- 조회수
+    `board_pin`       BOOLEAN             NOT NULL DEFAULT FALSE COMMENT '고정',   -- 고정
+    `board_regdate`   DATETIME            NOT NULL DEFAULT NOW() COMMENT '작성일',  -- 작성일
+    `board_type`      VARCHAR(20)         NOT NULL DEFAULT 'BOARD' COMMENT '유형', -- 유형
+    `board_activated` BOOLEAN             NOT NULL DEFAULT TRUE COMMENT '활성상태',  -- 활성상태
+    `board_thumbnail` VARCHAR(255)        NULL COMMENT '썸네일'                     -- 썸네일
 )
     COMMENT '게시판';
 

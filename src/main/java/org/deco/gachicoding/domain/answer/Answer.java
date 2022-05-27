@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Table(name = "gachi_a")
 public class Answer {
     @Id
-    @Column(name = "ans_idx")
+    @Column(name = "as_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ansIdx;
 
@@ -31,20 +31,20 @@ public class Answer {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "que_idx")
+    @JoinColumn(name = "qs_idx")
     @JsonManagedReference
     private Question question;
 
-    @JoinColumn(name = "ans_content")
+    @JoinColumn(name = "as_content")
     private String ansContent;
 
-    @JoinColumn(name = "ans_select")
+    @JoinColumn(name = "as_select")
     private Boolean ansSelect;
 
-    @JoinColumn(name = "ans_activated")
+    @JoinColumn(name = "as_activated")
     private Boolean ansActivated;
 
-    @JoinColumn(name = "ans_regdate")
+    @JoinColumn(name = "as_regdate")
     private LocalDateTime ansRegdate;
 
     @Builder

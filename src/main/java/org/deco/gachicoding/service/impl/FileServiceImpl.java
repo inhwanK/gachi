@@ -118,8 +118,6 @@ public class FileServiceImpl implements FileService {
 
         public String extractImgSrc(Long boardIdx, String content, String category) {
                 // 정규 표현식 공부하자
-                System.out.println("정규 표현식 공부하자");
-                System.out.println("beforeContent : " + content);
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
                 Matcher matcher = nonValidPattern.matcher(content);
@@ -128,17 +126,15 @@ public class FileServiceImpl implements FileService {
 
                 while (matcher.find()) {
                         beforeImg = matcher.group(1);
-                        System.out.println("img : " + beforeImg);
+
                         // 구현 절차
-                        // img(이미지 경로가 될듯)가 실제 존재 하는 파일인가 검사?
-                        // 존재한다면 s3업로드
-                        // 업로드 후 리플레이스
-                        // ==> 존나 어렵겠네 ㅅㅂ
+                        // 추출된 이미지 링크 s3업로드
+                        // File DB에 업로드
+                        // content 리플레이스
                         afterImg = uploadRealImg(boardIdx, beforeImg, category);
                         content = content.replace(beforeImg, afterImg);
                 }
 
-                System.out.println("afterContent : " + content);
                 return content;
         }
 
@@ -149,16 +145,16 @@ public class FileServiceImpl implements FileService {
                 String filePath = null;
                 String oldPath = null;
                 String newPath = null;
-                Long fileSize = null;  // bytes size    -> 이 세키가 골때리네
+                Long fileSize = null;
 
                 // 저장 경로 바꿔야 함 (날짜도 추가)
-                System.out.println("path : " + path);
+                log.info("path : " + path);
 
                 // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
                 try {
                         oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                        log.error("{} Error", "URLDecoder");
+                        log.error("{} Error", "URLDecode");
                         e.printStackTrace();
                 }
                 tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
@@ -173,13 +169,13 @@ public class FileServiceImpl implements FileService {
 
                 filePath = updateS3(oldPath, newPath);
 
-                System.out.println("oldPath : " + oldPath);
-                System.out.println("tamperingFileName : " + tamperingFileName);
-                System.out.println("origFileName : " + origFileName);
-                System.out.println("origFileExtension : " + origFileExtension);
-                System.out.println("newPath : " + newPath);
-                System.out.println("fileSize : " + fileSize);
-                System.out.println("filePath : " + filePath);
+                log.info("oldPath : " + oldPath);
+                log.info("tamperingFileName : " + tamperingFileName);
+                log.info("origFileName : " + origFileName);
+                log.info("origFileExtension : " + origFileExtension);
+                log.info("newPath : " + newPath);
+                log.info("fileSize : " + fileSize);
+                log.info("filePath : " + filePath);
 
                 FileSaveDto dto = FileSaveDto.builder()
                         .boardIdx(boardIdx)
@@ -193,7 +189,6 @@ public class FileServiceImpl implements FileService {
 
                 registerFile(dto);
 
-                System.out.println("----------------------------------------------------");
                 return newPath;
         }
 
@@ -210,19 +205,28 @@ public class FileServiceImpl implements FileService {
 
                         is.close();
 
+                        log.info("Success Convert File");
+
+                        return getFileSize(savePath);
+                } catch (IOException e) {
+                        e.printStackTrace();
+                        log.error("Convert File Error IOException");
+                        // 반환이 널이 맞을까?
+                        return null;
+                }
+        }
+
+        private Long getFileSize(Path savePath) {
+                try {
+                        log.info("start Get File Size");
                         Long bytes = Files.size(savePath);
                         Long kilobyte = bytes/1024;
                         Long megabyte = kilobyte/1024;
-
                         Files.delete(savePath);
-
-                        log.info("Success Convert File");
-
                         return bytes;
                 } catch (IOException e) {
-                        e.printStackTrace();
-                        log.error("Convert File Error");
-                        // 반환이 널이 맞을까?
+                        log.info("start Get File Size");
+                        // 수정
                         return null;
                 }
         }

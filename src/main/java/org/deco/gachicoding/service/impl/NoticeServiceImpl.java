@@ -54,6 +54,7 @@ public class NoticeServiceImpl implements NoticeService {
         Long noticeIdx = notice.getNotIdx();
         String noticeContent = notice.getNotContent();
 
+        log.info("tried File Upload {}", "Notice");
         fileService.extractImgSrc(noticeIdx, noticeContent, "notice");
 
         return noticeIdx;

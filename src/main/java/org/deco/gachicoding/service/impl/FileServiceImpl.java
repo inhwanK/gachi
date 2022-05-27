@@ -24,7 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
@@ -153,8 +152,7 @@ public class FileServiceImpl implements FileService {
                 // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
                 try {
                         oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                        log.error("{} Error", "URLDecode");
+                } catch (IOException e) {
                         e.printStackTrace();
                 }
                 tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
@@ -165,7 +163,11 @@ public class FileServiceImpl implements FileService {
                 // 날짜 추가
                 newPath = category + "/" + boardIdx + "/" + tamperingFileName;
 
-                fileSize = convertFile(path, tamperingFileName);
+                try {
+                        fileSize = convertFile(path, tamperingFileName);
+                } catch (IOException e) {
+                        new IOException();
+                }
 
                 filePath = updateS3(oldPath, newPath);
 
@@ -192,7 +194,7 @@ public class FileServiceImpl implements FileService {
                 return newPath;
         }
 
-        private Long convertFile(String filePath, String tamperingFileName) {
+        private Long convertFile(String filePath, String tamperingFileName) throws IOException {
                 try {
                         log.info("tried Convert File");
 
@@ -209,10 +211,9 @@ public class FileServiceImpl implements FileService {
 
                         return getFileSize(savePath);
                 } catch (IOException e) {
+                        log.error("Failed Convert File :  IOException");
                         e.printStackTrace();
-                        log.error("Convert File Error IOException");
-                        // 반환이 널이 맞을까?
-                        return null;
+                        throw e;
                 }
         }
 
@@ -225,8 +226,8 @@ public class FileServiceImpl implements FileService {
                         Files.delete(savePath);
                         return bytes;
                 } catch (IOException e) {
-                        log.info("start Get File Size");
-                        // 수정
+                        log.info("Filed Get File Size : IOException");
+                        // 리턴 좀 없애자
                         return null;
                 }
         }

@@ -1,6 +1,7 @@
 package org.deco.gachicoding.dto.user;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,19 +18,23 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserSaveRequestDto {
 
+    @ApiModelProperty(value = "사용자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "1234@1234.com")
+    @NotNull @Email(message = "올바른 형식의 아이디가 아닙니다.")
+    private String userEmail;
+
+    @ApiModelProperty(value = "사용자 이름", required = true, example = "김인환")
     @NotNull
     private String userName;
 
+    @ApiModelProperty(value = "사용자 별명", required = true, example = "비밀번호:1234")
     @NotNull
     private String userNick;
 
-    @NotNull
-    @Email(message = "올바른 형식의 아이디가 아닙니다.")
-    private String userEmail;
-
+    @ApiModelProperty(value = "비밀번호", required = true, example = "1234")
     @NotNull
     private String userPassword;
 
+    @ApiModelProperty(value = "사진", required = false, example = "대충 사진입니다~")
     @Nullable
     private String userPicture;
 

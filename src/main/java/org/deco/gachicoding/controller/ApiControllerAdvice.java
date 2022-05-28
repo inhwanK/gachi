@@ -22,6 +22,8 @@ import static org.deco.gachicoding.dto.response.StatusEnum.*;
 @Slf4j
 @RestControllerAdvice
 public class ApiControllerAdvice {
+
+    // 익셉션 메세지를 response에 넣을때 좀더 디테일 하게 넣을 수 있도록 공부해 봅시다.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
         Map<String, String> errors = new HashMap<>();
@@ -38,25 +40,13 @@ public class ApiControllerAdvice {
      */
     @ExceptionHandler(AmazonS3Exception.class)
     protected ResponseEntity<ResponseState> handleAmazonS3Exception() {
-        log.error("handleAmazonS3Exception throw Exception : {}", INPUT_OUTPUT_EXCEPTION);
-        return ResponseState.toResponseEntity(INPUT_OUTPUT_EXCEPTION);
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    protected ResponseEntity<ResponseState> handleNullPointerException() {
-        log.error("handleNullPointerException throw Exception : {}", NULL_POINTER);
-        return ResponseState.toResponseEntity(NULL_POINTER);
+        log.error("handleAmazonS3Exception throw Exception : {}", AMAZONS_S3_EXCEPTION);
+        return ResponseState.toResponseEntity(AMAZONS_S3_EXCEPTION);
     }
 
     @ExceptionHandler(IOException.class)
     protected ResponseEntity<ResponseState> handleIOException() {
         log.error("handleIOException throw Exception : {}", INPUT_OUTPUT_EXCEPTION);
-        return ResponseState.toResponseEntity(INPUT_OUTPUT_EXCEPTION);
-    }
-
-    @ExceptionHandler(UnsupportedEncodingException.class)
-    protected ResponseEntity<ResponseState> handleUnsupportedEncodingException() {
-        log.error("handleUnsupportedEncodingException throw Exception : {}", INPUT_OUTPUT_EXCEPTION);
         return ResponseState.toResponseEntity(INPUT_OUTPUT_EXCEPTION);
     }
 

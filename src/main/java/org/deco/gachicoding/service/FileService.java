@@ -16,5 +16,5 @@ public interface FileService {
 
     ResponseDto getFiles(Long boardIdx, String boardCategory, ResponseDto dto);
 
-    String extractImgSrc(Long boardIdx, String content, String category);
+    String extractImgSrc(Long boardIdx, String content, String category) throws IOException;
 }

@@ -19,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
 @Slf4j
@@ -33,19 +35,25 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     @Override
     public Long registerBoard(BoardSaveRequestDto dto, String boardType) {
-        log.info("tried Register {}", "Board");
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
 
         User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         Board board = boardRepository.save(dto.toEntity(writer, boardType));
 
         Long boardIdx = board.getBoardIdx();
         String boardContent = board.getBoardContent();
 
-        fileService.extractImgSrc(boardIdx, boardContent, "board");
+        // 익셉션 발생 시 보드 삭제
+        try {
+            fileService.extractImgSrc(boardIdx, boardContent, "board");
+            log.info("Success Upload Board Idx : {}", boardIdx);
+        } catch (IOException e) {
+            log.error("Failed To Extract {} File", "Board Content");
+            e.printStackTrace();
+        }
 
         return boardIdx;
     }

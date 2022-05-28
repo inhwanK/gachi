@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.file.Files;
@@ -91,8 +92,9 @@ public class FileServiceImpl implements FileService {
 
         @Transactional
         public void registerFile(FileSaveDto fileSaveDto) {
+                // Uncheck Exception 발생 가능
+                // 어떤 식으로 로그를 남길 수 있을까?
                 try {
-                        log.info("tried Save File");
                         fileRepository.save(fileSaveDto.toEntity());
                         log.info("Success Save File");
                         // 구체적인 익셉션?
@@ -115,7 +117,7 @@ public class FileServiceImpl implements FileService {
                 return dto;
         }
 
-        public String extractImgSrc(Long boardIdx, String content, String category) {
+        public String extractImgSrc(Long boardIdx, String content, String category) throws IOException {
                 // 정규 표현식 공부하자
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
@@ -137,7 +139,7 @@ public class FileServiceImpl implements FileService {
                 return content;
         }
 
-        private String uploadRealImg(Long boardIdx, String path, String category) {
+        private String uploadRealImg(Long boardIdx, String path, String category) throws IOException {
                 String origFileName = null;
                 String origFileExtension = null;
                 String tamperingFileName = null;
@@ -152,8 +154,9 @@ public class FileServiceImpl implements FileService {
                 // oldPath -> substring, indexOf, lastIndexOf -> 뒤에서 부터 인덱스 찾기
                 try {
                         oldPath = URLDecoder.decode(path.substring(path.indexOf("temp")),"UTF-8");
-                } catch (IOException e) {
-                        e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                        log.error("Encoding Error");
+                        throw e;
                 }
                 tamperingFileName = oldPath.split("temp/")[1];  //[4] -> /의 수에따라 바뀜
 
@@ -162,15 +165,9 @@ public class FileServiceImpl implements FileService {
 
                 // 날짜 추가
                 newPath = category + "/" + boardIdx + "/" + tamperingFileName;
-
-                try {
-                        fileSize = convertFile(path, tamperingFileName);
-                } catch (IOException e) {
-                        new IOException();
-                }
+                fileSize = convertFile(path, tamperingFileName);
 
                 filePath = updateS3(oldPath, newPath);
-
                 log.info("oldPath : " + oldPath);
                 log.info("tamperingFileName : " + tamperingFileName);
                 log.info("origFileName : " + origFileName);
@@ -196,46 +193,61 @@ public class FileServiceImpl implements FileService {
 
         private Long convertFile(String filePath, String tamperingFileName) throws IOException {
                 try {
-                        log.info("tried Convert File");
+                        Long fileSize;
 
                         URL url = new URL(filePath);
                         String canonicalPath = new java.io.File("").getCanonicalPath();
                         Path savePath = Paths.get(canonicalPath + "/src/main/resources/tempImg/", tamperingFileName);
-
                         InputStream is = url.openStream();
-                        Files.copy(is, savePath);
 
-                        is.close();
+                        copyLocalFile(is, savePath);
+                        fileSize = getFileSize(savePath);
+                        deleteLocalFile(savePath);
 
                         log.info("Success Convert File");
 
-                        return getFileSize(savePath);
+                        return fileSize;
                 } catch (IOException e) {
-                        log.error("Failed Convert File :  IOException");
-                        e.printStackTrace();
+                        log.error("Failed Convert File");
                         throw e;
                 }
         }
 
-        private Long getFileSize(Path savePath) {
+        private void copyLocalFile(InputStream is, Path savePath) throws IOException {
+                try {
+                        Files.copy(is, savePath);
+                        is.close();
+                } catch (IOException e) {
+                        log.error("Failed Copy Local File");
+                        throw e;
+                }
+        }
+
+        private void deleteLocalFile(Path savePath) throws IOException {
+                try {
+                        Files.delete(savePath);
+                } catch (IOException e) {
+                        log.error("Failed Delete Local File");
+                        throw e;
+                }
+        }
+
+        private Long getFileSize(Path savePath) throws IOException {
                 try {
                         log.info("start Get File Size");
                         Long bytes = Files.size(savePath);
                         Long kilobyte = bytes/1024;
                         Long megabyte = kilobyte/1024;
-                        Files.delete(savePath);
                         return bytes;
                 } catch (IOException e) {
-                        log.info("Filed Get File Size : IOException");
-                        // 리턴 좀 없애자
-                        return null;
+                        log.info("Filed Get File Size");
+                        throw e;
                 }
         }
 
         private String updateS3(String oldPath, String newPath) {
                 String result = copyS3(oldPath, newPath);
                 deleteS3(oldPath);
-
                 return result;
         }
 
@@ -245,6 +257,7 @@ public class FileServiceImpl implements FileService {
         }
 
         private String putS3(MultipartFile file, String saveFilePath) throws IOException {
+                // try catch 걸까?
                 // s3 저장
                 s3Client.putObject(new PutObjectRequest(bucket, saveFilePath, file.getInputStream(), null)
                         .withCannedAcl(CannedAccessControlList.PublicRead));

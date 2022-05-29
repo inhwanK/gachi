@@ -70,7 +70,8 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(dto.getQueIdx())
                 .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
 
-        question = question.update(dto.getQueTitle(), dto.getQueContent(), dto.getQueError(), dto.getQueCategory());
+        // null 문제 해결 못함
+        question = question.update(dto);
 
         QuestionDetailResponseDto questionDetail = QuestionDetailResponseDto.builder()
                 .question(question)

@@ -19,6 +19,7 @@ public enum StatusEnum {
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
+    DataViolationException(CONFLICT, "제약 조건에 위배된 요청 입니다."),
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 내부 오류. 웹 서버가 요청사항을 수행할 수 없을 경우 발생  */
     RESOURCE_NOT_EXIST(INTERNAL_SERVER_ERROR, "데이터가 존재하지 않습니다."),

@@ -53,6 +53,7 @@ public class BoardServiceImpl implements BoardService {
         } catch (IOException e) {
             log.error("Failed To Extract {} File", "Board Content");
             e.printStackTrace();
+            removeBoard(boardIdx);
         }
 
         return boardIdx;

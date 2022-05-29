@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -80,11 +81,11 @@ public class Question {
         this.answers.add(answer);
     }
 
-    public Question update(String queTitle, String queContent, String queError, String queCategory) {
-        this.queTitle = queTitle;
-        this.queContent = queContent;
-        this.queError = queError;
-        this.queCategory = queCategory;
+    public Question update(QuestionUpdateRequestDto dto) {
+        this.queTitle = dto.getQueTitle();
+        this.queContent = dto.getQueContent();
+        this.queError = dto.getQueError();
+        this.queCategory = dto.getQueCategory();
         return this;
     }
 

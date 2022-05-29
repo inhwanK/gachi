@@ -45,6 +45,12 @@ public class RestAnswerController {
         return answerService.modifyAnswer(dto);
     }
 
+    @ApiOperation(value = "답변 채택")
+    @PutMapping("/answer/select/{ansIdx}")
+    public ResponseEntity<ResponseState> selectAnswer(@PathVariable Long ansIdx){
+        return answerService.selectAnswer(ansIdx);
+    }
+
     @ApiOperation(value = "답변 비활성화")
     @PutMapping("/answer/disable/{ansIdx}")
     public ResponseEntity<ResponseState> disableAnswer(@PathVariable Long ansIdx){

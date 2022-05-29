@@ -71,7 +71,7 @@ public class BoardServiceImpl implements BoardService {
     @Override
     public BoardResponseDto getBoardDetail(Long boardIdx) {
         Board entity = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         return new BoardResponseDto(entity);
     }
@@ -81,7 +81,7 @@ public class BoardServiceImpl implements BoardService {
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
         Long boardIdx = dto.getBoardIdx();
         Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         board = board.update(dto.getBoardTitle(), dto.getBoardContent());
 
@@ -96,7 +96,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public ResponseEntity<ResponseState> disableBoard(Long boardIdx) {
         Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         board.disableBoard();
 
@@ -107,7 +107,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public ResponseEntity<ResponseState> enableBoard(Long boardIdx) {
         Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         board.enableBoard();
 
@@ -118,7 +118,7 @@ public class BoardServiceImpl implements BoardService {
     @Transactional
     public ResponseEntity<ResponseState> removeBoard(Long boardIdx) {
         Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         boardRepository.delete(board);
 

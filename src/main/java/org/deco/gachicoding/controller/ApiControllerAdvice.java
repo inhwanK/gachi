@@ -52,8 +52,8 @@ public class ApiControllerAdvice {
 
     @ExceptionHandler(value = { ConstraintViolationException.class, DataIntegrityViolationException.class})
     protected ResponseEntity<ResponseState> handleDataException() {
-        log.error("handleDataException throw Exception : {}", DataViolationException);
-        return ResponseState.toResponseEntity(DataViolationException);
+        log.error("handleDataException throw Exception : {}", DATA_VIOLATION_EXCEPTION);
+        return ResponseState.toResponseEntity(DATA_VIOLATION_EXCEPTION);
     }
 
     @ExceptionHandler(CustomException.class)

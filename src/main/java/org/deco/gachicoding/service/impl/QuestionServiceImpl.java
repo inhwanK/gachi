@@ -55,7 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional(readOnly = true)
     public QuestionDetailResponseDto getQuestionDetail(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         QuestionDetailResponseDto questionDetail = QuestionDetailResponseDto.builder()
                 .question(question)
@@ -68,7 +68,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
         Question question = questionRepository.findById(dto.getQueIdx())
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         // null 문제 해결 못함
         question = question.update(dto);
@@ -84,7 +84,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public ResponseEntity<ResponseState> disableQuestion(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         question.isDisable();
         return ResponseState.toResponseEntity(DISABLE_SUCCESS);
@@ -94,7 +94,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public ResponseEntity<ResponseState> enableQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         question.isEnable();
         return ResponseState.toResponseEntity(ENABLE_SUCCESS);
@@ -104,7 +104,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public ResponseEntity<ResponseState> removeQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         questionRepository.delete(question);
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);

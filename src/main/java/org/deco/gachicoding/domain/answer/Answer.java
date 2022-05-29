@@ -70,6 +70,11 @@ public class Answer {
         return this;
     }
 
+    public Answer toSelect() {
+        this.ansSelect = true;
+        return this;
+    }
+
     public Answer disableAnswer() {
         this.ansActivated = false;
         return this;

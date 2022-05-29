@@ -3,6 +3,7 @@ package org.deco.gachicoding.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.answer.AnswerRepository;
+import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
@@ -57,7 +58,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional(readOnly = true)
     public AnswerResponseDto getAnswerDetail(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         AnswerResponseDto answerDetail = AnswerResponseDto.builder()
                 .answer(answer)
@@ -69,7 +70,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         answer = answer.update(dto.getAnsContent());
 
@@ -82,9 +83,26 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
+    public ResponseEntity<ResponseState> selectAnswer(Long ansIdx) {
+        Answer answer = answerRepository.findById(ansIdx)
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        Question question = answer.getQuestion();
+
+        if(!question.getQueSolve()) {
+            answer.toSelect();
+            question.toSolve();
+            return ResponseState.toResponseEntity(SELECT_SUCCESS);
+        } else {
+            return ResponseState.toResponseEntity(ALREADY_SOLVE);
+        }
+    }
+
+    @Override
+    @Transactional
     public ResponseEntity<ResponseState> disableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         answer.disableAnswer();
         return ResponseState.toResponseEntity(DISABLE_SUCCESS);
@@ -94,7 +112,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public ResponseEntity<ResponseState> enableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         answer.enableAnswer();
         return ResponseState.toResponseEntity(ENABLE_SUCCESS);
@@ -104,7 +122,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public ResponseEntity<ResponseState> removeAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new CustomException(RESOURCE_NOT_EXIST));
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         answerRepository.delete(answer);
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);

@@ -89,6 +89,11 @@ public class Question {
         return this;
     }
 
+    public Question toSolve() {
+        this.queSolve = true;
+        return this;
+    }
+
     public Question isDisable() {
         this.queActivated = false;
         return this;

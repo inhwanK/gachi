@@ -20,6 +20,8 @@ public interface AnswerService {
 
     AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto);
 
+    ResponseEntity<ResponseState> selectAnswer(Long ansIdx);
+
     ResponseEntity<ResponseState> disableAnswer(Long ansIdx);
 
     ResponseEntity<ResponseState> enableAnswer(Long ansIdx);

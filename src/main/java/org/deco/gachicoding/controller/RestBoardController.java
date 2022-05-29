@@ -52,7 +52,8 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 목록 반환")
     )
     @GetMapping("/board/list")
-    public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable) {
+    public Page<BoardResponseDto> getBoardList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                               @PageableDefault(size = 10) Pageable pageable) {
         Page<BoardResponseDto> result = boardService.getBoardList(keyword, pageable, BOARD_TYPE);
         // 리팩토링 중복 코드 제거
         // 리팩토링 글 삭제시 관련 태그 삭제 (-> db테이블 생성시 설정 해주면 될듯)
@@ -68,7 +69,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
     )
     @GetMapping("/board/{boardIdx}")
-    public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx) {
+    public BoardResponseDto getBoardDetail(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
         fileService.getFiles(boardIdx, result.getBoardType(), result);
         tagService.getTags(boardIdx, result.getBoardType(), result);
@@ -80,7 +81,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     )
     @PutMapping("/board/modify")
-    public BoardResponseDto modifyBoard(@RequestBody BoardUpdateRequestDto dto) {
+    public BoardResponseDto modifyBoard(@ApiParam(name = "게시판 수정 dto", value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);
     }
 
@@ -89,7 +90,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/board/disable/{boardIdx}")
-    public ResponseEntity<ResponseState> disableBoard(@PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> disableBoard(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
         return boardService.disableBoard(boardIdx);
     }
 
@@ -98,7 +99,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/board/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableBoard(@PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> enableBoard(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
         return boardService.enableBoard(boardIdx);
     }
 
@@ -107,7 +108,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/board/{boardIdx}")
-    public ResponseEntity<ResponseState> removeBoard(@PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> removeBoard(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
         return boardService.removeBoard(boardIdx);
     }
 }

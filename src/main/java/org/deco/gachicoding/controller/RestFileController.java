@@ -1,9 +1,6 @@
 package org.deco.gachicoding.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.service.FileService;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +21,7 @@ public class RestFileController {
             @ApiResponse(code = 200, message = "임시 폴더의 파일 URL 반환")
     )
     @PostMapping("/file/upload")
-    public List<String> fileUploadImageFile(@ModelAttribute("files") List<MultipartFile> files) throws IOException {
+    public List<String> fileUploadImageFile(@ApiParam(name = "파일") @ModelAttribute("files") List<MultipartFile> files) throws IOException {
 
         return fileService.uploadTempImg(files);
     }

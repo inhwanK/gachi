@@ -72,6 +72,11 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
+        // equals 메소드 따로 빼기(쭈니맘)
+        if (!answer.getWriter().getUserIdx().equals(dto.getUserIdx())) {
+            return null;
+        }
+
         answer = answer.update(dto.getAnsContent());
 
         AnswerResponseDto answerDetail = AnswerResponseDto.builder()

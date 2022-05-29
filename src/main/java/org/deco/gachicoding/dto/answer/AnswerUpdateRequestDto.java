@@ -14,6 +14,10 @@ import javax.validation.constraints.NotNull;
 public class AnswerUpdateRequestDto {
 
     @NotNull
+    @ApiModelProperty(value = "작성자 번호", required = true, example = "1")
+    private Long userIdx;
+
+    @NotNull
     @ApiModelProperty(value = "답변 번호", required = true, example = "1")
     private Long ansIdx;
 
@@ -23,7 +27,8 @@ public class AnswerUpdateRequestDto {
     private String ansContent;
 
     @Builder
-    public AnswerUpdateRequestDto(Long ansIdx, String asContent) {
+    public AnswerUpdateRequestDto(Long userIdx, Long ansIdx, String asContent) {
+        this.userIdx = userIdx;
         this.ansIdx = ansIdx;
         this.ansContent = asContent;
     }

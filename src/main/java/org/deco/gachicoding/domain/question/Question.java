@@ -32,7 +32,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
-    private User user;
+    private User writer;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
@@ -61,8 +61,8 @@ public class Question {
     private LocalDateTime queRegdate;
 
     @Builder
-    public Question(User user, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
-        this.user = user;
+    public Question(User writer, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
+        this.writer = writer;
         this.queIdx = queIdx;
         this.queTitle = queTitle;
         this.queContent = queContent;
@@ -74,7 +74,7 @@ public class Question {
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.writer = user;
     }
 
     public void setAnswers(Answer answer) {

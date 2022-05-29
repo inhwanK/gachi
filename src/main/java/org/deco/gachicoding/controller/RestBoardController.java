@@ -1,8 +1,6 @@
 package org.deco.gachicoding.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.dto.response.ResponseState;
@@ -30,6 +28,9 @@ public class RestBoardController {
     private final String BOARD_TYPE = "BOARD";
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "등록된 게시글 번호 반환")
+    )
     @PostMapping("/board")
     public Long registerBoard(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) {
         log.info("{} Register Controller", "Board");
@@ -47,6 +48,9 @@ public class RestBoardController {
     }
 
     @ApiOperation(value = "자유게시판 게시글 목록")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "게시글 목록 반환")
+    )
     @GetMapping("/board/list")
     public Page<BoardResponseDto> getBoardList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable) {
         Page<BoardResponseDto> result = boardService.getBoardList(keyword, pageable, BOARD_TYPE);
@@ -60,6 +64,9 @@ public class RestBoardController {
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
+    )
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@PathVariable Long boardIdx) {
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
@@ -69,24 +76,36 @@ public class RestBoardController {
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정 (리팩토링 필요함)")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
+    )
     @PutMapping("/board/modify")
     public BoardResponseDto modifyBoard(@RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);
     }
 
     @ApiOperation(value = "자유게시판 게시글 비활성화")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "비활성화 성공")
+    )
     @PutMapping("/board/disable/{boardIdx}")
     public ResponseEntity<ResponseState> disableBoard(@PathVariable Long boardIdx) {
         return boardService.disableBoard(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 활성화")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "활성화 성공")
+    )
     @PutMapping("/board/enable/{boardIdx}")
     public ResponseEntity<ResponseState> enableBoard(@PathVariable Long boardIdx) {
         return boardService.enableBoard(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 삭제")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "삭제 성공")
+    )
     @DeleteMapping("/board/{boardIdx}")
     public ResponseEntity<ResponseState> removeBoard(@PathVariable Long boardIdx) {
         return boardService.removeBoard(boardIdx);

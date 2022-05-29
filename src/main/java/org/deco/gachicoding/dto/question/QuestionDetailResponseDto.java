@@ -50,9 +50,7 @@ public class QuestionDetailResponseDto {
 //    }
 
     public void setAnswerList(Question question) {
-        System.out.println("0");
         for(Answer ans : question.getAnswers()) {
-            System.out.println("1");
             AnswerResponseDto answerResponseDto = AnswerResponseDto.builder()
                     .answer(ans).build();
             answerList.add(answerResponseDto);

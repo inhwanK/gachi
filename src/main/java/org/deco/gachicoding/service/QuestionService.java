@@ -19,7 +19,7 @@ public interface QuestionService {
 
     QuestionDetailResponseDto getQuestionDetail(Long queIdx);
 
-    QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto);
+    QuestionDetailResponseDto modifyQuestion(Long userIdx, QuestionUpdateRequestDto dto);
 
     ResponseEntity<ResponseState> disableQuestion(Long queIdx);
 

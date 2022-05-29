@@ -3,6 +3,7 @@ package org.deco.gachicoding.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
+import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
 import org.deco.gachicoding.dto.question.QuestionListResponseDto;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
@@ -66,9 +69,16 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
+    public QuestionDetailResponseDto modifyQuestion(Long userIdx, QuestionUpdateRequestDto dto) {
         Question question = questionRepository.findById(dto.getQueIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        // 작성자와 수정 시도하는 유저가 같은지 판별
+        // 아마 제공되는 인증 로직이 있지 않을까 싶음.
+        Optional<User> user = userRepository.findById(userIdx);
+        if (question.getWriter().getUserIdx() != user.get().getUserIdx()) {
+            return null;
+        }
 
         // null 문제 해결 못함
         question = question.update(dto);

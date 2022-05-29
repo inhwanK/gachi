@@ -25,10 +25,6 @@ public class BoardSaveRequestDto {
     @NotNull
     private String boardContent;
 
-    // 게시판 유형(공지 사항, 자유 게시판)
-//    @NotNull
-//    private String boardType;
-
     @Nullable
     private Long boardViews;
 

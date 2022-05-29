@@ -90,7 +90,7 @@ public class QuestionServiceIntegrationTest {
                 .queCategory(updateCategory)
                 .build();
 
-        questionService.modifyQuestion(updateQuestion);
+//        questionService.modifyQuestion(updateQuestion);
 
         QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 

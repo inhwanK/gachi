@@ -19,7 +19,7 @@ import java.util.List;
 public class QuestionDetailResponseDto {
 
     private Long queIdx;
-    private Long userIdx;
+    private Long writerIdx;
     private List<AnswerResponseDto> answerList = new ArrayList<>();
     private String queTitle;
     private String queContent;
@@ -31,9 +31,10 @@ public class QuestionDetailResponseDto {
 
     @Builder
     public QuestionDetailResponseDto(Question question) {
-        setWriterInfo(question);
-        setAnswerList(question);
         this.queIdx = question.getQueIdx();
+        this.writerIdx = question.getWriter().getUserIdx();
+        setAnswerList(question);
+
         this.queTitle = question.getQueTitle();
         this.queContent = question.getQueContent();
         this.queError = question.getQueError();
@@ -43,10 +44,10 @@ public class QuestionDetailResponseDto {
         this.queRegdate = question.getQueRegdate();
     }
 
-    public void setWriterInfo(Question question) {
-        User user = question.getUser();
-        this.userIdx = user.getUserIdx();
-    }
+//    public void setWriterInfo(Question question) {
+//        User user = question.getUser();
+//        this.userIdx = user.getUserIdx();
+//    }
 
     public void setAnswerList(Question question) {
         System.out.println("0");

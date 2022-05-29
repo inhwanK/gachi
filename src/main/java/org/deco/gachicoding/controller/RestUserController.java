@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.Optional;
 
-@Api
+@Api(tags = "사용자 정보 처리 API")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -33,7 +33,7 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "로그인 성공")
     )
     @PostMapping("/user/login")
-    public UserResponseDto login(@RequestBody LoginRequestDto dto,
+    public UserResponseDto login(@ApiParam(name = "로그인 요청 DTO", value = "로그인을 위한 요청 body 정보") @RequestBody LoginRequestDto dto,
                                  @ApiIgnore HttpSession httpSession) throws Exception {
 
         UserResponseDto userResponseDto = userService.login(dto, httpSession);
@@ -45,8 +45,7 @@ public class RestUserController {
      * @return UserResponseDto
      * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
      */
-    @ApiOperation(value = "유저정보 받기", notes = "세션을 통해 유저정보 전달,")
-    @ApiImplicitParam(value = "실제로는 HttpSession 클래스 정보를 파라미터로 받음")
+    @ApiOperation(value = "유저정보 받기", notes = "세션을 통해 유저정보 전달, 실제로는 HttpSession 클래스를 파라미터로 받음")
     @ApiResponses(
             @ApiResponse(code = 200, message = "세션 정보 가져오기 성공")
     )
@@ -59,10 +58,10 @@ public class RestUserController {
     /**
      * 혹시 세션이 존재하지 않을 경우에 로그아웃 요청이 들어오면, 새롭게 세션을 생성하지 않도록 함.
      * Spring Security 를 통한 세션 관리 로직으로 수정 필요.
+     *
      * @return void
      */
-    @ApiOperation(value = "로그아웃", notes = "세션 무효화")
-    @ApiImplicitParam(value = "실제로는 HttpSerletRequest 클래스 정보를 파라미터로 받음")
+    @ApiOperation(value = "로그아웃", notes = "세션 객체 무효화, 실제로는 HttpServletRequest 클래스 정보를 파라미터로 받음")
     @ApiResponses(
             @ApiResponse(code = 200, message = "로그아웃 성공")
     )
@@ -74,19 +73,20 @@ public class RestUserController {
 
     @ApiOperation(value = "회원가입", notes = "UserSaveRequestDto 타입으로 값을 받아 회원가입 수행")
     @PostMapping("/user")
-    public Long registerUser(@Valid @RequestBody UserSaveRequestDto dto) {
+    public Long registerUser(@ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보") @Valid @RequestBody UserSaveRequestDto dto) {
         return userService.registerUser(dto);
     }
 
     @ApiOperation(value = "유저 정보 업데이트", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
     @PutMapping("/user/{userIdx}")
-    public Long updateUser(@PathVariable Long userIdx, @RequestBody UserUpdateRequestDto dto) {
+    public Long updateUser(@ApiParam(name = "사용자 번호", value = "수정할 유저의 번호") @PathVariable Long userIdx,
+                           @ApiParam(name = "수정 요청 DTO", value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
         return userService.updateUser(userIdx, dto);
     }
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
     @DeleteMapping("/user/{userIdx}")
-    public Long deleteUser(@PathVariable Long userIdx) {
+    public Long deleteUser(@ApiParam(name = "사용자 번호", value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);
     }
 

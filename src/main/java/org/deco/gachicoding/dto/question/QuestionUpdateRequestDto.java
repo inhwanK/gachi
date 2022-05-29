@@ -1,18 +1,32 @@
 package org.deco.gachicoding.dto.question;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotNull;
+
 @Setter
 @Getter
 @NoArgsConstructor
 public class QuestionUpdateRequestDto {
+
+    @ApiModelProperty(name = "질문 번호",required = true, example = "1")
+    @NotNull
     private Long queIdx;
+
+    @ApiModelProperty(name = "질문 제목",required = false, example = "수정된 제목")
     private String queTitle;
+
+    @ApiModelProperty(name = "질문 내용",required = false, example = "수정된 내용")
     private String queContent;
+
+    @ApiModelProperty(name = "질문 에러메시지",required = false, example = "수정된 에러메시지")
     private String queError;
+
+    @ApiModelProperty(name = "질문 카테고리",required = false, example = "수정된 카테고리")
     private String queCategory;
 
     @Builder

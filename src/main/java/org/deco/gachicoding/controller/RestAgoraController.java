@@ -1,5 +1,6 @@
 package org.deco.gachicoding.controller;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.agora.AgoraResponseDto;
 import org.deco.gachicoding.dto.agora.AgoraSaveRequestDto;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+@Api(tags = "아고라 정보 처리 API(개발 중..)")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")

@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.user.UserRole;
 
-import javax.validation.constraints.NotNull;
-
 @Setter
 @Getter
 @NoArgsConstructor

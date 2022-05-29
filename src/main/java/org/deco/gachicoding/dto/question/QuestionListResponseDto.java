@@ -9,6 +9,7 @@ import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 public class QuestionListResponseDto {
 
     private Long queIdx;
-    private Long userIdx;
+    private Long writerIdx;
     private String queTitle;
     private String queContent;
     private String queError;
@@ -30,7 +31,7 @@ public class QuestionListResponseDto {
 
     @Builder
     public QuestionListResponseDto(Question question) {
-        setWriterInfo(question);
+        this.writerIdx = question.getWriter().getUserIdx();
         this.queIdx = question.getQueIdx();
         this.queTitle = question.getQueTitle();
         this.queContent = question.getQueContent();
@@ -41,8 +42,8 @@ public class QuestionListResponseDto {
         this.queRegdate = question.getQueRegdate();
     }
 
-    public void setWriterInfo(Question question) {
-        User user = question.getUser();
-        this.userIdx = user.getUserIdx();
-    }
+//    public void setWriterInfo(Question question) {
+//        User writer = question.getWriter().getUserIdx();
+//        this.userIdx = writer.getUserIdx();
+//    }
 }

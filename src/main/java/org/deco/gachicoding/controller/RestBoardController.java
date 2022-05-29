@@ -68,7 +68,7 @@ public class RestBoardController {
         return result;
     }
 
-    @ApiOperation(value = "자유게시판 게시글 수정")
+    @ApiOperation(value = "자유게시판 게시글 수정 (리팩토링 필요함)")
     @PutMapping("/board/modify")
     public BoardResponseDto modifyBoard(@RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);

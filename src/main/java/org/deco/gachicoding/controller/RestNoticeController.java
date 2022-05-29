@@ -47,7 +47,7 @@ public class RestNoticeController {
         return noticeIdx;
     }
 
-    @ApiOperation(value = "공지사항 리스트 보기", notes = "검색어를 파라미터로 받아 공지사항 목록을 응답")
+    @ApiOperation(value = "공지사항 리스트 보기", notes = "공지사항 목록을 응답")
     @GetMapping("/notice/list")
     public Page<BoardResponseDto> getNoticeList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                 @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
@@ -61,7 +61,7 @@ public class RestNoticeController {
         return result;
     }
 
-    @ApiOperation(value = "공지사항 상세 보기", notes = "게시판 번호를 받아 상세한 공지사항 데이터 응답")
+    @ApiOperation(value = "공지사항 상세 보기", notes = "상세한 공지사항 데이터 응답")
     @GetMapping("/notice/{boardIdx}")
     public BoardResponseDto getNoticeDetail(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
         BoardResponseDto result = boardService.getBoardDetail(boardIdx);
@@ -70,7 +70,7 @@ public class RestNoticeController {
         return result;
     }
 
-    @ApiOperation(value = "공지사항 수정", notes = "공지사항 번호와 게시판 요청 DTO를 받아 공지사항 등록 수행 (리팩토링 필요함)")
+    @ApiOperation(value = "공지사항 수정", notes = "공지사항 등록 수행 (리팩토링 필요함)")
     @PutMapping("/notice/modify")
     public BoardResponseDto modifyNotice(@ApiParam(name = "게시판 수정 DTO", value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);
@@ -78,19 +78,19 @@ public class RestNoticeController {
 
     @ApiOperation(value = "공지사항 비활성화")
     @PutMapping("/notice/disable/{boardIdx}")
-    public ResponseEntity<ResponseState> disableNotice(@PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> disableNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.disableBoard(boardIdx);
     }
 
     @ApiOperation(value = "공지사항 활성화")
     @PutMapping("/notice/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableNotice(@PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.enableBoard(boardIdx);
     }
 
     @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")
     @DeleteMapping("/notice/remove/{boardIdx}")
-    public ResponseEntity<ResponseState> removeNotice(@ApiParam(name = "") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> removeNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.removeBoard(boardIdx);
     }
 

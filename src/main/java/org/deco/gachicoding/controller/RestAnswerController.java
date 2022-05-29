@@ -14,7 +14,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api
+@Api(tags = "가치답변 정보 처리 API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

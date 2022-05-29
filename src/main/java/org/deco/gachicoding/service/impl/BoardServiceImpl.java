@@ -2,6 +2,7 @@ package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.board.BoardRepository;
 import org.deco.gachicoding.domain.user.User;
@@ -79,9 +80,12 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
-        Long boardIdx = dto.getBoardIdx();
-        Board board = boardRepository.findById(boardIdx)
+        Board board = boardRepository.findById(dto.getBoardIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        if (!isSameWriter(board, dto.getUserIdx())) {
+            return null;
+        }
 
         board = board.update(dto.getBoardTitle(), dto.getBoardContent());
 
@@ -123,5 +127,11 @@ public class BoardServiceImpl implements BoardService {
         boardRepository.delete(board);
 
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+    }
+
+    private Boolean isSameWriter(Board board, Long userIdx) {
+        Long writerIdx = board.getWriter().getUserIdx();
+
+        return (writerIdx.equals(userIdx)) ? true : false;
     }
 }

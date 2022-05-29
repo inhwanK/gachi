@@ -3,6 +3,7 @@ package org.deco.gachicoding.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.answer.AnswerRepository;
+import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.UserRepository;
@@ -72,8 +73,7 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
-        // equals 메소드 따로 빼기(쭈니맘)
-        if (!answer.getWriter().getUserIdx().equals(dto.getUserIdx())) {
+        if (!isSameWriter(answer, dto.getUserIdx())) {
             return null;
         }
 
@@ -86,6 +86,7 @@ public class AnswerServiceImpl implements AnswerService {
         return answerDetail;
     }
 
+    // 질문 작성자 확인 로직 추가
     @Override
     @Transactional
     public ResponseEntity<ResponseState> selectAnswer(Long ansIdx) {
@@ -131,5 +132,12 @@ public class AnswerServiceImpl implements AnswerService {
 
         answerRepository.delete(answer);
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+    }
+
+    private Boolean isSameWriter(Answer answer, Long userIdx) {
+        Long writerIdx = answer.getWriter().getUserIdx();
+
+        // equals 메소드 따로 빼까?(쭈니맘), 에반가?
+        return (writerIdx.equals(userIdx)) ? true : false;
     }
 }

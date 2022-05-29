@@ -21,7 +21,7 @@ public class AnswerSaveRequestDto {
     @NotNull
     private Long queIdx;
 
-    @ApiModelProperty(value = "답변 내용", required = true, example = "그거는 해결이 안되요~")
+    @ApiModelProperty(value = "답변 내용", required = true, example = "Spring Security 아시나요~~ 얼마나 사랑했는지~~ 그댈 보면 자꾸 눈물이 나서~")
     @NotNull
     private String ansContent;
 

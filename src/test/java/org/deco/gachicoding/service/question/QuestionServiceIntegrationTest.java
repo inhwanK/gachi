@@ -30,11 +30,12 @@ public class QuestionServiceIntegrationTest {
     String queContent = "질문 테스트 내용 강아지 병아리(테스트)";
     String queError = "질문 테스트 에러 소스";
     String queCategory = "자바";
+    String userEmail = "1234@1234.com";
 
     @BeforeEach
     void before() {
         QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
-                .userIdx(Long.valueOf(1))
+                .userEmail(userEmail)
                 .queTitle(queTitle)
                 .queContent(queContent)
                 .queError(queError)

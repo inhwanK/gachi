@@ -43,6 +43,16 @@ import java.util.regex.Pattern;
 public class FileServiceImpl implements FileService {
         @Autowired
         private FileRepository fileRepository;
+        
+        /**
+         *  tempImg 폴더를 무조건 보장해줄 로직을 만들고 싶다 ㅠㅠ
+         * 파일 경로 찾기가 어렵네 배포하면 또 달라진다는 듯
+         * 상대 경로로 접근한다는게 가장 안전하다는데 좀더 알아봄
+        **/
+//        private final static String tempRoot = "/src/main/resources/tempImg/";
+//        // 절대 경로를 위한 absolutePath
+//        private final static String absolutePath = new File("").getAbsolutePath() + "\\";
+//        private final static Path path = Path.of(absolutePath + tempRoot);
 
         private AmazonS3 s3Client;
 
@@ -66,6 +76,14 @@ public class FileServiceImpl implements FileService {
                         .withCredentials(new AWSStaticCredentialsProvider(credentials))
                         .withRegion(this.region)
                         .build();
+
+//                try {
+//                        if (!Files.exists(path)) {
+//                                Files.createDirectories(path);
+//                        }
+//                } catch (IOException e) {
+//                        e.printStackTrace();
+//                }
         }
 
         public List<String> uploadTempImg(List<MultipartFile> files) throws IOException {

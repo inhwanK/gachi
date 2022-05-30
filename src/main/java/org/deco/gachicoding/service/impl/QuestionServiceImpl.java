@@ -1,6 +1,8 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.User;
@@ -11,6 +13,7 @@ import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
+import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,27 +21,44 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 
 import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
     @Override
     @Transactional
     public Long registerQuestion(QuestionSaveRequestDto dto) {
-        Question question = dto.toEntity();
+        User writer = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
-        // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
-        question.setUser(userRepository.getOne(dto.getUserIdx()));
+        Question question = questionRepository.save(dto.toEntity(writer));
 
-        return questionRepository.save(question).getQueIdx();
+        Long queIdx = question.getQueIdx();
+        String queContent = question.getQueContent();
+        String queError = question.getQueError();
+
+        // 익셉션 발생 시 보드 삭제
+        try {
+            fileService.extractImgSrc(queIdx, queContent, "question");
+            fileService.extractImgSrc(queIdx, queError, "question");
+            log.info("Success Upload Question Idx : {}", queIdx);
+        } catch (Exception e) {
+            log.error("Failed To Extract {} File", "Question Content");
+            e.printStackTrace();
+            removeQuestion(queIdx);
+        }
+
+        return queIdx;
     }
 
     // 리팩토링 - 검색 조건에 error도 추가
@@ -69,14 +89,16 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionDetailResponseDto modifyQuestion(Long userIdx, QuestionUpdateRequestDto dto) {
+    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
         Question question = questionRepository.findById(dto.getQueIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         // 작성자와 수정 시도하는 유저가 같은지 판별
         // 아마 제공되는 인증 로직이 있지 않을까 싶음.
-        Optional<User> user = userRepository.findById(userIdx);
-        if (question.getWriter().getUserIdx() != user.get().getUserIdx()) {
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (isSameWriter(question, user)) {
             return null;
         }
 
@@ -118,5 +140,12 @@ public class QuestionServiceImpl implements QuestionService {
 
         questionRepository.delete(question);
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+    }
+
+    private Boolean isSameWriter(Question question, User user) {
+        Long writerIdx = question.getWriter().getUserIdx();
+        Long userIdx = user.getUserIdx();
+
+        return (writerIdx.equals(userIdx)) ? true : false;
     }
 }

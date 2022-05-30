@@ -58,9 +58,8 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
     )
     @PutMapping("/question/modify/{userIdx}")
-    public QuestionDetailResponseDto modifyQuestion(@ApiParam(name = "사용자 번호") @PathVariable Long userIdx,
-                                                    @ApiParam(name = "질문 수정 요청 DTO", value = "질문 수정 요청 body 정보") @RequestBody QuestionUpdateRequestDto dto) {
-        return questionService.modifyQuestion(userIdx, dto);
+    public QuestionDetailResponseDto modifyQuestion(@ApiParam(name = "질문 수정 요청 DTO", value = "질문 수정 요청 body 정보") @RequestBody QuestionUpdateRequestDto dto) {
+        return questionService.modifyQuestion(dto);
     }
 
     @ApiOperation(value = "질문 비활성화", notes = "사용자 입장에서 질문 데이터를 삭제")

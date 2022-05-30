@@ -1,22 +1,26 @@
 package org.deco.gachicoding.dto.question;
 
-import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.question.Question;
+import org.deco.gachicoding.domain.user.User;
 import org.springframework.lang.Nullable;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class QuestionSaveRequestDto {
 
-    @ApiModelProperty(value = "작성자 번호", required = true, example = "1")
+    @ApiModelProperty(value = "사용자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "1234@1234.com")
     @NotNull
-    private Long userIdx;
+    @Email(message = "올바른 형식의 아이디가 아닙니다.")
+    private String userEmail;
 
     @ApiModelProperty(value = "질문 제목", required = true, example = "Spring Security 가르쳐 주실 분")
     @NotNull
@@ -35,16 +39,17 @@ public class QuestionSaveRequestDto {
     private String queCategory;
 
     @Builder
-    public QuestionSaveRequestDto(Long userIdx, String queTitle, String queContent, String queError, String queCategory) {
-        this.userIdx = userIdx;
+    public QuestionSaveRequestDto(String userEmail, String queTitle, String queContent, String queError, String queCategory) {
+        this.userEmail = userEmail;
         this.queTitle = queTitle;
         this.queContent = queContent;
         this.queError = queError;
         this.queCategory = queCategory;
     }
 
-    public Question toEntity() {
+    public Question toEntity(User writer) {
         return Question.builder()
+                .writer(writer)
                 .queTitle(queTitle)
                 .queContent(queContent)
                 .queError(queError)

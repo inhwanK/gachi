@@ -94,7 +94,10 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
-        if (!isSameWriter(answer, dto.getUserIdx())) {
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (isSameWriter(answer, user)) {
             return null;
         }
 
@@ -155,10 +158,10 @@ public class AnswerServiceImpl implements AnswerService {
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
-    private Boolean isSameWriter(Answer answer, Long userIdx) {
+    private Boolean isSameWriter(Answer answer, User user) {
         Long writerIdx = answer.getWriter().getUserIdx();
+        Long userIdx = user.getUserIdx();
 
-        // equals 메소드 따로 빼까?(쭈니맘), 에반가?
         return (writerIdx.equals(userIdx)) ? true : false;
     }
 }

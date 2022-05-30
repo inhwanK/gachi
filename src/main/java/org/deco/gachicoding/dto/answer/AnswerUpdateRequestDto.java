@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Setter
@@ -13,9 +14,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class AnswerUpdateRequestDto {
 
+    @ApiModelProperty(value = "사용자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "1234@1234.com")
     @NotNull
-    @ApiModelProperty(value = "작성자 번호", required = true, example = "1")
-    private Long userIdx;
+    @Email(message = "올바른 형식의 아이디가 아닙니다.")
+    private String userEmail;
 
     @NotNull
     @ApiModelProperty(value = "답변 번호", required = true, example = "1")
@@ -27,8 +29,8 @@ public class AnswerUpdateRequestDto {
     private String ansContent;
 
     @Builder
-    public AnswerUpdateRequestDto(Long userIdx, Long ansIdx, String asContent) {
-        this.userIdx = userIdx;
+    public AnswerUpdateRequestDto(String userEmail, Long ansIdx, String asContent) {
+        this.userEmail = userEmail;
         this.ansIdx = ansIdx;
         this.ansContent = asContent;
     }

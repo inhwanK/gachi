@@ -204,9 +204,7 @@ public class FileServiceImpl implements FileService {
                         .filePath(filePath)
                         .build();
 
-                registerFile(dto);
-
-                return newPath;
+                return filePath;
         }
 
         private Long convertFile(String filePath, String tamperingFileName) throws IOException {

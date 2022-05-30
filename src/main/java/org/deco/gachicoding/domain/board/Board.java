@@ -60,4 +60,10 @@ public class Board {
         this.boardActivated = true;
         return this;
     }
+
+    // 없애고 그냥 update를 써도 됨
+    public Board updateContent(String boardContent) {
+        this.boardContent = boardContent;
+        return this;
+    }
 }

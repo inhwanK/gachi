@@ -104,4 +104,14 @@ public class Question {
         return this;
     }
 
+    public Question updateContent(String queContent) {
+        this.queContent = queContent;
+        return this;
+    }
+
+    public Question updateError(String queError) {
+        this.queError = queError;
+        return this;
+    }
+
 }

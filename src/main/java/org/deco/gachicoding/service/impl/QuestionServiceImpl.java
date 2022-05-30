@@ -47,10 +47,9 @@ public class QuestionServiceImpl implements QuestionService {
         String queContent = question.getQueContent();
         String queError = question.getQueError();
 
-        // 익셉션 발생 시 보드 삭제
         try {
-            fileService.extractImgSrc(queIdx, queContent, "question");
-            fileService.extractImgSrc(queIdx, queError, "question");
+            question.updateContent(fileService.extractImgSrc(queIdx, queContent, "question"));
+            question.updateError(fileService.extractImgSrc(queIdx, queError, "question"));
             log.info("Success Upload Question Idx : {}", queIdx);
         } catch (Exception e) {
             log.error("Failed To Extract {} File", "Question Content");

@@ -2,7 +2,6 @@ package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.board.BoardRepository;
 import org.deco.gachicoding.domain.user.User;
@@ -49,7 +48,7 @@ public class BoardServiceImpl implements BoardService {
 
         // 익셉션 발생 시 보드 삭제
         try {
-            fileService.extractImgSrc(boardIdx, boardContent, "board");
+            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, "board"));
             log.info("Success Upload Board Idx : {}", boardIdx);
         } catch (IOException e) {
             log.error("Failed To Extract {} File", "Board Content");

@@ -1,21 +1,26 @@
 package org.deco.gachicoding.dto.answer;
 
-import com.sun.istack.NotNull;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.answer.Answer;
+import org.deco.gachicoding.domain.question.Question;
+import org.deco.gachicoding.domain.user.User;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class AnswerSaveRequestDto {
 
-    @ApiModelProperty(value = "작성자 번호", required = true, example = "1")
+    @ApiModelProperty(value = "사용자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "1234@1234.com")
     @NotNull
-    private Long userIdx;
+    @Email(message = "올바른 형식의 아이디가 아닙니다.")
+    private String userEmail;
 
     @ApiModelProperty(value = "답변할 질문 글 번호", required = true, example = "1")
     @NotNull
@@ -26,14 +31,16 @@ public class AnswerSaveRequestDto {
     private String ansContent;
 
     @Builder
-    public AnswerSaveRequestDto(Long userIdx, Long queIdx, String ansContent) {
-        this.userIdx = userIdx;
+    public AnswerSaveRequestDto(String userEmail, Long queIdx, String ansContent) {
+        this.userEmail = userEmail;
         this.queIdx = queIdx;
         this.ansContent = ansContent;
     }
 
-    public Answer toEntity(){
+    public Answer toEntity(User writer, Question question){
         return Answer.builder()
+                .writer(writer)
+                .question(question)
                 .ansContent(ansContent)
                 .build();
     }

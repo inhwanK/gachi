@@ -1,11 +1,13 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.answer.AnswerRepository;
 import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.question.QuestionRepository;
+import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
@@ -13,6 +15,7 @@ import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.AnswerService;
+import org.deco.gachicoding.service.FileService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.Optional;
 
 import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AnswerServiceImpl implements AnswerService {
@@ -30,19 +34,36 @@ public class AnswerServiceImpl implements AnswerService {
     private final AnswerRepository answerRepository;
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final FileService fileService;
 
     @Override
     @Transactional
     public Long registerAnswer(AnswerSaveRequestDto dto) {
-        Answer answer = dto.toEntity();
+        User writer = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Question question = questionRepository.findById(dto.getQueIdx())
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
-        answer.setUser(userRepository.getOne(dto.getUserIdx()));
+//        entity.setQuestion(questionRepository.getOne(dto.getQueIdx()));
 
-        answer.setQuestion(questionRepository.getOne(dto.getQueIdx()));
+        Answer answer = answerRepository.save(dto.toEntity(writer, question));
 
-        return answerRepository.save(answer).getAnsIdx();
+        Long ansIdx = answer.getAnsIdx();
+        String ansContent = answer.getAnsContent();
+
+        try {
+            answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));
+            log.info("Success Upload Question Idx : {}", ansIdx);
+        } catch (Exception e) {
+            log.error("Failed To Extract {} File", "Answer Content");
+            e.printStackTrace();
+            removeAnswer(ansIdx);
+        }
+
+        return ansIdx;
     }
 
     @Override

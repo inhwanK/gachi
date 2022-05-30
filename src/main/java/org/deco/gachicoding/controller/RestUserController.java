@@ -28,7 +28,7 @@ public class RestUserController {
     private final SocialService socialService;
 
 
-    @ApiOperation(value = "로그인", notes = "email, password 값을 받아 로그인 수행")
+    @ApiOperation(value = "로그인", notes = "로그인 수행")
     @ApiResponses(
             @ApiResponse(code = 200, message = "로그인 성공")
     )
@@ -71,13 +71,19 @@ public class RestUserController {
         httpSession.invalidate();
     }
 
-    @ApiOperation(value = "회원가입", notes = "UserSaveRequestDto 타입으로 값을 받아 회원가입 수행")
+    @ApiOperation(value = "회원가입", notes = "회원가입 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "회원가입 완료")
+    )
     @PostMapping("/user")
     public Long registerUser(@ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보") @Valid @RequestBody UserSaveRequestDto dto) {
         return userService.registerUser(dto);
     }
 
     @ApiOperation(value = "유저 정보 업데이트", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "사용자 수정 완료")
+    )
     @PutMapping("/user/{userIdx}")
     public Long updateUser(@ApiParam(name = "사용자 번호", value = "수정할 유저의 번호") @PathVariable Long userIdx,
                            @ApiParam(name = "수정 요청 DTO", value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
@@ -85,6 +91,9 @@ public class RestUserController {
     }
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
+    )
     @DeleteMapping("/user/{userIdx}")
     public Long deleteUser(@ApiParam(name = "사용자 번호", value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);

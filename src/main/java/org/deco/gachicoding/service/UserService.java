@@ -13,7 +13,7 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    boolean isDuplicateEmail(String email);
+    boolean isDuplicatedEmail(String email);
 
     Optional<User> getUserByUserEmail(String email);
 

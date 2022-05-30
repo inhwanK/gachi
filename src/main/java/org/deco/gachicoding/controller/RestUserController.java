@@ -27,6 +27,15 @@ public class RestUserController {
     private final UserService userService;
     private final SocialService socialService;
 
+    @ApiOperation(value ="이메일 중복 체크",notes = "이메일의 중복을 체크 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
+    )
+    @GetMapping("/user/regist/check-email")
+    public boolean checkEmail(@ApiParam(name = "회원가입 폼에 입력된 이메일") @RequestParam String email){
+        return !userService.isDuplicatedEmail(email);
+    }
+
 
     @ApiOperation(value = "로그인", notes = "로그인 수행")
     @ApiResponses(
@@ -75,7 +84,7 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "회원가입 완료")
     )
-    @PostMapping("/user")
+    @PostMapping("/user/regist")
     public Long registerUser(@ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보") @Valid @RequestBody UserSaveRequestDto dto) {
         return userService.registerUser(dto);
     }

@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     @Override
-    public boolean isDuplicateEmail(String userEmail) {
+    public boolean isDuplicatedEmail(String userEmail) {
         return getUserByUserEmail(userEmail).isPresent();
     }
 
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // 이메일 중복 체크
         String registerEmail = dto.getUserEmail();
 
-        if (isDuplicateEmail(registerEmail))
+        if (isDuplicatedEmail(registerEmail))
             throw new DataIntegrityViolationException("중복된 이메일 입니다.");
 
         // 비밀번호 변조
@@ -105,7 +105,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      *
      * @param authEmail
      */
-
 //    새 코드로 수정 해야함.
     @Transactional
     @Override
@@ -137,53 +136,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        User user = userRepository.findByUserEmail(email)
-//                .orElseThrow(()-> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
 
         UserDetails userDetails =  userRepository.findByUserEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
 
-        /*new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                UserRole role = user.getUserRole();
-                SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
-                Collection<GrantedAuthority> authorities = new ArrayList<>(); // List인 이유 : 여러개의 권한을 가질 수 있다
-                authorities.add(authority);
-                return authorities;
-            }
-
-            @Override
-            public String getPassword() {
-                return user.getUserPassword();
-            }
-
-            @Override
-            public String getUsername() {
-                return user.getUserEmail();
-            }
-
-            @Override
-            public boolean isAccountNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return true;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-        };
-*/
         return userDetails;
     }
 }

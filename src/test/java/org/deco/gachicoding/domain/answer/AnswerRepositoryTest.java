@@ -35,7 +35,7 @@ public class AnswerRepositoryTest {
                 .build();
 
         Answer entity = Answer.builder()
-                .user(user)
+                .writer(user)
                 .question(question)
                 .ansContent(ansContent)
                 .build();

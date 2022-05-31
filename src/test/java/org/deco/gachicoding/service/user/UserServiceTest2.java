@@ -86,7 +86,7 @@ public class UserServiceTest2 {
 
         Optional<User> user = userService.getUserByUserEmail("test@test.com");
 
-        assertEquals("테스트", user.get().getUserName());
+        assertEquals("테스트", user.get().getUsername());
         assertEquals("테스트별명", user.get().getUserNick());
         assertEquals("test@test.com", user.get().getUserEmail());
     }

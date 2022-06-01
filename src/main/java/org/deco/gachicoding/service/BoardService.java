@@ -18,7 +18,7 @@ public interface BoardService {
 
     BoardResponseDto getBoardDetail(Long boardIdx);
 
-    BoardResponseDto modifyBoard(BoardUpdateRequestDto dto);
+    BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) throws RuntimeException;
 
     ResponseEntity<ResponseState> disableBoard(Long boardIdx);
 

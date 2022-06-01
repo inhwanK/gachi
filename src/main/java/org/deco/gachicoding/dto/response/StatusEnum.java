@@ -27,7 +27,8 @@ public enum StatusEnum {
     DATA_NOT_EXIST(INTERNAL_SERVER_ERROR, "데이터가 존재하지 않습니다."),
     NULL_POINTER(INTERNAL_SERVER_ERROR, "참조 변수에 값이 존재하지 않습니다."),
     INPUT_OUTPUT_EXCEPTION(INTERNAL_SERVER_ERROR, "파일 읽기, 쓰기 실패"),
-    AMAZONS_S3_EXCEPTION(INTERNAL_SERVER_ERROR, "S3에 파일이 존재하지 않습니다.");
+    AMAZONS_S3_EXCEPTION(INTERNAL_SERVER_ERROR, "S3에 파일이 존재하지 않습니다."),
+    INVALID_AUTH_USER(INTERNAL_SERVER_ERROR, "권한이 없는 유저입니다");
 
     private final HttpStatus httpStatus;
     private final String detail;

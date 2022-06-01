@@ -18,7 +18,7 @@ public interface AnswerService {
 
     AnswerResponseDto getAnswerDetail(Long ansIdx);
 
-    AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto);
+    AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) throws RuntimeException;
 
     ResponseEntity<ResponseState> selectAnswer(Long ansIdx);
 

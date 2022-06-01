@@ -90,15 +90,15 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) {
+    public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) throws RuntimeException {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         User user = userRepository.findByUserEmail(dto.getUserEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (isSameWriter(answer, user)) {
-            return null;
+        if (!isSameWriter(answer, user)) {
+            throw new CustomException(INVALID_AUTH_USER);
         }
 
         answer = answer.update(dto.getAnsContent());

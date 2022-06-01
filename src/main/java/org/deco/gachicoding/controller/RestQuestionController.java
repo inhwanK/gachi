@@ -57,7 +57,7 @@ public class RestQuestionController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
     )
-    @PutMapping("/question/modify/{userIdx}")
+    @PutMapping("/question/modify")
     public QuestionDetailResponseDto modifyQuestion(@ApiParam(name = "질문 수정 요청 DTO", value = "질문 수정 요청 body 정보") @RequestBody QuestionUpdateRequestDto dto) {
         return questionService.modifyQuestion(dto);
     }

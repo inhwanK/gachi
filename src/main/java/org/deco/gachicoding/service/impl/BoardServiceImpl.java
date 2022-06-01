@@ -83,7 +83,7 @@ public class BoardServiceImpl implements BoardService {
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         if (!isSameWriter(board, dto.getUserIdx())) {
-            return null;
+            throw new CustomException(INVALID_AUTH_USER);
         }
 
         board = board.update(dto.getBoardTitle(), dto.getBoardContent());

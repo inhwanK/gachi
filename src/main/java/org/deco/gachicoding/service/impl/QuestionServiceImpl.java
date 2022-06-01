@@ -88,7 +88,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) {
+    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
         Question question = questionRepository.findById(dto.getQueIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
@@ -97,8 +97,8 @@ public class QuestionServiceImpl implements QuestionService {
         User user = userRepository.findByUserEmail(dto.getUserEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        if (isSameWriter(question, user)) {
-            return null;
+        if (!isSameWriter(question, user)) {
+            throw new CustomException(INVALID_AUTH_USER);
         }
 
         // null 문제 해결 못함

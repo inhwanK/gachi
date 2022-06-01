@@ -20,7 +20,8 @@ import java.util.List;
 public class QuestionListResponseDto {
 
     private Long queIdx;
-    private Long writerIdx;
+    private String userEmail;
+    private String userNick;
     private String queTitle;
     private String queContent;
     private String queError;
@@ -31,7 +32,8 @@ public class QuestionListResponseDto {
 
     @Builder
     public QuestionListResponseDto(Question question) {
-        this.writerIdx = question.getWriter().getUserIdx();
+        this.userEmail = question.getWriter().getUserEmail();
+        this.userNick = question.getWriter().getUserNick();
         this.queIdx = question.getQueIdx();
         this.queTitle = question.getQueTitle();
         this.queContent = question.getQueContent();

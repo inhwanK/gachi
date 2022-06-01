@@ -16,7 +16,8 @@ import java.time.LocalDateTime;
 public class AnswerResponseDto {
 
     private Long ansIdx;
-    private Long writerIdx;
+    private String userEmail;
+    private String userNick;
     private Long queIdx;
     private String ansContent;
     private Boolean ansSelect;
@@ -26,7 +27,8 @@ public class AnswerResponseDto {
     @Builder
     public AnswerResponseDto(Answer answer) {
 //        setWriterInfo(answer);
-        this.writerIdx = answer.getWriter().getUserIdx();
+        this.userEmail = answer.getWriter().getUserEmail();
+        this.userNick = answer.getWriter().getUserNick();
         setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
         this.ansContent = answer.getAnsContent();

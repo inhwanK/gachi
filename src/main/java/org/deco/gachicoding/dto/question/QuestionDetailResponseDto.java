@@ -19,7 +19,8 @@ import java.util.List;
 public class QuestionDetailResponseDto {
 
     private Long queIdx;
-    private Long writerIdx;
+    private String userEmail;
+    private String userNick;
     private List<AnswerResponseDto> answerList = new ArrayList<>();
     private String queTitle;
     private String queContent;
@@ -32,7 +33,8 @@ public class QuestionDetailResponseDto {
     @Builder
     public QuestionDetailResponseDto(Question question) {
         this.queIdx = question.getQueIdx();
-        this.writerIdx = question.getWriter().getUserIdx();
+        this.userEmail = question.getWriter().getUserEmail();
+        this.userNick = question.getWriter().getUserNick();
         setAnswerList(question);
 
         this.queTitle = question.getQueTitle();

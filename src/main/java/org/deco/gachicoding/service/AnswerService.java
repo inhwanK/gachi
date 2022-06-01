@@ -2,6 +2,7 @@ package org.deco.gachicoding.service;
 
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
+import org.deco.gachicoding.dto.answer.AnswerSelectRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.springframework.data.domain.Page;
@@ -20,7 +21,7 @@ public interface AnswerService {
 
     AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) throws RuntimeException;
 
-    ResponseEntity<ResponseState> selectAnswer(Long ansIdx);
+    ResponseEntity<ResponseState> selectAnswer(AnswerSelectRequestDto dto);
 
     ResponseEntity<ResponseState> disableAnswer(Long ansIdx);
 

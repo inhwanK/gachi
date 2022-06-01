@@ -11,6 +11,7 @@ import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
+import org.deco.gachicoding.dto.answer.AnswerSelectRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
@@ -113,11 +114,15 @@ public class AnswerServiceImpl implements AnswerService {
     // 질문 작성자 확인 로직 추가
     @Override
     @Transactional
-    public ResponseEntity<ResponseState> selectAnswer(Long ansIdx) {
-        Answer answer = answerRepository.findById(ansIdx)
+    public ResponseEntity<ResponseState> selectAnswer(AnswerSelectRequestDto dto) {
+        Answer answer = answerRepository.findById(dto.getAnsIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
         Question question = answer.getQuestion();
+
+        // 좀 헷갈리지만 같을때 true가 나오기 때문에 !를 붙여야함
+        if(!selectAuthCheck(question, dto.getUserEmail()))
+            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
 
         if(!question.getQueSolve()) {
             answer.toSelect();
@@ -163,5 +168,14 @@ public class AnswerServiceImpl implements AnswerService {
         Long userIdx = user.getUserIdx();
 
         return (writerIdx.equals(userIdx)) ? true : false;
+    }
+
+    // answer의 작성자가 아니라 question의 작성자가 맞는지 검사해야한다.
+    // 하지만 위의 메서드와 하는 일은 같으니 통합시킬 수 없을까?
+    // 뒤는 부탁할게 인환몬!
+    private Boolean selectAuthCheck(Question question, String userEmail) {
+        String writerEmail = question.getWriter().getUserEmail();
+
+        return (writerEmail.equals(userEmail)) ? true : false;
     }
 }

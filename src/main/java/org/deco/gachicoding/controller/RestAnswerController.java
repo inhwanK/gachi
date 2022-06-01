@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
+import org.deco.gachicoding.dto.answer.AnswerSelectRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.AnswerService;
@@ -56,11 +57,12 @@ public class RestAnswerController {
     @ApiOperation(value = "답변 채택")
     @ApiResponses({
             @ApiResponse(code = 200, message = "채택 성공"),
-            @ApiResponse(code = 409, message = "해결이 완료된 질문입니다")
+            @ApiResponse(code = 409, message = "해결이 완료된 질문입니다"),
+            @ApiResponse(code = 500, message = "권한이 없는 유저입니다")
     })
-    @PutMapping("/answer/select/{ansIdx}")
-    public ResponseEntity<ResponseState> selectAnswer(@ApiParam(name = "답변 번호") @PathVariable Long ansIdx) {
-        return answerService.selectAnswer(ansIdx);
+    @PutMapping("/answer/select")
+    public ResponseEntity<ResponseState> selectAnswer(@ApiParam(name = "답변 채택 dto", value = "답변 채택 요청 body 정보") @RequestBody AnswerSelectRequestDto dto) {
+        return answerService.selectAnswer(dto);
     }
 
     @ApiOperation(value = "답변 비활성화")

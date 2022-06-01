@@ -47,6 +47,9 @@ public class BoardServiceImpl implements BoardService {
         String boardContent = board.getBoardContent();
 
         // 익셉션 발생 시 보드 삭제
+        // 익셉션 발생 시 태그 넣으면 안되는데
+        // 태그 넣는 로직이 BoardController에 있네?
+        // 안으로 가져오기 싫은데
         try {
             board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, boardType));
         } catch (IOException e) {

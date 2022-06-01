@@ -1,18 +1,26 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.tag.BoardTag;
 import org.deco.gachicoding.domain.tag.BoardTagRepository;
 import org.deco.gachicoding.domain.tag.Tag;
 import org.deco.gachicoding.domain.tag.TagRepository;
 import org.deco.gachicoding.dto.ResponseDto;
+import org.deco.gachicoding.dto.response.CustomException;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.tag.TagResponseDto;
 import org.deco.gachicoding.service.TagService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.deco.gachicoding.dto.response.StatusEnum.DATA_NOT_EXIST;
+import static org.deco.gachicoding.dto.response.StatusEnum.REMOVE_SUCCESS;
 
 @Service
 @RequiredArgsConstructor
@@ -64,5 +72,13 @@ public class TagServiceImpl implements TagService {
 
         dto.setTags(result);
         return dto;
+    }
+
+    @Transactional
+    public void removeTag(Long boardIdx) {
+//        Board board = boardRepository.findById(boardIdx)
+//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+//
+//        boardRepository.delete(board);
     }
 }

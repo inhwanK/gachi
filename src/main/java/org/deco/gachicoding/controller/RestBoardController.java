@@ -33,18 +33,15 @@ public class RestBoardController {
     )
     @PostMapping("/board")
     public Long registerBoard(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) {
-        log.info("{} Register Controller", "Board");
-        Long boardIdx = boardService.registerBoard(dto, BOARD_TYPE);
+            log.info("{} Register Controller", "Board");
+            Long boardIdx = boardService.registerBoard(dto, BOARD_TYPE);
 
-        // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
-        // try catch패턴은 지양 해야한다, 어쩔 수 없이 사용해야 하는 경우라면 최대한 상세하게 에러를 남겨두는 것이 좋다.
-        try {
-            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD_TYPE);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
+            // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
+            // try catch패턴은 지양 해야한다, 어쩔 수 없이 사용해야 하는 경우라면 최대한 상세하게 에러를 남겨두는 것이 좋다.
 
-        return boardIdx;
+            if(dto.getTags() != null)
+                tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD_TYPE);
+            return boardIdx;
     }
 
     @ApiOperation(value = "자유게시판 게시글 목록")

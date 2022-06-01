@@ -38,13 +38,9 @@ public class RestNoticeController {
         log.info("{} Register Controller", "Notice");
         Long noticeIdx = boardService.registerBoard(dto, BOARD_TYPE);
 
-        try {
-            log.info("tried Tag Upload {}", "Notice");
+        if(dto.getTags() != null)
             tagService.registerBoardTag(noticeIdx, dto.getTags(), BOARD_TYPE);
-        } catch (NullPointerException e) {
-            log.error("{} Board Tags Error", "Notice");
-            e.printStackTrace();
-        }
+
         return noticeIdx;
     }
 

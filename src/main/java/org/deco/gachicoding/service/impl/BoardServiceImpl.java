@@ -48,8 +48,7 @@ public class BoardServiceImpl implements BoardService {
 
         // 익셉션 발생 시 보드 삭제
         try {
-            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, "board"));
-            log.info("Success Upload Board Idx : {}", boardIdx);
+            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, boardType));
         } catch (IOException e) {
             log.error("Failed To Extract {} File", "Board Content");
             e.printStackTrace();

@@ -2,6 +2,7 @@ package org.deco.gachicoding.controller;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
 import org.deco.gachicoding.dto.question.QuestionListResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
@@ -17,6 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 
+@Slf4j
 @Api(tags = "가치질문 정보 처리 API")
 @RequiredArgsConstructor
 @RestController
@@ -30,7 +32,13 @@ public class RestQuestionController {
     )
     @PostMapping("/question")
     public Long registerQuestion(@ApiParam(name = "질문 요청 DTO", value = "질문 요청 body 정보") @Valid @RequestBody QuestionSaveRequestDto dto) {
-        return questionService.registerQuestion(dto);
+        log.info("{} Register Controller", "Question");
+        Long queIdx = questionService.registerQuestion(dto);
+
+//        if(dto.getTags() != null)
+//            tagService.registerBoardTag(boardIdx, dto.getTags(), "question");
+
+        return queIdx;
     }
 
     @ApiOperation(value = "질문 리스트", notes = "여러 개의 질문 데이터 응답. 이 때, 질문별 답변 데이터는 포함하지 않음.")

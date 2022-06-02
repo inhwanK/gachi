@@ -5,6 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+
+// 구글 SMTP : https://support.google.com/a/answer/176600?hl=ko#zippy=%2Cgmail-smtp-%EC%84%9C%EB%B2%84-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 @Service
 @RequiredArgsConstructor
 public class MailService {

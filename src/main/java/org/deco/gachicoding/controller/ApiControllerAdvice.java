@@ -44,11 +44,11 @@ public class ApiControllerAdvice {
         return ResponseState.toResponseEntity(AMAZONS_S3_EXCEPTION);
     }
 
-    @ExceptionHandler(IOException.class)
-    protected ResponseEntity<ResponseState> handleIOException() {
-        log.error("handleIOException throw Exception : {}", INPUT_OUTPUT_EXCEPTION);
-        return ResponseState.toResponseEntity(INPUT_OUTPUT_EXCEPTION);
-    }
+//    @ExceptionHandler(IOException.class)
+//    protected ResponseEntity<ResponseState> handleIOException() {
+//        log.error("handleIOException throw Exception : {}", INPUT_OUTPUT_EXCEPTION);
+//        return ResponseState.toResponseEntity(INPUT_OUTPUT_EXCEPTION);
+//    }
 
     @ExceptionHandler(value = { ConstraintViolationException.class, DataIntegrityViolationException.class})
     protected ResponseEntity<ResponseState> handleDataException() {

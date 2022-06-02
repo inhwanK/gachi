@@ -9,14 +9,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Service
 public interface BoardService {
 
-    Long registerBoard(BoardSaveRequestDto dto, String boardType);
+    Long registerBoard(BoardSaveRequestDto dto, String boardType) throws Exception;
 
     Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable, String boardType);
 
-    BoardResponseDto getBoardDetail(Long boardIdx);
+    BoardResponseDto getBoardDetail(Long boardIdx, String boardType);
 
     BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) throws RuntimeException;
 

@@ -7,6 +7,7 @@ import org.deco.gachicoding.domain.tag.BoardTagRepository;
 import org.deco.gachicoding.domain.tag.Tag;
 import org.deco.gachicoding.domain.tag.TagRepository;
 import org.deco.gachicoding.dto.ResponseDto;
+import org.deco.gachicoding.dto.TagResponse;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.dto.tag.TagResponseDto;
@@ -62,7 +63,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public ResponseDto getTags(Long boardIdx, String type, ResponseDto dto) {
+    public TagResponse getTags(Long boardIdx, String type, TagResponse dto) {
         List<TagResponseDto> result = new ArrayList<>();
         List<BoardTag> tags = boardTagRepository.findAllByBoardIdxAndBoardType(boardIdx, type);
 
@@ -75,10 +76,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Transactional
-    public void removeTag(Long boardIdx) {
-//        Board board = boardRepository.findById(boardIdx)
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//
-//        boardRepository.delete(board);
+    public void removeBoardTags(Long boardIdx, String type) {
+        boardTagRepository.deleteAllByBoardIdxAndAndBoardType(boardIdx, type);
     }
 }

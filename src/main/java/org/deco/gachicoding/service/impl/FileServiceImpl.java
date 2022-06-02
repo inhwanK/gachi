@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.file.File;
 import org.deco.gachicoding.domain.file.FileRepository;
+import org.deco.gachicoding.dto.FileResponse;
 import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.file.FileResponseDto;
 import org.deco.gachicoding.dto.file.FileSaveDto;
@@ -123,7 +124,7 @@ public class FileServiceImpl implements FileService {
         }
 
         @Transactional
-        public ResponseDto getFiles(Long boardIdx, String boardCategory, ResponseDto dto) {
+        public FileResponse getFiles(Long boardIdx, String boardCategory, FileResponse dto) {
                 List<FileResponseDto> result = new ArrayList<>();
                 List<File> fileList = fileRepository.findAllByBoardCategoryAndBoardIdx(boardCategory, boardIdx);
 

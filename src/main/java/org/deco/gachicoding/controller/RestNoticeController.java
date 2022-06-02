@@ -8,8 +8,6 @@ import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.BoardService;
-import org.deco.gachicoding.service.FileService;
-import org.deco.gachicoding.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -25,8 +23,6 @@ import springfox.documentation.annotations.ApiIgnore;
 public class RestNoticeController {
 
     private final BoardService boardService;
-    private final TagService tagService;
-    private final FileService fileService;
     private final static String BOARD_TYPE = "NOTICE";
 
     @ApiOperation(value = "공지사항 등록", notes = "게시판 요청 DTO를 받아 공지사항 등록 수행")
@@ -34,14 +30,10 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
     )
     @PostMapping("/notice")
-    public Long registerNotice(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) {
+    public Long registerNotice(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
         log.info("{} Register Controller", "Notice");
-        Long noticeIdx = boardService.registerBoard(dto, BOARD_TYPE);
 
-        if(dto.getTags() != null)
-            tagService.registerBoardTag(noticeIdx, dto.getTags(), BOARD_TYPE);
-
-        return noticeIdx;
+        return boardService.registerBoard(dto, BOARD_TYPE);
     }
 
     @ApiOperation(value = "공지사항 리스트 보기", notes = "공지사항 목록을 응답")
@@ -51,14 +43,8 @@ public class RestNoticeController {
     @GetMapping("/notice/list")
     public Page<BoardResponseDto> getNoticeList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                 @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
-        Page<BoardResponseDto> result = boardService.getBoardList(keyword, pageable, BOARD_TYPE);
-        // 리팩토링 중복 코드 제거
-        // 리팩토링 글 삭제시 관련 태그 삭제 (-> db테이블 생성시 설정 해주면 될듯)
-        result.forEach(
-                BoardResponseDto ->
-                        tagService.getTags(BoardResponseDto.getBoardIdx(), BOARD_TYPE, BoardResponseDto)
-        );
-        return result;
+
+        return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
     }
 
     @ApiOperation(value = "공지사항 상세 보기", notes = "상세한 공지사항 데이터 응답")
@@ -67,10 +53,8 @@ public class RestNoticeController {
     )
     @GetMapping("/notice/{boardIdx}")
     public BoardResponseDto getNoticeDetail(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
-        BoardResponseDto result = boardService.getBoardDetail(boardIdx);
-        fileService.getFiles(boardIdx, BOARD_TYPE, result);
-        tagService.getTags(boardIdx, BOARD_TYPE, result);
-        return result;
+
+        return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
     }
 
     @ApiOperation(value = "공지사항 수정", notes = "공지사항 등록 수행 (리팩토링 필요함)")

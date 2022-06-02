@@ -7,7 +7,10 @@ import lombok.Setter;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.question.Question;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
+import org.deco.gachicoding.dto.file.FileResponseDto;
+import org.deco.gachicoding.dto.tag.TagResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionDetailResponseDto {
+public class QuestionDetailResponseDto implements ResponseDto {
 
     private Long queIdx;
     private String userEmail;
@@ -29,6 +32,9 @@ public class QuestionDetailResponseDto {
     private Boolean queSolve;
     private Boolean queActivated;
     private LocalDateTime queRegdate;
+
+    private List<FileResponseDto> files;
+    private List<TagResponseDto> tags;
 
     @Builder
     public QuestionDetailResponseDto(Question question) {
@@ -57,5 +63,15 @@ public class QuestionDetailResponseDto {
                     .answer(ans).build();
             answerList.add(answerResponseDto);
         }
+    }
+
+    @Override
+    public void setFiles(List<FileResponseDto> files) {
+        this.files = files;
+    }
+
+    @Override
+    public void setTags(List<TagResponseDto> tags) {
+        this.tags = tags;
     }
 }

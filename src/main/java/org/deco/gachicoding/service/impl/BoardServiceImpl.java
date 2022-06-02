@@ -9,10 +9,12 @@ import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
+import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.BoardService;
 import org.deco.gachicoding.service.FileService;
+import org.deco.gachicoding.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -31,10 +33,11 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final TagService tagService;
 
     @Transactional
     @Override
-    public Long registerBoard(BoardSaveRequestDto dto, String boardType) {
+    public Long registerBoard(BoardSaveRequestDto dto, String boardType) throws Exception {
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
 
@@ -46,16 +49,18 @@ public class BoardServiceImpl implements BoardService {
         Long boardIdx = board.getBoardIdx();
         String boardContent = board.getBoardContent();
 
-        // 익셉션 발생 시 보드 삭제
-        // 익셉션 발생 시 태그 넣으면 안되는데
-        // 태그 넣는 로직이 BoardController에 있네?
-        // 안으로 가져오기 싫은데
+        if(dto.getTags() != null)
+            tagService.registerBoardTag(boardIdx, dto.getTags(), boardType);
+
         try {
             board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, boardType));
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error("Failed To Extract {} File", "Board Content");
             e.printStackTrace();
             removeBoard(boardIdx);
+            tagService.removeBoardTags(boardIdx, boardType);
+            // throw해줘야 Advice에서 예외를 감지 함
+            throw e;
         }
 
         return boardIdx;
@@ -66,16 +71,29 @@ public class BoardServiceImpl implements BoardService {
     public Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable, String boardType) {
         Page<BoardResponseDto> boardList =
                 boardRepository.findByBoardTypeAndBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardTypeAndBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(boardType, keyword, boardType, keyword, pageable).map(entity -> new BoardResponseDto(entity));
+
+        boardList.forEach(
+                boardResponseDto ->
+                        tagService.getTags(boardResponseDto.getBoardIdx(), boardType, boardResponseDto)
+        );
+
         return boardList;
     }
 
     @Transactional
     @Override
-    public BoardResponseDto getBoardDetail(Long boardIdx) {
-        Board entity = boardRepository.findById(boardIdx)
+    public BoardResponseDto getBoardDetail(Long boardIdx, String boardType) {
+        Board board = boardRepository.findById(boardIdx)
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
-        return new BoardResponseDto(entity);
+        BoardResponseDto boardDetail = BoardResponseDto.builder()
+                .board(board)
+                .build();
+
+//        fileService.getFiles(boardIdx, boardType, boardDetail);
+        tagService.getTags(boardIdx, boardType, boardDetail);
+
+        return boardDetail;
     }
 
     @Override

@@ -31,14 +31,10 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "등록된 질문 번호 반환")
     )
     @PostMapping("/question")
-    public Long registerQuestion(@ApiParam(name = "질문 요청 DTO", value = "질문 요청 body 정보") @Valid @RequestBody QuestionSaveRequestDto dto) {
+    public Long registerQuestion(@ApiParam(name = "질문 요청 DTO", value = "질문 요청 body 정보") @Valid @RequestBody QuestionSaveRequestDto dto) throws Exception {
         log.info("{} Register Controller", "Question");
-        Long queIdx = questionService.registerQuestion(dto);
 
-//        if(dto.getTags() != null)
-//            tagService.registerBoardTag(boardIdx, dto.getTags(), "question");
-
-        return queIdx;
+        return questionService.registerQuestion(dto);
     }
 
     @ApiOperation(value = "질문 리스트", notes = "여러 개의 질문 데이터 응답. 이 때, 질문별 답변 데이터는 포함하지 않음.")

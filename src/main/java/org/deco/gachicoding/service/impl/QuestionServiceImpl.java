@@ -15,6 +15,7 @@ import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.FileService;
 import org.deco.gachicoding.service.QuestionService;
+import org.deco.gachicoding.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -34,10 +35,12 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final TagService tagService;
+    private final String BOARD_TYPE = "QUESTION";
 
     @Override
     @Transactional
-    public Long registerQuestion(QuestionSaveRequestDto dto) {
+    public Long registerQuestion(QuestionSaveRequestDto dto) throws Exception {
         User writer = userRepository.findByUserEmail(dto.getUserEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
@@ -47,14 +50,19 @@ public class QuestionServiceImpl implements QuestionService {
         String queContent = question.getQueContent();
         String queError = question.getQueError();
 
+        if(dto.getTags() != null)
+            tagService.registerBoardTag(queIdx, dto.getTags(), BOARD_TYPE);
+
         try {
-            question.updateContent(fileService.extractImgSrc(queIdx, queContent, "question"));
-            question.updateError(fileService.extractImgSrc(queIdx, queError, "question"));
+            question.updateContent(fileService.extractImgSrc(queIdx, queContent, BOARD_TYPE));
+            question.updateError(fileService.extractImgSrc(queIdx, queError, BOARD_TYPE));
             log.info("Success Upload Question Idx : {}", queIdx);
         } catch (Exception e) {
             log.error("Failed To Extract {} File", "Question Content");
             e.printStackTrace();
             removeQuestion(queIdx);
+            tagService.removeBoardTags(queIdx, BOARD_TYPE);
+            throw e;
         }
 
         return queIdx;
@@ -70,6 +78,11 @@ public class QuestionServiceImpl implements QuestionService {
                 result -> new QuestionListResponseDto(result)
         );
 
+        questionList.forEach(
+                questionListResponseDto ->
+                        tagService.getTags(questionListResponseDto.getQueIdx(), BOARD_TYPE, questionListResponseDto)
+        );
+
         return questionList;
     }
 
@@ -82,6 +95,9 @@ public class QuestionServiceImpl implements QuestionService {
         QuestionDetailResponseDto questionDetail = QuestionDetailResponseDto.builder()
                 .question(question)
                 .build();
+
+//        fileService.getFiles(queIdx, BOARD_TYPE, questionDetail);
+        tagService.getTags(queIdx, BOARD_TYPE, questionDetail);
 
         return questionDetail;
     }

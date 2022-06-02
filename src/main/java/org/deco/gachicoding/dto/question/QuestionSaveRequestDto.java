@@ -11,6 +11,7 @@ import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
@@ -36,7 +37,10 @@ public class QuestionSaveRequestDto {
 
     @ApiModelProperty(value = "질문 카테고리", notes = "이거 지금 잘 모르겠음", required = false, example = "Spring Security 개어렵네염")
     @Nullable
-    private String queCategory;
+    private String queCategory;@Nullable
+
+    @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
+    private List<String> tags;
 
     @Builder
     public QuestionSaveRequestDto(String userEmail, String queTitle, String queContent, String queError, String queCategory) {

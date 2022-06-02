@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface QuestionService {
 
-    Long registerQuestion(QuestionSaveRequestDto dto);
+    Long registerQuestion(QuestionSaveRequestDto dto) throws Exception;
 
     Page<QuestionListResponseDto> getQuestionList(String keyword, Pageable pageable);
 

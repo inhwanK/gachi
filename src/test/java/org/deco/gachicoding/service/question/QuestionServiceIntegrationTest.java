@@ -34,15 +34,19 @@ public class QuestionServiceIntegrationTest {
 
     @BeforeEach
     void before() {
-        QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
-                .userEmail(userEmail)
-                .queTitle(queTitle)
-                .queContent(queContent)
-                .queError(queError)
-                .queCategory(queCategory)
-                .build();
+        try{
+            QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
+                    .userEmail(userEmail)
+                    .queTitle(queTitle)
+                    .queContent(queContent)
+                    .queError(queError)
+                    .queCategory(queCategory)
+                    .build();
 
-        queIdx = questionService.registerQuestion(dto);
+            queIdx = questionService.registerQuestion(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterEach

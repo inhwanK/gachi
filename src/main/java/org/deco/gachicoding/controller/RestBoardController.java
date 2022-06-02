@@ -8,8 +8,6 @@ import org.deco.gachicoding.dto.board.BoardResponseDto;
 import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
 import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.service.BoardService;
-import org.deco.gachicoding.service.FileService;
-import org.deco.gachicoding.service.TagService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,8 +21,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class RestBoardController {
     private final BoardService boardService;
-    private final FileService fileService;
-    private final TagService tagService;
     private final String BOARD_TYPE = "BOARD";
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
@@ -32,16 +28,10 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "등록된 게시글 번호 반환")
     )
     @PostMapping("/board")
-    public Long registerBoard(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) {
+    public Long registerBoard(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
             log.info("{} Register Controller", "Board");
-            Long boardIdx = boardService.registerBoard(dto, BOARD_TYPE);
 
-            // if로 검사해도 된다 if (files == null)   익셉션 핸들링 필요
-            // try catch패턴은 지양 해야한다, 어쩔 수 없이 사용해야 하는 경우라면 최대한 상세하게 에러를 남겨두는 것이 좋다.
-
-            if(dto.getTags() != null)
-                tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD_TYPE);
-            return boardIdx;
+            return boardService.registerBoard(dto, BOARD_TYPE);
     }
 
     @ApiOperation(value = "자유게시판 게시글 목록")
@@ -51,14 +41,8 @@ public class RestBoardController {
     @GetMapping("/board/list")
     public Page<BoardResponseDto> getBoardList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                @PageableDefault(size = 10) Pageable pageable) {
-        Page<BoardResponseDto> result = boardService.getBoardList(keyword, pageable, BOARD_TYPE);
-        // 리팩토링 중복 코드 제거
-        // 리팩토링 글 삭제시 관련 태그 삭제 (-> db테이블 생성시 설정 해주면 될듯)
-        result.forEach(
-                BoardResponseDto ->
-                        tagService.getTags(BoardResponseDto.getBoardIdx(), BOARD_TYPE, BoardResponseDto)
-        );
-        return result;
+
+        return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")
@@ -67,10 +51,8 @@ public class RestBoardController {
     )
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
-        BoardResponseDto result = boardService.getBoardDetail(boardIdx);
-        fileService.getFiles(boardIdx, result.getBoardType(), result);
-        tagService.getTags(boardIdx, result.getBoardType(), result);
-        return result;
+
+        return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정 (리팩토링 필요함)")

@@ -1,5 +1,6 @@
 package org.deco.gachicoding.service;
 
+import org.deco.gachicoding.dto.FileResponse;
 import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.file.FileSaveDto;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public interface FileService {
 
     void registerFile(FileSaveDto fileSaveDto);
 
-    ResponseDto getFiles(Long boardIdx, String boardCategory, ResponseDto dto);
+    FileResponse getFiles(Long boardIdx, String boardCategory, FileResponse dto);
 
     String extractImgSrc(Long boardIdx, String content, String category) throws IOException;
 }

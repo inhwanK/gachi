@@ -4,20 +4,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.question.Question;
-import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.dto.answer.AnswerResponseDto;
+import org.deco.gachicoding.dto.TagResponse;
+import org.deco.gachicoding.dto.tag.TagResponseDto;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionListResponseDto {
+public class QuestionListResponseDto implements TagResponse {
 
     private Long queIdx;
     private String userEmail;
@@ -29,6 +26,8 @@ public class QuestionListResponseDto {
     private Boolean queSolve;
     private Boolean queActivated;
     private LocalDateTime queRegdate;
+
+    private List<TagResponseDto> tags;
 
     @Builder
     public QuestionListResponseDto(Question question) {
@@ -42,6 +41,11 @@ public class QuestionListResponseDto {
         this.queSolve = question.getQueSolve();
         this.queActivated = question.getQueActivated();
         this.queRegdate = question.getQueRegdate();
+    }
+
+    @Override
+    public void setTags(List<TagResponseDto> tags) {
+        this.tags = tags;
     }
 
 //    public void setWriterInfo(Question question) {

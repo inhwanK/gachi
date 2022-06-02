@@ -205,6 +205,8 @@ public class FileServiceImpl implements FileService {
                         .filePath(filePath)
                         .build();
 
+                registerFile(dto);
+
                 return filePath;
         }
 

@@ -31,7 +31,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "등록된 질문 번호 반환")
     )
     @PostMapping("/question")
-    public Long registerQuestion(@ApiParam(name = "질문 요청 DTO", value = "질문 요청 body 정보") @Valid @RequestBody QuestionSaveRequestDto dto) throws Exception {
+    public Long registerQuestion(@ApiParam(value = "질문 요청 body 정보") @Valid @RequestBody QuestionSaveRequestDto dto) throws Exception {
         log.info("{} Register Controller", "Question");
 
         return questionService.registerQuestion(dto);
@@ -42,7 +42,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "질문 목록 반환")
     )
     @GetMapping("/question/list")
-    public Page<QuestionListResponseDto> getQuestionList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+    public Page<QuestionListResponseDto> getQuestionList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                          @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return questionService.getQuestionList(keyword, pageable);
@@ -53,7 +53,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "질문 상세 정보 반환")
     )
     @GetMapping("/question/{queIdx}")
-    public QuestionDetailResponseDto getQuestionDetail(@ApiParam(name = "질문 번호") @PathVariable Long queIdx) {
+    public QuestionDetailResponseDto getQuestionDetail(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
         return questionService.getQuestionDetail(queIdx);
     }
 
@@ -62,7 +62,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
     )
     @PutMapping("/question/modify")
-    public QuestionDetailResponseDto modifyQuestion(@ApiParam(name = "질문 수정 요청 DTO", value = "질문 수정 요청 body 정보") @RequestBody QuestionUpdateRequestDto dto) {
+    public QuestionDetailResponseDto modifyQuestion(@ApiParam(value = "질문 수정 요청 body 정보") @RequestBody QuestionUpdateRequestDto dto) {
         return questionService.modifyQuestion(dto);
     }
 
@@ -71,7 +71,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/question/disable/{queIdx}")
-    public ResponseEntity<ResponseState> disableQuestion(@ApiParam(name = "질문 번호") @PathVariable Long queIdx) {
+    public ResponseEntity<ResponseState> disableQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
         return questionService.disableQuestion(queIdx);
     }
 
@@ -80,7 +80,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/question/enable/{queIdx}")
-    public ResponseEntity<ResponseState> enableQuestion(@ApiParam(name = "질문 번호") @PathVariable Long queIdx) {
+    public ResponseEntity<ResponseState> enableQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
         return questionService.enableQuestion(queIdx);
     }
 
@@ -89,7 +89,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/question/{queIdx}")
-    public ResponseEntity<ResponseState> removeQuestion(@ApiParam(name = "질문 번호") @PathVariable Long queIdx) {
+    public ResponseEntity<ResponseState> removeQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
         return questionService.removeQuestion(queIdx);
     }
 }

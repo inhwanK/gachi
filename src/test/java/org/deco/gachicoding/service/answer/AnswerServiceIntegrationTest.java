@@ -1,0 +1,114 @@
+package org.deco.gachicoding.service.answer;
+
+import org.deco.gachicoding.dto.answer.AnswerResponseDto;
+import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
+import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
+import org.deco.gachicoding.dto.question.QuestionResponseDto;
+import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
+import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
+import org.deco.gachicoding.service.question.QuestionService;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+public class AnswerServiceIntegrationTest {
+    @Autowired
+    AnswerService answerService;
+
+    Long ansIdx;
+
+    Long userIdx = Long.valueOf(1);
+    Long queIdx = Long.valueOf(1);
+    String ansContent = "답변 테스트 내용 강아지 병아리(테스트)";
+
+    @BeforeEach
+    void before() {
+        AnswerSaveRequestDto dto = AnswerSaveRequestDto.builder()
+                .userIdx(userIdx)
+                .queIdx(queIdx)
+                .ansContent(ansContent)
+                .build();
+
+        ansIdx = answerService.registerAnswer(dto);
+    }
+
+    @AfterEach
+    void after() {
+        if (ansIdx != null) {
+            answerService.removeAnswer(this.ansIdx);
+        }
+        ansIdx = null;
+    }
+
+    @Test
+    @DisplayName("답변_작성_테스트")
+    void Answer_Integration_Test_1() {
+        AnswerResponseDto responseDto = answerService.getAnswerDetailById(ansIdx);
+
+        assertEquals(userIdx, responseDto.getUserIdx());
+        assertEquals(queIdx, responseDto.getQueIdx());
+        assertEquals(ansContent, responseDto.getAnsContent());
+    }
+
+    @Test
+    @DisplayName("답변_리스트_조회")
+    public void Answer_Integration_Test_2() {
+        String keyword = "병아리(테스트)";
+
+        Page<AnswerResponseDto> answerList = answerService.getAnswerListByKeyword(keyword, 0);
+
+        assertEquals(answerList.getTotalElements(), 1);
+    }
+
+    @Test
+    @DisplayName("인덱스로_답변_수정")
+    public void Answer_Integration_Test_3() {
+        String updateContent = "답변 테스트 내용 고양이 병아리(수정 테스트)";
+
+        AnswerUpdateRequestDto updateAnswer = AnswerUpdateRequestDto.builder()
+                .ansContent(updateContent)
+                .build();
+
+        answerService.modifyAnswerById(ansIdx, updateAnswer);
+
+        AnswerResponseDto responseDto = answerService.getAnswerDetailById(ansIdx);
+
+        assertEquals(ansIdx, responseDto.getAnsIdx());
+        assertNotEquals(ansContent, responseDto.getAnsContent());
+        assertEquals(updateContent, responseDto.getAnsContent());
+    }
+
+    @Test
+    @DisplayName("인덱스로_답변_비활성화")
+    public void Answer_Integration_Test_4() {
+        answerService.disableAnswer(ansIdx);
+
+        assertThrows(IllegalArgumentException.class, () -> answerService.getAnswerDetailById(ansIdx));
+    }
+
+    @Test
+    @DisplayName("인덱스로_답변_활성화")
+    public void Answer_Integration_Test_5() {
+        answerService.enableAnswer(ansIdx);
+
+        AnswerResponseDto responseDto = answerService.getAnswerDetailById(ansIdx);
+
+        assertEquals(responseDto.getAnsActivated(), true);
+    }
+
+    @Test
+    @DisplayName("답변_삭제")
+    public void Answer_Integration_Test_6() {
+        answerService.removeAnswer(ansIdx);
+        assertThrows(IllegalArgumentException.class, () -> answerService.getAnswerDetailById(ansIdx));
+        ansIdx = null;
+    }
+}

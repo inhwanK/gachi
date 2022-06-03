@@ -24,6 +24,7 @@ public class QuestionDetailResponseDto implements ResponseDto {
     private Long queIdx;
     private String userEmail;
     private String userNick;
+    private String userPicture;
     private List<AnswerResponseDto> answerList = new ArrayList<>();
     private String queTitle;
     private String queContent;
@@ -41,6 +42,7 @@ public class QuestionDetailResponseDto implements ResponseDto {
         this.queIdx = question.getQueIdx();
         this.userEmail = question.getWriter().getUserEmail();
         this.userNick = question.getWriter().getUserNick();
+        this.userPicture = question.getWriter().getUserPicture();
         setAnswerList(question);
 
         this.queTitle = question.getQueTitle();

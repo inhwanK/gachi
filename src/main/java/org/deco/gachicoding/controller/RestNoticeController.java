@@ -30,7 +30,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
     )
     @PostMapping("/notice")
-    public Long registerNotice(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
+    public Long registerNotice(@ApiParam(value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
         log.info("{} Register Controller", "Notice");
 
         return boardService.registerBoard(dto, BOARD_TYPE);
@@ -41,7 +41,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 목록 반환")
     )
     @GetMapping("/notice/list")
-    public Page<BoardResponseDto> getNoticeList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+    public Page<BoardResponseDto> getNoticeList(@ApiParam(value = "keyword") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                 @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
@@ -52,7 +52,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
     )
     @GetMapping("/notice/{boardIdx}")
-    public BoardResponseDto getNoticeDetail(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
+    public BoardResponseDto getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
 
         return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
     }
@@ -62,7 +62,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     )
     @PutMapping("/notice/modify")
-    public BoardResponseDto modifyNotice(@ApiParam(name = "게시판 수정 DTO", value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
+    public BoardResponseDto modifyNotice(@ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);
     }
 
@@ -71,7 +71,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/notice/disable/{boardIdx}")
-    public ResponseEntity<ResponseState> disableNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.disableBoard(boardIdx);
     }
 
@@ -80,7 +80,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/notice/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.enableBoard(boardIdx);
     }
 
@@ -89,7 +89,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/notice/remove/{boardIdx}")
-    public ResponseEntity<ResponseState> removeNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.removeBoard(boardIdx);
     }
 

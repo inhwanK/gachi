@@ -32,11 +32,12 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     )
     @GetMapping("/user/regist/check-email")
-    public boolean checkEmail(@ApiParam(name = "회원가입 폼에 입력된 이메일") @RequestParam String email){
+    public boolean checkEmail(@ApiParam(name = "회원가입 폼에 입력된 이메일") @RequestParam("email") String email){
         return !userService.isDuplicatedEmail(email);
     }
 
 
+//    스웨거에서 RequestParam을 정상적으로 받지 않음
     @ApiOperation(value = "로그인", notes = "로그인 수행")
     @ApiResponses(
             @ApiResponse(code = 200, message = "로그인 성공")

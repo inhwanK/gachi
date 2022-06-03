@@ -19,6 +19,7 @@ public class QuestionListResponseDto implements TagResponse {
     private Long queIdx;
     private String userEmail;
     private String userNick;
+    private String userPicture;
     private String queTitle;
     private String queContent;
     private String queError;
@@ -33,6 +34,7 @@ public class QuestionListResponseDto implements TagResponse {
     public QuestionListResponseDto(Question question) {
         this.userEmail = question.getWriter().getUserEmail();
         this.userNick = question.getWriter().getUserNick();
+        this.userPicture = question.getWriter().getUserPicture();
         this.queIdx = question.getQueIdx();
         this.queTitle = question.getQueTitle();
         this.queContent = question.getQueContent();

@@ -17,6 +17,7 @@ public class AnswerResponseDto {
     private Long ansIdx;
     private String userEmail;
     private String userNick;
+    private String userPicture;
     private Long queIdx;
     private String ansContent;
     private Boolean ansSelect;
@@ -28,6 +29,7 @@ public class AnswerResponseDto {
 //        setWriterInfo(answer);
         this.userEmail = answer.getWriter().getUserEmail();
         this.userNick = answer.getWriter().getUserNick();
+        this.userPicture = answer.getWriter().getUserPicture();
         setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
         this.ansContent = answer.getAnsContent();

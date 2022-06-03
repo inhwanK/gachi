@@ -1,16 +1,13 @@
 package org.deco.gachicoding.service.user;
 
-import org.deco.gachicoding.dto.jwt.JwtRequestDto;
-import org.deco.gachicoding.dto.jwt.JwtResponseDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
+import org.deco.gachicoding.service.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 // 서비스 테스트에서 비즈니스 로직에서 발생할 수 있는 예외 상황의 테스트를 진행한다
 @ExtendWith(SpringExtension.class)
@@ -21,50 +18,6 @@ public class UserServiceTest {
     @Autowired
     UserService userService;
 
-    @Test
-    @DisplayName("UserService - JWT 로그인 테스트")
-    void login() {
-        // Given
-        JwtRequestDto requestDto = new JwtRequestDto();
-        requestDto.setEmail("ay9564@naver.com");
-        requestDto.setPassword("ay789456");
-
-        // When
-        JwtResponseDto token = userService.login(requestDto);
-
-        // Then
-        System.out.println(token.getAccessToken());
-    }
-
-    @Test
-    @DisplayName("UserService - JWT 아이디 없음 로그인 테스트")
-    void notFindEmailLogin() {
-        // Given
-        JwtRequestDto requestDto = new JwtRequestDto();
-        requestDto.setEmail("ay7871@naver.com");
-        requestDto.setPassword("ay789456");
-
-        // When
-        JwtResponseDto token = userService.login(requestDto);
-
-        // Then
-        assertEquals(token.getAccessToken(), "아이디 또는 비밀번호를 확인해 주세요.");
-    }
-
-    @Test
-    @DisplayName("UserService - JWT 비밀번호 틀림 로그인 테스트")
-    void notFindPasswordLogin() {
-        // Given
-        JwtRequestDto requestDto = new JwtRequestDto();
-        requestDto.setEmail("ay7871@naver.com");
-        requestDto.setPassword("인환이바보");
-
-        // When
-        JwtResponseDto token = userService.login(requestDto);
-
-        // Then
-        assertEquals(token, "아이디 또는 비밀번호를 확인해 주세요.");
-    }
 
     @Test
     @DisplayName("UserService - 회원가입 테스트")

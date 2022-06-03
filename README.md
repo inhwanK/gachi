@@ -1,11 +1,11 @@
 # 가치코딩 - Gachicoding
-> 가치코딩 프로젝트
+> 개발 관련 주제들을 가지고 자유롭게 질문하고 토론하는 웹 커뮤니티 서비스 <br>
 
 ## 목차
-* [리포지토리](#리포지토리)
+* [저장소](#저장소)
 * [참여 인원 및 역할](#참여-인원-및-역할)
 * [사용 기술](#사용-기술)
-* [프로젝트 구조도](#프로젝트-구조도)
+* [서버 구조도](#서버-구조도)
 * [ERD](#erd)
 * [핵심 기능](#핵심-기능)
 * [트러블 슈팅](#트러블-슈팅)
@@ -13,19 +13,20 @@
 <br>
 
 ## 참여 인원 및 역할
-[//]: # (* 2022년 2월 25일 ~ )
-* [김인표](https://github.com/kiminpyo) - 프론트엔드 개발
-* [김인환](https://github.com/inhwanK) - 백엔드 개발
-* [서영준](https://github.com/95Seo) - 백엔드 개발
-* [배지왕](https://github.com/BAE-JI-WANG) - 데브옵스
-* [김세현](https://github.com/saehyen) - 데브옵스
+
+[//]: # (* 2022년 3월 ~ ing)
+* [김인표](https://github.com/kiminpyo) - Frontend
+* [김인환](https://github.com/inhwanK) - Backend
+* [서영준](https://github.com/95Seo) - Backend
+* [배지왕](https://github.com/BAE-JI-WANG) - DevOps
+* [김세현](https://github.com/saehyen) - DevOps
 
 <br>
 
-## 리포지토리
-* [백엔드 리포지토리(현재 리포지토리)](https://github.com/inhwanK/gachicoding)
-* [프론트엔드 리포지토리](https://github.com/kiminpyo/gachicoding-front)
-* [DevOps 리포지토리](https://github.com/BAE-JI-WANG/gachicoding_DevOps)
+## 저장소
+* [백엔드 저장소 (현재 저장소)](https://github.com/inhwanK/gachicoding)
+* [프론트엔드 저장소](https://github.com/kiminpyo/gachicoding-front-next)
+* [DevOps 저장소](https://github.com/BAE-JI-WANG/gachicoding_DevOps)
 
 <br>
 
@@ -36,15 +37,20 @@
 * aws
 * terraform 1.1.7
 * Spring Data JPA
+* Spring Security
+* swagger2
+* lombok
 
 <br>
 
-## 프로젝트 구조도
+## 서버 구조도
 
 <br>
 
 ## ERD
+- 2022.05.28ㅂ 업데이트
 
+![가치코딩 ERD](document/ERD.png)
 <br>
 
 ## 핵심 기능

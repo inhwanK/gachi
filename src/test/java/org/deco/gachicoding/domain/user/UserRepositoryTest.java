@@ -47,7 +47,7 @@ public class UserRepositoryTest {
 
         Optional<User> user = userRepository.findById(userIdx);
         assertEquals("test@test.com", user.get().getUserEmail());
-        assertEquals("테스트", user.get().getUserName());
+        assertEquals("테스트", user.get().getUsername());
     }
 
     @Test
@@ -58,7 +58,7 @@ public class UserRepositoryTest {
         Optional<User> user = userRepository.findByUserEmail("test@test.com");
 
         assertEquals("test@test.com", user.get().getUserEmail());
-        assertEquals("테스트", user.get().getUserName());
+        assertEquals("테스트", user.get().getUsername());
     }
 
 //    @Test

@@ -1,13 +1,18 @@
 package org.deco.gachicoding.service.question;
 
-import org.deco.gachicoding.dto.question.QuestionResponseDto;
+import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
+import org.deco.gachicoding.dto.question.QuestionListResponseDto;
 import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
 import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
+import org.deco.gachicoding.service.QuestionService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,24 +26,27 @@ public class QuestionServiceIntegrationTest {
 
     Long queIdx;
 
-    Long userIdx = Long.valueOf(1);
-
     String queTitle = "질문 테스트 제목 고양이 병아리(테스트)";
     String queContent = "질문 테스트 내용 강아지 병아리(테스트)";
     String queError = "질문 테스트 에러 소스";
     String queCategory = "자바";
+    String userEmail = "1234@1234.com";
 
     @BeforeEach
     void before() {
-        QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
-                .userIdx(userIdx)
-                .queTitle(queTitle)
-                .queContent(queContent)
-                .queError(queError)
-                .queCategory(queCategory)
-                .build();
+        try{
+            QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
+                    .userEmail(userEmail)
+                    .queTitle(queTitle)
+                    .queContent(queContent)
+                    .queError(queError)
+                    .queCategory(queCategory)
+                    .build();
 
-        queIdx = questionService.registerQuestion(dto);
+            queIdx = questionService.registerQuestion(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterEach
@@ -51,8 +59,8 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("질문_작성_테스트")
-    void Question_Integration_Test_1() {
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
+    void Question_Integration_Testcase_1() {
+        QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertEquals(queTitle, responseDto.getQueTitle());
         assertEquals(queContent, responseDto.getQueContent());
@@ -62,32 +70,34 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("질문_리스트_조회")
-    public void Question_Integration_Test_2() {
+    public void Question_Integration_Testcase_2() {
         String keyword = "병아리(테스트)";
 
-        Page<QuestionResponseDto> questionList = questionService.getQuestionListByKeyword(keyword, 0);
+        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx"));
+        Page<QuestionListResponseDto> questionList = questionService.getQuestionList(keyword, pageable);
 
         assertEquals(questionList.getTotalElements(), 1);
     }
 
     @Test
     @DisplayName("인덱스로_질문_수정")
-    public void Question_Integration_Test_3() {
+    public void Question_Integration_Testcase_3() {
         String updateTitle = "질문 테스트 제목 고양이 병아리(수정 테스트)";
         String updateContent = "질문 테스트 내용 고양이 병아리(수정 테스트)";
         String updateError = "질문 테스트 에러 소스(수정)";
         String updateCategory = "파이썬";
 
         QuestionUpdateRequestDto updateQuestion = QuestionUpdateRequestDto.builder()
+                .queIdx(queIdx)
                 .queTitle(updateTitle)
                 .queContent(updateContent)
                 .queError(updateError)
                 .queCategory(updateCategory)
                 .build();
 
-        questionService.modifyQuestionById(queIdx, updateQuestion);
+//        questionService.modifyQuestion(updateQuestion);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
+        QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertNotEquals(queTitle, responseDto.getQueTitle());
         assertEquals(updateTitle, responseDto.getQueTitle());
@@ -104,27 +114,27 @@ public class QuestionServiceIntegrationTest {
 
     @Test
     @DisplayName("인덱스로_질문_비활성화")
-    public void Question_Integration_Test_4() {
+    public void Question_Integration_Testcase_4() {
         questionService.disableQuestion(queIdx);
 
-        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
+        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetail(queIdx));
     }
 
     @Test
     @DisplayName("인덱스로_질문_활성화")
-    public void Question_Integration_Test_5() {
+    public void Question_Integration_Testcase_5() {
         questionService.enableQuestion(queIdx);
 
-        QuestionResponseDto responseDto = questionService.getQuestionDetailById(queIdx);
+        QuestionDetailResponseDto responseDto = questionService.getQuestionDetail(queIdx);
 
         assertEquals(responseDto.getQueActivated(), true);
     }
 
     @Test
     @DisplayName("질문_삭제")
-    public void Question_Integration_Test_6() {
+    public void Question_Integration_Testcase_6() {
         questionService.removeQuestion(queIdx);
-        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetailById(queIdx));
+        assertThrows(IllegalArgumentException.class, () -> questionService.getQuestionDetail(queIdx));
         queIdx = null;
     }
 }

@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -24,44 +25,44 @@ import java.util.List;
 @Table(name = "gachi_q")
 public class Question {
     @Id
-    @Column(name = "que_idx")
+    @Column(name = "qs_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long queIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
-    private User user;
+    private User writer;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "que_idx", insertable = false, updatable = false)
+    @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
     @JsonBackReference
-    private List<Answer> answer = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
 
-    @Column(name = "que_title")
+    @Column(name = "qs_title")
     private String queTitle;
 
-    @Column(name = "que_content")
+    @Column(name = "qs_content")
     private String queContent;
 
-    @Column(name = "que_error")
+    @Column(name = "qs_error")
     private String queError;
 
-    @Column(name = "que_category")
+    @Column(name = "qs_category")
     private String queCategory;
 
-    @Column(name = "que_solve")
+    @Column(name = "qs_solve")
     private Boolean queSolve;
 
-    @Column(name = "que_activated")
+    @Column(name = "qs_activated")
     private Boolean queActivated;
 
-    @Column(name = "que_regdate")
+    @Column(name = "qs_regdate")
     private LocalDateTime queRegdate;
 
     @Builder
-    public Question(User user, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
-        this.user = user;
+    public Question(User writer, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
+        this.writer = writer;
         this.queIdx = queIdx;
         this.queTitle = queTitle;
         this.queContent = queContent;
@@ -73,18 +74,23 @@ public class Question {
     }
 
     public void setUser(User user) {
-        this.user = user;
+        this.writer = user;
     }
 
     public void setAnswers(Answer answer) {
-        this.answer.add(answer);
+        this.answers.add(answer);
     }
 
-    public Question update(String queTitle, String queContent, String queError, String queCategory) {
-        this.queTitle = queTitle;
-        this.queContent = queContent;
-        this.queError = queError;
-        this.queCategory = queCategory;
+    public Question update(QuestionUpdateRequestDto dto) {
+        this.queTitle = dto.getQueTitle();
+        this.queContent = dto.getQueContent();
+        this.queError = dto.getQueError();
+        this.queCategory = dto.getQueCategory();
+        return this;
+    }
+
+    public Question toSolve() {
+        this.queSolve = true;
         return this;
     }
 
@@ -95,6 +101,16 @@ public class Question {
 
     public Question isEnable() {
         this.queActivated = true;
+        return this;
+    }
+
+    public Question updateContent(String queContent) {
+        this.queContent = queContent;
+        return this;
+    }
+
+    public Question updateError(String queError) {
+        this.queError = queError;
         return this;
     }
 

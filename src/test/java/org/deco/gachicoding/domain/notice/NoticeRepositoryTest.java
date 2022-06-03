@@ -29,7 +29,7 @@ public class NoticeRepositoryTest {
                 .build();
 
         Notice entity = Notice.builder()
-                .user(user)
+                .writer(user)
                 .notTitle(notTitle)
                 .notContent(notContent)
                 .notPin(notPin)

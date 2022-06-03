@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AnswerResponseDto {
     private Long ansIdx;
-    private Long userIdx;
+    private String userEmail;
+    private String userNick;
     private Long queIdx;
     private String ansContent;
     private Boolean ansSelect;
@@ -24,7 +25,9 @@ public class AnswerResponseDto {
 
     @Builder
     public AnswerResponseDto(Answer answer) {
-        setWriterInfo(answer);
+//        setWriterInfo(answer);
+        this.userEmail = answer.getWriter().getUserEmail();
+        this.userNick = answer.getWriter().getUserNick();
         setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
         this.ansContent = answer.getAnsContent();
@@ -38,9 +41,9 @@ public class AnswerResponseDto {
         this.queIdx = question.getQueIdx();
     }
 
-    private void setWriterInfo(Answer answer) {
-        User user = answer.getUser();
-        this.userIdx = user.getUserIdx();
-    }
+//    private void setWriterInfo(Answer answer) {
+//        User user = answer.getWriter();
+//        this.writerIdx = user.getUserIdx();
+//    }
 
 }

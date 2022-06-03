@@ -3,6 +3,7 @@ package org.deco.gachicoding.service.user;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
+import org.deco.gachicoding.service.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,13 +70,13 @@ public class UserServiceTest2 {
     void 중복이메일_존재() {
 
         userIdx = createUserMock("테스트", "테스트별명", "test@test.com", "1234");
-        assertTrue(userService.isDuplicateEmail("test@test.com"));
+        assertTrue(userService.isDuplicatedEmail("test@test.com"));
     }
 
     @Test
     void 중복이메일_존재하지_않음() {
 
-        assertFalse(userService.isDuplicateEmail("inhan1009@naver.com"));
+        assertFalse(userService.isDuplicatedEmail("inhan1009@naver.com"));
     }
 
     @Test
@@ -85,7 +86,7 @@ public class UserServiceTest2 {
 
         Optional<User> user = userService.getUserByUserEmail("test@test.com");
 
-        assertEquals("테스트", user.get().getUserName());
+        assertEquals("테스트", user.get().getUsername());
         assertEquals("테스트별명", user.get().getUserNick());
         assertEquals("test@test.com", user.get().getUserEmail());
     }

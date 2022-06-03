@@ -1,61 +1,94 @@
 package org.deco.gachicoding.controller;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
+import org.deco.gachicoding.dto.answer.AnswerSelectRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
-import org.deco.gachicoding.service.answer.AnswerService;
+import org.deco.gachicoding.dto.response.ResponseState;
+import org.deco.gachicoding.service.AnswerService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Api
+@Api(tags = "가치답변 정보 처리 API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class RestAnswerController {
     private final AnswerService answerService;
 
-    @ApiOperation(value = "답변 리스트")
-    @GetMapping("/answer/list/{page}")
-    public Page<AnswerResponseDto> getAnswerListByKeyword(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PathVariable int page){
-        return answerService.getAnswerListByKeyword(keyword, page);
-    }
-
-    @ApiOperation(value = "답변 디테일")
-    @GetMapping("/answer/detail/{answerIdx}")
-    public AnswerResponseDto getAnswerDetailById(@PathVariable Long answerIdx){
-        return answerService.getAnswerDetailById(answerIdx);
-    }
-
-    @ApiOperation(value = "답변 등록")
+    @ApiOperation(value = "답변 등록", notes = "답변 등록 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "등록된 답변 번호 반환")
+    )
     @PostMapping("/answer")
-    public Long registerAnswer(@RequestBody AnswerSaveRequestDto dto){
+    public Long registerAnswer(@ApiParam(name = "질문 요청 DTO", value = "질문 요청 body 정보") @RequestBody AnswerSaveRequestDto dto) {
         return answerService.registerAnswer(dto);
     }
 
+//    @ApiOperation(value = "답변 리스트")
+//    @GetMapping("/answer/list")
+//    public Page<AnswerResponseDto> getAnswerList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable) {
+//        return answerService.getAnswerList(keyword, pageable);
+//    }
+
+    @ApiOperation(value = "답변 디테일")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "답변 상세 정보 봔한")
+    )
+    @GetMapping("/answer/{ansIdx}")
+    public AnswerResponseDto getAnswerDetail(@ApiParam(name = "답변 번호") @PathVariable Long ansIdx) {
+        return answerService.getAnswerDetail(ansIdx);
+    }
+
     @ApiOperation(value = "답변 수정")
-    @PutMapping("/answer/modify/{answerIdx}")
-    public AnswerResponseDto modifyAnswerById(@PathVariable Long answerIdx, @RequestBody AnswerUpdateRequestDto dto){
-        return answerService.modifyAnswerById(answerIdx, dto);
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "수정 후 답변 상세 정보 봔한")
+    )
+    @PutMapping("/answer/modify")
+    public AnswerResponseDto modifyAnswer(@ApiParam(name = "답변 수정 dto", value = "답변 수정 요청 body 정보") @RequestBody AnswerUpdateRequestDto dto) {
+        return answerService.modifyAnswer(dto);
+    }
+
+    @ApiOperation(value = "답변 채택")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "채택 성공"),
+            @ApiResponse(code = 409, message = "해결이 완료된 질문입니다"),
+            @ApiResponse(code = 500, message = "권한이 없는 유저입니다")
+    })
+    @PutMapping("/answer/select")
+    public ResponseEntity<ResponseState> selectAnswer(@ApiParam(name = "답변 채택 dto", value = "답변 채택 요청 body 정보") @RequestBody AnswerSelectRequestDto dto) {
+        return answerService.selectAnswer(dto);
     }
 
     @ApiOperation(value = "답변 비활성화")
-    @PutMapping("/answer/disable/{answerIdx}")
-    public void disableAnswer(@PathVariable Long answerIdx){
-        answerService.disableAnswer(answerIdx);
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "비활성화 성공")
+    )
+    @PutMapping("/answer/disable/{ansIdx}")
+    public ResponseEntity<ResponseState> disableAnswer(@ApiParam(name = "답변 번호") @PathVariable Long ansIdx) {
+        return answerService.disableAnswer(ansIdx);
     }
 
     @ApiOperation(value = "답변 활성화")
-    @PutMapping("/answer/enable/{answerIdx}")
-    public void enableAnswer(@PathVariable Long answerIdx){
-        answerService.enableAnswer(answerIdx);
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "활성화 성공")
+    )
+    @PutMapping("/answer/enable/{ansIdx}")
+    public ResponseEntity<ResponseState> enableAnswer(@ApiParam(name = "답변 번호") @PathVariable Long ansIdx) {
+        return answerService.enableAnswer(ansIdx);
     }
 
     @ApiOperation(value = "답변 삭제")
-    @DeleteMapping("/answer/remove/{answerIdx}")
-    public void removeAnswer(@PathVariable Long answerIdx){
-        answerService.removeAnswer(answerIdx);
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "삭제 성공")
+    )
+    @DeleteMapping("/answer/{ansIdx}")
+    public ResponseEntity<ResponseState> removeAnswer(@ApiParam(name = "답변 번호") @PathVariable Long ansIdx) {
+        return answerService.removeAnswer(ansIdx);
     }
 }

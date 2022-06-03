@@ -29,7 +29,7 @@ public class QuestionRepositoryTest {
                 .build();
 
         Question entity = Question.builder()
-                .user(user)
+                .writer(user)
                 .queTitle(queTitle)
                 .queContent(queContent)
                 .queError(queError)

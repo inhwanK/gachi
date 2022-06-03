@@ -29,11 +29,12 @@ public class RestUserController {
 
     //    스웨거에서 RequestParam을 정상적으로 받지 않음
     @ApiOperation(value ="이메일 중복 체크",notes = "이메일의 중복을 체크 수행")
+    @ApiImplicitParam(name = "email", value = "중복체크 이메일", required = true)
     @ApiResponses(
             @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     )
     @GetMapping("/user/regist/check-email")
-    public boolean checkEmail(@ApiParam(name = "회원가입 폼에 입력된 이메일") @RequestParam("email") String email){
+    public boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email){
         return !userService.isDuplicatedEmail(email);
     }
 
@@ -94,8 +95,8 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
     @PutMapping("/user/{userIdx}")
-    public Long updateUser(@ApiParam(name = "사용자 번호", value = "수정할 유저의 번호") @PathVariable Long userIdx,
-                           @ApiParam(name = "수정 요청 DTO", value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
+    public Long updateUser(@ApiParam(value = "수정할 유저의 번호") @PathVariable Long userIdx,
+                           @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
         return userService.updateUser(userIdx, dto);
     }
 

@@ -41,7 +41,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 목록 반환")
     )
     @GetMapping("/notice/list")
-    public Page<BoardResponseDto> getNoticeList(@ApiParam(name = "keyword") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+    public Page<BoardResponseDto> getNoticeList(@ApiParam(value = "keyword") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                 @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
@@ -80,7 +80,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/notice/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.enableBoard(boardIdx);
     }
 
@@ -89,7 +89,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/notice/remove/{boardIdx}")
-    public ResponseEntity<ResponseState> removeNotice(@ApiParam(name = "공지사항 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
         return boardService.removeBoard(boardIdx);
     }
 

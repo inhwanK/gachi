@@ -28,7 +28,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "등록된 게시글 번호 반환")
     )
     @PostMapping("/board")
-    public Long registerBoard(@ApiParam(name = "게시판 요청 DTO", value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
+    public Long registerBoard(@ApiParam(value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
             log.info("{} Register Controller", "Board");
 
             return boardService.registerBoard(dto, BOARD_TYPE);
@@ -39,7 +39,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 목록 반환")
     )
     @GetMapping("/board/list")
-    public Page<BoardResponseDto> getBoardList(@ApiParam(name = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+    public Page<BoardResponseDto> getBoardList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                @PageableDefault(size = 10) Pageable pageable) {
 
         return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
@@ -50,7 +50,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
     )
     @GetMapping("/board/{boardIdx}")
-    public BoardResponseDto getBoardDetail(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
+    public BoardResponseDto getBoardDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
 
         return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
     }
@@ -60,7 +60,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     )
     @PutMapping("/board/modify")
-    public BoardResponseDto modifyBoard(@ApiParam(name = "게시판 수정 dto", value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
+    public BoardResponseDto modifyBoard(@ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);
     }
 
@@ -69,7 +69,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/board/disable/{boardIdx}")
-    public ResponseEntity<ResponseState> disableBoard(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> disableBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
         return boardService.disableBoard(boardIdx);
     }
 
@@ -78,7 +78,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/board/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableBoard(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> enableBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
         return boardService.enableBoard(boardIdx);
     }
 
@@ -87,7 +87,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/board/{boardIdx}")
-    public ResponseEntity<ResponseState> removeBoard(@ApiParam(name = "게시판 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<ResponseState> removeBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
         return boardService.removeBoard(boardIdx);
     }
 }

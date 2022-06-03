@@ -21,7 +21,7 @@ public class RestFileController {
             @ApiResponse(code = 200, message = "임시 폴더의 파일 URL 반환")
     )
     @PostMapping("/file/upload")
-    public List<String> fileUploadImageFile(@ApiParam(name = "멀티파트 파일") @ModelAttribute("files") List<MultipartFile> files) throws IOException {
+    public List<String> fileUploadImageFile(@ApiParam(value = "멀티파트 파일") @ModelAttribute("files") List<MultipartFile> files) throws IOException {
 
         return fileService.uploadTempImg(files);
     }

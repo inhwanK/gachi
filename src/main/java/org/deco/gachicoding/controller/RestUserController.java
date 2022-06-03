@@ -27,7 +27,6 @@ public class RestUserController {
     private final UserService userService;
     private final SocialService socialService;
 
-    //    스웨거에서 RequestParam을 정상적으로 받지 않음
     @ApiOperation(value ="이메일 중복 체크",notes = "이메일의 중복을 체크 수행")
     @ApiImplicitParam(name = "email", value = "중복체크 이메일", required = true)
     @ApiResponses(
@@ -43,7 +42,7 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "로그인 성공")
     )
     @PostMapping("/user/login")
-    public UserResponseDto login(@ApiParam(name = "로그인 요청 DTO", value = "로그인을 위한 요청 body 정보") @RequestBody LoginRequestDto dto,
+    public UserResponseDto login(@ApiParam(value = "로그인을 위한 요청 body 정보") @RequestBody LoginRequestDto dto,
                                  @ApiIgnore HttpSession httpSession) throws Exception {
 
         UserResponseDto userResponseDto = userService.login(dto, httpSession);
@@ -105,7 +104,7 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     )
     @DeleteMapping("/user/{userIdx}")
-    public Long deleteUser(@ApiParam(name = "사용자 번호", value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
+    public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);
     }
 

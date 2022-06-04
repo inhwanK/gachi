@@ -22,7 +22,7 @@ public class Auth {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(length = 36)
+//    @Column(length = 36)
     private String authToken;
 
     // 일부러 FK 사용 안함

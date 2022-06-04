@@ -50,8 +50,8 @@
 
 ## ERD
 #### 2022.06.05 업데이트 
-- auth 테이블 기본키 binary(16)으로 변경
-- comment 테이블 기본키 AI 설정, parents_idx null 허용
+- auth : 기본키 binary(16)으로 변경, 만료여부 컬럼 추가 
+- comment : 기본키 AI 설정, parents_idx null 허용
 
 ![가치코딩 ERD](document/ERD.png)
 <br>

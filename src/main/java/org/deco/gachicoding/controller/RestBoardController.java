@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 @Api(tags = "자유게시판 정보 처리 API")
 @Slf4j
@@ -40,7 +41,7 @@ public class RestBoardController {
     )
     @GetMapping("/board/list")
     public Page<BoardResponseDto> getBoardList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                               @PageableDefault(size = 10) Pageable pageable) {
+                                               @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
     }

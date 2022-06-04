@@ -1,12 +1,16 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.domain.comment.Comment;
 import org.deco.gachicoding.domain.comment.CommentRepository;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.dto.comment.CommentResponseDto;
 import org.deco.gachicoding.dto.comment.CommentSaveRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.service.CommentService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import static org.deco.gachicoding.dto.response.StatusEnum.USER_NOT_FOUND;
@@ -24,5 +28,16 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         return commentRepository.save(dto.toEntity(writer)).getCommIdx();
+    }
+
+    @Override
+    public Page<CommentResponseDto> getCommentList(String articleCategory, Long articleIdx, Pageable pageable) {
+        Page<Comment> comments = commentRepository.findByArticleCategoryAndArticleIdx(articleCategory, articleIdx, pageable);
+
+        Page<CommentResponseDto> commentList = comments.map(
+                entity -> new CommentResponseDto(entity)
+        );
+
+        return commentList;
     }
 }

@@ -1,7 +1,7 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.domain.auth.Auth;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -32,46 +33,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final AuthService authService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-
-    @Transactional
-    @Override
-    public boolean isDuplicatedEmail(String userEmail) {
-        return getUserByUserEmail(userEmail).isPresent();
-    }
-
-    @Transactional
-    @Override
-    public Optional<User> getUserByUserEmail(String email) {
-        return userRepository.findByUserEmail(email);
-    }
-
-
-    @Transactional
-    @Override
-    public UserResponseDto login(LoginRequestDto requestDto, HttpSession httpSession) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
-
-
-            UserDetails principal = (User) authentication.getPrincipal();
-
-            System.out.println("유저 이메일 > " + principal.getUsername());
-
-            System.out.println("유저 비밀번호 > " + principal.getPassword());
-            Optional<User> user = userRepository.findByUserEmail(principal.getUsername());
-            UserResponseDto userResponseDto = new UserResponseDto(user.get());
-            httpSession.setAttribute("user", userResponseDto);
-
-            return userResponseDto;
-            // BadCredentialsException - 스프링 시큐리티 에서 아이디 또는 비밀번호가 틀렸을 경우 나오는 예외
-        } catch (BadCredentialsException e) {
-            e.printStackTrace();
-//            return new JwtResponseDto("아이디 또는 비밀번호를 확인해 주세요.");
-            return new UserResponseDto(null);
-        }
-    }
-
 
     /**
      * {@link Transactional} : 아이디 중복 시 Transaction silently rolled back because it has been marked as rollback-only 발생
@@ -85,13 +46,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         // 이메일 중복 체크
         String registerEmail = dto.getUserEmail();
-
         if (isDuplicatedEmail(registerEmail))
             throw new DataIntegrityViolationException("중복된 이메일 입니다.");
-
         // 비밀번호 변조
         dto.encryptPassword(passwordEncoder);
-
         // 유저 저장
         Long userIdx = userRepository.save(dto.toEntity()).getUserIdx();
 
@@ -100,20 +58,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userIdx;
     }
 
-    /**
-     * 이메일 인증 로직
-     *
-     * @param authEmail
-     */
-//    새 코드로 수정 해야함.
     @Transactional
     @Override
-    public void confirmEmail(String authEmail) {
-        Auth auth = authService.getTokenByAuthEmail(authEmail);
-        Optional<User> findUserInfo = getUserByUserEmail(auth.getAuthEmail());
-//        auth.useToken();   // 토큰 만료 로직을 구현해주면 된다. ex) expired 값을 true 로 변경
-//        findUserInfo.emailVerifiedSuccess();    // 유저의 이메일 인증 값 변경 로직을 구현해 주면 된다. ex) emailVerified 값을 true로 변경
+    public UserResponseDto login(LoginRequestDto requestDto, HttpSession httpSession) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
+
+            UserDetails principal = (User) authentication.getPrincipal();
+
+            log.info("유저 이메일 > " + principal.getUsername());
+            log.info("유저 비밀번호 > " + principal.getPassword());
+
+            Optional<User> user = userRepository.findByUserEmail(principal.getUsername());
+            UserResponseDto userResponseDto = new UserResponseDto(user.get());
+            httpSession.setAttribute("user", userResponseDto);
+
+            return userResponseDto;
+            // BadCredentialsException - 스프링 시큐리티 에서 아이디 또는 비밀번호가 틀렸을 경우 나오는 예외
+        } catch (BadCredentialsException e) {
+            e.printStackTrace();
+            return new UserResponseDto(null);
+        }
     }
+
 
     @Transactional
     @Override
@@ -134,11 +102,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return idx;
     }
 
+    @Transactional
+    @Override
+    public boolean isDuplicatedEmail(String userEmail) {
+        return getUserByUserEmail(userEmail).isPresent();
+    }
+
+    @Transactional
+    @Override
+    public Optional<User> getUserByUserEmail(String email) {
+        return userRepository.findByUserEmail(email);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        UserDetails userDetails =  userRepository.findByUserEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
+        UserDetails userDetails = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
 
         return userDetails;
     }

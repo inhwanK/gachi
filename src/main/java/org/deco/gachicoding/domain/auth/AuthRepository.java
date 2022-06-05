@@ -2,10 +2,12 @@ package org.deco.gachicoding.domain.auth;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface AuthRepository extends JpaRepository<Auth, String> {
-    // 이 쿼리 용도를 모르겠음..
-//    Optional<Auth> findByTokenAndExpirationDateAfterAndExpired(String confirmationTokenId, LocalDateTime now, boolean expired);
-    Optional<Auth> findByAuthEmail(String authEmail);
+
+    Optional<Auth> findByAuthEmailAndAuthExpdateAfterAndExpiredIsFalse(String email, LocalDateTime now);
+    Optional<Auth> findByAuthToken(UUID authToken);
 }

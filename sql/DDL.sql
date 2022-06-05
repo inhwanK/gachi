@@ -66,7 +66,7 @@ CREATE TABLE `gachicoding`.`comment`
 (
     `comm_idx`         BIGINT(22) UNSIGNED NOT NULL COMMENT '댓글번호',               -- 댓글번호
     `user_idx`         BIGINT(20) UNSIGNED NOT NULL COMMENT '작성자번호',              -- 작성자번호
-    `parents_idx`      BIGINT(22) UNSIGNED NOT NULL COMMENT '상위댓글번호',             -- 상위댓글번호
+    `parents_idx`      BIGINT(22) UNSIGNED NULL COMMENT '상위댓글번호',                 -- 상위댓글번호
     `comm_content`     VARCHAR(9999)       NOT NULL COMMENT '댓글내용',               -- 댓글내용
     `comm_regdate`     DATETIME            NOT NULL DEFAULT NOW() COMMENT '작성일시', -- 작성일시
     `comm_activated`   BOOLEAN             NOT NULL DEFAULT TRUE COMMENT '활성여부',  -- 활성여부
@@ -81,6 +81,9 @@ ALTER TABLE `gachicoding`.`comment`
         PRIMARY KEY (
                      `comm_idx` -- 댓글번호
             );
+
+ALTER TABLE `gachicoding`.`comment`
+    MODIFY COLUMN `comm_idx` BIGINT(22) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '댓글번호';
 
 -- 태그
 CREATE TABLE `gachicoding`.`tag`
@@ -131,7 +134,7 @@ CREATE TABLE `gachicoding`.`user`
     `user_activated` BOOLEAN             NOT NULL DEFAULT true COMMENT '활성상태',  -- 활성상태
     `user_role`      VARCHAR(15)         NOT NULL DEFAULT 'GUEST' COMMENT '권한', -- 권한
     `user_auth`      BOOLEAN             NOT NULL DEFAULT false COMMENT '인증여부', -- 인증여부
-    `user_picture`   VARCHAR(255)        NOT NULL COMMENT '사진'                  -- 사진
+    `user_picture`   VARCHAR(255)        NULL COMMENT '사진'                      -- 사진
 )
     COMMENT '유저';
 
@@ -202,10 +205,11 @@ ALTER TABLE `gachicoding`.`profile`
 -- 인증
 CREATE TABLE `gachicoding`.`auth`
 (
-    `auth_token`   VARCHAR(37)  NOT NULL COMMENT '토큰',                 -- 토큰
+    `auth_token`   BINARY(16)   NOT NULL COMMENT '토큰',                 -- 토큰
     `auth_email`   VARCHAR(255) NOT NULL COMMENT '이메일',                -- 이메일
     `auth_regdate` DATETIME     NOT NULL DEFAULT now() COMMENT '생성일시', -- 생성일시
-    `auth_expdate` DATETIME     NOT NULL COMMENT '만료일시'                -- 만료일시
+    `auth_expdate` DATETIME     NOT NULL COMMENT '만료일시',               -- 만료일시
+    `expired`      BOOLEAN      NOT NULL DEFAULT false COMMENT '만료여부'  -- 만료여부
 )
     COMMENT '인증';
 

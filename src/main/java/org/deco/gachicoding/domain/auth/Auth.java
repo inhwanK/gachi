@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -22,15 +23,13 @@ public class Auth {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(length = 36)
-    private String authToken;
-
-    // 일부러 FK 사용 안함
+    private UUID authToken;
     private String authEmail;
 
     @CreatedDate
     private LocalDateTime authRegdate;
     private LocalDateTime authExpdate;
+    private boolean expired;
 
     /**
      * 이메일 인증 토큰 생성
@@ -41,14 +40,25 @@ public class Auth {
         Auth authenticationToken = new Auth();
         authenticationToken.authExpdate = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE); // 5분후 만료
         authenticationToken.authEmail = email;
-//        authenticationToken.expired = false;
+        authenticationToken.expired = false;
         return authenticationToken;
+    }
+
+    /**
+     * 토큰 갱신
+     * @return 갱신된 authToken
+     */
+    public UUID renewToken(){
+        this.authToken = UUID.randomUUID();
+        this.authRegdate = LocalDateTime.now();
+        this.authExpdate = authRegdate.plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
+        return this.getAuthToken();
     }
 
     /**
      * 토큰 사용으로 인한 만료
      */
     public void useToken() {
-//        expired = true;
+        this.expired = true;
     }
 }

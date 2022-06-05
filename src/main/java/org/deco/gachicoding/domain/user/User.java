@@ -39,10 +39,6 @@ public class User implements UserDetails {
     private UserRole userRole;
     private String userPicture;
 
-//    @JsonBackReference
-//    @OneToMany(mappedBy = "user")
-//    private List<Notice> notices;
-
     @Builder
     public User(Long userIdx, String userName,  String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
         this.userIdx = userIdx;
@@ -53,7 +49,7 @@ public class User implements UserDetails {
         this.userRegdate = userRegdate;
         this.userPicture = userPicture;
         this.userActivated = userActivated;
-        this.userAuth = userAuth;   // 인증여부 칼럼
+        this.userAuth = userAuth;   // 인증여부
         this.userRole = userRole;
     }
 
@@ -65,6 +61,10 @@ public class User implements UserDetails {
         this.userRole = userRole;
         this.userPicture = userPicture;
         return this;
+    }
+
+    public void emailAuthenticated(){
+        this.userAuth = true;
     }
 
     @Override

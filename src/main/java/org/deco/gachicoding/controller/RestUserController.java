@@ -46,7 +46,7 @@ public class RestUserController {
      * 이메일 인증을 위한 토큰 발행
      * @return UUID 토큰
      */
-    @ApiOperation(value = "인증 토큰 발행", notes = "이메일 인증을 위한 토큰 생성 후 메일 발송")
+    @ApiOperation(value = "이메일 인증 토큰 발행", notes = "이메일 인증을 위한 토큰 생성 후 메일 발송")
     @ApiResponses(
             @ApiResponse(code = 200, message = "인증 메일이 발송되었습니다.")
     )

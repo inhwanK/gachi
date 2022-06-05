@@ -3,49 +3,43 @@ package org.deco.gachicoding.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.auth.Auth;
 import org.deco.gachicoding.domain.auth.AuthRepository;
-import org.springframework.mail.SimpleMailMessage;
+import org.deco.gachicoding.service.MailService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
-
     private final AuthRepository authRepository;
-    private final EmailSenderService emailSenderService;
+    private final MailService mailService;
 
     /**
      * 이메일 인증 토큰 생성
+     *
      * @return
      */
-    public String createEmailConfirmationToken(String receiverEmail) {
+    public UUID sendEmailConfirmationToken(String receiverEmail) {
 
+        Optional<Auth> auth = authRepository.findByAuthEmailAndAuthExpdateAfterAndExpiredIsFalse(receiverEmail, LocalDateTime.now());
         Assert.hasText(receiverEmail, "receiverEmail은 필수 입니다.");
 
-        Auth auth = Auth.createEmailConfirmationToken(receiverEmail);
-        authRepository.save(auth);
+        UUID authToken;
+        if (auth.isEmpty())
+            authToken = authRepository.save(Auth.createEmailConfirmationToken(receiverEmail)).getAuthToken();
+        else
+            authToken = auth.get().renewToken();
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(receiverEmail);
-        mailMessage.setSubject("회원가입 이메일 인증");
-        mailMessage.setText("http://localhost:8090/confirm-email?token="+auth.getAuthToken());
-        emailSenderService.sendEmail(mailMessage);
-
-        return "auth.getAuthToken()";
-
+        mailService.sendConfirmMail(receiverEmail, authToken);
+        return authToken;
     }
 
-    public Auth getTokenByAuthEmail(String authEmail){
-        Optional<Auth> auth = authRepository.findByAuthEmail(authEmail);
+    // 만료 또는 인증된 토큰 처리 필요
+    public Auth checkToken(UUID authToken) {
+        Optional<Auth> auth = authRepository.findByAuthToken(authToken);
         return auth.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 토큰입니다."));
-    }
-
-    public Auth findByIdExpirationDateAfterAndExpired(String confirmationTokenId) {
-//        Optional<ConfirmationToken> confirmationToken = confirmationTokenRepository.findByIdAndExpirationDateAfterAndExpired(confirmationTokenId, LocalDateTime.now(), false);
-//        return confirmationToken.orElseThrow(()-> new IllegalArgumentException("기한이 만료된 토큰입니다."));
-        return null;
     }
 }

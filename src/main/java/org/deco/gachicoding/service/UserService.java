@@ -13,18 +13,15 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    boolean isDuplicatedEmail(String email);
-
-    Optional<User> getUserByUserEmail(String email);
-
     UserResponseDto login(LoginRequestDto requestDto, HttpSession httpSession);
 
     Long registerUser(UserSaveRequestDto dto);
-
-    void confirmEmail(String token);
 
     Long updateUser(Long idx, UserUpdateRequestDto dto);
 
     Long deleteUser(Long idx);
 
+    boolean isDuplicatedEmail(String email);
+
+    Optional<User> getUserByUserEmail(String email);
 }

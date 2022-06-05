@@ -44,16 +44,21 @@ public class Auth {
         return authenticationToken;
     }
 
-    public void renewToken(){
+    /**
+     * 토큰 갱신
+     * @return 갱신된 authToken
+     */
+    public UUID renewToken(){
         this.authToken = UUID.randomUUID();
         this.authRegdate = LocalDateTime.now();
         this.authExpdate = authRegdate.plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
+        return this.getAuthToken();
     }
 
     /**
      * 토큰 사용으로 인한 만료
      */
     public void useToken() {
-        expired = true;
+        this.expired = true;
     }
 }

@@ -209,7 +209,7 @@ CREATE TABLE `gachicoding`.`auth`
     `auth_email`   VARCHAR(255) NOT NULL COMMENT '이메일',                -- 이메일
     `auth_regdate` DATETIME     NOT NULL DEFAULT now() COMMENT '생성일시', -- 생성일시
     `auth_expdate` DATETIME     NOT NULL COMMENT '만료일시',               -- 만료일시
-    `expired`      BOOLEAN      NOT NULL COMMENT '만료여부'                -- 만료여부
+    `expired`      BOOLEAN      NOT NULL DEFAULT false COMMENT '만료여부'  -- 만료여부
 )
     COMMENT '인증';
 

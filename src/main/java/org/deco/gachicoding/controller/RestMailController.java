@@ -8,9 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.service.MailService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Api(tags = "메일 API")
+import java.util.UUID;
+
+@Api(tags = "메일 API (개발 중..)")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -22,8 +25,16 @@ public class RestMailController {
             @ApiResponse(code = 200, message = "이메일 전송 성공, 수신자 이메일 반환")
     )
     @GetMapping("/mail/send")
-    public String sendMailTest(){
+    public String sendMailTest() {
         mailService.sendMail();
         return "inhan1009@naver.com";
-   }
+    }
+
+    /**
+     * 이메일과 토큰을 받아서, 유저의 인증 여부를 true 바꿈
+     */
+    @GetMapping("/mail/auth")
+    public void authUserMail(@RequestParam String authEmail, @RequestParam String authToken) {
+        return;
+    }
 }

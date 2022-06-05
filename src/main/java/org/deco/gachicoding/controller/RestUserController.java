@@ -2,6 +2,8 @@ package org.deco.gachicoding.controller;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.domain.auth.Auth;
+import org.deco.gachicoding.domain.auth.AuthRepository;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
@@ -15,8 +17,11 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.swing.text.html.Option;
 import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Api(tags = "사용자 정보 처리 API")
 @RequiredArgsConstructor
@@ -26,15 +31,32 @@ public class RestUserController {
 
     private final UserService userService;
     private final SocialService socialService;
+    private final AuthRepository authRepository;
 
-    @ApiOperation(value ="이메일 중복 체크",notes = "이메일의 중복을 체크 수행")
+    @ApiOperation(value = "이메일 중복 체크", notes = "이메일의 중복을 체크 수행")
     @ApiImplicitParam(name = "email", value = "중복체크 이메일", required = true)
     @ApiResponses(
             @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     )
     @GetMapping("/user/regist/check-email")
-    public boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email){
+    public boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email) {
         return !userService.isDuplicatedEmail(email);
+    }
+
+    /**
+     * 이메일 인증을 위한 토큰 발행
+     * 요청을 받으면, 이메일 인증 토큰을 생성함.
+     *
+     * @return
+     */
+    @GetMapping("/user/publish/auth-token")
+    public UUID createEmailToken(@RequestParam String email) {
+        Optional<Auth> auth = authRepository.findByAuthEmailAndAuthExpdateAfterAndExpiredIsFalse(email, LocalDateTime.now());
+
+        if (auth.isPresent()) auth.get().renewToken();
+        else authRepository.save(Auth.createEmailConfirmationToken(email));
+
+        return authRepository.findByAuthEmail(email).get().getAuthToken();
     }
 
     @ApiOperation(value = "로그인", notes = "로그인 수행")

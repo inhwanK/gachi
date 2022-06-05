@@ -34,7 +34,7 @@ public class AuthService {
         mailMessage.setText("http://localhost:8090/confirm-email?token="+auth.getAuthToken());
         emailSenderService.sendEmail(mailMessage);
 
-        return auth.getAuthToken();
+        return "auth.getAuthToken()";
 
     }
 

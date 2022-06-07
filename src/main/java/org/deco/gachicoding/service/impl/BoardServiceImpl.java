@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.board.BoardRepository;
+import org.deco.gachicoding.domain.comment.Comment;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.deco.gachicoding.dto.board.BoardResponseDto;
@@ -102,7 +103,10 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardRepository.findById(dto.getBoardIdx())
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
-        if (!isSameWriter(board, dto.getUserIdx())) {
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (!isSameWriter(board, user)) {
             throw new CustomException(INVALID_AUTH_USER);
         }
 
@@ -148,9 +152,10 @@ public class BoardServiceImpl implements BoardService {
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
-    private Boolean isSameWriter(Board board, Long userIdx) {
-        Long writerIdx = board.getWriter().getUserIdx();
+    private Boolean isSameWriter(Board board, User user) {
+        String writerEmail = board.getWriter().getUserEmail();
+        String userEmail = user.getUserEmail();
 
-        return (writerIdx.equals(userIdx)) ? true : false;
+        return (writerEmail.equals(userEmail)) ? true : false;
     }
 }

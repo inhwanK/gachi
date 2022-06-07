@@ -158,9 +158,9 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     private Boolean isSameWriter(Question question, User user) {
-        Long writerIdx = question.getWriter().getUserIdx();
-        Long userIdx = user.getUserIdx();
+        String writerEmail = question.getWriter().getUserEmail();
+        String userEmail = user.getUserEmail();
 
-        return (writerIdx.equals(userIdx)) ? true : false;
+        return (writerEmail.equals(userEmail)) ? true : false;
     }
 }

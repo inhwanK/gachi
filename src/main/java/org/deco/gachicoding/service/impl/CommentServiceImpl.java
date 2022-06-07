@@ -1,19 +1,24 @@
 package org.deco.gachicoding.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.comment.Comment;
 import org.deco.gachicoding.domain.comment.CommentRepository;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.dto.board.BoardResponseDto;
+import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.dto.comment.CommentResponseDto;
 import org.deco.gachicoding.dto.comment.CommentSaveRequestDto;
+import org.deco.gachicoding.dto.comment.CommentUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.service.CommentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.deco.gachicoding.dto.response.StatusEnum.USER_NOT_FOUND;
+import static org.deco.gachicoding.dto.response.StatusEnum.*;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +44,34 @@ public class CommentServiceImpl implements CommentService {
         );
 
         return commentList;
+    }
+
+    @Override
+    @Transactional
+    public CommentResponseDto modifyComment(CommentUpdateRequestDto dto) {
+        Comment comment = commentRepository.findById(dto.getCommIdx())
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        if (!isSameWriter(comment, user)) {
+            throw new CustomException(INVALID_AUTH_USER);
+        }
+
+        comment = comment.update(dto.getCommContent());
+
+        CommentResponseDto commentDetail = CommentResponseDto.builder()
+                .comment(comment)
+                .build();
+
+        return commentDetail;
+    }
+
+    private Boolean isSameWriter(Comment comment, User user) {
+        String writerEmail = comment.getWriter().getUserEmail();
+        String userEmail = user.getUserEmail();
+
+        return (writerEmail.equals(userEmail)) ? true : false;
     }
 }

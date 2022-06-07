@@ -52,4 +52,9 @@ public class Comment {
         this.articleCategory = articleCategory;
         this.articleIdx = articleIdx;
     }
+
+    public Comment update(String commContent) {
+        this.commContent = commContent;
+        return this;
+    }
 }

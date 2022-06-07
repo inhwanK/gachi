@@ -14,13 +14,13 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class QuestionUpdateRequestDto {
 
-    @ApiModelProperty(value = "사용자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "1234@1234.com")
     @NotNull
     @Email(message = "올바른 형식의 아이디가 아닙니다.")
+    @ApiModelProperty(value = "요청자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "Swagger@swagger.com")
     private String userEmail;
 
-    @ApiModelProperty(name = "질문 번호",required = true, example = "1")
     @NotNull
+    @ApiModelProperty(name = "질문 번호",required = true, example = "1")
     private Long queIdx;
 
     @ApiModelProperty(name = "질문 제목",required = false, example = "수정된 제목")

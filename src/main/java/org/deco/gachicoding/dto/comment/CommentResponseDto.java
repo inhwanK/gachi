@@ -1,5 +1,6 @@
 package org.deco.gachicoding.dto.comment;
 
+import lombok.Builder;
 import lombok.Getter;
 import org.deco.gachicoding.domain.comment.Comment;
 
@@ -20,6 +21,7 @@ public class CommentResponseDto {
     private String articleCategory;
     private Long articleIdx;
 
+    @Builder
     public CommentResponseDto(Comment comment) {
         this.commIdx = comment.getCommIdx();
         this.userEmail = comment.getWriter().getUserEmail();

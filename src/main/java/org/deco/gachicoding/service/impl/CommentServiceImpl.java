@@ -12,9 +12,11 @@ import org.deco.gachicoding.dto.comment.CommentResponseDto;
 import org.deco.gachicoding.dto.comment.CommentSaveRequestDto;
 import org.deco.gachicoding.dto.comment.CommentUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
+import org.deco.gachicoding.dto.response.ResponseState;
 import org.deco.gachicoding.service.CommentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,6 +68,39 @@ public class CommentServiceImpl implements CommentService {
                 .build();
 
         return commentDetail;
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseState> disableComment(Long commentIdx) {
+        Comment comment = commentRepository.findById(commentIdx)
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        comment.disableBoard();
+
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseState> enableComment(Long commentIdx) {
+        Comment comment = commentRepository.findById(commentIdx)
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        comment.enableBoard();
+
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseState> removeComment(Long commentIdx) {
+        Comment comment = commentRepository.findById(commentIdx)
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        commentRepository.delete(comment);
+
+        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
     private Boolean isSameWriter(Comment comment, User user) {

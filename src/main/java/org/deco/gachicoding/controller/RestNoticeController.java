@@ -57,7 +57,7 @@ public class RestNoticeController {
         return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
     }
 
-    @ApiOperation(value = "공지사항 수정", notes = "공지사항 등록 수행 (리팩토링 필요함)")
+    @ApiOperation(value = "공지사항 수정")
     @ApiResponses(
             @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     )

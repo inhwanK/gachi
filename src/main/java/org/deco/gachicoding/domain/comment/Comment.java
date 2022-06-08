@@ -3,6 +3,7 @@ package org.deco.gachicoding.domain.comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.user.User;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -55,6 +56,16 @@ public class Comment {
 
     public Comment update(String commContent) {
         this.commContent = commContent;
+        return this;
+    }
+
+    public Comment disableBoard() {
+        this.commActivated = false;
+        return this;
+    }
+
+    public Comment enableBoard() {
+        this.commActivated = true;
         return this;
     }
 }

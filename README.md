@@ -35,7 +35,7 @@
 * Java 11 (jdk-11.0.13)
 * gradle 7.4
 * react 8.1.2
-* aws
+* aws - ec2, rds, s3
 * terraform 1.1.7
 * Spring Data JPA
 * Spring Security
@@ -60,13 +60,19 @@
 
 <br>
 
-## 프로젝트 관련 내용 정리
+## 프로젝트 이슈 정리
+* [Spring Security를 이용한 CORS 정책 설정](https://bool-flower.tistory.com/14)
+
 <br>
 
 ## 주요 이슈 및 트러블슈팅
-* Spring Data JPA - [DynamicInsert,DynamicUpdate 어노테이션의 용도(작성 전)]()
-* CORS - [CORS 정책 위반과 이를 올바르게 해결하는 방법(작성 전)]()
-* UnexpectedRollbackException - [아이디(이메일) 중복처리에서 @Transactional 에 의한 롤백 예외 발생(작성 전)]()
-* Spring Security & OAuth2 - [로그인 연동(구글, 카카오, 깃허브)시 기존 아이디와 중복 처리(작성 전)]()
-* AWS Access Denied - [IAM 계정으로 로그인 시 RDS 접근이 안되는 현상(작성 전)]()
-* WebMvcConfigurationSupport - [스웨거, pageable 사용을 위해 해당 클래스를 상속받아 오버라이딩(작성 전)]()
+
+[//]: # (* Spring Data JPA - [DynamicInsert,DynamicUpdate 어노테이션의 용도&#40;작성 전&#41;]&#40;&#41;)
+
+[//]: # (* UnexpectedRollbackException - [아이디&#40;이메일&#41; 중복처리에서 @Transactional 에 의한 롤백 예외 발생&#40;작성 전&#41;]&#40;&#41;)
+
+[//]: # (* Spring Security & OAuth2 - [로그인 연동&#40;구글, 카카오, 깃허브&#41;시 기존 아이디와 중복 처리&#40;작성 전&#41;]&#40;&#41;)
+
+[//]: # (* AWS Access Denied - [IAM 계정으로 로그인 시 RDS 접근이 안되는 현상&#40;작성 전&#41;]&#40;&#41;)
+
+[//]: # (* WebMvcConfigurationSupport - [스웨거, pageable 사용을 위해 해당 클래스를 상속받아 오버라이딩&#40;작성 전&#41;]&#40;&#41;)

@@ -63,7 +63,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        System.out.println("Front ip > " + frontHost);
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000","http://localhost:3001", frontHost));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-Requested-With", "remember-me", "accesss-token", "Set-Cookie"));
         configuration.setAllowedMethods(Arrays.asList("DELETE","GET","HEAD","OPTIONS","PATCH","POST","PUT"));

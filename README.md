@@ -64,8 +64,8 @@
 
 ## 프로젝트 이슈 정리
 * [Spring Security를 이용한 CORS 정책 설정](https://bool-flower.tistory.com/14)
-
-<br>
+* [사용자 인증을 위한 메일 API 개발 과정](https://bool-flower.tistory.com/19)
+  <br>
 
 [//]: # (## 주요 이슈 및 트러블슈팅)
 

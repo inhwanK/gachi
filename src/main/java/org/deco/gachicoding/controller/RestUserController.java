@@ -17,6 +17,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,6 +65,7 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "이메일 인증이 완료되었습니다.")
     )
+    @Transactional // 서비스 계층으로 빼야함
     @GetMapping("/user/authentication-email")
     public boolean authenticateEmail(@ApiParam(value = "유저 이메일로 발송된 인증 토큰") @RequestParam UUID authToken) {
         Auth auth = authService.checkToken(authToken);

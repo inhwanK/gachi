@@ -1,19 +1,70 @@
 package org.deco.gachicoding.service;
 
+import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.tag.Tag;
-import org.deco.gachicoding.dto.ResponseDto;
+import org.deco.gachicoding.domain.tag.TagRelation;
+import org.deco.gachicoding.domain.tag.TagRelationRepository;
+import org.deco.gachicoding.domain.tag.TagRepository;
 import org.deco.gachicoding.dto.TagResponse;
+import org.deco.gachicoding.dto.tag.TagResponseDto;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public interface TagService {
-    Tag registerTag(String keyword);
+@RequiredArgsConstructor
+public class TagService {
+    private final TagRepository tagRepository;
+    private final TagRelationRepository boardTagRepository;
 
-    void registerBoardTag(Long boardIdx, List<String> tags, String type);
+    private Optional<Tag> isDuplicateKeyword(String keyword) {
+        Optional<Tag> tag = tagRepository.findByTagKeyword(keyword);
+        return tag;
+    }
 
-    TagResponse getTags(Long boardIdx, String type, TagResponse dto);
+    public Tag registerTag(String keyword) {
+        Optional<Tag> findTag = isDuplicateKeyword(keyword);
 
-    void removeBoardTags(Long boardIdx, String type);
+        if (findTag.isPresent()) {
+            return findTag.get();
+        }
+
+        Tag entity = Tag.builder()
+                .keyword(keyword)
+                .build();
+
+        return tagRepository.save(entity);
+    }
+
+    public void registerBoardTag(Long articleIdx, List<String> tags, String articleCategory) {
+        for (String tag : tags) {
+            TagRelation entity = TagRelation.builder()
+                    .articleCategory(articleCategory)
+                    .articleIdx(articleIdx)
+                    .tag(registerTag(tag))
+                    .tagKeyword(tag)
+                    .build();
+            boardTagRepository.save(entity);
+        }
+    }
+
+    public TagResponse getTags(Long articleIdx, String articleCategory, TagResponse dto) {
+        List<TagResponseDto> result = new ArrayList<>();
+        List<TagRelation> tags = boardTagRepository.findAllByArticleIdxAndArticleCategory(articleIdx, articleCategory);
+
+        for (TagRelation tag : tags) {
+            result.add(new TagResponseDto(tag.getTag().getTagKeyword()));
+        }
+
+        dto.setTags(result);
+        return dto;
+    }
+
+    @Transactional
+    public void removeBoardTags(Long articleIdx, String type) {
+        boardTagRepository.deleteAllByArticleIdxAndArticleCategory(articleIdx, type);
+    }
 }

@@ -18,7 +18,6 @@ public class UserResponseDto {
     private String userNick;
     private String userEmail;
     private String userPassword;
-    private String userPicture;
     private LocalDateTime userRegdate;
     private boolean userActivated;
     private boolean userAuth;
@@ -30,7 +29,6 @@ public class UserResponseDto {
         this.userNick = user.getUserNick();
         this.userEmail = user.getUserEmail();
         this.userPassword = user.getUserPassword();
-        this.userPicture = user.getUserPicture();
         this.userRegdate = user.getUserRegdate();
         this.userActivated = user.isUserActivated();
         this.userAuth = user.isUserAuth();

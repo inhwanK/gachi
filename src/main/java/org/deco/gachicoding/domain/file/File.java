@@ -20,8 +20,8 @@ public class File {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long fileIdx;
 
-    private Long boardIdx;
-    private String boardCategory;
+    private Long articleIdx;
+    private String articleCategory;
     private String origFilename;
     private String saveFilename;
     private Long fileSize;
@@ -30,13 +30,12 @@ public class File {
     private Boolean fileActivated;
 
     private LocalDateTime fileRegdate;
-//    private LocalDateTime fileModdate;
 
     @Builder
-    public File(Long fileIdx, Long boardIdx, String boardCategory, String origFilename, String saveFilename, Long fileSize, String fileExt, String filePath, Boolean fileActivated, LocalDateTime fileRegdate) {
+    public File(Long fileIdx, Long articleIdx, String articleCategory, String origFilename, String saveFilename, Long fileSize, String fileExt, String filePath, Boolean fileActivated, LocalDateTime fileRegdate) {
         this.fileIdx = fileIdx;
-        this.boardIdx = boardIdx;
-        this.boardCategory = boardCategory;
+        this.articleIdx = articleIdx;
+        this.articleCategory = articleCategory;
         this.origFilename = origFilename;
         this.saveFilename = saveFilename;
         this.fileSize = fileSize;

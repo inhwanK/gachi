@@ -33,17 +33,12 @@ public class UserSaveRequestDto {
     @NotNull
     private String userPassword;
 
-    @ApiModelProperty(value = "사진", required = false, example = "대충 사진입니다~")
-    @Nullable
-    private String userPicture;
-
     @Builder
-    public UserSaveRequestDto(String userName, String userEmail, String userPassword, String userNick, String userPicture) {
+    public UserSaveRequestDto(String userName, String userEmail, String userPassword, String userNick) {
         this.userName = userName;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.userNick = userNick;
-        this.userPicture = userPicture;
     }
 
     public User toEntity() {
@@ -52,7 +47,6 @@ public class UserSaveRequestDto {
                 .userNick(userNick)
                 .userEmail(userEmail)
                 .userPassword(userPassword)
-                .userPicture(userPicture)
                 .build();
     }
 

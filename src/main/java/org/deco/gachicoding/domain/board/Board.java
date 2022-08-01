@@ -29,18 +29,18 @@ public class Board {
     private User writer;
     private String boardTitle;
     private String boardContent;
-    private String boardType;
+    private String boardCategory;
     private Long boardViews;
     private LocalDateTime boardRegdate;
     private Boolean boardPin;
     private Boolean boardActivated;
 
     @Builder
-    public Board(User writer, String boardTitle, String boardContent, String boardType, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
+    public Board(User writer, String boardTitle, String boardContent, String boardCategory, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
         this.writer = writer;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
-        this.boardType = boardType;
+        this.boardCategory = boardCategory;
         this.boardViews = boardViews;
         this.boardRegdate = boardRegdate;
         this.boardPin = boardPin;

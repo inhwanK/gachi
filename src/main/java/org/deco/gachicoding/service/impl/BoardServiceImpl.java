@@ -38,28 +38,28 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public Long registerBoard(BoardSaveRequestDto dto, String boardType) throws Exception {
+    public Long registerBoard(BoardSaveRequestDto dto, String boardCategory) throws Exception {
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
 
         User writer = userRepository.findByUserEmail(dto.getUserEmail())
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        Board board = boardRepository.save(dto.toEntity(writer, boardType));
+        Board board = boardRepository.save(dto.toEntity(writer, boardCategory));
 
         Long boardIdx = board.getBoardIdx();
         String boardContent = board.getBoardContent();
 
         if(dto.getTags() != null)
-            tagService.registerBoardTag(boardIdx, dto.getTags(), boardType);
+            tagService.registerBoardTag(boardIdx, dto.getTags(), boardCategory);
 
         try {
-            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, boardType));
+            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, boardCategory));
         } catch (Exception e) {
             log.error("Failed To Extract {} File", "Board Content");
             e.printStackTrace();
             removeBoard(boardIdx);
-            tagService.removeBoardTags(boardIdx, boardType);
+            tagService.removeBoardTags(boardIdx, boardCategory);
             // throw해줘야 Advice에서 예외를 감지 함
             throw e;
         }
@@ -69,13 +69,13 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable, String boardType) {
+    public Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable, String boardCategory) {
         Page<BoardResponseDto> boardList =
-                boardRepository.findByBoardTypeAndBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardTypeAndBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(boardType, keyword, boardType, keyword, pageable).map(entity -> new BoardResponseDto(entity));
+                boardRepository.findByBoardCategoryAndBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardCategoryAndBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(boardCategory, keyword, boardCategory, keyword, pageable).map(entity -> new BoardResponseDto(entity));
 
         boardList.forEach(
                 boardResponseDto ->
-                        tagService.getTags(boardResponseDto.getBoardIdx(), boardType, boardResponseDto)
+                        tagService.getTags(boardResponseDto.getBoardIdx(), boardCategory, boardResponseDto)
         );
 
         return boardList;
@@ -83,7 +83,7 @@ public class BoardServiceImpl implements BoardService {
 
     @Transactional
     @Override
-    public BoardResponseDto getBoardDetail(Long boardIdx, String boardType) {
+    public BoardResponseDto getBoardDetail(Long boardIdx, String boardCategory) {
         Board board = boardRepository.findById(boardIdx)
                 .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
 
@@ -91,8 +91,8 @@ public class BoardServiceImpl implements BoardService {
                 .board(board)
                 .build();
 
-//        fileService.getFiles(boardIdx, boardType, boardDetail);
-        tagService.getTags(boardIdx, boardType, boardDetail);
+//        fileService.getFiles(boardIdx, boardCategory, boardDetail);
+        tagService.getTags(boardIdx, boardCategory, boardDetail);
 
         return boardDetail;
     }

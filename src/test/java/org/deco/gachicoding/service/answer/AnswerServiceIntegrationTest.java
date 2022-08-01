@@ -3,15 +3,14 @@ package org.deco.gachicoding.service.answer;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
 import org.deco.gachicoding.dto.answer.AnswerUpdateRequestDto;
-import org.deco.gachicoding.dto.question.QuestionResponseDto;
-import org.deco.gachicoding.dto.question.QuestionSaveRequestDto;
-import org.deco.gachicoding.dto.question.QuestionUpdateRequestDto;
-import org.deco.gachicoding.service.question.QuestionService;
+import org.deco.gachicoding.service.AnswerService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,14 +24,14 @@ public class AnswerServiceIntegrationTest {
 
     Long ansIdx;
 
-    Long userIdx = Long.valueOf(1);
+    String userEmail = "test@test.com";
     Long queIdx = Long.valueOf(1);
     String ansContent = "답변 테스트 내용 강아지 병아리(테스트)";
 
     @BeforeEach
     void before() {
         AnswerSaveRequestDto dto = AnswerSaveRequestDto.builder()
-                .userIdx(userIdx)
+                .userEmail(userEmail)
                 .queIdx(queIdx)
                 .ansContent(ansContent)
                 .build();
@@ -51,9 +50,9 @@ public class AnswerServiceIntegrationTest {
     @Test
     @DisplayName("답변_작성_테스트")
     void Answer_Integration_Test_1() {
-        AnswerResponseDto responseDto = answerService.getAnswerDetailById(ansIdx);
+        AnswerResponseDto responseDto = answerService.getAnswerDetail(ansIdx);
 
-        assertEquals(userIdx, responseDto.getUserIdx());
+        assertEquals(userEmail, responseDto.getUserEmail());
         assertEquals(queIdx, responseDto.getQueIdx());
         assertEquals(ansContent, responseDto.getAnsContent());
     }
@@ -63,7 +62,7 @@ public class AnswerServiceIntegrationTest {
     public void Answer_Integration_Test_2() {
         String keyword = "병아리(테스트)";
 
-        Page<AnswerResponseDto> answerList = answerService.getAnswerListByKeyword(keyword, 0);
+        Page<AnswerResponseDto> answerList = answerService.getAnswerList(keyword, PageRequest.of(1, 10));
 
         assertEquals(answerList.getTotalElements(), 1);
     }

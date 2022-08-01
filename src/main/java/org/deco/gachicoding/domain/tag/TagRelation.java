@@ -10,16 +10,16 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "tag_rel")
-public class BoardTag {
+public class TagRelation {
 
     // 테그 테이터들이 태그 * 글갯수로 쌓인다
     // 너무 많이 쌓이는거 같은데
     // 문자열 처리로 합쳐서 넣어 버릴까?
     @Id @Column(name = "rel_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long boardTagIdx;
-    private String boardType;
-    private Long boardIdx;
+    private Long relationIdx;
+    private String articleCategory;
+    private Long articleIdx;
 
     @ManyToOne
     @JoinColumn(name = "tag_idx")
@@ -27,10 +27,10 @@ public class BoardTag {
 //    private String tagKeyword;
 
     @Builder
-    public BoardTag (Long boardIdx, Tag tag, String boardType, String tagKeyword) {
-        this.boardIdx = boardIdx;
+    public TagRelation(Long articleIdx, Tag tag, String articleCategory, String tagKeyword) {
+        this.articleIdx = articleIdx;
         this.tag = tag;
-        this.boardType = boardType;
+        this.articleCategory = articleCategory;
 //        this.tagKeyword = tagKeyword;
     }
 }

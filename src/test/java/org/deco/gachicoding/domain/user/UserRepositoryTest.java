@@ -129,10 +129,9 @@ public class UserRepositoryTest {
         String updatePassword = "수정된 비밀번호";
         boolean updateAuth = true;
         boolean updateActivated = false;
-        String updatePicture = "수정된 사진";
         UserRole updateRole = UserRole.GUEST;
 
-        User testUser = user.update(updateNick, updatePassword, updateActivated, updateAuth, updateRole, updatePicture);
+        User testUser = user.update(updateNick, updatePassword, updateActivated, updateAuth, updateRole);
 
         Optional<User> updateUser = userRepository.findById(userIdx);
 

@@ -4,7 +4,7 @@ import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.dto.agora.AgoraResponseDto;
 import org.deco.gachicoding.dto.agora.AgoraSaveRequestDto;
-import org.deco.gachicoding.service.AgoraService;
+import org.deco.gachicoding.service.AgoraServiceImpl;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 public class RestAgoraController {
 
-    private final AgoraService agoraService;
+    private final AgoraServiceImpl agoraService;
 
     @GetMapping("/agora/list")
     public Page<AgoraResponseDto> getAgoraList(@PageableDefault(size = 10) Pageable pageable){

@@ -34,7 +34,7 @@ public class QuestionServiceIntegrationTest {
 
     @BeforeEach
     void before() {
-        try{
+        try {
             QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
                     .userEmail(userEmail)
                     .queTitle(queTitle)

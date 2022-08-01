@@ -3,8 +3,6 @@ package org.deco.gachicoding.controller;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.dto.board.BoardResponseDto;
-import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
 import org.deco.gachicoding.dto.comment.CommentResponseDto;
 import org.deco.gachicoding.dto.comment.CommentSaveRequestDto;
 import org.deco.gachicoding.dto.comment.CommentUpdateRequestDto;

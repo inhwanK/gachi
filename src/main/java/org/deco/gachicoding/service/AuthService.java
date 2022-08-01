@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.impl;
+package org.deco.gachicoding.service;
 
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.auth.Auth;

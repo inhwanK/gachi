@@ -9,9 +9,9 @@ import org.deco.gachicoding.dto.user.LoginRequestDto;
 import org.deco.gachicoding.dto.user.UserResponseDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
-import org.deco.gachicoding.service.SocialService;
 import org.deco.gachicoding.service.UserService;
-import org.deco.gachicoding.service.impl.AuthService;
+import org.deco.gachicoding.service.AuthService;
+import org.deco.gachicoding.service.SocialService;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -45,6 +45,7 @@ public class RestUserController {
 
     /**
      * 이메일 인증을 위한 토큰 발행
+     *
      * @return UUID 토큰
      */
     @ApiOperation(value = "이메일 인증 토큰 발행", notes = "이메일 인증을 위한 토큰 생성 후 메일 발송")
@@ -57,7 +58,6 @@ public class RestUserController {
     }
 
     /**
-     *
      * @param authToken
      * @return userAuth
      */

@@ -33,13 +33,13 @@ public class Social {
 
     @CreatedDate @NotNull
     @Column(updatable = false)  // 생성 시간
-    private LocalDateTime authDate;
+    private LocalDateTime socialDate;
 
     @Builder
-    public Social(Long userIdx, String socialId, String socialType, LocalDateTime authDate) {
+    public Social(Long userIdx, String socialId, String socialType, LocalDateTime socialDate) {
         this.userIdx = userIdx;
         this.socialId = socialId;
         this.socialType = socialType;
-        this.authDate = authDate;
+        this.socialDate = socialDate;
     }
 }

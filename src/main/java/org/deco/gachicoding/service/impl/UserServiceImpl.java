@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         User user = userRepository.findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. 회원 번호 = " + idx));
 
-        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserActivated(), dto.isUserAuth(), dto.getUserRole(), dto.getUserPicture());
+        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserActivated(), dto.isUserAuth(), dto.getUserRole());
 
         return idx;
     }

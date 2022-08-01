@@ -25,9 +25,6 @@ public class Comment {
     @JoinColumn(name = "user_idx")
     private User writer;
 
-    @Column(name = "parents_idx")
-    private Long parentsIdx;
-
     @Column(name = "comm_content")
     private String commContent;
 
@@ -44,9 +41,8 @@ public class Comment {
     private Long articleIdx;
 
     @Builder
-    public Comment (User writer, Long parentsIdx, String commContent, LocalDateTime commRegdate, Boolean commActivated, String articleCategory, Long articleIdx) {
+    public Comment (User writer, String commContent, LocalDateTime commRegdate, Boolean commActivated, String articleCategory, Long articleIdx) {
         this.writer = writer;
-        this.parentsIdx = parentsIdx;
         this.commContent = commContent;
         this.commRegdate = commRegdate;
         this.commActivated = commActivated;

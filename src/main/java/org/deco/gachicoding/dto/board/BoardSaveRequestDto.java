@@ -49,12 +49,12 @@ public class BoardSaveRequestDto {
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
 
-    public Board toEntity(User writer, String boardType) {
+    public Board toEntity(User writer, String boardCategory) {
         return Board.builder()
                 .writer(writer)
                 .boardTitle(boardTitle)
                 .boardContent(boardContent)
-                .boardType(boardType)
+                .boardCategory(boardCategory)
                 .boardViews(boardViews)
                 .boardRegdate(boardRegdate)
                 .boardPin(boardPin)

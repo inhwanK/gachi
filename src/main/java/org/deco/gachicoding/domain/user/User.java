@@ -37,29 +37,26 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-    private String userPicture;
 
     @Builder
-    public User(Long userIdx, String userName,  String userNick, String userEmail, String userPassword, String userPicture, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
+    public User(Long userIdx, String userName,  String userNick, String userEmail, String userPassword, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
         this.userIdx = userIdx;
         this.userRealName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.userRegdate = userRegdate;
-        this.userPicture = userPicture;
         this.userActivated = userActivated;
         this.userAuth = userAuth;   // 인증여부
         this.userRole = userRole;
     }
 
-    public User update(String userNick, String userPassword, boolean userActivated, boolean userAuth, UserRole userRole, String userPicture) {
+    public User update(String userNick, String userPassword, boolean userActivated, boolean userAuth, UserRole userRole) {
         this.userNick = userNick;
         this.userPassword = userPassword;
         this.userActivated = userActivated;
         this.userAuth = userAuth;
         this.userRole = userRole;
-        this.userPicture = userPicture;
         return this;
     }
 

@@ -15,10 +15,6 @@ public class CommentSaveRequestDto {
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
     private String userEmail;
 
-    @Nullable
-    @ApiModelProperty(value = "부모 댓글 번호", required = false, example = "1")
-    private Long parentsIdx;
-
     @NotNull
     @ApiModelProperty(value = "댓글 내용", required = true, example = "이것도 모르시나요~ ㅋㅋ")
     private String commContent;
@@ -34,7 +30,6 @@ public class CommentSaveRequestDto {
     public Comment toEntity(User writer) {
         return Comment.builder()
                 .writer(writer)
-                .parentsIdx(parentsIdx)
                 .commContent(commContent)
                 .articleCategory(articleCategory)
                 .articleIdx(articleIdx)

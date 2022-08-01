@@ -124,9 +124,9 @@ public class FileServiceImpl implements FileService {
         }
 
         @Transactional
-        public FileResponse getFiles(Long boardIdx, String boardCategory, FileResponse dto) {
+        public FileResponse getFiles(Long idx, String category, FileResponse dto) {
                 List<FileResponseDto> result = new ArrayList<>();
-                List<File> fileList = fileRepository.findAllByBoardCategoryAndBoardIdx(boardCategory, boardIdx);
+                List<File> fileList = fileRepository.findAllByArticleCategoryAndArticleIdx(category, idx);
 
                 for (File f : fileList) {
                         result.add(new FileResponseDto(f));
@@ -136,7 +136,7 @@ public class FileServiceImpl implements FileService {
                 return dto;
         }
 
-        public String extractImgSrc(Long boardIdx, String content, String category) throws IOException {
+        public String extractImgSrc(Long idx, String content, String category) throws IOException {
                 // 정규 표현식 공부하자
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
@@ -151,14 +151,14 @@ public class FileServiceImpl implements FileService {
                         // 추출된 이미지 링크 s3업로드
                         // File DB에 업로드
                         // content 리플레이스
-                        afterImg = uploadRealImg(boardIdx, beforeImg, category);
+                        afterImg = uploadRealImg(idx, beforeImg, category);
                         content = content.replace(beforeImg, afterImg);
                 }
 
                 return content;
         }
 
-        private String uploadRealImg(Long boardIdx, String path, String category) throws IOException {
+        private String uploadRealImg(Long idx, String path, String category) throws IOException {
                 String origFileName = null;
                 String origFileExtension = null;
                 String tamperingFileName = null;
@@ -183,7 +183,7 @@ public class FileServiceImpl implements FileService {
                 origFileExtension = origFileName.substring(origFileName.lastIndexOf("."));
 
                 // 날짜 추가
-                newPath = category + "/" + boardIdx + "/" + tamperingFileName;
+                newPath = category + "/" + idx + "/" + tamperingFileName;
                 fileSize = convertFile(path, tamperingFileName);
 
                 filePath = updateS3(oldPath, newPath);
@@ -196,8 +196,8 @@ public class FileServiceImpl implements FileService {
                 log.info("filePath : " + filePath);
 
                 FileSaveDto dto = FileSaveDto.builder()
-                        .boardIdx(boardIdx)
-                        .boardCategory(category)
+                        .articleIdx(idx)
+                        .articleCategory(category)
                         .origFilename(origFileName)
                         .fileExt(origFileExtension)
                         .saveFilename(tamperingFileName)

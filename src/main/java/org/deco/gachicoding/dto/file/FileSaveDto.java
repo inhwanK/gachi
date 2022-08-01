@@ -11,8 +11,8 @@ import org.deco.gachicoding.domain.file.File;
 @NoArgsConstructor
 public class FileSaveDto {
 
-    private Long boardIdx;
-    private String boardCategory;
+    private Long articleIdx;
+    private String articleCategory;
     private String origFilename;
     private String saveFilename;
     private String fileExt;
@@ -20,9 +20,9 @@ public class FileSaveDto {
     private String filePath;
 
     @Builder
-    public FileSaveDto(Long boardIdx, String boardCategory, String origFilename, String saveFilename, String fileExt, Long fileSize, String filePath) {
-        this.boardIdx = boardIdx;
-        this.boardCategory = boardCategory;
+    public FileSaveDto(Long articleIdx, String articleCategory, String origFilename, String saveFilename, String fileExt, Long fileSize, String filePath) {
+        this.articleIdx = articleIdx;
+        this.articleCategory = articleCategory;
         this.origFilename = origFilename;
         this.saveFilename = saveFilename;
         this.fileExt = fileExt;
@@ -32,8 +32,8 @@ public class FileSaveDto {
 
     public File toEntity() {
         return File.builder()
-                .boardIdx(boardIdx)
-                .boardCategory(boardCategory)
+                .articleIdx(articleIdx)
+                .articleCategory(articleCategory)
                 .origFilename(origFilename)
                 .saveFilename(saveFilename)
                 .fileExt(fileExt)

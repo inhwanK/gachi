@@ -29,6 +29,10 @@ public class BoardSaveRequestDto {
     @ApiModelProperty(value = "게시판 내용", required = true, example = "안녕하세요 반갑습니다.")
     private String boardContent;
 
+    @NotNull
+    @ApiModelProperty(value = "게시판 카테고리", required = false, example = "개발 일상 토론")
+    private String boardCategory;
+
     @Nullable
     @ApiModelProperty(value = "조회수", required = false, example = "0")
     private Long boardViews;
@@ -38,18 +42,10 @@ public class BoardSaveRequestDto {
     private LocalDateTime boardRegdate;
 
     @Nullable
-    @ApiModelProperty(value = "고정 여부", required = false, example = "false")
-    private Boolean boardPin;
-
-    @Nullable
-    @ApiModelProperty(value = "게시판 상태", required = false, example = "true")
-    private Boolean boardActivated;
-
-    @Nullable
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
 
-    public Board toEntity(User writer, String boardCategory) {
+    public Board toEntity(User writer) {
         return Board.builder()
                 .writer(writer)
                 .boardTitle(boardTitle)
@@ -57,8 +53,6 @@ public class BoardSaveRequestDto {
                 .boardCategory(boardCategory)
                 .boardViews(boardViews)
                 .boardRegdate(boardRegdate)
-                .boardPin(boardPin)
-                .boardActivated(boardActivated)
                 .build();
     }
 }

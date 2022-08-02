@@ -1,7 +1,10 @@
 package org.deco.gachicoding.domain.answer;
 
 import org.deco.gachicoding.domain.question.Question;
+import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.domain.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -22,45 +25,68 @@ public class AnswerRepositoryTest {
     @Autowired
     AnswerRepository answerRepository;
 
-    private Long createAnswerMock(String ansContent) {
-        Long userIdx = Long.valueOf(1);
-        Long queIdx = Long.valueOf(1);
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    QuestionRepository questionRepository;
+
+    User testUser;
+
+    Question testQuestion;
+
+    String ansContent = "테스트 답변 내용 (고양이)";
+
+    @BeforeEach
+    private void before() {
 
         User user = User.builder()
-                .userIdx(userIdx)
+                .userEmail("test111@test.com")
+                .userPassword("test1234")
+                .userName("테스트")
+                .userNick("testMachine")
                 .build();
+
+        testUser = userRepository.save(user);
 
         Question question = Question.builder()
-                .queIdx(queIdx)
+                .queTitle("테스트 질문 제목")
+                .queContent("테스트 질문 내용")
+                .queError("테스트 질문 에러 로그")
+                .queCategory("자바")
+                .writer(testUser)
                 .build();
 
-        Answer entity = Answer.builder()
-                .writer(user)
-                .question(question)
+        testQuestion = questionRepository.save(question);
+    }
+
+    private Answer createAnswerMock() {
+        Answer answer = Answer.builder()
+                .writer(testUser)
+                .question(testQuestion)
                 .ansContent(ansContent)
                 .build();
 
-        return answerRepository.save(entity).getAnsIdx();
+        return answerRepository.save(answer);
     }
 
     @Test
     public void 인덱스로_답변_조회() {
-        String ansContent = "답변 테스트 내용";
-        Long noticeIdx = createAnswerMock(ansContent);
+        Answer testAnswer = createAnswerMock();
+        Long answerIdx = testAnswer.getAnsIdx();
 
-        Optional<Answer> answer = answerRepository.findById(noticeIdx);
-        assertEquals("답변 테스트 내용", answer.get().getAnsContent());
+        Optional<Answer> answer = answerRepository.findById(answerIdx);
+
+        assertEquals(ansContent, answer.get().getAnsContent());
     }
 
     @Test
     public void 답변_목록_조회() {
-        String ansContent = "답변 목록 테스트 내용 고양이";
-
         for(int i = 0; i < 10; i++) {
-            createAnswerMock(ansContent);
+            createAnswerMock();
         }
 
-        String findKeyword = "고양이";
+        String findKeyword = "";
 
         Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
 
@@ -70,9 +96,9 @@ public class AnswerRepositoryTest {
 
     @Test
     public void 인덱스로_답변_삭제() {
-        String ansContent = "답변 테스트 내용";
+        Answer testAnswer = createAnswerMock();
 
-        Long answerIdx = createAnswerMock(ansContent);
+        Long answerIdx = testAnswer.getAnsIdx();
 
         Optional<Answer> answer = answerRepository.findById(answerIdx);
 
@@ -87,9 +113,9 @@ public class AnswerRepositoryTest {
 
     @Test
     public void 검색어로_답변_검색_리스트() {
-        String ansContent = "답변 테스트 내용 고양이 병아리";
+        Answer testAnswer = createAnswerMock();
 
-        Long answerIdx = createAnswerMock(ansContent);
+        Long answerIdx = testAnswer.getAnsIdx();
 
         Optional<Answer> answer = answerRepository.findById(answerIdx);
 
@@ -100,7 +126,7 @@ public class AnswerRepositoryTest {
         Page<Answer> search_answer = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
 
         for (Answer ans : search_answer) {
-            assertEquals(ans.getAnsContent(),ansContent);
+            assertEquals(ans.getAnsContent(), ansContent);
         }
     }
 }

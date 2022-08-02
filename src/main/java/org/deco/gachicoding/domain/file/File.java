@@ -22,7 +22,7 @@ public class File {
 
     private Long articleIdx;
     private String articleCategory;
-    private String origFilename;
+    private String originFilename;
     private String saveFilename;
     private Long fileSize;
     private String fileExt;
@@ -32,11 +32,11 @@ public class File {
     private LocalDateTime fileRegdate;
 
     @Builder
-    public File(Long fileIdx, Long articleIdx, String articleCategory, String origFilename, String saveFilename, Long fileSize, String fileExt, String filePath, Boolean fileActivated, LocalDateTime fileRegdate) {
+    public File(Long fileIdx, Long articleIdx, String articleCategory, String originFilename, String saveFilename, Long fileSize, String fileExt, String filePath, Boolean fileActivated, LocalDateTime fileRegdate) {
         this.fileIdx = fileIdx;
         this.articleIdx = articleIdx;
         this.articleCategory = articleCategory;
-        this.origFilename = origFilename;
+        this.originFilename = originFilename;
         this.saveFilename = saveFilename;
         this.fileSize = fileSize;
         this.fileExt = fileExt;

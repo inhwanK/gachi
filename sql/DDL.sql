@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`user` (
   PRIMARY KEY (`user_idx`),
   UNIQUE INDEX `UIX_user` (`user_email` ASC, `user_nick` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 37
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '유저';
@@ -120,17 +121,16 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`board` (
   `board_title` VARCHAR(255) NOT NULL COMMENT '제목',
   `board_content` TEXT NOT NULL COMMENT '본문',
   `board_views` INT UNSIGNED NOT NULL DEFAULT '0' COMMENT '조회수',
-  `board_pin` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '고정',
   `board_regdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
-  `board_category` VARCHAR(20) NOT NULL DEFAULT 'BOARD' COMMENT '유형',
+  `board_category` VARCHAR(20) NULL DEFAULT NULL COMMENT '유형\\n아직 미정 (난중에 정해야 함)',
   `board_activated` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '활성상태',
-  `board_thumbnail` VARCHAR(255) NULL DEFAULT NULL COMMENT '썸네일',
   PRIMARY KEY (`board_idx`),
   INDEX `FK_user_TO_board` (`user_idx` ASC) VISIBLE,
   CONSTRAINT `FK_user_TO_board`
     FOREIGN KEY (`user_idx`)
     REFERENCES `gachicoding`.`user` (`user_idx`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '게시판';
@@ -166,7 +166,7 @@ COMMENT = '댓글';
 DROP TABLE IF EXISTS `gachicoding`.`file` ;
 
 CREATE TABLE IF NOT EXISTS `gachicoding`.`file` (
-  `file_idx` BIGINT UNSIGNED NOT NULL COMMENT '파일번호',
+  `file_idx` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '파일번호',
   `article_idx` BIGINT UNSIGNED NOT NULL COMMENT '게시글번호',
   `article_category` VARCHAR(20) NOT NULL COMMENT '게시판카테고리',
   `origin_filename` VARCHAR(255) NOT NULL COMMENT '원본파일이름',
@@ -178,6 +178,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`file` (
   `file_regdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일자',
   PRIMARY KEY (`file_idx`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '파일';
@@ -204,6 +205,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`gachi_q` (
     FOREIGN KEY (`user_idx`)
     REFERENCES `gachicoding`.`user` (`user_idx`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 64
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '가치고민(질문)';
@@ -232,9 +234,36 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`gachi_a` (
     FOREIGN KEY (`user_idx`)
     REFERENCES `gachicoding`.`user` (`user_idx`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 37
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '가치해결(답변)';
+
+
+-- -----------------------------------------------------
+-- Table `gachicoding`.`notice`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `gachicoding`.`notice` ;
+
+CREATE TABLE IF NOT EXISTS `gachicoding`.`notice` (
+  `not_idx` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '게시판번호',
+  `user_idx` BIGINT UNSIGNED NOT NULL COMMENT '작성자번호',
+  `not_title` VARCHAR(255) NOT NULL COMMENT '제목',
+  `not_content` TEXT NOT NULL COMMENT '본문',
+  `not_views` INT UNSIGNED NOT NULL DEFAULT '0' COMMENT '조회수',
+  `not_pin` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '고정',
+  `not_regdate` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+  `not_activated` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '활성상태',
+  PRIMARY KEY (`not_idx`),
+  INDEX `FK_user_TO_board` (`user_idx` ASC) VISIBLE,
+  CONSTRAINT `FK_user_TO_board0`
+    FOREIGN KEY (`user_idx`)
+    REFERENCES `gachicoding`.`user` (`user_idx`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 11
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci
+COMMENT = '게시판';
 
 
 -- -----------------------------------------------------
@@ -269,6 +298,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`tag` (
   `tag_keyword` VARCHAR(255) NOT NULL COMMENT '키워드',
   PRIMARY KEY (`tag_idx`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 9
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '태그';
@@ -290,6 +320,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`tag_rel` (
     FOREIGN KEY (`tag_idx`)
     REFERENCES `gachicoding`.`tag` (`tag_idx`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 23
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci
 COMMENT = '관계태그';

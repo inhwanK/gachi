@@ -1,6 +1,8 @@
 package org.deco.gachicoding.domain.question;
 
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.domain.user.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -21,50 +23,59 @@ public class QuestionRepositoryTest {
     @Autowired
     QuestionRepository questionRepository;
 
-    private Long createQuestionMock(String queTitle, String queContent, String queError, String queCategory) {
-        Long userIdx = Long.valueOf(1);
+    @Autowired
+    UserRepository userRepository;
 
+    User testUser;
+
+    String queTitle = "테스트 질문 제목 (고양이)";
+    String queContent = "테스트 질문 내용";
+    String queError = "테스트 질문 에러 로그";
+    String queCategory = "자바";
+
+    @BeforeEach
+    private void before() {
         User user = User.builder()
-                .userIdx(userIdx)
+                .userEmail("test111@test.com")
+                .userPassword("test1234")
+                .userName("테스트")
+                .userNick("testMachine")
                 .build();
 
-        Question entity = Question.builder()
-                .writer(user)
+        testUser = userRepository.save(user);
+    }
+
+    private Question createQuestionMock() {
+        Question question = Question.builder()
                 .queTitle(queTitle)
                 .queContent(queContent)
                 .queError(queError)
                 .queCategory(queCategory)
+                .writer(testUser)
                 .build();
 
-        return questionRepository.save(entity).getQueIdx();
+        return questionRepository.save(question);
     }
 
     @Test
     public void 인덱스로_질문_조회() {
-        String queTitle = "질문 테스트 제목";
-        String queContent = "질문 테스트 내용";
-        String queError = "질문 테스트 에러 소스";
-        String queCategory = "자바";
+        Question testQuestion = createQuestionMock();
 
-        Long questionIdx = createQuestionMock(queTitle, queContent, queError, queCategory);
+        Long questionIdx = testQuestion.getQueIdx();
 
         Optional<Question> question = questionRepository.findById(questionIdx);
-        assertEquals("질문 테스트 제목", question.get().getQueTitle());
-        assertEquals("질문 테스트 내용", question.get().getQueContent());
+        assertTrue(question.isPresent());
+        assertEquals(queTitle, question.get().getQueTitle());
+        assertEquals(queContent, question.get().getQueContent());
     }
 
     @Test
     public void 질문_목록_조회() {
-        String queTitle = "질문 목록 테스트 제목 고양이";
-        String queContent = "질문 목록 테스트 내용";
-        String queError = "질문 테스트 에러 소스";
-        String queCategory = "자바";
-
         for(int i = 0; i < 10; i++) {
-            Long questionIdx = createQuestionMock(queTitle, queContent, queError, queCategory);
+            createQuestionMock();
         }
 
-        String findKeyword = "고양이";
+        String findKeyword = "";
 
         Page<Question> questions = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
 
@@ -74,12 +85,9 @@ public class QuestionRepositoryTest {
 
     @Test
     public void 인덱스로_질문_삭제() {
-        String queTitle = "질문 테스트 제목";
-        String queContent = "질문 테스트 내용";
-        String queError = "질문 테스트 에러 소스";
-        String queCategory = "자바";
+        Question testQuestion = createQuestionMock();
 
-        Long questionIdx = createQuestionMock(queTitle, queContent, queError, queCategory);
+        Long questionIdx = testQuestion.getQueIdx();
 
         Optional<Question> question = questionRepository.findById(questionIdx);
 
@@ -94,12 +102,9 @@ public class QuestionRepositoryTest {
 
     @Test
     public void 검색어로_질문_검색_리스트() {
-        String queTitle = "질문 테스트 제목 고양이 병아리";
-        String queContent = "질문 테스트 내용 강아지 병아리";
-        String queError = "질문 테스트 에러 소스";
-        String queCategory = "자바";
+        Question testQuestion = createQuestionMock();
 
-        Long questionIdx = createQuestionMock(queTitle, queContent, queError, queCategory);
+        Long questionIdx = testQuestion.getQueIdx();
 
         Optional<Question> question = questionRepository.findById(questionIdx);
 

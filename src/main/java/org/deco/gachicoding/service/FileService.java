@@ -196,7 +196,7 @@ public class FileService {
                 FileSaveDto dto = FileSaveDto.builder()
                         .articleIdx(idx)
                         .articleCategory(category)
-                        .origFilename(origFileName)
+                        .originFilename(origFileName)
                         .fileExt(origFileExtension)
                         .saveFilename(tamperingFileName)
                         .fileSize(fileSize)

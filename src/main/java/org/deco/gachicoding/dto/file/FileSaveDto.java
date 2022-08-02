@@ -13,17 +13,17 @@ public class FileSaveDto {
 
     private Long articleIdx;
     private String articleCategory;
-    private String origFilename;
+    private String originFilename;
     private String saveFilename;
     private String fileExt;
     private Long fileSize;
     private String filePath;
 
     @Builder
-    public FileSaveDto(Long articleIdx, String articleCategory, String origFilename, String saveFilename, String fileExt, Long fileSize, String filePath) {
+    public FileSaveDto(Long articleIdx, String articleCategory, String originFilename, String saveFilename, String fileExt, Long fileSize, String filePath) {
         this.articleIdx = articleIdx;
         this.articleCategory = articleCategory;
-        this.origFilename = origFilename;
+        this.originFilename = originFilename;
         this.saveFilename = saveFilename;
         this.fileExt = fileExt;
         this.fileSize = fileSize;
@@ -34,7 +34,7 @@ public class FileSaveDto {
         return File.builder()
                 .articleIdx(articleIdx)
                 .articleCategory(articleCategory)
-                .origFilename(origFilename)
+                .originFilename(originFilename)
                 .saveFilename(saveFilename)
                 .fileExt(fileExt)
                 .fileSize(fileSize)

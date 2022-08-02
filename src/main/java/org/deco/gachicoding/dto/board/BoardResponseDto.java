@@ -23,13 +23,13 @@ public class BoardResponseDto implements ResponseDto {
 
     private String boardTitle;
     private String boardContent;
-    private String boardCategory;
+//    private String boardCategory;
     private Long boardViews;
     private LocalDateTime boardRegdate;
     private Boolean boardPin;
-    private Boolean boardActivated;
+//    private Boolean boardActivated;
 
-    private List<FileResponseDto> files;
+//    private List<FileResponseDto> files;
     private List<TagResponseDto> tags;
 
     @Builder
@@ -40,16 +40,16 @@ public class BoardResponseDto implements ResponseDto {
 
         this.boardTitle = board.getBoardTitle();
         this.boardContent = board.getBoardContent();
-        this.boardCategory = board.getBoardCategory();
+//        this.boardCategory = board.getBoardCategory();
         this.boardViews = board.getBoardViews();
         this.boardRegdate = board.getBoardRegdate();
         this.boardPin = board.getBoardPin();
-        this.boardActivated = board.getBoardActivated();
+//        this.boardActivated = board.getBoardActivated();
     }
 
     @Override
     public void setFiles(List<FileResponseDto> files) {
-        this.files = files;
+//        this.files = files;
     }
 
     @Override

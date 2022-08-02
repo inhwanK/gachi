@@ -32,18 +32,16 @@ public class Board {
     private String boardCategory;
     private Long boardViews;
     private LocalDateTime boardRegdate;
-    private Boolean boardPin;
     private Boolean boardActivated;
 
     @Builder
-    public Board(User writer, String boardTitle, String boardContent, String boardCategory, Long boardViews, LocalDateTime boardRegdate, Boolean boardPin, Boolean boardActivated) {
+    public Board(User writer, String boardTitle, String boardContent, String boardCategory, Long boardViews, LocalDateTime boardRegdate, Boolean boardActivated) {
         this.writer = writer;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
         this.boardCategory = boardCategory;
         this.boardViews = boardViews;
         this.boardRegdate = boardRegdate;
-        this.boardPin = boardPin;
         this.boardActivated = boardActivated;
     }
 

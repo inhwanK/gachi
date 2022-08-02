@@ -26,7 +26,6 @@ public class BoardResponseDto implements ResponseDto {
 //    private String boardCategory;
     private Long boardViews;
     private LocalDateTime boardRegdate;
-    private Boolean boardPin;
 //    private Boolean boardActivated;
 
 //    private List<FileResponseDto> files;
@@ -43,7 +42,6 @@ public class BoardResponseDto implements ResponseDto {
 //        this.boardCategory = board.getBoardCategory();
         this.boardViews = board.getBoardViews();
         this.boardRegdate = board.getBoardRegdate();
-        this.boardPin = board.getBoardPin();
 //        this.boardActivated = board.getBoardActivated();
     }
 

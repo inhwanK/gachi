@@ -31,9 +31,9 @@ public class AnswerRepositoryTest {
     @Autowired
     QuestionRepository questionRepository;
 
-    static User testUser;
+    User testUser;
 
-    static Question testQuestion;
+    Question testQuestion;
 
     String ansContent = "테스트 답변 내용 (고양이)";
 

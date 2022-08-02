@@ -22,7 +22,6 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequestMapping("/api")
 public class RestBoardController {
     private final BoardService boardService;
-    private final String BOARD_TYPE = "BOARD";
 
     @ApiOperation(value = "자유게시판 게시글 쓰기")
     @ApiResponses(
@@ -32,7 +31,7 @@ public class RestBoardController {
     public Long registerBoard(@ApiParam(value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
             log.info("{} Register Controller", "Board");
 
-            return boardService.registerBoard(dto, BOARD_TYPE);
+            return boardService.registerBoard(dto);
     }
 
     @ApiOperation(value = "자유게시판 게시글 목록")
@@ -43,7 +42,7 @@ public class RestBoardController {
     public Page<BoardResponseDto> getBoardList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
-        return boardService.getBoardList(keyword, pageable, BOARD_TYPE);
+        return boardService.getBoardList(keyword, pageable);
     }
 
     @ApiOperation(value = "자유게시판 상세 게시글")
@@ -53,7 +52,7 @@ public class RestBoardController {
     @GetMapping("/board/{boardIdx}")
     public BoardResponseDto getBoardDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
 
-        return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
+        return boardService.getBoardDetail(boardIdx);
     }
 
     @ApiOperation(value = "자유게시판 게시글 수정 (리팩토링 필요함)")

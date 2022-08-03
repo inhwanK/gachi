@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -55,19 +56,7 @@ public class Notice {
         this.writer = writer;
     }
 
-    public Notice update(String notTitle, String notContent) {
-        this.notTitle = notTitle;
+    public void updateContent(String notContent) {
         this.notContent = notContent;
-        return this;
-    }
-
-    public Notice disableNotice() {
-        this.notActivated = false;
-        return this;
-    }
-
-    public Notice enableNotice() {
-        this.notActivated = true;
-        return this;
     }
 }

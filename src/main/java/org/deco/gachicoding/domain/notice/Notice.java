@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.dto.response.CustomException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+
+import static org.deco.gachicoding.dto.response.StatusEnum.ALREADY_ACTIVE;
 
 @Getter
 @DynamicInsert
@@ -52,11 +55,32 @@ public class Notice {
         this.notRegdate = notRegdate;
     }
 
-    public void setUser(User user) {
-        this.writer = writer;
+    public Notice setUser(User user) {
+        return this.setUser(user);
+    }
+
+    public boolean isWriter(User user) {
+        // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
+        return (this.writer.getUserIdx() == user.getUserIdx()) ? true : false;
+    }
+
+    public void updateTitle(String notTitle) {
+        this.notTitle = notTitle;
     }
 
     public void updateContent(String notContent) {
         this.notContent = notContent;
+    }
+
+    public void enableNotice() {
+        if (this.notActivated)
+            throw new CustomException(ALREADY_ACTIVE);
+        this.notActivated = true;
+    }
+
+    public void disableNotice() {
+        if (!this.notActivated)
+            throw new CustomException(ALREADY_ACTIVE);
+        this.notActivated = false;
     }
 }

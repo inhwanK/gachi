@@ -15,4 +15,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     // IgnoreCase 키워드는 대소문자 구별을 하지 않는다는 의미, 없다면 대소문자 구별
     Page<Notice> findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(String notContent, String notTitle, Pageable pageable);
 
+
+
 }

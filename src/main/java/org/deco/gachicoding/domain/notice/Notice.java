@@ -25,7 +25,7 @@ public class Notice {
 
     private String notTitle;
     private String notContent;
-    private int notViews;
+    private Long notViews;
     private Boolean notPin;
     private Boolean notActivated;
     private LocalDateTime notRegdate;
@@ -42,7 +42,7 @@ public class Notice {
     private User writer;
 
     @Builder
-    public Notice(User writer, String notTitle, String notContent, int notViews, Boolean notPin, Boolean notActivated, LocalDateTime notRegdate) {
+    public Notice(User writer, String notTitle, String notContent, Long notViews, Boolean notPin, Boolean notActivated, LocalDateTime notRegdate) {
         this.writer = writer;
         this.notTitle = notTitle;
         this.notContent = notContent;

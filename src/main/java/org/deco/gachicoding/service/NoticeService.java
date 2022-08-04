@@ -6,9 +6,12 @@ import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.notice.NoticeRepository;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +26,7 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
+    private final TagService tagService;
 
     String NOTICE = "NOTICE";
 
@@ -51,19 +55,19 @@ public class NoticeService {
         return notIdx;
     }
 
-//    @Transactional
-//    public Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable) {
-//        Page<BoardResponseDto> boardList =
-//                boardRepository.findByBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(keyword, keyword, pageable).map(entity -> new BoardResponseDto(entity));
-//
-//        boardList.forEach(
-//                boardResponseDto ->
-//                        tagService.getTags(boardResponseDto.getBoardIdx(), BOARD, boardResponseDto)
-//        );
-//
-//        return boardList;
-//    }
-//
+    @Transactional
+    public Page<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
+        Page<NoticeResponseDto> noticeList =
+                noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, pageable).map(entity -> new NoticeResponseDto(entity));
+
+        noticeList.forEach(
+                noticeResponseDto ->
+                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
+        );
+
+        return noticeList;
+    }
+
 //    @Transactional
 //    public BoardResponseDto getBoardDetail(Long boardIdx) {
 //        Board board = boardRepository.findById(boardIdx)

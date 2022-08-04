@@ -43,16 +43,16 @@ public class RestNoticeController {
         return noticeService.getNoticeList(keyword, pageable);
     }
 
-//    @ApiOperation(value = "공지사항 상세 보기", notes = "상세한 공지사항 데이터 응답")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
-//    )
-//    @GetMapping("/notice/{boardIdx}")
-//    public BoardResponseDto getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
-//
-//        return boardService.getBoardDetail(boardIdx, BOARD_TYPE);
-//    }
-//
+    @ApiOperation(value = "공지사항 상세 보기", notes = "상세한 공지사항 데이터 응답")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
+    )
+    @GetMapping("/notice/{notIdx}")
+    public NoticeResponseDto getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx) {
+
+        return noticeService.getNoticeDetail(notIdx);
+    }
+
 //    @ApiOperation(value = "공지사항 수정")
 //    @ApiResponses(
 //            @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")

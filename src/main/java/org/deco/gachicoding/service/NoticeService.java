@@ -68,21 +68,20 @@ public class NoticeService {
         return noticeList;
     }
 
-//    @Transactional
-//    public BoardResponseDto getBoardDetail(Long boardIdx) {
-//        Board board = boardRepository.findById(boardIdx)
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//
-//        BoardResponseDto boardDetail = BoardResponseDto.builder()
-//                .board(board)
-//                .build();
-//
-////        fileService.getFiles(boardIdx, boardCategory, boardDetail);
-//        tagService.getTags(boardIdx, BOARD, boardDetail);
-//
-//        return boardDetail;
-//    }
-//
+    @Transactional
+    public NoticeResponseDto getNoticeDetail(Long notIdx) {
+        Notice notice = noticeRepository.findById(notIdx)
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
+                .notice(notice)
+                .build();
+
+        tagService.getTags(notIdx, NOTICE, noticeDetail);
+
+        return noticeDetail;
+    }
+
 //    @Transactional
 //    public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
 //        Board board = boardRepository.findById(dto.getBoardIdx())

@@ -1,41 +1,32 @@
-//package org.deco.gachicoding.controller;
-//
-//import io.swagger.annotations.*;
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.deco.gachicoding.dto.board.BoardResponseDto;
-//import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
-//import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
-//import org.deco.gachicoding.dto.response.ResponseState;
-//import org.deco.gachicoding.service.BoardService;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.data.web.PageableDefault;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//import springfox.documentation.annotations.ApiIgnore;
-//
-//@Api(tags = "공지사항 정보 처리 API")
-//@Slf4j
-//@RequiredArgsConstructor
-//@RestController
-//@RequestMapping("/api")
-//public class RestNoticeController {
-//
-//    private final Notice boardService;
-//    private final static String BOARD_TYPE = "NOTICE";
-//
-//    @ApiOperation(value = "공지사항 등록", notes = "게시판 요청 DTO를 받아 공지사항 등록 수행")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
-//    )
-//    @PostMapping("/notice")
-//    public Long registerNotice(@ApiParam(value = "게시판 요청 body 정보") @RequestBody BoardSaveRequestDto dto) throws Exception {
-//        log.info("{} Register Controller", "Notice");
-//
-//        return boardService.registerBoard(dto, BOARD_TYPE);
-//    }
-//
+package org.deco.gachicoding.controller;
+
+import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
+import org.deco.gachicoding.service.NoticeService;
+import org.springframework.web.bind.annotation.*;
+
+@Api(tags = "공지사항 정보 처리 API")
+@Slf4j
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/api")
+public class RestNoticeController {
+
+    private final NoticeService noticeService;
+
+    @ApiOperation(value = "공지사항 등록", notes = "공지사항 작성 요청 DTO를 받아 공지사항 등록 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
+    )
+    @PostMapping("/notice")
+    public Long registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequestDto dto) throws Exception {
+        log.info("{} Register Controller", "Notice");
+
+        return noticeService.registerNotice(dto);
+    }
+
 //    @ApiOperation(value = "공지사항 리스트 보기", notes = "공지사항 목록을 응답")
 //    @ApiResponses(
 //            @ApiResponse(code = 200, message = "공지사항 목록 반환")
@@ -92,5 +83,5 @@
 //    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
 //        return boardService.removeBoard(boardIdx);
 //    }
-//
-//}
+
+}

@@ -1,67 +1,56 @@
-//package org.deco.gachicoding.service;
-//
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.slf4j.Slf4j;
-//import org.deco.gachicoding.domain.board.Board;
-//import org.deco.gachicoding.domain.board.BoardRepository;
-//import org.deco.gachicoding.domain.notice.NoticeRepository;
-//import org.deco.gachicoding.domain.user.User;
-//import org.deco.gachicoding.domain.user.UserRepository;
-//import org.deco.gachicoding.dto.board.BoardResponseDto;
-//import org.deco.gachicoding.dto.board.BoardSaveRequestDto;
-//import org.deco.gachicoding.dto.board.BoardUpdateRequestDto;
-//import org.deco.gachicoding.dto.response.CustomException;
-//import org.deco.gachicoding.dto.response.ResponseState;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import static org.deco.gachicoding.dto.response.StatusEnum.*;
-//
-//@Slf4j
-//@Service
-//@RequiredArgsConstructor
-//public class NoticeService {
-//
-//    private final NoticeRepository noticeRepository;
-//    private final UserRepository userRepository;
-//    private final FileService fileService;
-//    private final TagService tagService;
-//
-//    String NOTICE = "NOTICE";
-//
-//    @Transactional
-//    public Long registerNotice(NoticeSaveRequestDto dto) throws Exception {
-//        // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
-//        // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
-//
-//        User writer = userRepository.findByUserEmail(dto.getUserEmail())
-//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-//
-//        Board board = boardRepository.save(dto.toEntity(writer));
-//
-//        Long boardIdx = board.getBoardIdx();
-//        String boardContent = board.getBoardContent();
-//
-//        if (dto.getTags() != null)
-//            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
-//
-//        try {
-//            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, BOARD));
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Board Content");
-//            e.printStackTrace();
-//            removeBoard(boardIdx);
-//            tagService.removeBoardTags(boardIdx, BOARD);
-//            // throw해줘야 Advice에서 예외를 감지 함
-//            throw e;
-//        }
-//
-//        return boardIdx;
-//    }
-//
+package org.deco.gachicoding.service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.domain.notice.Notice;
+import org.deco.gachicoding.domain.notice.NoticeRepository;
+import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
+import org.deco.gachicoding.dto.response.CustomException;
+import org.deco.gachicoding.dto.response.ResponseState;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static org.deco.gachicoding.dto.response.StatusEnum.*;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class NoticeService {
+
+    private final NoticeRepository noticeRepository;
+    private final UserRepository userRepository;
+    private final FileService fileService;
+
+    String NOTICE = "NOTICE";
+
+    @Transactional(rollbackFor = Exception.class)
+    public Long registerNotice(NoticeSaveRequestDto dto) throws Exception {
+        // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
+        // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
+
+        User writer = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Notice notice = noticeRepository.save(dto.toEntity(writer));
+
+        Long notIdx = notice.getNotIdx();
+        String notContent = notice.getNotContent();
+
+        try {
+            notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
+        } catch (Exception e) {
+            log.error("Failed To Extract {} File", "Notice Content");
+            e.printStackTrace();
+            // throw해줘야 Advice에서 예외를 감지 함
+            throw e;
+        }
+
+        return notIdx;
+    }
+
 //    @Transactional
 //    public Page<BoardResponseDto> getBoardList(String keyword, Pageable pageable) {
 //        Page<BoardResponseDto> boardList =
@@ -147,4 +136,4 @@
 //
 //        return (writerEmail.equals(userEmail)) ? true : false;
 //    }
-//}
+}

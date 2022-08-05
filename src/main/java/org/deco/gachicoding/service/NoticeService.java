@@ -6,8 +6,10 @@ import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.notice.NoticeRepository;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.dto.notice.NoticeBasicRequestDto;
 import org.deco.gachicoding.dto.notice.NoticeResponseDto;
 import org.deco.gachicoding.dto.notice.NoticeSaveRequestDto;
+import org.deco.gachicoding.dto.notice.NoticeUpdateRequestDto;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.deco.gachicoding.dto.response.ResponseState;
 import org.springframework.data.domain.Page;
@@ -68,62 +70,75 @@ public class NoticeService {
         return noticeList;
     }
 
-//    @Transactional
-//    public BoardResponseDto getBoardDetail(Long boardIdx) {
-//        Board board = boardRepository.findById(boardIdx)
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//
-//        BoardResponseDto boardDetail = BoardResponseDto.builder()
-//                .board(board)
-//                .build();
-//
-////        fileService.getFiles(boardIdx, boardCategory, boardDetail);
-//        tagService.getTags(boardIdx, BOARD, boardDetail);
-//
-//        return boardDetail;
-//    }
-//
-//    @Transactional
-//    public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
-//        Board board = boardRepository.findById(dto.getBoardIdx())
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//
-//        User user = userRepository.findByUserEmail(dto.getUserEmail())
-//                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-//
-//        if (!isSameWriter(board, user)) {
-//            throw new CustomException(INVALID_AUTH_USER);
-//        }
-//
-//        board = board.update(dto.getBoardTitle(), dto.getBoardContent());
-//
-//        BoardResponseDto boardDetail = BoardResponseDto.builder()
-//                .board(board)
-//                .build();
-//
-//        return boardDetail;
-//    }
-//
-//    @Transactional
-//    public ResponseEntity<ResponseState> disableBoard(Long boardIdx) {
-//        Board board = boardRepository.findById(boardIdx)
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//
-//        board.disableBoard();
-//
-//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
-//    }
-//
-//    @Transactional
-//    public ResponseEntity<ResponseState> enableBoard(Long boardIdx) {
-//        Board board = boardRepository.findById(boardIdx)
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//
-//        board.enableBoard();
-//
-//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-//    }
-//
+    @Transactional
+    public NoticeResponseDto getNoticeDetail(Long notIdx) {
+        Notice notice = noticeRepository.findById(notIdx)
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
+                .notice(notice)
+                .build();
+
+        tagService.getTags(notIdx, NOTICE, noticeDetail);
+
+        return noticeDetail;
+    }
+
+    @Transactional
+    public NoticeResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
+        Notice notice = noticeRepository.findById(dto.getNotIdx())
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        isSameWrite(notice, user);
+
+        notice.updateTitle(dto.getNotTitle());
+
+        notice.updateContent(dto.getNotContent());
+
+        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
+                .notice(notice)
+                .build();
+
+        return noticeDetail;
+    }
+
+    // 활성 -> 비활성
+    // noticeRepository에서 파인드 할때 activated - false 인 애들만 가져오게 하는게 더 좋을지도..?
+    @Transactional
+    public ResponseEntity<ResponseState> disableNotice(NoticeBasicRequestDto dto) {
+        Notice notice = noticeRepository.findById(dto.getNotIdx())
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        isSameWrite(notice, user);
+
+        notice.disableNotice();
+
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+    }
+
+    // 비활성 -> 활성
+    @Transactional
+    public ResponseEntity<ResponseState> enableNotice(NoticeBasicRequestDto dto) {
+        // 이부분도 중복된다 private한 메소드로 빼버릴까? 좀 뇌절 같기도...
+        Notice notice = noticeRepository.findById(dto.getNotIdx())
+                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+
+        User user = userRepository.findByUserEmail(dto.getUserEmail())
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        isSameWrite(notice, user);
+
+        notice.enableNotice();
+
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+    }
+
 //    @Transactional
 //    public ResponseEntity<ResponseState> removeBoard(Long boardIdx) {
 //        Board board = boardRepository.findById(boardIdx)
@@ -133,11 +148,10 @@ public class NoticeService {
 //
 //        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
 //    }
-//
-//    private Boolean isSameWriter(Board board, User user) {
-//        String writerEmail = board.getWriter().getUserEmail();
-//        String userEmail = user.getUserEmail();
-//
-//        return (writerEmail.equals(userEmail)) ? true : false;
-//    }
+
+    private void isSameWrite(Notice notice, User user) {
+        if (!notice.isWriter(user)) {
+            throw new CustomException(INVALID_AUTH_USER);
+        }
+    }
 }

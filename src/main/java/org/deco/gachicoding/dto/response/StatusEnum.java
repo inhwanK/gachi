@@ -22,6 +22,8 @@ public enum StatusEnum {
     DUPLICATE_RESOURCE(CONFLICT, "데이터가 이미 존재합니다"),
     ALREADY_SOLVE(CONFLICT, "해결이 완료된 질문입니다."),
     DATA_VIOLATION_EXCEPTION(CONFLICT, "제약 조건에 위배된 요청 입니다."),
+    ALREADY_ACTIVE(CONFLICT, "이미 활성화 된 글 입니다."),
+    ALREADY_INACTIVE(CONFLICT, "이미 비활성화 된 글 입니다."),
 
     /* 500 INTERNAL_SERVER_ERROR : 서버 내부 오류. 웹 서버가 요청사항을 수행할 수 없을 경우 발생  */
     DATA_NOT_EXIST(INTERNAL_SERVER_ERROR, "데이터가 존재하지 않습니다."),

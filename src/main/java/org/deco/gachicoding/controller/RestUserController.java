@@ -4,14 +4,13 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.auth.Auth;
 import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
 import org.deco.gachicoding.dto.user.LoginRequestDto;
 import org.deco.gachicoding.dto.user.UserResponseDto;
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.dto.user.UserUpdateRequestDto;
-import org.deco.gachicoding.service.UserService;
 import org.deco.gachicoding.service.AuthService;
 import org.deco.gachicoding.service.SocialService;
+import org.deco.gachicoding.service.UserService;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -146,61 +145,5 @@ public class RestUserController {
     @DeleteMapping("/user/{userIdx}")
     public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);
-    }
-
-    @ApiOperation(value = "카카오 로그인", notes = "개발 중...")
-    @GetMapping("/user/kakaoLogin")
-    public void kakaoUserLogin(String code) throws Exception {
-        System.out.println("kakaoCode" + code);
-
-        Long idx;
-
-        String accessToken = socialService.getKakaoAccessToken(code);
-        SocialSaveRequestDto socialSaveRequestDto = socialService.getKakaoUserInfo(accessToken);
-
-        // 회원 확인
-        Optional<User> user = userService.getUserByUserEmail(socialSaveRequestDto.getSocialId());
-
-        LoginRequestDto jwtRequestDto = new LoginRequestDto();
-
-        jwtRequestDto.setEmail(socialSaveRequestDto.getSocialId());
-
-        // 카카오 소셜 인증이 없으면
-        if (socialService.getSocialTypeAndEmail(socialSaveRequestDto).isEmpty()) {
-
-            // 같은 이메일로 가입된 회원이 없으면
-            if (user.isEmpty()) {
-                // 유저 회원 가입
-                UserSaveRequestDto userSaveRequestDto = UserSaveRequestDto.builder()
-                        .userName(socialSaveRequestDto.getUserName())
-                        .userEmail(socialSaveRequestDto.getSocialId())
-                        .userPassword("a123456789a")    // -> 정해야함 암호화된 문자열을 쓰든, 비밀번호 확인 못하게 고정된 키 값을 만들어 두든
-                        .userNick(socialSaveRequestDto.getUserName())   // -> 따로 닉네임을 받든(이쪽이 좋을듯 -> 그럼 null값으로 닉네임 넣어두고 업데이트 하는 형태로 가야할 듯), 초기 닉네임을 이름으로 하든
-//                        .userPicture("userPicture")     // -> 프로필 사진, 수정해야됨
-//                                                        .userRole(UserRole.USER)
-                        .build();
-
-                idx = userService.registerUser(userSaveRequestDto);
-
-                jwtRequestDto.setPassword("a123456789a");
-
-                System.out.println("신규 유저 소셜 회원 가입 + 로그인 입니다.");
-            } else {
-                idx = user.get().getUserIdx();
-
-                jwtRequestDto.setPassword(user.get().getUserPassword());
-
-                System.out.println("기존 유저 소셜 인증 + 로그인 입니다.");
-            }
-            // 유저 idx를 몰랐기 때문에 지금 set
-            socialSaveRequestDto.setUserIdx(idx);
-            socialService.registerSocial(socialSaveRequestDto);
-        }
-        // 있으면 로그인 처리(이메일 만을 사용해야함)
-        else {
-            jwtRequestDto.setPassword(user.get().getUserPassword());
-            System.out.println("기존 회원 로그인 입니다." + user.get().getUserPassword());
-        }
-
     }
 }

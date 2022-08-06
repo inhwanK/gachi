@@ -29,6 +29,10 @@ public class NoticeSaveRequestDto {
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
     private Boolean notPin;
 
+    @Nullable
+    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
+    private List<String> tags;
+
     @Builder
     public Notice toEntity(User writer) {
         return Notice.builder()

@@ -45,6 +45,9 @@ public class NoticeService {
         Long notIdx = notice.getNotIdx();
         String notContent = notice.getNotContent();
 
+        if (dto.getTags() != null)
+            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
+
         try {
             notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
         } catch (Exception e) {

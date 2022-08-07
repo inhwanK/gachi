@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.deco.gachicoding.dto.RequestDto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @Getter
 @NoArgsConstructor
-public class NoticeUpdateRequestDto {
+public class NoticeUpdateRequestDto implements RequestDto {
 
     @NotNull
     @Email(message = "올바른 형식의 아이디가 아닙니다.")

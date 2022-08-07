@@ -71,7 +71,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/notice/disable")
-    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 상태 변경 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
+    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 기본 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
         return noticeService.disableNotice(dto);
     }
 
@@ -80,17 +80,17 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/notice/enable")
-    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 상태 변경 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 기본 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
         return noticeService.enableNotice(dto);
     }
 
-//    @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "삭제 성공")
-//    )
-//    @DeleteMapping("/notice/remove/{boardIdx}")
-//    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long boardIdx) {
-//        return boardService.removeBoard(boardIdx);
-//    }
+    @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "삭제 성공")
+    )
+    @DeleteMapping("/notice/remove")
+    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 기본 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
+        return noticeService.removeNotie(dto);
+    }
 
 }

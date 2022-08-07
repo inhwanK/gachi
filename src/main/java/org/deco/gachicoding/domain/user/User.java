@@ -64,6 +64,11 @@ public class User implements UserDetails {
         this.userAuth = true;
     }
 
+    public boolean isMe(User user) {
+        // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
+        return (this.userIdx == user.getUserIdx()) ? true : false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         UserRole role = this.userRole;

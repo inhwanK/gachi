@@ -12,7 +12,6 @@ import java.util.List;
 
 @Getter
 public class NoticeSaveRequestDto {
-
     @NotNull
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
     private String userEmail;
@@ -28,6 +27,14 @@ public class NoticeSaveRequestDto {
     @Nullable
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
     private Boolean notPin;
+
+    @Nullable
+    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
+    private List<String> tags;
+
+    public boolean isNullTags() {
+        return (tags == null || tags.isEmpty()) ? true : false;
+    }
 
     @Builder
     public Notice toEntity(User writer) {

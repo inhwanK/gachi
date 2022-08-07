@@ -3,13 +3,14 @@ package org.deco.gachicoding.dto.notice;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import org.deco.gachicoding.dto.RequestDto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
-public class NoticeBasicRequestDto {
+public class NoticeBasicRequestDto implements RequestDto {
     @NotNull
     @Email(message = "올바른 형식의 아이디가 아닙니다.")
     @ApiModelProperty(value = "요청자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "Swagger@swagger.com")

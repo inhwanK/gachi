@@ -6,9 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TagResponseDto {
-    private String tagKeyword;
+    private String tag;
 
-    public TagResponseDto(String tagKeyword) {
-        this.tagKeyword = tagKeyword;
+    public TagResponseDto(String tag) {
+        this.tag = tag;
     }
 }

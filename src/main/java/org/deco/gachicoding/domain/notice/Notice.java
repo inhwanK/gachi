@@ -61,7 +61,7 @@ public class Notice {
 
     public boolean isWriter(User user) {
         // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
-        return (this.writer.getUserIdx() == user.getUserIdx()) ? true : false;
+        return (this.writer.isMe(user)) ? true : false;
     }
 
     public void updateTitle(String notTitle) {

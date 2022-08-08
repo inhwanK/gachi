@@ -1,5 +1,8 @@
-package org.deco.gachicoding.domain.user;
+package org.deco.gachicoding.unit.user.domain;
 
+import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.domain.user.UserRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

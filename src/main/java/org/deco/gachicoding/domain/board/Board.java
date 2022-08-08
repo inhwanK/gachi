@@ -3,11 +3,9 @@ package org.deco.gachicoding.domain.board;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.deco.gachicoding.domain.notice.Notice;
 import org.deco.gachicoding.domain.user.User;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.scheduling.quartz.LocalDataSourceJobStore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

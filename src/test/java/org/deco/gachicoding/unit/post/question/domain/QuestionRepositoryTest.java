@@ -1,5 +1,7 @@
-package org.deco.gachicoding.domain.question;
+package org.deco.gachicoding.unit.post.question.domain;
 
+import org.deco.gachicoding.domain.question.Question;
+import org.deco.gachicoding.domain.question.QuestionRepository;
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;

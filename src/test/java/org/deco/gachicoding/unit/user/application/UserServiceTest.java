@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.user;
+package org.deco.gachicoding.unit.user.application;
 
 import org.deco.gachicoding.dto.user.UserSaveRequestDto;
 import org.deco.gachicoding.service.UserService;

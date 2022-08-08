@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.user;
+package org.deco.gachicoding.unit.user.application;
 
 import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.domain.user.UserRepository;

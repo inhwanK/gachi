@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.answer;
+package org.deco.gachicoding.unit.post.answer.application;
 
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class AnswerServiceIntegrationTest {
+public class AnswerServiceTest {
     @Autowired
     AnswerService answerService;
 

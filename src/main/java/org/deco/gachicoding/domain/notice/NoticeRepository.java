@@ -1,6 +1,5 @@
 package org.deco.gachicoding.domain.notice;
 
-import org.deco.gachicoding.domain.question.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

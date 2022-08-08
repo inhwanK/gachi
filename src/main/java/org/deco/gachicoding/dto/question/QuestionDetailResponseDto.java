@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.domain.answer.Answer;
 import org.deco.gachicoding.domain.question.Question;
-import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.ResponseDto;
 import org.deco.gachicoding.dto.answer.AnswerResponseDto;
 import org.deco.gachicoding.dto.file.FileResponseDto;

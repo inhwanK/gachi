@@ -8,7 +8,6 @@ import org.deco.gachicoding.domain.user.User;
 import org.deco.gachicoding.dto.response.CustomException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

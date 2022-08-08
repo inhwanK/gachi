@@ -1,4 +1,4 @@
-package org.deco.gachicoding.service.question;
+package org.deco.gachicoding.unit.post.question.application;
 
 import org.deco.gachicoding.dto.question.QuestionDetailResponseDto;
 import org.deco.gachicoding.dto.question.QuestionListResponseDto;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.class)
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
-public class QuestionServiceIntegrationTest {
+public class QuestionServiceTest {
     @Autowired
     QuestionService questionService;
 

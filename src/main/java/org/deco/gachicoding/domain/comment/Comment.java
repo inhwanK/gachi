@@ -3,7 +3,6 @@ package org.deco.gachicoding.domain.comment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.deco.gachicoding.domain.board.Board;
 import org.deco.gachicoding.domain.user.User;
 import org.hibernate.annotations.DynamicInsert;
 

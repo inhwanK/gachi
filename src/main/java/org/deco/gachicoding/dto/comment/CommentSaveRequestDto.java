@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.deco.gachicoding.domain.comment.Comment;
 import org.deco.gachicoding.domain.user.User;
-import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 

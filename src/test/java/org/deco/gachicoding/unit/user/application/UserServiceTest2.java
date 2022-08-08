@@ -1,9 +1,9 @@
 package org.deco.gachicoding.unit.user.application;
 
-import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.domain.user.UserRepository;
-import org.deco.gachicoding.dto.user.UserSaveRequestDto;
-import org.deco.gachicoding.service.UserService;
+import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
+import org.deco.gachicoding.user.application.UserService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,9 +1,7 @@
 package org.deco.gachicoding.common.factory;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.deco.gachicoding.domain.user.User;
+import org.deco.gachicoding.user.domain.User;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 public class MockNotice {

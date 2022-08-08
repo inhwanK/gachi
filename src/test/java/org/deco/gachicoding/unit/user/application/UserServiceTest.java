@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.user.application;
 
-import org.deco.gachicoding.dto.user.UserSaveRequestDto;
-import org.deco.gachicoding.service.UserService;
+import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
+import org.deco.gachicoding.user.application.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

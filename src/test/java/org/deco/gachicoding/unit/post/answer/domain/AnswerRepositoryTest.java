@@ -1,11 +1,11 @@
 package org.deco.gachicoding.unit.post.answer.domain;
 
-import org.deco.gachicoding.domain.answer.Answer;
-import org.deco.gachicoding.domain.answer.AnswerRepository;
-import org.deco.gachicoding.domain.question.Question;
-import org.deco.gachicoding.domain.question.QuestionRepository;
-import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.post.answer.domain.Answer;
+import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
+import org.deco.gachicoding.post.question.domain.Question;
+import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
+import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

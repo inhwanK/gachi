@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.user.presentation;
 
 
-import org.deco.gachicoding.controller.RestUserController;
+import org.deco.gachicoding.user.presentation.RestUserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

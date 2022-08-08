@@ -1,8 +1,8 @@
 package org.deco.gachicoding.unit.post.answer.application;
 
-import org.deco.gachicoding.dto.answer.AnswerResponseDto;
-import org.deco.gachicoding.dto.answer.AnswerSaveRequestDto;
-import org.deco.gachicoding.service.AnswerService;
+import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
+import org.deco.gachicoding.post.answer.dto.request.AnswerSaveRequestDto;
+import org.deco.gachicoding.post.answer.application.AnswerService;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

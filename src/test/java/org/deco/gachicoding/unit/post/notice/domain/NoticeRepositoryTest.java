@@ -1,9 +1,9 @@
 package org.deco.gachicoding.unit.post.notice.domain;
 
-import org.deco.gachicoding.domain.notice.Notice;
-import org.deco.gachicoding.domain.notice.NoticeRepository;
-import org.deco.gachicoding.domain.user.User;
-import org.deco.gachicoding.domain.user.UserRepository;
+import org.deco.gachicoding.post.notice.domain.Notice;
+import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
+import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

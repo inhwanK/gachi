@@ -1,10 +1,7 @@
 package org.deco.gachicoding.post.notice.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Builder;
 import lombok.Getter;
-import org.deco.gachicoding.post.notice.domain.Notice;
-import org.deco.gachicoding.user.domain.User;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
@@ -22,7 +19,7 @@ public class NoticeSaveRequestDto {
 
     @NotNull
     @ApiModelProperty(value = "공지사항 내용", required = true, example = "안녕하세요 운영자A입니다.")
-    private String notContent;
+    private String notContents;
     
     @Nullable
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
@@ -34,15 +31,5 @@ public class NoticeSaveRequestDto {
 
     public boolean isNullTags() {
         return (tags == null || tags.isEmpty()) ? true : false;
-    }
-
-    @Builder
-    public Notice toEntity(User writer) {
-        return Notice.builder()
-                .writer(writer)
-                .notTitle(notTitle)
-                .notContent(notContent)
-                .notPin(notPin)
-                .build();
     }
 }

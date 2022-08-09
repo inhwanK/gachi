@@ -30,13 +30,13 @@ public class NoticeUpdatePostRequestDto implements PostRequestDto {
 
     @NotNull
     @ApiModelProperty(value = "공지사항 내용", required = false, example = "수정된 내용")
-    private String notContent;
+    private String notContents;
 
     @Builder
-    public NoticeUpdatePostRequestDto(String userEmail, Long notIdx, String notTitle, String notContent) {
+    public NoticeUpdatePostRequestDto(String userEmail, Long notIdx, String notTitle, String notContents) {
         this.userEmail = userEmail;
         this.notIdx = notIdx;
         this.notTitle = notTitle;
-        this.notContent = notContent;
+        this.notContents = notContents;
     }
 }

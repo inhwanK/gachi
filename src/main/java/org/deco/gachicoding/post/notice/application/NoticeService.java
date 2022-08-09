@@ -5,12 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
+import org.deco.gachicoding.post.notice.dto.NoticeDtoAssembler;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.post.PostRequestDto;
-import org.deco.gachicoding.post.notice.dto.request.NoticeBasicPostRequestDto;
-import org.deco.gachicoding.post.notice.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.dto.request.NoticeSaveRequestDto;
 import org.deco.gachicoding.post.notice.dto.request.NoticeUpdatePostRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
@@ -48,107 +47,114 @@ public class NoticeService {
         // =>
 //        User writer = getWriterInfo(dto.getUserEmail());
 
-        Notice notice = noticeRepository.save(dto.toEntity(getWriterInfo(dto.getUserEmail())));
+        Notice notice = noticeRepository.save(createNotice(dto));
 
-        Long notIdx = notice.getNotIdx();
-        String notContent = notice.getNotContent();
+        // 에러에 취약 할까?
+//        Long notIdx = notice.getNotIdx();
+//        String notContent = notice.getNotContent();
 
-        if (!dto.isNullTags())
-            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
+//        if (!dto.isNullTags())
+//            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
+//
+//        try {
+//            notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
+//        } catch (Exception e) {
+//            log.error("Failed To Extract {} File", "Notice Content");
+//            e.printStackTrace();
+//            // throw해줘야 Advice에서 예외를 감지 함
+//            throw e;
+//        }
 
-        try {
-            notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Notice Content");
-            e.printStackTrace();
-            // throw해줘야 Advice에서 예외를 감지 함
-            throw e;
-        }
-
-        return notIdx;
+        return notice.getNotIdx();
     }
 
-    @Transactional
-    public Page<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
-        Page<NoticeResponseDto> noticeList =
-                noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, pageable).map(entity -> new NoticeResponseDto(entity));
+    private Notice createNotice(NoticeSaveRequestDto dto) {
+        User user = getWriterInfo(dto.getUserEmail());
 
-        noticeList.forEach(
-                noticeResponseDto ->
-                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
-        );
-
-        return noticeList;
+        return NoticeDtoAssembler.notice(user, dto);
     }
 
-    @Transactional
-    public NoticeResponseDto getNoticeDetail(Long notIdx) {
-        // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
-//        Notice notice = noticeRepository.findById(notIdx)
-//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-        Notice notice = getNoticeInfo(notIdx);
-
-        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-                .notice(notice)
-                .build();
-
-        tagService.getTags(notIdx, NOTICE, noticeDetail);
-
-        return noticeDetail;
-    }
-
-    @Transactional
-    public NoticeResponseDto modifyNotice(NoticeUpdatePostRequestDto dto) {
-        Notice notice = getNoticeInfo(dto.getNotIdx());
-
-        isSameWrite(notice, dto);
-
-        notice.updateTitle(dto.getNotTitle());
-
-        notice.updateContent(dto.getNotContent());
-
-        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-                .notice(notice)
-                .build();
-
-        return noticeDetail;
-    }
-
-    // 활성 -> 비활성
-    // noticeRepository에서 파인드 할때 activated - false 인 애들만 가져오게 하는게 더 좋을지도..?
-    @Transactional
-    public ResponseEntity<ResponseState> disableNotice(NoticeBasicPostRequestDto dto) {
-        Notice notice = getNoticeInfo(dto.getNotIdx());
-
-        isSameWrite(notice, dto);
-
-        notice.disableNotice();
-
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
-    }
-
-    // 비활성 -> 활성
-    @Transactional
-    public ResponseEntity<ResponseState> enableNotice(NoticeBasicPostRequestDto dto) {
-        Notice notice = getNoticeInfo(dto.getNotIdx());
-
-        isSameWrite(notice, dto);
-
-        notice.enableNotice();
-
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-    }
-
-    @Transactional
-    public ResponseEntity<ResponseState> removeNotie(NoticeBasicPostRequestDto dto) {
-        Notice notice = getNoticeInfo(dto.getNotIdx());
-
-        isSameWrite(notice, dto);
-
-        noticeRepository.delete(notice);
-
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
-    }
+//    @Transactional
+//    public Page<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
+//        Page<NoticeResponseDto> noticeList =
+//                noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, pageable).map(entity -> new NoticeResponseDto(entity));
+//
+//        noticeList.forEach(
+//                noticeResponseDto ->
+//                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
+//        );
+//
+//        return noticeList;
+//    }
+//
+//    @Transactional
+//    public NoticeResponseDto getNoticeDetail(Long notIdx) {
+//        // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
+////        Notice notice = noticeRepository.findById(notIdx)
+////                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+//        Notice notice = getNoticeInfo(notIdx);
+//
+//        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
+//                .notice(notice)
+//                .build();
+//
+//        tagService.getTags(notIdx, NOTICE, noticeDetail);
+//
+//        return noticeDetail;
+//    }
+//
+//    @Transactional
+//    public NoticeResponseDto modifyNotice(NoticeUpdatePostRequestDto dto) {
+//        Notice notice = getNoticeInfo(dto.getNotIdx());
+//
+//        isSameWrite(notice, dto);
+//
+//        notice.updateTitle(dto.getNotTitle());
+//
+//        notice.updateContent(dto.getNotContent());
+//
+//        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
+//                .notice(notice)
+//                .build();
+//
+//        return noticeDetail;
+//    }
+//
+//    // 활성 -> 비활성
+//    // noticeRepository에서 파인드 할때 activated - false 인 애들만 가져오게 하는게 더 좋을지도..?
+//    @Transactional
+//    public ResponseEntity<ResponseState> disableNotice(NoticeBasicPostRequestDto dto) {
+//        Notice notice = getNoticeInfo(dto.getNotIdx());
+//
+//        isSameWrite(notice, dto);
+//
+//        notice.disableNotice();
+//
+//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+//    }
+//
+//    // 비활성 -> 활성
+//    @Transactional
+//    public ResponseEntity<ResponseState> enableNotice(NoticeBasicPostRequestDto dto) {
+//        Notice notice = getNoticeInfo(dto.getNotIdx());
+//
+//        isSameWrite(notice, dto);
+//
+//        notice.enableNotice();
+//
+//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+//    }
+//
+//    @Transactional
+//    public ResponseEntity<ResponseState> removeNotie(NoticeBasicPostRequestDto dto) {
+//        Notice notice = getNoticeInfo(dto.getNotIdx());
+//
+//        isSameWrite(notice, dto);
+//
+//        noticeRepository.delete(notice);
+//
+//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+//    }
 
     private Notice getNoticeInfo(Long notIdx) {
         return noticeRepository.findById(notIdx)

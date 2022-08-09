@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeContents;
+import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.hibernate.annotations.DynamicInsert;
@@ -25,11 +27,19 @@ public class Notice {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long notIdx;
 
-    private String notTitle;
-    private String notContent;
+    @Embedded
+    private NoticeTitle notTitle;
+
+    @Embedded
+    private NoticeContents notContents;
+
     private Long notViews;
+
     private Boolean notPin;
+
     private Boolean notActivated;
+
+    // notRegdate -> createdAt
     private LocalDateTime notRegdate;
 
     // FetchType.EAGER 즉시 로딩
@@ -43,19 +53,18 @@ public class Notice {
     @JsonManagedReference
     private User writer;
 
-    @Builder
-    public Notice(User writer, String notTitle, String notContent, Long notViews, Boolean notPin, Boolean notActivated, LocalDateTime notRegdate) {
-        this.writer = writer;
+    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notActivated) {
+        this.notIdx = notIdx;
+        this.writer = author;
         this.notTitle = notTitle;
-        this.notContent = notContent;
+        this.notContents = notContents;
         this.notViews = notViews;
         this.notPin = notPin;
         this.notActivated = notActivated;
-        this.notRegdate = notRegdate;
     }
 
-    public Notice setUser(User user) {
-        return this.setUser(user);
+    public static Builder builder() {
+        return new Builder();
     }
 
     public boolean isWriter(User user) {
@@ -63,12 +72,12 @@ public class Notice {
         return (this.writer.isMe(user)) ? true : false;
     }
 
-    public void updateTitle(String notTitle) {
+    public void updateTitle(NoticeTitle notTitle) {
         this.notTitle = notTitle;
     }
 
-    public void updateContent(String notContent) {
-        this.notContent = notContent;
+    public void updateContent(NoticeContents notContents) {
+        this.notContents = notContents;
     }
 
     public void enableNotice() {
@@ -81,5 +90,66 @@ public class Notice {
         if (!this.notActivated)
             throw new ApplicationException(ALREADY_ACTIVE);
         this.notActivated = false;
+    }
+
+    public static class Builder {
+
+        private Long notIdx;
+        private User author;
+        private NoticeTitle notTitle;
+        private NoticeContents notContents;
+        private Long notViews;
+        private Boolean notPin;
+        private Boolean notActivated;
+        private LocalDateTime notRegdate = null;
+
+        public Builder notIdx(Long notIdx) {
+            this.notIdx = notIdx;
+            return this;
+        }
+
+        public Builder author(User user) {
+            this.author = user;
+            return this;
+        }
+
+        public Builder notTitle(String notTitle) {
+            this.notTitle = new NoticeTitle(notTitle);
+            return this;
+        }
+
+        public Builder notContents(String notContents) {
+            this.notContents = new NoticeContents(notContents);
+            return this;
+        }
+
+        public Builder notViews(Long notViews) {
+            this.notViews = notViews;
+            return this;
+        }
+
+        public Builder notPin(Boolean notPin) {
+            this.notPin = notPin;
+            return this;
+        }
+
+        public Builder notActivated(Boolean notActivated) {
+            this.notActivated = notActivated;
+            return this;
+        }
+
+        public Notice build() {
+            Notice notice = new Notice(
+                    notIdx,
+                    author,
+                    notTitle,
+                    notContents,
+                    notViews,
+                    notPin,
+                    notActivated
+                    );
+
+            return notice;
+        }
     }
 }

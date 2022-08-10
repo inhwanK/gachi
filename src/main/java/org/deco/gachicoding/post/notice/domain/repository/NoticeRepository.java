@@ -11,8 +11,12 @@ import java.util.Optional;
 
 public interface NoticeRepository extends JpaRepository<Notice, Long> {
 
-    Optional<Notice> findByNotIdxAndNotActivatedTrue(Long notIdx);
+    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.writer WHERE n.notIdx = :notIdx")
+    Optional<Notice> findNoticeByIdx(@Param("notIdx") Long notIdx);
 
-    @Query("SELECT DISTINCT n FROM Notice n LEFT JOIN FETCH n.writer")
+    @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.writer WHERE n.notActivated = true AND n.notIdx = :notIdx")
+    Optional<Notice> findEnableNoticeByIdx(@Param("notIdx") Long notIdx);
+
+    @Query("SELECT DISTINCT n FROM Notice n LEFT JOIN FETCH n.writer WHERE n.notActivated = true ORDER BY n.notRegdate")
     List<Notice> findAllNoticeByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

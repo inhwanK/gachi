@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.notice.dto.response;
+package org.deco.gachicoding.post.notice.application.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

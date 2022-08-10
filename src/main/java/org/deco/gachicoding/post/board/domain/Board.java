@@ -26,17 +26,17 @@ public class Board {
     @JoinColumn(name = "user_idx")
     private User writer;
     private String boardTitle;
-    private String boardContent;
+    private String boardContents;
     private String boardCategory;
     private Long boardViews;
     private LocalDateTime boardRegdate;
     private Boolean boardActivated;
 
     @Builder
-    public Board(User writer, String boardTitle, String boardContent, String boardCategory, Long boardViews, LocalDateTime boardRegdate, Boolean boardActivated) {
+    public Board(User writer, String boardTitle, String boardContents, String boardCategory, Long boardViews, LocalDateTime boardRegdate, Boolean boardActivated) {
         this.writer = writer;
         this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
+        this.boardContents = boardContents;
         this.boardCategory = boardCategory;
         this.boardViews = boardViews;
         this.boardRegdate = boardRegdate;
@@ -45,7 +45,7 @@ public class Board {
 
     public Board update(String boardTitle, String boardContent) {
         this.boardTitle = boardTitle;
-        this.boardContent = boardContent;
+        this.boardContents = boardContent;
         return this;
     }
 
@@ -61,7 +61,7 @@ public class Board {
 
     // 없애고 그냥 update를 써도 됨
     public Board updateContent(String boardContent) {
-        this.boardContent = boardContent;
+        this.boardContents = boardContent;
         return this;
     }
 }

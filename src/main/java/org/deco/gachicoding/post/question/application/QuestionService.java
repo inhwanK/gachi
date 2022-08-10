@@ -41,7 +41,7 @@ public class QuestionService {
         Question question = questionRepository.save(dto.toEntity(writer));
 
         Long queIdx = question.getQueIdx();
-        String queContent = question.getQueContent();
+        String queContent = question.getQueContents();
         String queError = question.getQueError();
 
         if (dto.getTags() != null)
@@ -65,7 +65,7 @@ public class QuestionService {
     // 리팩토링 - 검색 조건에 error도 추가
     @Transactional(readOnly = true)
     public Page<QuestionListResponseDto> getQuestionList(String keyword, Pageable pageable) {
-        Page<Question> questions = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(keyword, keyword, pageable);
+        Page<Question> questions = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(keyword, keyword, pageable);
 
         Page<QuestionListResponseDto> questionList = questions.map(
                 result -> new QuestionListResponseDto(result)

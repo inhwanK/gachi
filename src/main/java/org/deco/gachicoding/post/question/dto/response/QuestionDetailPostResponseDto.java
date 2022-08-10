@@ -43,7 +43,7 @@ public class QuestionDetailPostResponseDto implements PostResponseDto {
         setAnswerList(question);
 
         this.queTitle = question.getQueTitle();
-        this.queContent = question.getQueContent();
+        this.queContent = question.getQueContents();
         this.queError = question.getQueError();
         this.queCategory = question.getQueCategory();
         this.queSolve = question.getQueSolve();

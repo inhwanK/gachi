@@ -35,8 +35,8 @@ public class Answer {
     @JsonManagedReference
     private Question question;
 
-    @Column(name = "as_content")
-    private String ansContent;
+    @Column(name = "as_contents")
+    private String ansContents;
 
     @Column(name = "as_select")
     private Boolean ansSelect;
@@ -48,10 +48,10 @@ public class Answer {
     private LocalDateTime ansRegdate;
 
     @Builder
-    public Answer(User writer, Question question, String ansContent, Boolean ansSelect, Boolean ansActivated, LocalDateTime ansRegdate) {
+    public Answer(User writer, Question question, String ansContents, Boolean ansSelect, Boolean ansActivated, LocalDateTime ansRegdate) {
         this.writer = writer;
         this.question = question;
-        this.ansContent = ansContent;
+        this.ansContents = ansContents;
         this.ansSelect = ansSelect;
         this.ansActivated = ansActivated;
         this.ansRegdate = ansRegdate;
@@ -66,7 +66,7 @@ public class Answer {
     }
 
     public Answer update(String ansContent) {
-        this.ansContent = ansContent;
+        this.ansContents = ansContent;
         return this;
     }
 

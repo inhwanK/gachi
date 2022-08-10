@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -22,12 +24,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${key.value}")
     private String frontHost;
-
-    /*
-     * 레퍼런스에서 권장하는 인코더 생성 방법
-     * PasswordEncoderFactories.createDelegatingPasswordEncoder()
-     * {bcrypt}1234 방식으로 비밀번호를 저장함. 인코딩방식이 변화되어도 계속해서 사용할 수 있음.
-     */
 
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -49,8 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public BCryptPasswordEncoder encoderPassword() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder encoderPassword() {
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     /**

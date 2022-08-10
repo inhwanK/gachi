@@ -52,7 +52,7 @@
 
 ## ERD
 
-![가치코딩 ERD](document/ERD.png)
+![가치코딩 ERD](document/gachicoding ERD.png)
 <br>
 
 ## 주요 기능

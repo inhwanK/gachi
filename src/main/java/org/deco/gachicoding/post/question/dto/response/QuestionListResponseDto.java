@@ -35,7 +35,7 @@ public class QuestionListResponseDto implements TagResponse {
         this.userNick = question.getWriter().getUserNick();
         this.queIdx = question.getQueIdx();
         this.queTitle = question.getQueTitle();
-        this.queContent = question.getQueContent();
+        this.queContent = question.getQueContents();
         this.queError = question.getQueError();
         this.queCategory = question.getQueCategory();
         this.queSolve = question.getQueSolve();

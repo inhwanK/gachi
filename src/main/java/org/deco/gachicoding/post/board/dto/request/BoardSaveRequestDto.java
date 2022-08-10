@@ -49,7 +49,7 @@ public class BoardSaveRequestDto {
         return Board.builder()
                 .writer(writer)
                 .boardTitle(boardTitle)
-                .boardContent(boardContent)
+                .boardContents(boardContent)
                 .boardCategory(boardCategory)
                 .boardViews(boardViews)
                 .boardRegdate(boardRegdate)

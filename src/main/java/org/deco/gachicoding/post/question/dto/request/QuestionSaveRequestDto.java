@@ -55,7 +55,7 @@ public class QuestionSaveRequestDto {
         return Question.builder()
                 .writer(writer)
                 .queTitle(queTitle)
-                .queContent(queContent)
+                .queContents(queContent)
                 .queError(queError)
                 .queCategory(queCategory)
                 .build();

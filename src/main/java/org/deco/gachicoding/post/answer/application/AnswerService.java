@@ -64,7 +64,7 @@ public class AnswerService {
 
     @Transactional(readOnly = true)
     public Page<AnswerResponseDto> getAnswerList(String keyword, Pageable pageable) {
-        Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, pageable);
+        Page<Answer> answers = answerRepository.findByAnsContentsContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, pageable);
         Page<AnswerResponseDto> answersList = answers.map(
                 result -> new AnswerResponseDto(result)
         );

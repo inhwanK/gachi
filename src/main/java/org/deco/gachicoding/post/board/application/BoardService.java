@@ -66,7 +66,7 @@ public class BoardService {
     @Transactional
     public Page<BoardPostResponseDto> getBoardList(String keyword, Pageable pageable) {
         Page<BoardPostResponseDto> boardList =
-                boardRepository.findByBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(keyword, keyword, pageable).map(entity -> new BoardPostResponseDto(entity));
+                boardRepository.findByBoardContentsContainingIgnoreCaseAndBoardActivatedTrueOrBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(keyword, keyword, pageable).map(entity -> new BoardPostResponseDto(entity));
 
         boardList.forEach(
                 boardResponseDto ->

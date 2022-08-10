@@ -90,7 +90,7 @@ public class AnswerRepositoryTest {
 
         String findKeyword = "";
 
-        Page<Answer> answers = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
+        Page<Answer> answers = answerRepository.findByAnsContentsContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
 
         // NumberOfElements 요청 페이지에서 조회 된 데이터의 갯수
         assertEquals(10, answers.getTotalElements());
@@ -125,7 +125,7 @@ public class AnswerRepositoryTest {
 
         String findKeyword = "고양이";
 
-        Page<Answer> search_answer = answerRepository.findByAnsContentContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
+        Page<Answer> search_answer = answerRepository.findByAnsContentsContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "ansIdx")));
 
         for (Answer ans : search_answer) {
             assertEquals(ans.getAnsContents(), ansContent);

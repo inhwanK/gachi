@@ -79,7 +79,7 @@ public class QuestionRepositoryTest {
 
         String findKeyword = "";
 
-        Page<Question> questions = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
+        Page<Question> questions = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
 
         // NumberOfElements 요청 페이지에서 조회 된 데이터의 갯수
         assertEquals(10, questions.getTotalElements());
@@ -114,7 +114,7 @@ public class QuestionRepositoryTest {
 
         String findKeyword = "고양이";
 
-        Page<Question> search_question = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
+        Page<Question> search_question = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
 
         for (Question que : search_question) {
             assertEquals(que.getQueTitle(),queTitle);

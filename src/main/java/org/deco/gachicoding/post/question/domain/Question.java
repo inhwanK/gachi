@@ -42,8 +42,8 @@ public class Question {
     @Column(name = "qs_title")
     private String queTitle;
 
-    @Column(name = "qs_content")
-    private String queContent;
+    @Column(name = "qs_contents")
+    private String queContents;
 
     @Column(name = "qs_error")
     private String queError;
@@ -61,11 +61,11 @@ public class Question {
     private LocalDateTime queRegdate;
 
     @Builder
-    public Question(User writer, Long queIdx, String queTitle, String queContent, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
+    public Question(User writer, Long queIdx, String queTitle, String queContents, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
         this.writer = writer;
         this.queIdx = queIdx;
         this.queTitle = queTitle;
-        this.queContent = queContent;
+        this.queContents = queContents;
         this.queError = queError;
         this.queCategory = queCategory;
         this.queSolve = queSolve;
@@ -83,7 +83,7 @@ public class Question {
 
     public Question update(QuestionUpdateRequestDto dto) {
         this.queTitle = dto.getQueTitle();
-        this.queContent = dto.getQueContent();
+        this.queContents = dto.getQueContent();
         this.queError = dto.getQueError();
         this.queCategory = dto.getQueCategory();
         return this;
@@ -105,7 +105,7 @@ public class Question {
     }
 
     public Question updateContent(String queContent) {
-        this.queContent = queContent;
+        this.queContents = queContent;
         return this;
     }
 

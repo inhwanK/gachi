@@ -29,7 +29,7 @@ public class CommentSaveRequestDto {
     public Comment toEntity(User writer) {
         return Comment.builder()
                 .writer(writer)
-                .commContent(commContent)
+                .commContents(commContent)
                 .articleCategory(articleCategory)
                 .articleIdx(articleIdx)
                 .build();

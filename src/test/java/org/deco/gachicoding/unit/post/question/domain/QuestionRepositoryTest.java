@@ -50,7 +50,7 @@ public class QuestionRepositoryTest {
     private Question createQuestionMock() {
         Question question = Question.builder()
                 .queTitle(queTitle)
-                .queContent(queContent)
+                .queContents(queContent)
                 .queError(queError)
                 .queCategory(queCategory)
                 .writer(testUser)
@@ -68,7 +68,7 @@ public class QuestionRepositoryTest {
         Optional<Question> question = questionRepository.findById(questionIdx);
         assertTrue(question.isPresent());
         assertEquals(queTitle, question.get().getQueTitle());
-        assertEquals(queContent, question.get().getQueContent());
+        assertEquals(queContent, question.get().getQueContents());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class QuestionRepositoryTest {
 
         String findKeyword = "";
 
-        Page<Question> questions = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
+        Page<Question> questions = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
 
         // NumberOfElements 요청 페이지에서 조회 된 데이터의 갯수
         assertEquals(10, questions.getTotalElements());
@@ -114,11 +114,11 @@ public class QuestionRepositoryTest {
 
         String findKeyword = "고양이";
 
-        Page<Question> search_question = questionRepository.findByQueContentContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
+        Page<Question> search_question = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(findKeyword, findKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "queIdx")));
 
         for (Question que : search_question) {
             assertEquals(que.getQueTitle(),queTitle);
-            assertEquals(que.getQueContent(),queContent);
+            assertEquals(que.getQueContents(),queContent);
             assertEquals(que.getQueError(),queError);
             assertEquals(que.getQueCategory(),queCategory);
         }

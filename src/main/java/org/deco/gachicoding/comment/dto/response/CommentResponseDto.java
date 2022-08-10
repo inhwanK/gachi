@@ -25,7 +25,7 @@ public class CommentResponseDto {
         this.userEmail = comment.getWriter().getUserEmail();
         this.userNick = comment.getWriter().getUserNick();
 
-        this.commContent = comment.getCommContent();
+        this.commContent = comment.getCommContents();
         this.commRegdate = comment.getCommRegdate();
         this.commActivated = comment.getCommActivated();
         this.articleCategory = comment.getArticleCategory();

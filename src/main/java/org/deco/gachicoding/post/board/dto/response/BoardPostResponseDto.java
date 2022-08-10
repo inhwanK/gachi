@@ -38,7 +38,7 @@ public class BoardPostResponseDto implements PostResponseDto {
         this.userNick = board.getWriter().getUserNick();
 
         this.boardTitle = board.getBoardTitle();
-        this.boardContent = board.getBoardContent();
+        this.boardContent = board.getBoardContents();
 //        this.boardCategory = board.getBoardCategory();
         this.boardViews = board.getBoardViews();
         this.boardRegdate = board.getBoardRegdate();

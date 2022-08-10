@@ -29,7 +29,7 @@ public class AnswerResponseDto {
         this.userNick = answer.getWriter().getUserNick();
         setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
-        this.ansContent = answer.getAnsContent();
+        this.ansContent = answer.getAnsContents();
         this.ansSelect = answer.getAnsSelect();
         this.ansActivated = answer.getAnsActivated();
         this.ansRegdate = answer.getAnsRegdate();

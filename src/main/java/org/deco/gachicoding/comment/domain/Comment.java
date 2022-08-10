@@ -24,8 +24,8 @@ public class Comment {
     @JoinColumn(name = "user_idx")
     private User writer;
 
-    @Column(name = "comm_content")
-    private String commContent;
+    @Column(name = "comm_contents")
+    private String commContents;
 
     @Column(name = "comm_regdate")
     private LocalDateTime commRegdate;
@@ -40,9 +40,9 @@ public class Comment {
     private Long articleIdx;
 
     @Builder
-    public Comment (User writer, String commContent, LocalDateTime commRegdate, Boolean commActivated, String articleCategory, Long articleIdx) {
+    public Comment(User writer, String commContents, LocalDateTime commRegdate, Boolean commActivated, String articleCategory, Long articleIdx) {
         this.writer = writer;
-        this.commContent = commContent;
+        this.commContents = commContents;
         this.commRegdate = commRegdate;
         this.commActivated = commActivated;
         this.articleCategory = articleCategory;
@@ -50,7 +50,7 @@ public class Comment {
     }
 
     public Comment update(String commContent) {
-        this.commContent = commContent;
+        this.commContents = commContent;
         return this;
     }
 

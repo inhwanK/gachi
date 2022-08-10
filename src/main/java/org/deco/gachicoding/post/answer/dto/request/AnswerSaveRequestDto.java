@@ -41,7 +41,7 @@ public class AnswerSaveRequestDto {
         return Answer.builder()
                 .writer(writer)
                 .question(question)
-                .ansContent(ansContent)
+                .ansContents(ansContent)
                 .build();
     }
 }

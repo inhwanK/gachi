@@ -44,7 +44,7 @@ public class BoardService {
         Board board = boardRepository.save(dto.toEntity(writer));
 
         Long boardIdx = board.getBoardIdx();
-        String boardContent = board.getBoardContent();
+        String boardContent = board.getBoardContents();
 
         if (dto.getTags() != null)
             tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);

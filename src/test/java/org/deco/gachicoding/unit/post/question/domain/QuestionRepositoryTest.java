@@ -50,7 +50,7 @@ public class QuestionRepositoryTest {
     private Question createQuestionMock() {
         Question question = Question.builder()
                 .queTitle(queTitle)
-                .queContent(queContent)
+                .queContents(queContent)
                 .queError(queError)
                 .queCategory(queCategory)
                 .writer(testUser)
@@ -68,7 +68,7 @@ public class QuestionRepositoryTest {
         Optional<Question> question = questionRepository.findById(questionIdx);
         assertTrue(question.isPresent());
         assertEquals(queTitle, question.get().getQueTitle());
-        assertEquals(queContent, question.get().getQueContent());
+        assertEquals(queContent, question.get().getQueContents());
     }
 
     @Test
@@ -118,7 +118,7 @@ public class QuestionRepositoryTest {
 
         for (Question que : search_question) {
             assertEquals(que.getQueTitle(),queTitle);
-            assertEquals(que.getQueContent(),queContent);
+            assertEquals(que.getQueContents(),queContent);
             assertEquals(que.getQueError(),queError);
             assertEquals(que.getQueCategory(),queCategory);
         }

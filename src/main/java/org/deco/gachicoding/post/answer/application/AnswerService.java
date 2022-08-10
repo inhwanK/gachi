@@ -48,7 +48,7 @@ public class AnswerService {
         Answer answer = answerRepository.save(dto.toEntity(writer, question));
 
         Long ansIdx = answer.getAnsIdx();
-        String ansContent = answer.getAnsContent();
+        String ansContent = answer.getAnsContents();
 
         try {
             answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));

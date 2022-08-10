@@ -6,19 +6,18 @@ import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.dto.NoticeDtoAssembler;
+import org.deco.gachicoding.post.notice.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.post.PostRequestDto;
 import org.deco.gachicoding.post.notice.dto.request.NoticeSaveRequestDto;
-import org.deco.gachicoding.post.notice.dto.request.NoticeUpdatePostRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
-import org.deco.gachicoding.exception.ResponseState;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.deco.gachicoding.exception.StatusEnum.*;
 
@@ -74,19 +73,19 @@ public class NoticeService {
         return NoticeDtoAssembler.notice(user, dto);
     }
 
-//    @Transactional
-//    public Page<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
-//        Page<NoticeResponseDto> noticeList =
-//                noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, pageable).map(entity -> new NoticeResponseDto(entity));
-//
+    @Transactional
+    public List<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
+        List<NoticeResponseDto> noticeList =
+                NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
+
 //        noticeList.forEach(
 //                noticeResponseDto ->
 //                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
 //        );
-//
-//        return noticeList;
-//    }
-//
+
+        return noticeList;
+    }
+
 //    @Transactional
 //    public NoticeResponseDto getNoticeDetail(Long notIdx) {
 //        // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다

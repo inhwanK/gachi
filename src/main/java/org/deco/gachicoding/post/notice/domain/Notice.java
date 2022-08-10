@@ -19,7 +19,7 @@ import static org.deco.gachicoding.exception.StatusEnum.ALREADY_ACTIVE;
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@Entity(name = "notice")
+@Entity
 @NoArgsConstructor
 public class Notice {
 
@@ -48,7 +48,7 @@ public class Notice {
     // FetchType.LAZY 지연 로딩
     // 1. 로딩되는 시점에 Lazy 로딩 설정이 되어있는 Team 엔티티는 프록시 객체로 가져온다.
     // 2. 후에 실제 객체를 사용하는 시점에 초기화가 된다. DB에 쿼리가 나간다.
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
     private User writer;
@@ -61,6 +61,22 @@ public class Notice {
         this.notViews = notViews;
         this.notPin = notPin;
         this.notActivated = notActivated;
+    }
+
+    public String getWriterNick() {
+        return writer.getUserNick();
+    }
+
+    public String getWriterEmail() {
+        return writer.getUserEmail();
+    }
+
+    public String getNotContents() {
+        return notContents.getNoticeContents();
+    }
+
+    public String getNotTitle() {
+        return notTitle.getNoticeTitle();
     }
 
     public static Builder builder() {

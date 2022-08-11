@@ -2,7 +2,6 @@ package org.deco.gachicoding.unit.user.domain;
 
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.user.domain.UserRole;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -50,7 +49,7 @@ public class UserRepositoryTest {
 
         Optional<User> user = userRepository.findById(userIdx);
         assertEquals("test@test.com", user.get().getUserEmail());
-        assertEquals("테스트", user.get().getUsername());
+        assertEquals("테스트", user.get().getUserName());
     }
 
     @Test
@@ -61,7 +60,7 @@ public class UserRepositoryTest {
         Optional<User> user = userRepository.findByUserEmail("test@test.com");
 
         assertEquals("test@test.com", user.get().getUserEmail());
-        assertEquals("테스트", user.get().getUsername());
+        assertEquals("테스트", user.get().getUserName());
     }
 
 //    @Test
@@ -132,9 +131,9 @@ public class UserRepositoryTest {
         String updatePassword = "수정된 비밀번호";
         boolean updateAuth = true;
         boolean updateActivated = false;
-        UserRole updateRole = UserRole.GUEST;
 
-        User testUser = user.update(updateNick, updatePassword, updateActivated, updateAuth, updateRole);
+
+        User testUser = user.update(updateNick, updatePassword, updateActivated, updateAuth);
 
         Optional<User> updateUser = userRepository.findById(userIdx);
 

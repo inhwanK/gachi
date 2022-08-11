@@ -38,10 +38,11 @@ public class Notice {
 
     private Boolean notPin;
 
-    private Boolean notActivated;
+    private Boolean notLocked;
 
-    // notRegdate -> createdAt
-    private LocalDateTime notRegdate;
+    private LocalDateTime notCreateAt;
+
+    private LocalDateTime notUpdateAt;
 
     // FetchType.EAGER 즉시 로딩
     // 1. 대부분의 JPA 구현체는 가능하면 조인을 사용해서 SQL 한번에 함께 조회하려고 한다.
@@ -50,18 +51,18 @@ public class Notice {
     // 1. 로딩되는 시점에 Lazy 로딩 설정이 되어있는 Team 엔티티는 프록시 객체로 가져온다.
     // 2. 후에 실제 객체를 사용하는 시점에 초기화가 된다. DB에 쿼리가 나간다.
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_idx")
+    @JoinColumn(name = "account_idx")
     @JsonManagedReference
     private User writer;
 
-    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notActivated) {
+    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
         this.notIdx = notIdx;
         this.writer = author;
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notViews = notViews;
         this.notPin = notPin;
-        this.notActivated = notActivated;
+        this.notLocked = notLocked;
     }
 
     public String getWriterNick() {
@@ -98,27 +99,28 @@ public class Notice {
     }
 
     public void enableNotice() {
-        if (this.notActivated)
+        if (this.notLocked)
             throw new ApplicationException(ALREADY_ACTIVE);
-        this.notActivated = true;
+        this.notLocked = true;
     }
 
     public void disableNotice() {
-        if (!this.notActivated)
+        if (!this.notLocked)
             throw new ApplicationException(ALREADY_INACTIVE);
-        this.notActivated = false;
+        this.notLocked = false;
     }
 
     public static class Builder {
 
         private Long notIdx;
-        private User author;
+        private User writer;
         private NoticeTitle notTitle;
         private NoticeContents notContents;
         private Long notViews;
         private Boolean notPin;
-        private Boolean notActivated;
-        private LocalDateTime notRegdate = null;
+        private Boolean notLocked;
+        private LocalDateTime notCreateAt = null;
+        private LocalDateTime notUpdateAt = null;
 
         public Builder notIdx(Long notIdx) {
             this.notIdx = notIdx;
@@ -126,7 +128,7 @@ public class Notice {
         }
 
         public Builder author(User user) {
-            this.author = user;
+            this.writer = user;
             return this;
         }
 
@@ -150,20 +152,20 @@ public class Notice {
             return this;
         }
 
-        public Builder notActivated(Boolean notActivated) {
-            this.notActivated = notActivated;
+        public Builder notActivated(Boolean notLocked) {
+            this.notLocked = notLocked;
             return this;
         }
 
         public Notice build() {
             Notice notice = new Notice(
                     notIdx,
-                    author,
+                    writer,
                     notTitle,
                     notContents,
                     notViews,
                     notPin,
-                    notActivated
+                    notLocked
                     );
 
             return notice;

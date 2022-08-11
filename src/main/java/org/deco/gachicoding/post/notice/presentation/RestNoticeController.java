@@ -10,12 +10,15 @@ import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
+import org.deco.gachicoding.post.notice.presentation.dto.NoticeAssembler;
+import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.net.URI;
 import java.util.List;
 
 @Api(tags = "공지사항 정보 처리 API")
@@ -25,6 +28,8 @@ import java.util.List;
 @RequestMapping("/api")
 public class RestNoticeController {
 
+    private static final String REDIRECT_URL = "/api/notice/%d";
+
     private final NoticeService noticeService;
 
     @ApiOperation(value = "공지사항 등록", notes = "공지사항 작성 요청 DTO를 받아 공지사항 등록 수행")
@@ -32,10 +37,13 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
     )
     @PostMapping("/notice")
-    public Long registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequestDto dto) throws Exception {
+    public ResponseEntity<Void> registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequest request) throws Exception {
         log.info("{} Register Controller", "Notice");
 
-        return noticeService.registerNotice(dto);
+        Long notIdx = noticeService.registerNotice(NoticeAssembler.noticeSaveRequestDto(request));
+        String redirectUrl = String.format(REDIRECT_URL, notIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
     @ApiOperation(value = "공지사항 리스트 보기", notes = "공지사항 목록을 응답")

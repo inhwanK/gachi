@@ -20,7 +20,7 @@ import java.util.Collection;
 @Entity
 @NoArgsConstructor
 @Table(name = "user")
-public class User implements UserDetails {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,80 +31,36 @@ public class User implements UserDetails {
     private String userNick;
     private String userEmail;
     private String userPassword;
-    private LocalDateTime userRegdate;
-    private boolean userActivated;
-    private boolean userAuth;
-
-    @Enumerated(EnumType.STRING)
-    private UserRole userRole;
+    private LocalDateTime userCreatedAt;
+    private boolean userLocked;
+    private boolean userEnabled;
 
     @Builder
-    public User(Long userIdx, String userName,  String userNick, String userEmail, String userPassword, LocalDateTime userRegdate, boolean userActivated, boolean userAuth, UserRole userRole) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, LocalDateTime userCreatedAt, boolean userLocked, boolean userEnabled) {
         this.userIdx = userIdx;
         this.userRealName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
-        this.userRegdate = userRegdate;
-        this.userActivated = userActivated;
-        this.userAuth = userAuth;   // 인증여부
-        this.userRole = userRole;
+        this.userCreatedAt = userCreatedAt;
+        this.userLocked = userLocked;
+        this.userEnabled = userEnabled;
     }
 
-    public User update(String userNick, String userPassword, boolean userActivated, boolean userAuth, UserRole userRole) {
+    public User update(String userNick, String userPassword, boolean userActivated, boolean userEnabled) {
         this.userNick = userNick;
         this.userPassword = userPassword;
-        this.userActivated = userActivated;
-        this.userAuth = userAuth;
-        this.userRole = userRole;
+        this.userLocked = userActivated;
+        this.userEnabled = userEnabled;
         return this;
     }
 
-    public void emailAuthenticated(){
-        this.userAuth = true;
+    public void emailAuthenticated() {
+        this.userEnabled = true;
     }
 
     public boolean isMe(User user) {
         // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
         return (this.userIdx == user.getUserIdx()) ? true : false;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRole role = this.userRole;
-        SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + role.toString());
-        Collection<GrantedAuthority> authorities = new ArrayList<>(); // List인 이유 : 여러개의 권한을 가질 수 있다
-        authorities.add(authority);
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return this.userPassword;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.userEmail;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

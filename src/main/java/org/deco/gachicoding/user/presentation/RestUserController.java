@@ -73,7 +73,7 @@ public class RestUserController {
         auth.useToken();
         user.get().emailAuthenticated();
 
-        return user.get().isUserAuth();
+        return user.get().isUserEnabled();
     }
 
     @ApiOperation(value = "로그인", notes = "로그인 수행")

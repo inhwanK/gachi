@@ -31,15 +31,14 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`user`
     `user_nick`      VARCHAR(255)    NOT NULL COMMENT '유저별명',
     `user_email`     VARCHAR(255)    NOT NULL COMMENT '이메일',
     `user_password`  VARCHAR(255)    NOT NULL COMMENT '비밀번호',
-    `user_regdate`   DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일자',
-    `user_activated` TINYINT(1)      NOT NULL DEFAULT '1' COMMENT '활성상태',
-    `user_auth`      TINYINT(1)      NOT NULL DEFAULT '0' COMMENT '인증여부',
-    `user_role`      VARCHAR(15)     NOT NULL DEFAULT 'GUEST' COMMENT '권한',
+    `user_create_at` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일자',
+    `user_locked`    TINYINT(1)      NOT NULL DEFAULT '1' COMMENT '활성상태',
+    `user_enabled`   TINYINT(1)      NOT NULL DEFAULT '0' COMMENT '인증여부',
     PRIMARY KEY (`user_idx`),
     UNIQUE INDEX `UIX_user` (`user_email` ASC, `user_nick` ASC) VISIBLE
 )
     ENGINE = InnoDB
-    AUTO_INCREMENT = 38
+    AUTO_INCREMENT = 40
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci
     COMMENT = '유저';
@@ -133,7 +132,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`board`
     `board_contents`  TEXT            NOT NULL COMMENT '본문',
     `board_views`     INT UNSIGNED    NOT NULL DEFAULT '0' COMMENT '조회수',
     `board_regdate`   DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
-    `board_category`  VARCHAR(20)     NULL     DEFAULT NULL COMMENT '유형\\\\n아직 미정 (난중에 정해야 함)',
+    `board_category`  VARCHAR(20)     NULL     DEFAULT NULL COMMENT '유형\\\\\\\\n아직 미정 (난중에 정해야 함)',
     `board_activated` TINYINT(1)      NOT NULL DEFAULT '1' COMMENT '활성상태',
     PRIMARY KEY (`board_idx`),
     INDEX `FK_user_TO_board` (`user_idx` ASC) VISIBLE,
@@ -273,8 +272,9 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`notice`
     `not_contents`  TEXT            NOT NULL COMMENT '본문',
     `not_views`     INT UNSIGNED    NOT NULL DEFAULT '0' COMMENT '조회수',
     `not_pin`       TINYINT(1)      NOT NULL DEFAULT '0' COMMENT '고정',
-    `not_regdate`   DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
-    `not_activated` TINYINT(1)      NOT NULL DEFAULT '1' COMMENT '활성상태',
+    `not_create_at` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '작성일',
+    `not_update_at` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `not_locked`    TINYINT(1)      NOT NULL DEFAULT '1' COMMENT '활성상태',
     PRIMARY KEY (`not_idx`),
     INDEX `FK_user_TO_board` (`user_idx` ASC) VISIBLE,
     CONSTRAINT `FK_user_TO_board0`
@@ -282,7 +282,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`notice`
             REFERENCES `gachicoding`.`user` (`user_idx`)
 )
     ENGINE = InnoDB
-    AUTO_INCREMENT = 38
+    AUTO_INCREMENT = 47
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci
     COMMENT = '게시판';

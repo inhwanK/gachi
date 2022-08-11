@@ -87,7 +87,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. 회원 번호 = " + idx));
 
-        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserActivated(), dto.isUserAuth(), dto.getUserRole());
+        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserLocked(), dto.isUserEnabled());
 
         return idx;
     }

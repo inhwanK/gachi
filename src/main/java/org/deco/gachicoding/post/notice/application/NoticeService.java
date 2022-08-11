@@ -2,18 +2,23 @@ package org.deco.gachicoding.post.notice.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.ResponseState;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeBasicRequestDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
-import org.deco.gachicoding.post.notice.dto.NoticeDtoAssembler;
-import org.deco.gachicoding.post.notice.dto.response.NoticeResponseDto;
+import org.deco.gachicoding.post.notice.application.dto.NoticeDtoAssembler;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
+import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.post.PostRequestDto;
-import org.deco.gachicoding.post.notice.dto.request.NoticeSaveRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,82 +73,73 @@ public class NoticeService {
     }
 
     private Notice createNotice(NoticeSaveRequestDto dto) {
-        User user = getWriterInfo(dto.getUserEmail());
+        User user = findWriter(dto.getUserEmail());
 
         return NoticeDtoAssembler.notice(user, dto);
     }
 
     @Transactional
     public List<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
-        List<NoticeResponseDto> noticeList =
-                NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
+//        List<NoticeResponseDto> noticeList =
+//                NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
 
 //        noticeList.forEach(
 //                noticeResponseDto ->
 //                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
 //        );
 
-        return noticeList;
+        return NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
     }
 
-//    @Transactional
-//    public NoticeResponseDto getNoticeDetail(Long notIdx) {
-//        // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
-////        Notice notice = noticeRepository.findById(notIdx)
-////                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
-//        Notice notice = getNoticeInfo(notIdx);
-//
-//        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-//                .notice(notice)
-//                .build();
-//
+    @Transactional
+    public NoticeResponseDto getNoticeDetail(Long notIdx) {
+        // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
+//        Notice notice = noticeRepository.findById(notIdx)
+//                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
+//        NoticeResponseDto noticeDetail = NoticeDtoAssembler.noticeResponseDto(getNoticeInfo(notIdx));
+
 //        tagService.getTags(notIdx, NOTICE, noticeDetail);
-//
-//        return noticeDetail;
-//    }
-//
-//    @Transactional
-//    public NoticeResponseDto modifyNotice(NoticeUpdatePostRequestDto dto) {
-//        Notice notice = getNoticeInfo(dto.getNotIdx());
-//
-//        isSameWrite(notice, dto);
-//
-//        notice.updateTitle(dto.getNotTitle());
-//
-//        notice.updateContent(dto.getNotContent());
-//
-//        NoticeResponseDto noticeDetail = NoticeResponseDto.builder()
-//                .notice(notice)
-//                .build();
-//
-//        return noticeDetail;
-//    }
-//
-//    // 활성 -> 비활성
-//    // noticeRepository에서 파인드 할때 activated - false 인 애들만 가져오게 하는게 더 좋을지도..?
-//    @Transactional
-//    public ResponseEntity<ResponseState> disableNotice(NoticeBasicPostRequestDto dto) {
-//        Notice notice = getNoticeInfo(dto.getNotIdx());
-//
-//        isSameWrite(notice, dto);
-//
-//        notice.disableNotice();
-//
-//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
-//    }
-//
-//    // 비활성 -> 활성
-//    @Transactional
-//    public ResponseEntity<ResponseState> enableNotice(NoticeBasicPostRequestDto dto) {
-//        Notice notice = getNoticeInfo(dto.getNotIdx());
-//
-//        isSameWrite(notice, dto);
-//
-//        notice.enableNotice();
-//
-//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-//    }
-//
+
+        return NoticeDtoAssembler.noticeResponseDto(findEnableNotice(notIdx));
+    }
+
+    @Transactional
+    public NoticeUpdateResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
+        Notice notice = findEnableNotice(dto.getNotIdx());
+
+        isSameWrite(notice, dto);
+
+        notice.updateTitle(dto.getNotTitle());
+
+        notice.updateContent(dto.getNotContents());
+
+        return NoticeDtoAssembler.noticeUpdateResponseDto(notice);
+    }
+
+    // 활성 -> 비활성
+    @Transactional
+    public ResponseEntity<ResponseState> disableNotice(NoticeBasicRequestDto dto) {
+        Notice notice = findNotice(dto.getNotIdx());
+
+        isSameWrite(notice, dto);
+
+        notice.disableNotice();
+
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+    }
+
+    // 비활성 -> 활성
+    @Transactional
+    public ResponseEntity<ResponseState> enableNotice(NoticeBasicRequestDto dto) {
+        Notice notice = findNotice(dto.getNotIdx());
+
+        isSameWrite(notice, dto);
+
+        notice.enableNotice();
+
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+    }
+
 //    @Transactional
 //    public ResponseEntity<ResponseState> removeNotie(NoticeBasicPostRequestDto dto) {
 //        Notice notice = getNoticeInfo(dto.getNotIdx());
@@ -155,12 +151,17 @@ public class NoticeService {
 //        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
 //    }
 
-    private Notice getNoticeInfo(Long notIdx) {
-        return noticeRepository.findById(notIdx)
+    private Notice findEnableNotice(Long notIdx) {
+        return noticeRepository.findEnableNoticeByIdx(notIdx)
                 .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
     }
 
-    private User getWriterInfo(String userEmail) {
+    private Notice findNotice(Long notIdx) {
+        return noticeRepository.findNoticeByIdx(notIdx)
+                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    }
+
+    private User findWriter(String userEmail) {
         return userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
     }
@@ -173,7 +174,7 @@ public class NoticeService {
     // 원칙적으로는 Notice를 거치는 것이 옳다고 할 수 있다. 원칙을 지키기 위해 실용적인 부분을 배제하는 것은 좋은 설계가 아니다.
     // 난중에 인환이랑 이야기 해보자
     private void isSameWrite(Notice notice, PostRequestDto dto) {
-        User user = getWriterInfo(dto.getUserEmail());
+        User user = findWriter(dto.getUserEmail());
 
         if (!notice.isWriter(user)) {
             throw new ApplicationException(INVALID_AUTH_USER);

@@ -15,6 +15,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 import static org.deco.gachicoding.exception.StatusEnum.ALREADY_ACTIVE;
+import static org.deco.gachicoding.exception.StatusEnum.ALREADY_INACTIVE;
 
 @Getter
 @DynamicInsert
@@ -88,12 +89,12 @@ public class Notice {
         return (this.writer.isMe(user)) ? true : false;
     }
 
-    public void updateTitle(NoticeTitle notTitle) {
-        this.notTitle = notTitle;
+    public void updateTitle(String notTitle) {
+        this.notTitle = new NoticeTitle(notTitle);
     }
 
-    public void updateContent(NoticeContents notContents) {
-        this.notContents = notContents;
+    public void updateContent(String notContents) {
+        this.notContents = new NoticeContents(notContents);
     }
 
     public void enableNotice() {
@@ -104,7 +105,7 @@ public class Notice {
 
     public void disableNotice() {
         if (!this.notActivated)
-            throw new ApplicationException(ALREADY_ACTIVE);
+            throw new ApplicationException(ALREADY_INACTIVE);
         this.notActivated = false;
     }
 

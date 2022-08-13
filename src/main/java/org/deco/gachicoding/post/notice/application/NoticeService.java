@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeBasicRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
@@ -79,7 +80,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public List<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
+    public List<NoticeResponseDto> getNoticeList(NoticeListRequestDto dto) {
 //        List<NoticeResponseDto> noticeList =
 //                NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
 
@@ -88,7 +89,7 @@ public class NoticeService {
 //                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
 //        );
 
-        return NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
+        return NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(dto.getKeyword(), dto.getPageable()));
     }
 
     @Transactional

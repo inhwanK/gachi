@@ -51,7 +51,7 @@ public class Notice {
     // 1. 로딩되는 시점에 Lazy 로딩 설정이 되어있는 Team 엔티티는 프록시 객체로 가져온다.
     // 2. 후에 실제 객체를 사용하는 시점에 초기화가 된다. DB에 쿼리가 나간다.
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "account_idx")
+    @JoinColumn(name = "user_idx")
     @JsonManagedReference
     private User writer;
 

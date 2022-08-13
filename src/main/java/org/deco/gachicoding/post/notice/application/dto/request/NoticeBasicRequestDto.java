@@ -8,7 +8,6 @@ import org.deco.gachicoding.post.PostRequestDto;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
-@Setter
 @Getter
 public class NoticeBasicRequestDto implements PostRequestDto {
     @NotNull

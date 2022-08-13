@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeBasicRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
@@ -12,6 +13,7 @@ import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseD
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.post.notice.presentation.dto.NoticeAssembler;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
+import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -51,10 +53,15 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 목록 반환")
     )
     @GetMapping("/notice/list")
-    public List<NoticeResponseDto> getNoticeList(@ApiParam(value = "keyword") @RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                                 @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
+    public ResponseEntity<List<NoticeResponse>> getNoticeList(@ApiParam(value = "keyword") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                              @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
+        NoticeListRequestDto dto = NoticeAssembler.noticeListRequestDto(keyword, pageable);
 
-        return noticeService.getNoticeList(keyword, pageable);
+        List<NoticeResponseDto> noticeResponseDtos = noticeService.getNoticeList(dto);
+
+        List<NoticeResponse> noticeResponses = NoticeAssembler.noticeResponses(noticeResponseDtos);
+
+        return ResponseEntity.ok(noticeResponses);
     }
 
     @ApiOperation(value = "공지사항 상세 보기", notes = "상세한 공지사항 데이터 응답")

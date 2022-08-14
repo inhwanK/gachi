@@ -4,15 +4,13 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.ResponseState;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeBasicRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.NoticeService;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.post.notice.presentation.dto.NoticeAssembler;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
+import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeUpdateRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +20,9 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.net.URI;
 import java.util.List;
+
+import static org.deco.gachicoding.exception.StatusEnum.DISABLE_SUCCESS;
+import static org.deco.gachicoding.exception.StatusEnum.ENABLE_SUCCESS;
 
 @Api(tags = "공지사항 정보 처리 API")
 @Slf4j
@@ -45,6 +46,7 @@ public class RestNoticeController {
         Long notIdx = noticeService.registerNotice(NoticeAssembler.noticeSaveRequestDto(request));
         String redirectUrl = String.format(REDIRECT_URL, notIdx);
 
+        // 이 부분 더 알아보자 리다이렉트 부분
         return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
@@ -69,36 +71,51 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
     )
     @GetMapping("/notice/{notIdx}")
-    public NoticeResponseDto getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx) {
+    public ResponseEntity<NoticeResponseDto> getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx) {
 
-        return noticeService.getNoticeDetail(notIdx);
+        NoticeDetailDto dto = NoticeAssembler.noticeDetailDto(notIdx);
+
+        return ResponseEntity.ok(noticeService.getNoticeDetail(dto));
     }
 
     @ApiOperation(value = "공지사항 수정")
     @ApiResponses(
             @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     )
-    @PutMapping("/notice/modify")
-    public NoticeUpdateResponseDto modifyNotice(@ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody NoticeUpdateRequestDto dto) {
-        return noticeService.modifyNotice(dto);
+    @PutMapping("/notice/modify/{notIdx}")
+    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx, @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
+
+        NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
+
+        return ResponseEntity.ok(noticeService.modifyNotice(dto));
     }
 
     @ApiOperation(value = "공지사항 비활성화")
     @ApiResponses(
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
-    @PutMapping("/notice/disable")
-    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 기본 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
-        return noticeService.disableNotice(dto);
+    @PutMapping("/notice/disable/{notIdx}")
+    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+
+        NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
+
+        noticeService.disableNotice(dto);
+
+        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @ApiOperation(value = "공지사항 활성화")
     @ApiResponses(
             @ApiResponse(code = 200, message = "활성화 성공")
     )
-    @PutMapping("/notice/enable")
-    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 기본 요청 DTO") @RequestBody NoticeBasicRequestDto dto) {
-        return noticeService.enableNotice(dto);
+    @PutMapping("/notice/enable/{notIdx}")
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+
+        NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
+
+        noticeService.enableNotice(dto);
+
+        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
 //    @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")

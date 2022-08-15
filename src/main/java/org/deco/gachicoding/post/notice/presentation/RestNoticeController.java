@@ -71,11 +71,13 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
     )
     @GetMapping("/notice/{notIdx}")
-    public ResponseEntity<NoticeResponseDto> getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx) {
+    public ResponseEntity<NoticeResponse> getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx) {
 
         NoticeDetailDto dto = NoticeAssembler.noticeDetailDto(notIdx);
 
-        return ResponseEntity.ok(noticeService.getNoticeDetail(dto));
+        NoticeResponse noticeResponse = NoticeAssembler.noticeResponse(noticeService.getNoticeDetail(dto));
+
+        return ResponseEntity.ok(noticeResponse);
     }
 
     @ApiOperation(value = "공지사항 수정")
@@ -87,7 +89,11 @@ public class RestNoticeController {
 
         NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
 
-        return ResponseEntity.ok(noticeService.modifyNotice(dto));
+        noticeService.modifyNotice(dto);
+
+        String redirectUrl = String.format(REDIRECT_URL, notIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
     @ApiOperation(value = "공지사항 비활성화")
@@ -101,6 +107,7 @@ public class RestNoticeController {
 
         noticeService.disableNotice(dto);
 
+        // 활성 비활성도 리다이렉트..?
         return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
@@ -115,6 +122,7 @@ public class RestNoticeController {
 
         noticeService.enableNotice(dto);
 
+        // 활성 비활성도 리다이렉트..?
         return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 

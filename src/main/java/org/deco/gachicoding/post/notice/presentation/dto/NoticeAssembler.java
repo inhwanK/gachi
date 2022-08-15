@@ -60,6 +60,18 @@ public class NoticeAssembler {
                 .build();
     }
 
+    public static NoticeResponse noticeResponse(NoticeResponseDto dto) {
+        return NoticeResponse.builder()
+                .notIdx(dto.getNotIdx())
+                .userEmail(dto.getUserEmail())
+                .userNick(dto.getUserNick())
+                .notTitle(dto.getNotTitle())
+                .notContents(dto.getNotContent())
+                .notViews(dto.getNotViews())
+                .notRegdate(dto.getNotRegdate())
+                .build();
+    }
+
     private static Function<NoticeResponseDto, NoticeResponse> noticeResponse() {
         return noticeResponseDto -> NoticeResponse.builder()
                 .notIdx(noticeResponseDto.getNotIdx())

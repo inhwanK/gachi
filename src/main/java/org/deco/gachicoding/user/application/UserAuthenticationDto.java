@@ -6,20 +6,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
-public class UserAuthenticationContext implements UserDetails {
+public class UserAuthenticationDto implements UserDetails {
 
     private final User user;
     private final String userEmail;
     private String password;
-    private final Set<GrantedAuthority> authorities;
+    private final List<GrantedAuthority> authorities;
 
-    public UserAuthenticationContext(User user, Collection<? extends GrantedAuthority> authorities) {
+    public UserAuthenticationDto(User user, Collection<? extends GrantedAuthority> authorities) {
         this.user = user;
         this.userEmail = user.getUserEmail();
         this.password = user.getUserPassword();
-        this.authorities = (Set<GrantedAuthority>) authorities;
+        this.authorities = (List<GrantedAuthority>) authorities;
     }
 
     @Override

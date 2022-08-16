@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,7 +26,7 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${key.value}")
-    private String frontHost;
+    private String webServerAddress;
 
     @Autowired
     private UserService userService;
@@ -55,7 +54,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+        // 향 후 내가 원하는 인증 Dto에 맞게 provider를 구현하면,
+        // 내가 원하는 authentication 클래스 또는 객체를 구현할 수 있고,
+        // 그러한 authentication을 파라미터로 받는 authenticationManager를 만들 수도 있을 듯
+        AuthenticationManager authenticationManager = super.authenticationManagerBean();
+        return authenticationManager;
     }
 
     @Bean
@@ -70,17 +73,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    /**
-     * {@link CorsConfiguration} 객체를 선언하고 CORS 설정을 한 뒤,
-     * {@link CorsConfigurationSource}의 구현체 {@link UrlBasedCorsConfigurationSource} 클래스를 통해 설정 정보를 등록하고 반환한다.
-     * @return {@link CorsConfigurationSource}
-     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", frontHost));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", webServerAddress));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-Requested-With", "remember-me", "accesss-token", "Set-Cookie"));
         configuration.setAllowedMethods(Arrays.asList("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"));
         configuration.setAllowCredentials(true);

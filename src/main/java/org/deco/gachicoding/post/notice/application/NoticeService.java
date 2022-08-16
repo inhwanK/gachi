@@ -3,19 +3,17 @@ package org.deco.gachicoding.post.notice.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.ResponseState;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeBasicRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.application.dto.NoticeDtoAssembler;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.post.PostRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -79,7 +77,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public List<NoticeResponseDto> getNoticeList(String keyword, Pageable pageable) {
+    public List<NoticeResponseDto> getNoticeList(NoticeListRequestDto dto) {
 //        List<NoticeResponseDto> noticeList =
 //                NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
 
@@ -88,11 +86,11 @@ public class NoticeService {
 //                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
 //        );
 
-        return NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
+        return NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(dto.getKeyword(), dto.getPageable()));
     }
 
     @Transactional
-    public NoticeResponseDto getNoticeDetail(Long notIdx) {
+    public NoticeResponseDto getNoticeDetail(NoticeDetailDto dto) {
         // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
 //        Notice notice = noticeRepository.findById(notIdx)
 //                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
@@ -100,7 +98,7 @@ public class NoticeService {
 
 //        tagService.getTags(notIdx, NOTICE, noticeDetail);
 
-        return NoticeDtoAssembler.noticeResponseDto(findEnableNotice(notIdx));
+        return NoticeDtoAssembler.noticeResponseDto(findEnableNotice(dto.getNotIdx()));
     }
 
     @Transactional
@@ -118,26 +116,22 @@ public class NoticeService {
 
     // 활성 -> 비활성
     @Transactional
-    public ResponseEntity<ResponseState> disableNotice(NoticeBasicRequestDto dto) {
+    public void disableNotice(NoticeBasicRequestDto dto) {
         Notice notice = findNotice(dto.getNotIdx());
 
         isSameWrite(notice, dto);
 
         notice.disableNotice();
-
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     // 비활성 -> 활성
     @Transactional
-    public ResponseEntity<ResponseState> enableNotice(NoticeBasicRequestDto dto) {
+    public void enableNotice(NoticeBasicRequestDto dto) {
         Notice notice = findNotice(dto.getNotIdx());
 
         isSameWrite(notice, dto);
 
         notice.enableNotice();
-
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
 //    @Transactional

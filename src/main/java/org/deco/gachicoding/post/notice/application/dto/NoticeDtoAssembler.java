@@ -48,7 +48,7 @@ public class NoticeDtoAssembler {
                 .notTitle(notice.getNotTitle())
                 .notContents(notice.getNotContents())
                 .notViews(notice.getNotViews())
-                .notRegdate(notice.getNotRegdate())
+                .notRegdate(notice.getNotCreateAt())
                 .build();
     }
 }

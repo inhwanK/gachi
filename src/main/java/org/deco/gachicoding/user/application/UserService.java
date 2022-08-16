@@ -14,6 +14,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +24,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -30,9 +34,10 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final AuthService authService;
-    private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+//    private final AuthService authService;
+//    private final PasswordEncoder passwordEncoder;
+
+//    private final AuthenticationManager authenticationManager;
 
     /**
      * {@link Transactional} : 아이디 중복 시 Transaction silently rolled back because it has been marked as rollback-only 발생
@@ -42,7 +47,7 @@ public class UserService implements UserDetailsService {
      * <br> <br> 트러블 슈팅으로 넣으면 좋을 듯
      */
     public Long registerUser(UserSaveRequestDto dto) {
-
+/*
         // 이메일 중복 체크
         String registerEmail = dto.getUserEmail();
         if (isDuplicatedEmail(registerEmail))
@@ -55,11 +60,14 @@ public class UserService implements UserDetailsService {
         // 유저 이메일로 인증 메일 보내기
 
         return userIdx;
+
+ */
+        return null;
     }
 
     @Transactional
     public UserResponseDto login(LoginRequestDto requestDto, HttpSession httpSession) {
-        try {
+        /*try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
 
@@ -77,7 +85,8 @@ public class UserService implements UserDetailsService {
         } catch (BadCredentialsException e) {
             e.printStackTrace();
             return new UserResponseDto(null);
-        }
+        }*/
+        return null;
     }
 
 
@@ -87,7 +96,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findById(idx)
                 .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. 회원 번호 = " + idx));
 
-        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserActivated(), dto.isUserAuth(), dto.getUserRole());
+        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserLocked(), dto.isUserEnabled());
 
         return idx;
     }
@@ -110,9 +119,13 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByUserEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
 
-        UserDetails userDetails = userRepository.findByUserEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("등록되지 않은 사용자 입니다"));
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 유저 롤을 다시 적용해야함.
+
+        UserDetails userDetails = new UserAuthenticationContext(user, roles);
 
         return userDetails;
     }

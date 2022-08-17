@@ -4,12 +4,16 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeContents;
 import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,8 +25,7 @@ import static org.deco.gachicoding.exception.StatusEnum.ALREADY_INACTIVE;
 @DynamicInsert
 @DynamicUpdate
 @Entity
-@NoArgsConstructor
-public class Notice {
+public class Notice extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,10 +43,6 @@ public class Notice {
 
     private Boolean notLocked;
 
-    private LocalDateTime notCreateAt;
-
-    private LocalDateTime notUpdateAt;
-
     // FetchType.EAGER 즉시 로딩
     // 1. 대부분의 JPA 구현체는 가능하면 조인을 사용해서 SQL 한번에 함께 조회하려고 한다.
     // 2. 이렇게 하면, 실제 조회할 때 한방 쿼리로 다 조회해온다.
@@ -54,6 +53,8 @@ public class Notice {
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
     private User writer;
+
+    protected Notice() {}
 
     public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
         this.notIdx = notIdx;
@@ -119,8 +120,6 @@ public class Notice {
         private Long notViews;
         private Boolean notPin;
         private Boolean notLocked;
-        private LocalDateTime notCreateAt = null;
-        private LocalDateTime notUpdateAt = null;
 
         public Builder notIdx(Long notIdx) {
             this.notIdx = notIdx;
@@ -152,7 +151,7 @@ public class Notice {
             return this;
         }
 
-        public Builder notActivated(Boolean notLocked) {
+        public Builder notLocked(Boolean notLocked) {
             this.notLocked = notLocked;
             return this;
         }

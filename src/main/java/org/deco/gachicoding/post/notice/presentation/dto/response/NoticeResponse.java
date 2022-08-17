@@ -17,10 +17,11 @@ public class NoticeResponse {
     private String notTitle;
     private String notContent;
     private Long notViews;
-    private LocalDateTime notRegdate;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Builder
-    public NoticeResponse(Long notIdx, String userEmail, String userNick, String notTitle, String notContents, Long notViews, LocalDateTime notRegdate) {
+    public NoticeResponse(Long notIdx, String userEmail, String userNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.notIdx = notIdx;
 
         this.userEmail = userEmail;
@@ -29,6 +30,7 @@ public class NoticeResponse {
         this.notTitle = notTitle;
         this.notContent = notContents;
         this.notViews = notViews;
-        this.notRegdate = notRegdate;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

@@ -1,25 +1,21 @@
 package org.deco.gachicoding.user.application;
 
 
-import org.deco.gachicoding.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.List;
 
 public class UserAuthenticationDto implements UserDetails {
 
-    private final User user;
     private final String userEmail;
-    private String password;
-    private final List<GrantedAuthority> authorities;
+    private final String password;
 
-    public UserAuthenticationDto(User user, Collection<? extends GrantedAuthority> authorities) {
-        this.user = user;
-        this.userEmail = user.getUserEmail();
-        this.password = user.getUserPassword();
-        this.authorities = (List<GrantedAuthority>) authorities;
+    public UserAuthenticationDto(@JsonProperty("userEmail") String userEmail,
+                                 @JsonProperty("password") String password) {
+        this.userEmail = userEmail;
+        this.password = password;
     }
 
     @Override
@@ -29,12 +25,12 @@ public class UserAuthenticationDto implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return this.userEmail;
     }
 
     @Override
@@ -57,5 +53,11 @@ public class UserAuthenticationDto implements UserDetails {
         return false;
     }
 
-
+    @Override
+    public String toString() {
+        return "UserAuthenticationDto{" +
+                "userEmail='" + userEmail + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

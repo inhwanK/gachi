@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,6 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(restAuthenticationProvider());
         auth.userDetailsService(userService);
     }
 
@@ -40,17 +45,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .cors().configurationSource(corsConfigurationSource())
-        .and()
+                .and()
                 .csrf().disable()
                 .headers().frameOptions().disable()
-        .and()
-                .authorizeRequests().antMatchers()
-                .authenticated().anyRequest()
-                .permitAll()
-        .and()
+                .and()
+                .authorizeRequests().antMatchers("/", "/swagger-ui.html")
+                .permitAll();
+
+        http
                 .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new RestLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(restAccessDeniedHandler());
     }
+
+    public AccessDeniedHandler restAccessDeniedHandler() {
+        return new RestAccessDeniedHandler();
+    }
+
 
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
@@ -62,14 +76,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
-        AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-        ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        return ajaxLoginProcessingFilter;
+    public RestLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
+        RestLoginProcessingFilter restLoginProcessingFilter = new RestLoginProcessingFilter();
+        restLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
+        restLoginProcessingFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
+        restLoginProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
+        return restLoginProcessingFilter;
     }
 
     @Bean
-    public PasswordEncoder encoderPassword() {
+    public AuthenticationProvider restAuthenticationProvider() {
+        AuthenticationProvider restAuthenticationProvider = new RestAuthenticationProvider(userService, passwordEncoder());
+        return restAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new RestAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new RestAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

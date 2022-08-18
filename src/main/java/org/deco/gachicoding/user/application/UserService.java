@@ -8,6 +8,7 @@ import org.deco.gachicoding.user.dto.request.LoginRequestDto;
 import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -113,12 +114,12 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByUserEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UsernameNotFoundException("Invalid Username"));
 
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 유저 롤을 다시 적용해야함.
+//        List<GrantedAuthority> roles = new ArrayList<>();
+//        roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 유저 롤을 다시 적용해야함.
 
-        UserDetails userDetails = new UserAuthenticationDto(user, roles);
+        UserDetails userDetails = new UserAuthenticationDto(user.getUserEmail(), user.getUserPassword());
 
         return userDetails;
     }

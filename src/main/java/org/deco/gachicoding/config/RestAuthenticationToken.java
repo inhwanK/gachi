@@ -7,7 +7,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 
-public class AjaxAuthenticationToken extends AbstractAuthenticationToken {
+public class RestAuthenticationToken extends AbstractAuthenticationToken {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
@@ -15,7 +15,7 @@ public class AjaxAuthenticationToken extends AbstractAuthenticationToken {
 
     private Object credentials;
 
-    public AjaxAuthenticationToken(Object principal, Object credentials) {
+    public RestAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
@@ -23,7 +23,7 @@ public class AjaxAuthenticationToken extends AbstractAuthenticationToken {
     }
 
 
-    public AjaxAuthenticationToken(Object principal, Object credentials,
+    public RestAuthenticationToken(Object principal, Object credentials,
                                    Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
@@ -52,5 +52,13 @@ public class AjaxAuthenticationToken extends AbstractAuthenticationToken {
     public void eraseCredentials() {
         super.eraseCredentials();
         this.credentials = null;
+    }
+
+    @Override
+    public String toString() {
+        return "RestAuthenticationToken{" +
+                "principal=" + principal +
+                ", credentials=" + credentials +
+                '}';
     }
 }

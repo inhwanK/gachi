@@ -68,7 +68,8 @@ public class NoticeAssembler {
                 .notTitle(dto.getNotTitle())
                 .notContents(dto.getNotContent())
                 .notViews(dto.getNotViews())
-                .notRegdate(dto.getNotRegdate())
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
                 .build();
     }
 
@@ -80,7 +81,8 @@ public class NoticeAssembler {
                 .notTitle(noticeResponseDto.getNotTitle())
                 .notContents(noticeResponseDto.getNotContent())
                 .notViews(noticeResponseDto.getNotViews())
-                .notRegdate(noticeResponseDto.getNotRegdate())
+                .createdAt(noticeResponseDto.getCreatedAt())
+                .updatedAt(noticeResponseDto.getUpdatedAt())
                 .build();
     }
 }

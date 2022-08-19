@@ -76,7 +76,7 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "회원가입 완료")
     )
-    @PostMapping("/user/regist")
+    @PostMapping("/user/create")
     public Long registerUser(@ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보") @Valid @RequestBody UserSaveRequestDto dto) {
         return userDetailsServiceImpl.createUser(dto);
     }

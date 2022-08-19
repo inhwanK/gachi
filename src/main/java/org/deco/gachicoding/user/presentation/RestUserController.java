@@ -76,48 +76,6 @@ public class RestUserController {
         return user.get().isUserEnabled();
     }
 
-    @ApiOperation(value = "로그인", notes = "로그인 수행")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "로그인 성공")
-    )
-    @PostMapping("/user/login")
-    public UserResponseDto login(@ApiParam(value = "로그인을 위한 요청 body 정보") @RequestBody LoginRequestDto dto,
-                                 @ApiIgnore HttpSession httpSession) throws Exception {
-
-        UserResponseDto userResponseDto = userService.login(dto, httpSession);
-        return userResponseDto;
-    }
-
-    /**
-     * @param httpSession
-     * @return UserResponseDto
-     * @link Spring Security 를 통한 세션 관리 로직으로 수정해야 함.
-     */
-    @ApiOperation(value = "유저정보 받기", notes = "세션을 통해 유저정보 전달, 실제로는 HttpSession 클래스를 파라미터로 받음")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "세션 정보 가져오기 성공")
-    )
-    @GetMapping("/user/info")
-    public UserResponseDto getUserInfo(@ApiIgnore HttpSession httpSession) {
-        UserResponseDto userInfo = (UserResponseDto) httpSession.getAttribute("user");
-        return userInfo;
-    }
-
-    /**
-     * 혹시 세션이 존재하지 않을 경우에 로그아웃 요청이 들어오면, 새롭게 세션을 생성하지 않도록 함.
-     * Spring Security 를 통한 세션 관리 로직으로 수정 필요.
-     *
-     * @return void
-     */
-    @ApiOperation(value = "로그아웃", notes = "세션 객체 무효화, 실제로는 HttpServletRequest 클래스 정보를 파라미터로 받음")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "로그아웃 성공")
-    )
-    @GetMapping("/user/logout")
-    public void logout(@ApiIgnore HttpServletRequest request) {
-        HttpSession httpSession = request.getSession(false);
-        httpSession.invalidate();
-    }
 
     @ApiOperation(value = "회원가입", notes = "회원가입 수행")
     @ApiResponses(

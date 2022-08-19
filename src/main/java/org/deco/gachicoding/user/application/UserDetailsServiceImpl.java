@@ -8,28 +8,24 @@ import org.deco.gachicoding.user.dto.request.LoginRequestDto;
 import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
 //    private final AuthService authService;
-//    private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 //    private final AuthenticationManager authenticationManager;
 
@@ -40,12 +36,12 @@ public class UserService implements UserDetailsService {
      * 커밋을 앞에서 예외를 잡았기 때문에 문제 없다고 판단, 커밋을 실행한다. 하지만 roll-back only**이 마킹되어 있어 **롤백함.
      * <br> <br> 트러블 슈팅으로 넣으면 좋을 듯
      */
-    public Long registerUser(UserSaveRequestDto dto) {
-/*
+    public Long createUser(UserSaveRequestDto dto) {
+
         // 이메일 중복 체크
         String registerEmail = dto.getUserEmail();
-        if (isDuplicatedEmail(registerEmail))
-            throw new DataIntegrityViolationException("중복된 이메일 입니다.");
+//        if (isDuplicatedEmail(registerEmail))
+//            throw new DataIntegrityViolationException("중복된 이메일 입니다.");
         // 비밀번호 변조
         dto.encryptPassword(passwordEncoder);
         // 유저 저장
@@ -54,9 +50,6 @@ public class UserService implements UserDetailsService {
         // 유저 이메일로 인증 메일 보내기
 
         return userIdx;
-
- */
-        return null;
     }
 
     @Transactional

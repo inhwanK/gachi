@@ -3,7 +3,7 @@ package org.deco.gachicoding.unit.user.application;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.application.UserService;
+import org.deco.gachicoding.user.application.UserDetailsServiceImpl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserServiceTest2 {
+public class UserDetailsServiceImplTest2 {
 
     @Autowired
-    UserService userService;
+    UserDetailsServiceImpl userDetailsServiceImpl;
 
     @Autowired
     UserRepository userRepository;
@@ -39,7 +39,7 @@ public class UserServiceTest2 {
                 .userPassword(userPassword)
                 .build();
 
-        return userService.registerUser(dto);
+        return userDetailsServiceImpl.createUser(dto);
     }
 
     @AfterEach
@@ -55,14 +55,14 @@ public class UserServiceTest2 {
 
         userIdx = createUserMock("테스트", "테스트별명", "test@test.com", "1234");
 
-        Optional<User> user = userService.getUserByUserEmail("test@test.com");
+        Optional<User> user = userDetailsServiceImpl.getUserByUserEmail("test@test.com");
         assertTrue(user.isPresent());
     }
 
     @Test
     void 이메일로_유저정보_가져오기_해당유저없음() {
 
-        Optional<User> user = userService.getUserByUserEmail("inhan1009@naver.com");
+        Optional<User> user = userDetailsServiceImpl.getUserByUserEmail("inhan1009@naver.com");
         assertTrue(user.isEmpty());
     }
 
@@ -70,13 +70,13 @@ public class UserServiceTest2 {
     void 중복이메일_존재() {
 
         userIdx = createUserMock("테스트", "테스트별명", "test@test.com", "1234");
-        assertTrue(userService.isDuplicatedEmail("test@test.com"));
+        assertTrue(userDetailsServiceImpl.isDuplicatedEmail("test@test.com"));
     }
 
     @Test
     void 중복이메일_존재하지_않음() {
 
-        assertFalse(userService.isDuplicatedEmail("inhan1009@naver.com"));
+        assertFalse(userDetailsServiceImpl.isDuplicatedEmail("inhan1009@naver.com"));
     }
 
     @Test
@@ -84,7 +84,7 @@ public class UserServiceTest2 {
 
         userIdx = createUserMock("테스트", "테스트별명", "test@test.com", "1234");
 
-        Optional<User> user = userService.getUserByUserEmail("test@test.com");
+        Optional<User> user = userDetailsServiceImpl.getUserByUserEmail("test@test.com");
 
         assertEquals("테스트", user.get().getUserEmail());
         assertEquals("테스트별명", user.get().getUserNick());

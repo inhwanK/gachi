@@ -1,22 +1,16 @@
 package org.deco.gachicoding.post.notice.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
-import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeContents;
-import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeTitle;
+import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
+import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 import static org.deco.gachicoding.exception.StatusEnum.ALREADY_ACTIVE;
 import static org.deco.gachicoding.exception.StatusEnum.ALREADY_INACTIVE;
@@ -54,6 +48,10 @@ public class Notice extends BaseTimeEntity {
     @JsonManagedReference
     private User writer;
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     protected Notice() {}
 
     public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
@@ -80,10 +78,6 @@ public class Notice extends BaseTimeEntity {
 
     public String getNotTitle() {
         return notTitle.getNoticeTitle();
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 
     public boolean isWriter(User user) {

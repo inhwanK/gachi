@@ -37,6 +37,7 @@ public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingF
         RestAuthenticationToken restAuthenticationToken = new RestAuthenticationToken(userDto.getUsername(), userDto.getPassword());
 
         log.info("{}", restAuthenticationToken.toString());
+
         return getAuthenticationManager().authenticate(restAuthenticationToken);
     }
 }

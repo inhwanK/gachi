@@ -1,24 +1,20 @@
 package org.deco.gachicoding.config;
 
-import org.deco.gachicoding.config.security.RestLoginAuthenticationEntryPoint;
 import org.deco.gachicoding.config.security.RestAuthenticationProvider;
+import org.deco.gachicoding.config.security.RestLoginAuthenticationEntryPoint;
 import org.deco.gachicoding.config.security.RestLoginProcessingFilter;
 import org.deco.gachicoding.config.security.handler.RestAccessDeniedHandler;
 import org.deco.gachicoding.config.security.handler.RestAuthenticationFailureHandler;
 import org.deco.gachicoding.config.security.handler.RestAuthenticationSuccessHandler;
-import org.deco.gachicoding.user.application.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -31,30 +27,29 @@ import java.util.Arrays;
 
 // 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
-@Configuration
 @EnableWebSecurity(debug = false)
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Value("${key.value}")
     private String webServerAddress;
 
     @Autowired
-    private UserService userService;
+    private RestAuthenticationProvider restAuthenticationProvider;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(restAuthenticationProvider());
-        auth.userDetailsService(userService);
+        auth.authenticationProvider(restAuthenticationProvider);
     }
 
     protected void configure(HttpSecurity http) throws Exception {
 
         http
                 .cors().configurationSource(corsConfigurationSource())
-                .and()
+        .and()
                 .csrf().disable()
                 .headers().frameOptions().disable()
-                .and()
+        .and()
                 .authorizeRequests().antMatchers("/", "/swagger-ui.html")
                 .permitAll();
 
@@ -67,18 +62,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(restAccessDeniedHandler());
     }
 
-    public AccessDeniedHandler restAccessDeniedHandler() {
-        return new RestAccessDeniedHandler();
-    }
-
-
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        // 향 후 내가 원하는 인증 Dto에 맞게 provider를 구현하면,
-        // 내가 원하는 authentication 클래스 또는 객체를 구현할 수 있고,
-        // 그러한 authentication을 파라미터로 받는 authenticationManager를 만들 수도 있을 듯
-        AuthenticationManager authenticationManager = super.authenticationManagerBean();
-        return authenticationManager;
+        return super.authenticationManagerBean();
     }
 
     @Bean
@@ -88,12 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         restLoginProcessingFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
         restLoginProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
         return restLoginProcessingFilter;
-    }
-
-    @Bean
-    public AuthenticationProvider restAuthenticationProvider() {
-        AuthenticationProvider restAuthenticationProvider = new RestAuthenticationProvider(userService, passwordEncoder());
-        return restAuthenticationProvider;
     }
 
     @Bean
@@ -107,8 +87,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    public AccessDeniedHandler restAccessDeniedHandler() {
+        return new RestAccessDeniedHandler();
     }
 
     @Bean

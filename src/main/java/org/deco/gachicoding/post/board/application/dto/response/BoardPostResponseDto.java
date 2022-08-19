@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.board.dto.response;
+package org.deco.gachicoding.post.board.application.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

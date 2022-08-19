@@ -17,6 +17,6 @@ public interface NoticeRepository extends JpaRepository<Notice, Long> {
     @Query("SELECT n FROM Notice n LEFT JOIN FETCH n.writer WHERE n.notLocked = true AND n.notIdx = :notIdx")
     Optional<Notice> findEnableNoticeByIdx(@Param("notIdx") Long notIdx);
 
-    @Query("SELECT DISTINCT n FROM Notice n LEFT JOIN FETCH n.writer WHERE n.notLocked = true ORDER BY n.notLocked")
+    @Query("SELECT DISTINCT n FROM Notice n LEFT JOIN FETCH n.writer WHERE n.notLocked = true")
     List<Notice> findAllNoticeByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

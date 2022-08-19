@@ -1,4 +1,4 @@
-package org.deco.gachicoding.config;
+package org.deco.gachicoding.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.user.domain.User;

@@ -1,4 +1,4 @@
-package org.deco.gachicoding.config;
+package org.deco.gachicoding.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -26,11 +26,10 @@ public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        log.info("이것이 유저 이메일이다. > {}", request.getAttribute("user_email"));
-        log.info("이것이 유저 이메일이다2. > {}", request.getParameter("user_email"));
-
         UserAuthenticationDto userDto = objectMapper.readValue(request.getReader(), UserAuthenticationDto.class);
+
         log.info("{}", userDto.toString());
+
         if (!StringUtils.hasText(userDto.getUsername()) || !StringUtils.hasText(userDto.getPassword())) {
             throw new IllegalArgumentException("Username or Password is empty");
         }

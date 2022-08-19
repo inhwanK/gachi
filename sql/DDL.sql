@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`user`
     UNIQUE INDEX `UIX_user` (`user_email` ASC, `user_nick` ASC) VISIBLE
 )
     ENGINE = InnoDB
-    AUTO_INCREMENT = 40
+    AUTO_INCREMENT = 1
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci
     COMMENT = '유저';

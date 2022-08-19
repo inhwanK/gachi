@@ -1,7 +1,7 @@
 ---
 name: general
 about: 통상 사용할 이슈 템플릿
-title: ''
+title: "[feature/branch-name] 제목"
 labels: ''
 assignees: ''
 

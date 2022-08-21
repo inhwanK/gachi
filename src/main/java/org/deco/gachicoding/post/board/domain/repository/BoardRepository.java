@@ -19,6 +19,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     @Query("SELECT b FROM Board b LEFT JOIN FETCH b.author WHERE b.boardLocked = true AND b.boardIdx = :boardIdx")
     Optional<Board> findEnableBoardByIdx(@Param("boardIdx") Long boardIdx);
 
-    @Query("SELECT DISTINCT b FROM Board b LEFT JOIN FETCH b.author WHERE b.boardLocked = true AND b.boardContents.boardContents LIKE '%keyword%' AND b.boardContents.boardContents LIKE '%keyword%'")
+    @Query("SELECT DISTINCT b FROM Board b LEFT JOIN FETCH b.author WHERE b.boardLocked = true AND (b.boardTitle.boardTitle LIKE %:keyword% OR b.boardContents.boardContents LIKE %:keyword%) ")
     List<Board> findAllBoardByKeyword(@Param("keyword") String keyword, Pageable pageable);
 }

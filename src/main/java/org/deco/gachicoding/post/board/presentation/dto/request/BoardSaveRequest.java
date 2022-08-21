@@ -2,14 +2,12 @@ package org.deco.gachicoding.post.board.presentation.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
-@Setter
 public class BoardSaveRequest {
     @NotNull
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
@@ -34,6 +32,4 @@ public class BoardSaveRequest {
     @Nullable
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
-
-    private BoardSaveRequest() {}
 }

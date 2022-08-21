@@ -158,6 +158,7 @@ public class NoticeService {
     }
 
     private User findAuthor(String userEmail) {
+        System.out.println("userEmail : " + userEmail);
         return userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
     }

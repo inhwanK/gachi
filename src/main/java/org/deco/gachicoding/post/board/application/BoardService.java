@@ -82,12 +82,12 @@ public class BoardService {
 //        fileService.getFiles(boardIdx, boardCategory, boardDetail);
 //        tagService.getTags(boardIdx, BOARD, boardDetail);
 
-        return BoardDtoAssembler.boardResponseDto(findBoard(dto.getBoardIdx()));
+        return BoardDtoAssembler.boardResponseDto(findEnableBoard(dto.getBoardIdx()));
     }
 
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
-        Board board = findBoard(dto.getBoardIdx());
+        Board board = findEnableBoard(dto.getBoardIdx());
 
         User user = findAuthor(dto.getUserEmail());
 
@@ -131,8 +131,13 @@ public class BoardService {
         boardRepository.delete(board);
     }
 
+    private Board findEnableBoard(Long boardIdx) {
+        return boardRepository.findEnableBoardByIdx(boardIdx)
+                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    }
+
     private Board findBoard(Long boardIdx) {
-        return boardRepository.findById(boardIdx)
+        return boardRepository.findBoardByIdx(boardIdx)
                 .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
     }
 

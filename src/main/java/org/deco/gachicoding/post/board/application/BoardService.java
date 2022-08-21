@@ -2,22 +2,24 @@ package org.deco.gachicoding.post.board.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.post.board.application.dto.request.BoardBasicRequestDto;
+import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.repository.BoardRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.board.application.dto.response.BoardPostResponseDto;
 import org.deco.gachicoding.post.board.application.dto.request.BoardSaveRequestDto;
 import org.deco.gachicoding.post.board.application.dto.request.BoardUpdateRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.ResponseState;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.deco.gachicoding.exception.StatusEnum.*;
 
@@ -35,87 +37,78 @@ public class BoardService {
 
     @Transactional
     public Long registerBoard(BoardSaveRequestDto dto) throws Exception {
-        // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
-        // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
+        Board board = boardRepository.save(createBoard(dto));
 
-        User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+//        Long boardIdx = board.getBoardIdx();
+//        String boardContent = board.getBoardContents().getBoardContents();
 
-        Board board = boardRepository.save(dto.toEntity(writer));
+//        if (dto.getTags() != null)
+//            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
 
-        Long boardIdx = board.getBoardIdx();
-        String boardContent = board.getBoardContents();
+//        try {
+//            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, BOARD));
+//        } catch (Exception e) {
+//            log.error("Failed To Extract {} File", "Board Content");
+//            e.printStackTrace();
+//            removeBoard(boardIdx);
+//            tagService.removeBoardTags(boardIdx, BOARD);
+//            // throw해줘야 Advice에서 예외를 감지 함
+//            throw e;
+//        }
 
-        if (dto.getTags() != null)
-            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
+        return board.getBoardIdx();
+    }
 
-        try {
-            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, BOARD));
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Board Content");
-            e.printStackTrace();
-            removeBoard(boardIdx);
-            tagService.removeBoardTags(boardIdx, BOARD);
-            // throw해줘야 Advice에서 예외를 감지 함
-            throw e;
-        }
+    private Board createBoard(BoardSaveRequestDto dto) {
+        User user = findAuthor(dto.getUserEmail());
 
-        return boardIdx;
+        return BoardDtoAssembler.board(user, dto);
     }
 
     @Transactional
-    public Page<BoardPostResponseDto> getBoardList(String keyword, Pageable pageable) {
-        Page<BoardPostResponseDto> boardList =
-                boardRepository.findByBoardContentsContainingIgnoreCaseAndBoardActivatedTrueOrBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(keyword, keyword, pageable).map(entity -> new BoardPostResponseDto(entity));
+    public List<BoardResponseDto> getBoardList(String keyword, Pageable pageable) {
+//        Page<BoardResponseDto> boardList =
+//                boardRepository.findAllBoardByKeyword(keyword, pageable).map(entity -> new BoardPostResponseDto(entity));
 
-        boardList.forEach(
-                boardResponseDto ->
-                        tagService.getTags(boardResponseDto.getBoardIdx(), BOARD, boardResponseDto)
-        );
+//        boardList.forEach(
+//                boardResponseDto ->
+//                        tagService.getTags(boardResponseDto.getBoardIdx(), BOARD, boardResponseDto)
+//        );
 
-        return boardList;
+        return BoardDtoAssembler.boardResponseDtos(boardRepository.findAllBoardByKeyword(keyword, pageable));
     }
 
     @Transactional
-    public BoardPostResponseDto getBoardDetail(Long boardIdx) {
-        Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
-
-        BoardPostResponseDto boardDetail = BoardPostResponseDto.builder()
-                .board(board)
-                .build();
+    public BoardResponseDto getBoardDetail(Long boardIdx) {
+//        Board board = boardRepository.findById(boardIdx)
+//                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
 
 //        fileService.getFiles(boardIdx, boardCategory, boardDetail);
-        tagService.getTags(boardIdx, BOARD, boardDetail);
+//        tagService.getTags(boardIdx, BOARD, boardDetail);
 
-        return boardDetail;
+        return BoardDtoAssembler.boardResponseDto(findBoard(boardIdx));
     }
 
     @Transactional
-    public BoardPostResponseDto modifyBoard(BoardUpdateRequestDto dto) {
-        Board board = boardRepository.findById(dto.getBoardIdx())
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
+        Board board = findBoard(dto.getBoardIdx());
 
-        User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+        User user = findAuthor(dto.getUserEmail());
 
-        if (!isSameWriter(board, user)) {
-            throw new ApplicationException(INVALID_AUTH_USER);
-        }
+        board.hasSameAuthor(user);
 
-        board = board.update(dto.getBoardTitle(), dto.getBoardContent());
+        board.update(dto.getBoardTitle(), dto.getBoardContent());
 
-        BoardPostResponseDto boardDetail = BoardPostResponseDto.builder()
-                .board(board)
-                .build();
-
-        return boardDetail;
+        return BoardDtoAssembler.boardResponseDto(board);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> disableBoard(Long boardIdx) {
-        Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    public ResponseEntity<ResponseState> disableBoard(BoardBasicRequestDto dto) {
+        Board board = findBoard(dto.getBoardIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        board.hasSameAuthor(user);
 
         board.disableBoard();
 
@@ -123,9 +116,12 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> enableBoard(Long boardIdx) {
-        Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    public ResponseEntity<ResponseState> enableBoard(BoardBasicRequestDto dto) {
+        Board board = findBoard(dto.getBoardIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        board.hasSameAuthor(user);
 
         board.enableBoard();
 
@@ -133,19 +129,25 @@ public class BoardService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> removeBoard(Long boardIdx) {
-        Board board = boardRepository.findById(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    public ResponseEntity<ResponseState> removeBoard(BoardBasicRequestDto dto) {
+        Board board = findBoard(dto.getBoardIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        board.hasSameAuthor(user);
 
         boardRepository.delete(board);
 
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
-    private Boolean isSameWriter(Board board, User user) {
-        String writerEmail = board.getWriter().getUserEmail();
-        String userEmail = user.getUserEmail();
+    private Board findBoard(Long boardIdx) {
+        return boardRepository.findById(boardIdx)
+                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+    }
 
-        return (writerEmail.equals(userEmail)) ? true : false;
+    private User findAuthor(String userEmail) {
+        return userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
     }
 }

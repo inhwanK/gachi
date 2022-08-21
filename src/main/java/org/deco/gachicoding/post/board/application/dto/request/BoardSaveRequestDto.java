@@ -40,14 +40,4 @@ public class BoardSaveRequestDto {
     @Nullable
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
-
-    public Board toEntity(User writer) {
-        return Board.builder()
-                .author(writer)
-                .boardTitle(boardTitle)
-                .boardContents(boardContent)
-                .boardCategory(boardCategory)
-                .boardViews(boardViews)
-                .build();
-    }
 }

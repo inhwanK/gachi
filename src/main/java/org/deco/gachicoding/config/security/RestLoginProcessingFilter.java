@@ -28,15 +28,11 @@ public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingF
 
         UserAuthenticationDto userDto = objectMapper.readValue(request.getReader(), UserAuthenticationDto.class);
 
-        log.info("{}", userDto.toString());
-
         if (!StringUtils.hasText(userDto.getUsername()) || !StringUtils.hasText(userDto.getPassword())) {
             throw new IllegalArgumentException("Username or Password is empty");
         }
 
         RestAuthenticationToken restAuthenticationToken = new RestAuthenticationToken(userDto.getUsername(), userDto.getPassword());
-
-        log.info("{}", restAuthenticationToken.toString());
 
         return getAuthenticationManager().authenticate(restAuthenticationToken);
     }

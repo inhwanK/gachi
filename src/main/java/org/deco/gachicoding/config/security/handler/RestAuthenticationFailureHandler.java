@@ -28,10 +28,9 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        if(exception instanceof UsernameNotFoundException) {
-            errMsg = exception.getMessage(); // 사실은 BadCredentialException으로만 받는것이 가장 좋으나, 테스트를 위해서 UsernameNotFoundException 처리 코드를 추가한 것임
-            log.info("향 후 삭제할 예외 - {}", errMsg);
-        } else if (exception instanceof BadCredentialsException) {
+
+        // UsernameNotFoundException가 발생해도 보안 이유로 BadCredentialException을 던지도록 설정되어 있음.
+        if (exception instanceof BadCredentialsException) {
             errMsg = "Invalid Username or Password";
         } else if (exception instanceof DisabledException) {
             errMsg = "Locked";

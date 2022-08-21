@@ -28,6 +28,7 @@ public class User {
     private LocalDateTime userCreatedAt;
     private boolean userLocked;
     private boolean userEnabled;
+    private String userRole;
 
     @Builder
     public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, LocalDateTime userCreatedAt, boolean userLocked, boolean userEnabled) {

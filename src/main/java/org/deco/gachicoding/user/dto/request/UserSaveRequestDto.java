@@ -48,8 +48,4 @@ public class UserSaveRequestDto {
                 .userPassword(userPassword)
                 .build();
     }
-
-    public void encryptPassword(PasswordEncoder passwordEncoder) {
-        userPassword = passwordEncoder.encode(userPassword);
-    }
 }

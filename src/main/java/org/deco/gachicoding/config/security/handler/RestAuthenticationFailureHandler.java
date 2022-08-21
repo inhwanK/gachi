@@ -1,6 +1,7 @@
-package org.deco.gachicoding.config;
+package org.deco.gachicoding.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -28,6 +30,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         if(exception instanceof UsernameNotFoundException) {
             errMsg = exception.getMessage(); // 사실은 BadCredentialException으로만 받는것이 가장 좋으나, 테스트를 위해서 UsernameNotFoundException 처리 코드를 추가한 것임
+            log.info("향 후 삭제할 예외 - {}", errMsg);
         } else if (exception instanceof BadCredentialsException) {
             errMsg = "Invalid Username or Password";
         } else if (exception instanceof DisabledException) {

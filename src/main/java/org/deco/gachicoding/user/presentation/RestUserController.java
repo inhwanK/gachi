@@ -4,18 +4,13 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.auth.Auth;
 import org.deco.gachicoding.user.domain.User;
-import org.deco.gachicoding.user.dto.request.LoginRequestDto;
-import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.deco.gachicoding.service.AuthService;
 import org.deco.gachicoding.service.SocialService;
-import org.deco.gachicoding.user.application.UserService;
+import org.deco.gachicoding.user.application.UserDetailsServiceImpl;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Optional;
@@ -27,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class RestUserController {
 
-    private final UserService userService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
     private final SocialService socialService;
     private final AuthService authService;
 
@@ -39,7 +34,7 @@ public class RestUserController {
     )
     @GetMapping("/user/regist/check-email")
     public boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email) {
-        return !userService.isDuplicatedEmail(email);
+        return !userDetailsServiceImpl.isDuplicatedEmail(email);
     }
 
     /**
@@ -68,7 +63,7 @@ public class RestUserController {
     @GetMapping("/user/authentication-email")
     public boolean authenticateEmail(@ApiParam(value = "유저 이메일로 발송된 인증 토큰") @RequestParam UUID authToken) {
         Auth auth = authService.checkToken(authToken);
-        Optional<User> user = userService.getUserByUserEmail(auth.getAuthEmail());
+        Optional<User> user = userDetailsServiceImpl.getUserByUserEmail(auth.getAuthEmail());
 
         auth.useToken();
         user.get().emailAuthenticated();
@@ -81,9 +76,9 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "회원가입 완료")
     )
-    @PostMapping("/user/regist")
+    @PostMapping("/user/create")
     public Long registerUser(@ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보") @Valid @RequestBody UserSaveRequestDto dto) {
-        return userService.registerUser(dto);
+        return userDetailsServiceImpl.createUser(dto);
     }
 
     @ApiOperation(value = "유저 정보 업데이트", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
@@ -93,7 +88,7 @@ public class RestUserController {
     @PutMapping("/user/{userIdx}")
     public Long updateUser(@ApiParam(value = "수정할 유저의 번호") @PathVariable Long userIdx,
                            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
-        return userService.updateUser(userIdx, dto);
+        return userDetailsServiceImpl.updateUser(userIdx, dto);
     }
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
@@ -102,6 +97,6 @@ public class RestUserController {
     )
     @DeleteMapping("/user/{userIdx}")
     public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
-        return userService.deleteUser(userIdx);
+        return userDetailsServiceImpl.deleteUser(userIdx);
     }
 }

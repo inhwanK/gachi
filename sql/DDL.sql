@@ -21,22 +21,27 @@ USE `gachicoding` ;
 -- -----------------------------------------------------
 -- Table `gachicoding`.`user`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `gachicoding`.`user` (
-  `user_idx` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '유저번호',
-  `user_name` VARCHAR(255) NOT NULL COMMENT '유저이름',
-  `user_nick` VARCHAR(255) NOT NULL COMMENT '유저별명',
-  `user_email` VARCHAR(255) NOT NULL COMMENT '이메일',
-  `user_password` VARCHAR(255) NOT NULL COMMENT '비밀번호',
-  `user_created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일자',
-  `user_locked` TINYINT(1) NOT NULL DEFAULT '1' COMMENT '활성상태',
-  `user_enabled` TINYINT(1) NOT NULL DEFAULT '0' COMMENT '인증여부',
-  PRIMARY KEY (`user_idx`),
-  UNIQUE INDEX `UIX_user` (`user_email` ASC, `user_nick` ASC) VISIBLE)
-ENGINE = InnoDB
-AUTO_INCREMENT = 42
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci
-COMMENT = '유저';
+DROP TABLE IF EXISTS `gachicoding`.`user`;
+
+CREATE TABLE IF NOT EXISTS `gachicoding`.`user`
+(
+    `user_idx`       BIGINT UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '유저번호',
+    `user_name`      VARCHAR(255)    NOT NULL COMMENT '유저이름',
+    `user_nick`      VARCHAR(255)    NOT NULL COMMENT '유저별명',
+    `user_email`     VARCHAR(255)    NOT NULL COMMENT '이메일',
+    `user_password`  VARCHAR(255)    NOT NULL COMMENT '비밀번호',
+    `user_created_at` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일자',
+    `user_locked`    TINYINT(1)      NOT NULL DEFAULT '1' COMMENT '활성상태',
+    `user_enabled`   TINYINT(1)      NOT NULL DEFAULT '0' COMMENT '인증여부',
+    `user_role`      VARCHAR(32)     NOT NULL DEFAULT 'ROLE_USER',
+    PRIMARY KEY (`user_idx`),
+    UNIQUE INDEX `UIX_user` (`user_email` ASC, `user_nick` ASC) VISIBLE
+)
+    ENGINE = InnoDB
+    AUTO_INCREMENT = 1
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci
+    COMMENT = '유저';
 
 
 -- -----------------------------------------------------

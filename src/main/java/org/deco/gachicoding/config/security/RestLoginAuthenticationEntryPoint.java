@@ -1,4 +1,4 @@
-package org.deco.gachicoding.config;
+package org.deco.gachicoding.config.security;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

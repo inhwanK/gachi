@@ -2,9 +2,7 @@ package org.deco.gachicoding.user.presentation;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.service.AuthService;
-import org.deco.gachicoding.service.SocialService;
-import org.deco.gachicoding.user.application.UserService;
+import org.deco.gachicoding.user.application.UserDetailsServiceImpl;
 import org.deco.gachicoding.user.dto.request.LoginRequestDto;
 import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +17,7 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api")
 public class RestLoginController {
 
-    private final UserService userService;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
 
     @ApiOperation(value = "로그인", notes = "로그인 수행")
     @ApiResponses(
@@ -29,7 +27,7 @@ public class RestLoginController {
     public UserResponseDto login(@ApiParam(value = "로그인을 위한 요청 body 정보") @RequestBody LoginRequestDto dto,
                                  @ApiIgnore HttpSession httpSession) throws Exception {
 
-        UserResponseDto userResponseDto = userService.login(dto, httpSession);
+        UserResponseDto userResponseDto = userDetailsServiceImpl.login(dto, httpSession);
         return userResponseDto;
     }
 

@@ -7,30 +7,31 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
 public class NoticeResponseDto {
     private Long notIdx;
 
-    private String userEmail;
-    private String userNick;
+    private String authorEmail;
+    private String authorNick;
 
     private String notTitle;
-    private String notContent;
+    private String notContents;
     private Long notViews;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
 //    private List<TagResponseDto> tags;
 
+    private NoticeResponseDto() {}
+
     @Builder
-    public NoticeResponseDto(Long notIdx, String userEmail, String userNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public NoticeResponseDto(Long notIdx, String authorEmail, String authorNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.notIdx = notIdx;
 
-        this.userEmail = userEmail;
-        this.userNick = userNick;
+        this.authorEmail = authorEmail;
+        this.authorNick = authorNick;
 
         this.notTitle = notTitle;
-        this.notContent = notContents;
+        this.notContents = notContents;
         this.notViews = notViews;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

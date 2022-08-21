@@ -7,10 +7,14 @@ import lombok.Getter;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Builder
 public class BoardDetailRequestDto {
 
     @NotNull(message = "F0001")
     @ApiModelProperty(value = "게시판 번호", required = true, example = "1")
     private Long boardIdx;
+
+    @Builder
+    public BoardDetailRequestDto(Long boardIdx) {
+        this.boardIdx = boardIdx;
+    }
 }

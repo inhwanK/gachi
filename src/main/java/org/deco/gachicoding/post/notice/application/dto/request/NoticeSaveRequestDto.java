@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
-@Builder
 public class NoticeSaveRequestDto {
     @NotNull
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
@@ -30,6 +29,14 @@ public class NoticeSaveRequestDto {
     @Nullable
     @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
     private List<String> tags;
+
+    @Builder
+    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContents, Boolean notPin) {
+        this.userEmail = userEmail;
+        this.notTitle = notTitle;
+        this.notContents = notContents;
+        this.notPin = notPin;
+    }
 
     public boolean isNullTags() {
         return (tags == null || tags.isEmpty()) ? true : false;

@@ -72,7 +72,7 @@ public class RestNoticeController {
     @GetMapping("/notice/{notIdx}")
     public ResponseEntity<NoticeResponse> getNoticeDetail(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx) {
 
-        NoticeDetailDto dto = NoticeAssembler.noticeDetailDto(notIdx);
+        NoticeDetailRequestDto dto = NoticeAssembler.noticeDetailDto(notIdx);
 
         NoticeResponse noticeResponse = NoticeAssembler.noticeResponse(noticeService.getNoticeDetail(dto));
 

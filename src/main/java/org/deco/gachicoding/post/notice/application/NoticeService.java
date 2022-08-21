@@ -86,7 +86,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public NoticeResponseDto getNoticeDetail(NoticeDetailDto dto) {
+    public NoticeResponseDto getNoticeDetail(NoticeDetailRequestDto dto) {
         // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
 //        Notice notice = noticeRepository.findById(notIdx)
 //                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Builder
 public class NoticeListRequestDto {
     @NotNull
     @ApiModelProperty(value = "검색어", required = true, example = "운영")
@@ -16,4 +15,10 @@ public class NoticeListRequestDto {
 
     @NotNull
     private Pageable pageable;
+
+    @Builder
+    public NoticeListRequestDto(String keyword, Pageable pageable) {
+        this.keyword = keyword;
+        this.pageable = pageable;
+    }
 }

@@ -3,17 +3,13 @@ package org.deco.gachicoding.post.notice.application.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.deco.gachicoding.post.PostRequestDto;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Setter
 @Getter
-@NoArgsConstructor
 public class NoticeUpdateRequestDto implements PostRequestDto {
 
     @NotNull(message = "F0001")

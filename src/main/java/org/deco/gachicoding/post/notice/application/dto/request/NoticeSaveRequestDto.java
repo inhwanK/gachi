@@ -31,11 +31,12 @@ public class NoticeSaveRequestDto {
     private List<String> tags;
 
     @Builder
-    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContents, Boolean notPin) {
+    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContents, Boolean notPin, List<String> tags) {
         this.userEmail = userEmail;
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notPin = notPin;
+        this.tags = tags;
     }
 
     public boolean isNullTags() {

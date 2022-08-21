@@ -3,19 +3,12 @@ package org.deco.gachicoding.post.board.application.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.deco.gachicoding.post.board.domain.Board;
-import org.deco.gachicoding.user.domain.User;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
-@Setter
-@Builder
 public class BoardSaveRequestDto {
     @NotNull
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
@@ -41,5 +34,13 @@ public class BoardSaveRequestDto {
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
 
-    private BoardSaveRequestDto() {}
+    @Builder
+    public BoardSaveRequestDto(String userEmail, String boardTitle, String boardContents, String boardCategory, Long boardViews, List<String> tags) {
+        this.userEmail = userEmail;
+        this.boardTitle = boardTitle;
+        this.boardContents = boardContents;
+        this.boardCategory = boardCategory;
+        this.boardViews = boardViews;
+        this.tags = tags;
+    }
 }

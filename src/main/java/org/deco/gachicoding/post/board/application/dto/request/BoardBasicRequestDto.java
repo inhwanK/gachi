@@ -8,7 +8,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Builder
 public class BoardBasicRequestDto {
     @NotNull
     @Email(message = "올바른 형식의 아이디가 아닙니다.")
@@ -18,4 +17,10 @@ public class BoardBasicRequestDto {
     @NotNull
     @ApiModelProperty(value = "게시판 번호", required = true, example = "1")
     private Long boardIdx;
+
+    @Builder
+    public BoardBasicRequestDto(String userEmail, Long boardIdx) {
+        this.userEmail = userEmail;
+        this.boardIdx = boardIdx;
+    }
 }

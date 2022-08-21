@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.board.application;
+package org.deco.gachicoding.post.board.application.dto;
 
 import org.deco.gachicoding.post.board.application.dto.request.BoardSaveRequestDto;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
@@ -17,7 +17,7 @@ public class BoardDtoAssembler {
         return Board.builder()
                 .author(user)
                 .boardTitle(dto.getBoardTitle())
-                .boardContents(dto.getBoardContent())
+                .boardContents(dto.getBoardContents())
                 .boardCategory(dto.getBoardCategory())
                 .build();
     }

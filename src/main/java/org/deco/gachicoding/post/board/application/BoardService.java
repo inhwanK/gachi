@@ -2,7 +2,8 @@ package org.deco.gachicoding.post.board.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.post.board.application.dto.request.BoardBasicRequestDto;
+import org.deco.gachicoding.post.board.application.dto.BoardDtoAssembler;
+import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.repository.BoardRepository;
@@ -10,12 +11,7 @@ import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.board.application.dto.request.BoardSaveRequestDto;
-import org.deco.gachicoding.post.board.application.dto.request.BoardUpdateRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
-import org.deco.gachicoding.exception.ResponseState;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,7 +62,7 @@ public class BoardService {
     }
 
     @Transactional
-    public List<BoardResponseDto> getBoardList(String keyword, Pageable pageable) {
+    public List<BoardResponseDto> getBoardList(BoardListRequestDto dto) {
 //        Page<BoardResponseDto> boardList =
 //                boardRepository.findAllBoardByKeyword(keyword, pageable).map(entity -> new BoardPostResponseDto(entity));
 
@@ -75,18 +71,18 @@ public class BoardService {
 //                        tagService.getTags(boardResponseDto.getBoardIdx(), BOARD, boardResponseDto)
 //        );
 
-        return BoardDtoAssembler.boardResponseDtos(boardRepository.findAllBoardByKeyword(keyword, pageable));
+        return BoardDtoAssembler.boardResponseDtos(boardRepository.findAllBoardByKeyword(dto.getKeyword(), dto.getPageable()));
     }
 
     @Transactional
-    public BoardResponseDto getBoardDetail(Long boardIdx) {
+    public BoardResponseDto getBoardDetail(BoardDetailRequestDto dto) {
 //        Board board = boardRepository.findById(boardIdx)
 //                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
 
 //        fileService.getFiles(boardIdx, boardCategory, boardDetail);
 //        tagService.getTags(boardIdx, BOARD, boardDetail);
 
-        return BoardDtoAssembler.boardResponseDto(findBoard(boardIdx));
+        return BoardDtoAssembler.boardResponseDto(findBoard(dto.getBoardIdx()));
     }
 
     @Transactional
@@ -97,13 +93,13 @@ public class BoardService {
 
         board.hasSameAuthor(user);
 
-        board.update(dto.getBoardTitle(), dto.getBoardContent());
+        board.update(dto.getBoardTitle(), dto.getBoardContents());
 
         return BoardDtoAssembler.boardResponseDto(board);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> disableBoard(BoardBasicRequestDto dto) {
+    public void disableBoard(BoardBasicRequestDto dto) {
         Board board = findBoard(dto.getBoardIdx());
 
         User user = findAuthor(dto.getUserEmail());
@@ -111,12 +107,10 @@ public class BoardService {
         board.hasSameAuthor(user);
 
         board.disableBoard();
-
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> enableBoard(BoardBasicRequestDto dto) {
+    public void enableBoard(BoardBasicRequestDto dto) {
         Board board = findBoard(dto.getBoardIdx());
 
         User user = findAuthor(dto.getUserEmail());
@@ -124,12 +118,10 @@ public class BoardService {
         board.hasSameAuthor(user);
 
         board.enableBoard();
-
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> removeBoard(BoardBasicRequestDto dto) {
+    public void removeBoard(BoardBasicRequestDto dto) {
         Board board = findBoard(dto.getBoardIdx());
 
         User user = findAuthor(dto.getUserEmail());
@@ -137,8 +129,6 @@ public class BoardService {
         board.hasSameAuthor(user);
 
         boardRepository.delete(board);
-
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
     private Board findBoard(Long boardIdx) {

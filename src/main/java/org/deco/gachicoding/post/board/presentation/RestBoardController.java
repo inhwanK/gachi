@@ -4,7 +4,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.ResponseState;
-import org.deco.gachicoding.post.board.application.dto.response.BoardPostResponseDto;
+import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.application.dto.request.BoardSaveRequestDto;
 import org.deco.gachicoding.post.board.application.dto.request.BoardUpdateRequestDto;
 import org.deco.gachicoding.post.board.application.BoardService;
@@ -39,8 +39,8 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 목록 반환")
     )
     @GetMapping("/board/list")
-    public Page<BoardPostResponseDto> getBoardList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
-                                                   @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
+    public Page<BoardResponseDto> getBoardList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+                                               @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return boardService.getBoardList(keyword, pageable);
     }
@@ -50,7 +50,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
     )
     @GetMapping("/board/{boardIdx}")
-    public BoardPostResponseDto getBoardDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
+    public BoardResponseDto getBoardDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
 
         return boardService.getBoardDetail(boardIdx);
     }
@@ -60,7 +60,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     )
     @PutMapping("/board/modify")
-    public BoardPostResponseDto modifyBoard(@ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
+    public BoardResponseDto modifyBoard(@ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequestDto dto) {
         return boardService.modifyBoard(dto);
     }
 

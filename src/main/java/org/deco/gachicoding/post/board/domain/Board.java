@@ -2,6 +2,7 @@ package org.deco.gachicoding.post.board.domain;
 
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;
 import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
 import org.deco.gachicoding.user.domain.User;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+
+import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Getter
 @Entity
@@ -31,17 +34,11 @@ public class Board extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "user_idx")
-    private User writer;
+    private User author;
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    protected Board() {}
-
-    public Board(Long boardIdx, User writer, BoardTitle boardTitle, BoardContents boardContents, String boardCategory, Long boardViews, Boolean boardLocked) {
+    public Board(Long boardIdx, User author, BoardTitle boardTitle, BoardContents boardContents, String boardCategory, Long boardViews, Boolean boardLocked) {
         this.boardIdx = boardIdx;
-        this.writer = writer;
+        this.author = author;
         this.boardTitle = boardTitle;
         this.boardContents = boardContents;
         this.boardCategory = boardCategory;
@@ -49,25 +46,57 @@ public class Board extends BaseTimeEntity {
         this.boardLocked = boardLocked;
     }
 
+    public String getBoardTitle() {
+        return boardTitle.getBoardTitle();
+    }
+
+    public String getBoardContents() {
+        return boardContents.getBoardContents();
+    }
+
+    public String getAuthorEmail() {
+        return author.getUserEmail();
+    }
+
+    public String getAuthorNick() {
+        return author.getUserNick();
+    }
+
+    public void hasSameAuthor(User user) {
+        if (author != user) {
+            throw new ApplicationException(INVALID_AUTH_USER);
+        }
+    }
+
+    public void enableBoard() {
+        if (this.boardLocked)
+            throw new ApplicationException(ALREADY_ACTIVE);
+        this.boardLocked = true;
+    }
+
+    public void disableBoard() {
+        if (!this.boardLocked)
+            throw new ApplicationException(ALREADY_INACTIVE);
+        this.boardLocked = false;
+    }
+
     public void update(String boardTitle, String boardContent) {
         updateTitle(boardTitle);
         updateContent(boardContent);
     }
 
-    public void disableBoard() {
-        this.boardLocked = false;
-    }
-
-    public void enableBoard() {
-        this.boardLocked = true;
-    }
-
-    public void updateTitle(String boardTitle) {
+    private void updateTitle(String boardTitle) {
         this.boardTitle = new BoardTitle(boardTitle);
     }
 
-    public void updateContent(String boardContent) {
+    private void updateContent(String boardContent) {
         this.boardContents = new BoardContents(boardContent);
+    }
+
+    protected Board() {}
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public static class Builder {

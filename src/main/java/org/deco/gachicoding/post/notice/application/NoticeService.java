@@ -2,7 +2,6 @@ package org.deco.gachicoding.post.notice.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
@@ -13,10 +12,7 @@ import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateRes
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.PostRequestDto;
 import org.deco.gachicoding.exception.ApplicationException;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,7 +67,7 @@ public class NoticeService {
     }
 
     private Notice createNotice(NoticeSaveRequestDto dto) {
-        User user = findWriter(dto.getUserEmail());
+        User user = findAuthor(dto.getUserEmail());
 
         return NoticeDtoAssembler.notice(user, dto);
     }
@@ -90,7 +86,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public NoticeResponseDto getNoticeDetail(NoticeDetailDto dto) {
+    public NoticeResponseDto getNoticeDetail(NoticeDetailRequestDto dto) {
         // 이부분도 중복된다 하지만 findById는 Repository에서 기본적으로 제공하는 키워드이기 때문에 변경의 여지가 적다
 //        Notice notice = noticeRepository.findById(notIdx)
 //                .orElseThrow(() -> new CustomException(DATA_NOT_EXIST));
@@ -105,7 +101,9 @@ public class NoticeService {
     public NoticeUpdateResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
         Notice notice = findEnableNotice(dto.getNotIdx());
 
-        isSameWrite(notice, dto);
+        User user = findAuthor(dto.getUserEmail());
+
+        notice.hasSameAuthor(user);
 
         notice.updateTitle(dto.getNotTitle());
 
@@ -119,7 +117,9 @@ public class NoticeService {
     public void disableNotice(NoticeBasicRequestDto dto) {
         Notice notice = findNotice(dto.getNotIdx());
 
-        isSameWrite(notice, dto);
+        User user = findAuthor(dto.getUserEmail());
+
+        notice.hasSameAuthor(user);
 
         notice.disableNotice();
     }
@@ -129,21 +129,23 @@ public class NoticeService {
     public void enableNotice(NoticeBasicRequestDto dto) {
         Notice notice = findNotice(dto.getNotIdx());
 
-        isSameWrite(notice, dto);
+        User user = findAuthor(dto.getUserEmail());
+
+        notice.hasSameAuthor(user);
 
         notice.enableNotice();
     }
 
-//    @Transactional
-//    public ResponseEntity<ResponseState> removeNotie(NoticeBasicPostRequestDto dto) {
-//        Notice notice = getNoticeInfo(dto.getNotIdx());
-//
-//        isSameWrite(notice, dto);
-//
-//        noticeRepository.delete(notice);
-//
-//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
-//    }
+    @Transactional
+    public void removeNotie(NoticeBasicRequestDto dto) {
+        Notice notice = findNotice(dto.getNotIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        notice.hasSameAuthor(user);
+
+        noticeRepository.delete(notice);
+    }
 
     private Notice findEnableNotice(Long notIdx) {
         return noticeRepository.findEnableNoticeByIdx(notIdx)
@@ -155,23 +157,8 @@ public class NoticeService {
                 .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
     }
 
-    private User findWriter(String userEmail) {
+    private User findAuthor(String userEmail) {
         return userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
-    }
-
-    // Writer의 정보를 가지고 있는 Notice를 통해 같은 유저인지 아닌지 판별 했다.
-    // NoticeService.isSameWrite -> Notice.isWriter -> User.isMe
-    // Notice를 거치지 않고 NoticeService에서 바로 User.isMe를 사용해도 된다.
-    // 쓸데 없는 결합도를 추가한것은 아닐까?
-    // 아니면 Writer의 정보를 가지고 있는 Notice를 통해 User.isMe를 실행하는게 옳은 것일까?
-    // 원칙적으로는 Notice를 거치는 것이 옳다고 할 수 있다. 원칙을 지키기 위해 실용적인 부분을 배제하는 것은 좋은 설계가 아니다.
-    // 난중에 인환이랑 이야기 해보자
-    private void isSameWrite(Notice notice, PostRequestDto dto) {
-        User user = findWriter(dto.getUserEmail());
-
-        if (!notice.isWriter(user)) {
-            throw new ApplicationException(INVALID_AUTH_USER);
-        }
     }
 }

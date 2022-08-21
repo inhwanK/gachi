@@ -35,16 +35,22 @@ public class NoticeDtoAssembler {
 
     public static NoticeUpdateResponseDto noticeUpdateResponseDto(Notice notice) {
         return NoticeUpdateResponseDto.builder()
+                .notIdx(notice.getNotIdx())
+                .authorEmail(notice.getAuthorEmail())
+                .authorNick(notice.getAuthorNick())
                 .notTitle(notice.getNotTitle())
-                .notContent(notice.getNotContents())
+                .notContents(notice.getNotContents())
+                .notViews(notice.getNotViews())
+                .createdAt(notice.getCreatedAt())
+                .updatedAt(notice.getUpdatedAt())
                 .build();
     }
 
     private static NoticeResponseDto convertForm(Notice notice) {
         return NoticeResponseDto.builder()
                 .notIdx(notice.getNotIdx())
-                .userEmail(notice.getWriterEmail())
-                .userNick(notice.getWriterNick())
+                .authorEmail(notice.getAuthorEmail())
+                .authorNick(notice.getAuthorNick())
                 .notTitle(notice.getNotTitle())
                 .notContents(notice.getNotContents())
                 .notViews(notice.getNotViews())

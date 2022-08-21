@@ -7,10 +7,14 @@ import lombok.Getter;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Builder
-public class NoticeDetailDto {
+public class NoticeDetailRequestDto {
 
     @NotNull(message = "F0001")
     @ApiModelProperty(value = "공지사항 번호", required = true, example = "1")
     private Long notIdx;
+
+    @Builder
+    public NoticeDetailRequestDto(Long notIdx) {
+        this.notIdx = notIdx;
+    }
 }

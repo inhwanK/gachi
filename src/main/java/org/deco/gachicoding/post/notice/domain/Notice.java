@@ -12,8 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
-import static org.deco.gachicoding.exception.StatusEnum.ALREADY_ACTIVE;
-import static org.deco.gachicoding.exception.StatusEnum.ALREADY_INACTIVE;
+import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Getter
 @DynamicInsert
@@ -46,7 +45,7 @@ public class Notice extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
-    private User writer;
+    private User author;
 
     public static Builder builder() {
         return new Builder();
@@ -56,7 +55,7 @@ public class Notice extends BaseTimeEntity {
 
     public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
         this.notIdx = notIdx;
-        this.writer = author;
+        this.author = author;
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notViews = notViews;
@@ -64,12 +63,12 @@ public class Notice extends BaseTimeEntity {
         this.notLocked = notLocked;
     }
 
-    public String getWriterNick() {
-        return writer.getUserNick();
+    public String getAuthorNick() {
+        return author.getUserNick();
     }
 
-    public String getWriterEmail() {
-        return writer.getUserEmail();
+    public String getAuthorEmail() {
+        return author.getUserEmail();
     }
 
     public String getNotContents() {
@@ -80,17 +79,10 @@ public class Notice extends BaseTimeEntity {
         return notTitle.getNoticeTitle();
     }
 
-    public boolean isWriter(User user) {
-        // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
-        return (this.writer.isMe(user)) ? true : false;
-    }
-
-    public void updateTitle(String notTitle) {
-        this.notTitle = new NoticeTitle(notTitle);
-    }
-
-    public void updateContent(String notContents) {
-        this.notContents = new NoticeContents(notContents);
+    public void hasSameAuthor(User user) {
+        if (author != user) {
+            throw new ApplicationException(INVALID_AUTH_USER);
+        }
     }
 
     public void enableNotice() {
@@ -103,6 +95,19 @@ public class Notice extends BaseTimeEntity {
         if (!this.notLocked)
             throw new ApplicationException(ALREADY_INACTIVE);
         this.notLocked = false;
+    }
+
+    public void update(String notTitle, String notContents) {
+        updateTitle(notTitle);
+        updateContent(notContents);
+    }
+
+    public void updateTitle(String notTitle) {
+        this.notTitle = new NoticeTitle(notTitle);
+    }
+
+    public void updateContent(String notContents) {
+        this.notContents = new NoticeContents(notContents);
     }
 
     public static class Builder {

@@ -21,8 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import java.net.URI;
 import java.util.List;
 
-import static org.deco.gachicoding.exception.StatusEnum.DISABLE_SUCCESS;
-import static org.deco.gachicoding.exception.StatusEnum.ENABLE_SUCCESS;
+import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Api(tags = "공지사항 정보 처리 API")
 @Slf4j
@@ -71,9 +70,9 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
     )
     @GetMapping("/notice/{notIdx}")
-    public ResponseEntity<NoticeResponse> getNoticeDetail(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx) {
+    public ResponseEntity<NoticeResponse> getNoticeDetail(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx) {
 
-        NoticeDetailDto dto = NoticeAssembler.noticeDetailDto(notIdx);
+        NoticeDetailRequestDto dto = NoticeAssembler.noticeDetailDto(notIdx);
 
         NoticeResponse noticeResponse = NoticeAssembler.noticeResponse(noticeService.getNoticeDetail(dto));
 
@@ -85,7 +84,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     )
     @PutMapping("/notice/modify/{notIdx}")
-    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx, @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
+    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
 
         NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
 
@@ -101,13 +100,13 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/notice/disable/{notIdx}")
-    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
 
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 
         noticeService.disableNotice(dto);
 
-        // 활성 비활성도 리다이렉트..?
+        // 활성 비활성 삭제도 리다이렉트..?
         return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
@@ -116,23 +115,29 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/notice/enable/{notIdx}")
-    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "게시판 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
 
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 
         noticeService.enableNotice(dto);
 
-        // 활성 비활성도 리다이렉트..?
+        // 활성 비활성 삭제도 리다이렉트..?
         return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
-//    @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "삭제 성공")
-//    )
-//    @DeleteMapping("/notice/remove")
-//    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 기본 요청 DTO") @RequestBody NoticeBasicPostRequestDto dto) {
-//        return noticeService.removeNotie(dto);
-//    }
+    @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "삭제 성공")
+    )
+    @DeleteMapping("/notice/remove/{notIdx}")
+    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+
+        NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
+
+        noticeService.removeNotie(dto);
+
+        // 활성 비활성 삭제도 리다이렉트..?
+        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+    }
 
 }

@@ -7,7 +7,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @DynamicInsert
@@ -54,8 +56,16 @@ public class User {
         this.userEnabled = true;
     }
 
-    public boolean isMe(User user) {
-        // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
-        return (this.userIdx == user.getUserIdx()) ? true : false;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final User user = (User) o;
+        return Objects.equals(userIdx, user.getUserIdx());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userIdx);
     }
 }

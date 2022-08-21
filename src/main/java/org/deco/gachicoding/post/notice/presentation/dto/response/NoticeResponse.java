@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 public class NoticeResponse {
     private Long notIdx;
 
-    private String userEmail;
-    private String userNick;
+    private String authorEmail;
+    private String authorNick;
 
     private String notTitle;
     private String notContent;
@@ -21,11 +21,11 @@ public class NoticeResponse {
     private LocalDateTime updatedAt;
 
     @Builder
-    public NoticeResponse(Long notIdx, String userEmail, String userNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public NoticeResponse(Long notIdx, String authorEmail, String authorNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.notIdx = notIdx;
 
-        this.userEmail = userEmail;
-        this.userNick = userNick;
+        this.authorEmail = authorEmail;
+        this.authorNick = authorNick;
 
         this.notTitle = notTitle;
         this.notContent = notContents;

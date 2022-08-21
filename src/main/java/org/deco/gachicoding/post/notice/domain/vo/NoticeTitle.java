@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.notice.domain.vo.contents;
+package org.deco.gachicoding.post.notice.domain.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -22,8 +22,8 @@ public class NoticeTitle {
         return notTitle;
     }
 
-    private void validateMaximumLength(String notContent) {
-//        if (notContent.length() > MAXIMUM_CONTENT_LENGTH)
+    private void validateMaximumLength(String notTitle) {
+//        if (notTitle.length() > MAXIMUM_CONTENT_LENGTH)
 //            throw new NoticeFormatException();
     }
 }

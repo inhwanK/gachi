@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.board.dto.request;
+package org.deco.gachicoding.post.board.application.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -38,21 +38,16 @@ public class BoardSaveRequestDto {
     private Long boardViews;
 
     @Nullable
-    @ApiModelProperty(value = "작성일", required = false, example = "2022.05.30")
-    private LocalDateTime boardRegdate;
-
-    @Nullable
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
 
     public Board toEntity(User writer) {
         return Board.builder()
-                .writer(writer)
+                .author(writer)
                 .boardTitle(boardTitle)
                 .boardContents(boardContent)
                 .boardCategory(boardCategory)
                 .boardViews(boardViews)
-                .boardRegdate(boardRegdate)
                 .build();
     }
 }

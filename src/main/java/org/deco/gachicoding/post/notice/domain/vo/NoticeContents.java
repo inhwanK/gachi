@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.notice.domain.vo.contents;
+package org.deco.gachicoding.post.notice.domain.vo;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

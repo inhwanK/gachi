@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.notice.application.dto.response;
+package org.deco.gachicoding.post.notice.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor
-public class NoticeResponseDto {
+public class NoticeResponse {
     private Long notIdx;
 
     private String userEmail;
@@ -20,10 +20,8 @@ public class NoticeResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-//    private List<TagResponseDto> tags;
-
     @Builder
-    public NoticeResponseDto(Long notIdx, String userEmail, String userNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public NoticeResponse(Long notIdx, String userEmail, String userNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.notIdx = notIdx;
 
         this.userEmail = userEmail;
@@ -35,9 +33,4 @@ public class NoticeResponseDto {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-//    @Override
-//    public void setTags(List<TagResponseDto> tags) {
-//        this.tags = tags;
-//    }
 }

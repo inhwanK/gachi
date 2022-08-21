@@ -1,18 +1,16 @@
 package org.deco.gachicoding.post.notice.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeContents;
-import org.deco.gachicoding.post.notice.domain.vo.contents.NoticeTitle;
+import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
+import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 import static org.deco.gachicoding.exception.StatusEnum.ALREADY_ACTIVE;
 import static org.deco.gachicoding.exception.StatusEnum.ALREADY_INACTIVE;
@@ -21,8 +19,7 @@ import static org.deco.gachicoding.exception.StatusEnum.ALREADY_INACTIVE;
 @DynamicInsert
 @DynamicUpdate
 @Entity
-@NoArgsConstructor
-public class Notice {
+public class Notice extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,10 +35,7 @@ public class Notice {
 
     private Boolean notPin;
 
-    private Boolean notActivated;
-
-    // notRegdate -> createdAt
-    private LocalDateTime notRegdate;
+    private Boolean notLocked;
 
     // FetchType.EAGER 즉시 로딩
     // 1. 대부분의 JPA 구현체는 가능하면 조인을 사용해서 SQL 한번에 함께 조회하려고 한다.
@@ -54,14 +48,20 @@ public class Notice {
     @JsonManagedReference
     private User writer;
 
-    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notActivated) {
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    protected Notice() {}
+
+    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
         this.notIdx = notIdx;
         this.writer = author;
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notViews = notViews;
         this.notPin = notPin;
-        this.notActivated = notActivated;
+        this.notLocked = notLocked;
     }
 
     public String getWriterNick() {
@@ -80,10 +80,6 @@ public class Notice {
         return notTitle.getNoticeTitle();
     }
 
-    public static Builder builder() {
-        return new Builder();
-    }
-
     public boolean isWriter(User user) {
         // 이거도 User 객체 스스로가 판단하는 걸로 바꾸자 (User 정보의 정보 전문가는 User 도메인)
         return (this.writer.isMe(user)) ? true : false;
@@ -98,27 +94,26 @@ public class Notice {
     }
 
     public void enableNotice() {
-        if (this.notActivated)
+        if (this.notLocked)
             throw new ApplicationException(ALREADY_ACTIVE);
-        this.notActivated = true;
+        this.notLocked = true;
     }
 
     public void disableNotice() {
-        if (!this.notActivated)
+        if (!this.notLocked)
             throw new ApplicationException(ALREADY_INACTIVE);
-        this.notActivated = false;
+        this.notLocked = false;
     }
 
     public static class Builder {
 
         private Long notIdx;
-        private User author;
+        private User writer;
         private NoticeTitle notTitle;
         private NoticeContents notContents;
         private Long notViews;
         private Boolean notPin;
-        private Boolean notActivated;
-        private LocalDateTime notRegdate = null;
+        private Boolean notLocked;
 
         public Builder notIdx(Long notIdx) {
             this.notIdx = notIdx;
@@ -126,7 +121,7 @@ public class Notice {
         }
 
         public Builder author(User user) {
-            this.author = user;
+            this.writer = user;
             return this;
         }
 
@@ -150,20 +145,20 @@ public class Notice {
             return this;
         }
 
-        public Builder notActivated(Boolean notActivated) {
-            this.notActivated = notActivated;
+        public Builder notLocked(Boolean notLocked) {
+            this.notLocked = notLocked;
             return this;
         }
 
         public Notice build() {
             Notice notice = new Notice(
                     notIdx,
-                    author,
+                    writer,
                     notTitle,
                     notContents,
                     notViews,
                     notPin,
-                    notActivated
+                    notLocked
                     );
 
             return notice;

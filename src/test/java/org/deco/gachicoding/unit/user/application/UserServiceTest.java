@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.user.application;
 
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.application.UserDetailsServiceImpl;
+import org.deco.gachicoding.user.application.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,10 +13,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-public class UserDetailsServiceImplTest {
+public class UserServiceTest {
 
     @Autowired
-    UserDetailsServiceImpl userDetailsServiceImpl;
+    UserService userService;
 
 
     @Test

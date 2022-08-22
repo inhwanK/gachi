@@ -9,9 +9,6 @@ import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +19,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -42,7 +39,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new DataIntegrityViolationException("중복된 이메일 입니다.");
 
         String encryptedPassword = encodePassword(dto.getUserPassword());
-        dto.setUserPassword(encryptedPassword); // VO 객체로 변경할 필요가 있음
+        dto.setUserPassword(encryptedPassword); // dto 대신 다른 객체를 사용하는 게 좋을 듯?
 
         Long userIdx = userRepository.save(dto.toEntity()).getUserIdx();
 
@@ -54,31 +51,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
-
-    @Transactional
-    public UserResponseDto login(LoginRequestDto requestDto, HttpSession httpSession) {
-        /*try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(requestDto.getEmail(), requestDto.getPassword()));
-
-            UserDetails principal = (User) authentication.getPrincipal();
-
-            log.info("유저 이메일 > " + principal.getUsername());
-            log.info("유저 비밀번호 > " + principal.getPassword());
-
-            Optional<User> user = userRepository.findByUserEmail(principal.getUsername());
-            UserResponseDto userResponseDto = new UserResponseDto(user.get());
-            httpSession.setAttribute("user", userResponseDto);
-
-            return userResponseDto;
-            // BadCredentialsException - 스프링 시큐리티 에서 아이디 또는 비밀번호가 틀렸을 경우 나오는 예외
-        } catch (BadCredentialsException e) {
-            e.printStackTrace();
-            return new UserResponseDto(null);
-        }*/
-        return null;
-    }
-
 
     @Transactional
     public Long updateUser(Long idx, UserUpdateRequestDto dto) {
@@ -105,18 +77,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Transactional
     public Optional<User> getUserByUserEmail(String email) {
         return userRepository.findByUserEmail(email);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByUserEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid Username"));
-
-//        List<GrantedAuthority> roles = new ArrayList<>();
-//        roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 유저 롤을 다시 적용해야함.
-
-        UserDetails userDetails = new UserAuthenticationDto(user.getUserEmail(), user.getUserPassword());
-
-        return userDetails;
     }
 }

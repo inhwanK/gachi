@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RestAuthenticationProvider implements AuthenticationProvider {
 
@@ -23,21 +22,18 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String loginId = (String) authentication.getPrincipal();
+        String loginEmail = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        log.info("loginId - {}", loginId);
-        log.info("password - {}", password);
+        log.info("인증 시도 유저 이메일 - {}, 인증 시도 유저 비밀번호 - {}", loginEmail, password);
 
-        UserDetails userDto = userDetailsService.loadUserByUsername(loginId);
-
-        log.info("{}", userDto.toString());
+        UserDetails userDto = userDetailsService.loadUserByUsername(loginEmail);
 
         if (!passwordEncoder.matches(password, userDto.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
 
-        return new RestAuthenticationToken(userDto.getUsername(), null, userDto.getAuthorities());
+        return new RestAuthenticationToken(userDto, null, userDto.getAuthorities());
     }
 
     @Override

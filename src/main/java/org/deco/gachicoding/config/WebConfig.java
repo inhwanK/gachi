@@ -20,11 +20,6 @@ import java.util.List;
 @EnableSwagger2
 public class WebConfig extends WebMvcConfigurationSupport {
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-    }
-
     /**
      *  swagger 설정 <br>
      *  .apis(RequestHandlerSelectors.any()) -> 할당된 모든 URL 리스트를 추출 <br>

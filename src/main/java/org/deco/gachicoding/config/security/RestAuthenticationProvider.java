@@ -13,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class RestAuthenticationProvider implements AuthenticationProvider {
 
@@ -26,7 +25,7 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
         String loginEmail = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
 
-        log.info("인증을 시도 유저 이메일 - {}, 인증을 시도 유저 비밀번호 - {}", loginEmail, password);
+        log.info("인증 시도 유저 이메일 - {}, 인증 시도 유저 비밀번호 - {}", loginEmail, password);
 
         UserDetails userDto = userDetailsService.loadUserByUsername(loginEmail);
 

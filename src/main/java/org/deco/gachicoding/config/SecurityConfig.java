@@ -23,6 +23,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -74,6 +75,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new RestLoginAuthenticationEntryPoint())
                 .accessDeniedHandler(restAccessDeniedHandler());
+
+        http
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/") // 임시로 설정한 URL 프론트와 협의
+                .addLogoutHandler(new SecurityContextLogoutHandler());
     }
 
     @Override

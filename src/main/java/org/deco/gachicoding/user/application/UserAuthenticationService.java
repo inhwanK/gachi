@@ -6,6 +6,7 @@ import org.deco.gachicoding.domain.auth.AuthRepository;
 import org.deco.gachicoding.service.MailService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

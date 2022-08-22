@@ -1,8 +1,7 @@
 package org.deco.gachicoding.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.deco.gachicoding.user.application.UserAuthenticationDto;
-import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,6 @@ import java.io.IOException;
 public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private ObjectMapper objectMapper = new ObjectMapper();
-
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

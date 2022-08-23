@@ -9,14 +9,12 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Getter
 @DynamicInsert
 @DynamicUpdate
-
 @NoArgsConstructor
 @Entity
 @Table(name = "user")

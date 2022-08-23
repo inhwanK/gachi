@@ -3,8 +3,10 @@ package org.deco.gachicoding.user.domain;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.awt.*;
@@ -14,8 +16,9 @@ import java.util.Objects;
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@Entity
+
 @NoArgsConstructor
+@Entity
 @Table(name = "user")
 public class User {
 
@@ -23,25 +26,55 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userIdx;
 
+    @Column(nullable = false)
     private String userName;
+
+    @Column(nullable = false, unique = true)
     private String userNick;
+
+    @Column(nullable = false, unique = true)
     private String userEmail;
+
+    @Column(nullable = false)
     private String userPassword;
-    private LocalDateTime userCreatedAt;
+
+    @Column(nullable = false)
+    @ColumnDefault("true")
     private boolean userLocked;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
     private boolean userEnabled;
+
+    @Column(nullable = false, updatable = false)
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @CreatedDate
+    private LocalDateTime userCreatedAt;
+
+    @Column(nullable = false)
+    @ColumnDefault("\'ROLE_USER\'")
     private String userRole;
 
     @Builder
-    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, LocalDateTime userCreatedAt, boolean userLocked, boolean userEnabled) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled) {
         this.userIdx = userIdx;
         this.userName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
-        this.userCreatedAt = userCreatedAt;
         this.userLocked = userLocked;
         this.userEnabled = userEnabled;
+    }
+
+    public User(String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, String userRole) {
+        this.userName = userName;
+        this.userNick = userNick;
+        this.userEmail = userEmail;
+        this.userPassword = userPassword;
+        this.userLocked = userLocked;
+        this.userEnabled = userEnabled;
+        this.userCreatedAt = userCreatedAt;
+        this.userRole = userRole;
     }
 
     public User update(String userNick, String userPassword, boolean userActivated, boolean userEnabled) {
@@ -67,5 +100,20 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(userIdx);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userIdx=" + userIdx +
+                ", userName='" + userName + '\'' +
+                ", userNick='" + userNick + '\'' +
+                ", userEmail='" + userEmail + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userLocked=" + userLocked +
+                ", userEnabled=" + userEnabled +
+                ", userCreatedAt=" + userCreatedAt +
+                ", userRole='" + userRole + '\'' +
+                '}';
     }
 }

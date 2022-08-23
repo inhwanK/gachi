@@ -35,6 +35,8 @@ dependencies {
     // 테스트 환경 롬복
     testAnnotationProcessor('org.projectlombok:lombok')
 
+    runtimeOnly 'com.h2database:h2'
+
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.4'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail

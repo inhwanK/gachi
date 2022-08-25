@@ -72,9 +72,9 @@ public class MockUser {
 
         public User build() {
             return new User(
-                    userEmail,
                     userName,
                     userNick,
+                    userEmail,
                     userPassword,
                     userLocked,
                     userEnabled,

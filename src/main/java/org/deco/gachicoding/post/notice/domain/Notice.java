@@ -12,6 +12,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
+import java.time.LocalDateTime;
+
 import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Getter
@@ -53,7 +55,7 @@ public class Notice extends BaseTimeEntity {
 
     protected Notice() {}
 
-    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
+    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.notIdx = notIdx;
         this.author = author;
         this.notTitle = notTitle;
@@ -61,6 +63,8 @@ public class Notice extends BaseTimeEntity {
         this.notViews = notViews;
         this.notPin = notPin;
         this.notLocked = notLocked;
+        setCreatedAt(createdAt);
+        setUpdatedAt(updatedAt);
     }
 
     public String getAuthorNick() {
@@ -113,12 +117,14 @@ public class Notice extends BaseTimeEntity {
     public static class Builder {
 
         private Long notIdx;
-        private User writer;
+        private User author;
         private NoticeTitle notTitle;
         private NoticeContents notContents;
         private Long notViews;
         private Boolean notPin;
         private Boolean notLocked;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public Builder notIdx(Long notIdx) {
             this.notIdx = notIdx;
@@ -126,7 +132,7 @@ public class Notice extends BaseTimeEntity {
         }
 
         public Builder author(User user) {
-            this.writer = user;
+            this.author = user;
             return this;
         }
 
@@ -155,18 +161,28 @@ public class Notice extends BaseTimeEntity {
             return this;
         }
 
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder updatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
         public Notice build() {
-            Notice notice = new Notice(
+            return new Notice(
                     notIdx,
-                    writer,
+                    author,
                     notTitle,
                     notContents,
                     notViews,
                     notPin,
-                    notLocked
+                    notLocked,
+                    createdAt,
+                    updatedAt
                     );
-
-            return notice;
         }
     }
 }

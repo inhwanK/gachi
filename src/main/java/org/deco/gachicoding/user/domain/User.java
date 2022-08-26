@@ -64,7 +64,8 @@ public class User {
         this.userEnabled = userEnabled;
     }
 
-    public User(String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, String userRole) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, String userRole) {
+        this.userIdx = userIdx;
         this.userName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;

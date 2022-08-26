@@ -65,13 +65,14 @@ public class MockUser {
             return this;
         }
 
-        public Builder setUserRole(String userRole) {
+        public Builder userRole(String userRole) {
             this.userRole = userRole;
             return this;
         }
 
         public User build() {
             return new User(
+                    userIdx,
                     userName,
                     userNick,
                     userEmail,

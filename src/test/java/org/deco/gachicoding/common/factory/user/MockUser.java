@@ -20,8 +20,8 @@ public class MockUser {
         private String userPassword = "테스트 유저 비밀번호";
         private boolean userLocked = true;
         private boolean userEnabled = true;
-        private String userRole = "이건 잘 모르겠음";
         private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
+        private String userRole = "이건 잘 모르겠음";
 
         public Builder userIdx(Long userIdx) {
             this.userIdx = userIdx;
@@ -58,13 +58,13 @@ public class MockUser {
             return this;
         }
 
-        public Builder userRole(String userRole) {
-            this.userRole = userRole;
+        public Builder userCreatedAt(LocalDateTime userCreatedAt) {
+            this.userCreatedAt = userCreatedAt;
             return this;
         }
 
-        public Builder userCreatedAt(LocalDateTime userCreatedAt) {
-            this.userCreatedAt = userCreatedAt;
+        public Builder userRole(String userRole) {
+            this.userRole = userRole;
             return this;
         }
 
@@ -75,9 +75,10 @@ public class MockUser {
                     userNick,
                     userEmail,
                     userPassword,
-                    userCreatedAt,
                     userLocked,
-                    userEnabled
+                    userEnabled,
+                    userCreatedAt,
+                    userRole
             );
         }
     }

@@ -1,6 +1,5 @@
 package org.deco.gachicoding.unit.post.notice.domain;
 
-import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
@@ -11,6 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -23,9 +27,9 @@ public class NoticeRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-//    String notTitle = "공지사항 테스트 제목";
-//    String notContent = "공지사항 테스트 내용";
-//    Boolean notPin = false;
+    String notTitle = "공지사항 테스트 제목";
+    String notContents = "공지사항 테스트 내용";
+    Boolean notPin = false;
 //    Boolean notActivated = true;
 
 //    @BeforeEach
@@ -61,9 +65,13 @@ public class NoticeRepositoryTest {
                 UserFactory.user()
         );
 
-        Notice savedTestNotice = noticeRepository.save(
-                NoticeFactory.notice(savedTestUser)
-        );
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+
+        Notice savedTestNotice = noticeRepository.save(notice);
 
         // when
         Notice savedActualNotice = noticeRepository.findNoticeByIdx(savedTestNotice.getNotIdx())
@@ -73,35 +81,54 @@ public class NoticeRepositoryTest {
         assertThat(savedTestNotice.getNotIdx()).isEqualTo(savedActualNotice.getNotIdx());
     }
 
-//    @Test
-//    void 인덱스로_공지사항_조회() {
-//        Notice testNotice = createNoticeMock();
-//        Long noticeIdx = testNotice.getNotIdx();
-//
-//        Optional<Notice> notice = noticeRepository.findById(noticeIdx);
-//        assertTrue(notice.isPresent());
-//        assertEquals("공지사항 테스트 제목", notice.get().getNotTitle());
-//        assertEquals("공지사항 테스트 내용", notice.get().getNotContent());
-//    }
+    @Test
+    @DisplayName("공지사항을 저장하면 자동으로 생성 날짜가 주입된다.")
+    void save_SavedNoticeWithCreatedDate_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
 
-//    @Test
-//    public void 공지사항_목록_조회() {
-//        String notTitle = "공지사항 목록 테스트 제목 (고양이)";
-//        String notContent = "공지사항 목록 테스트 내용";
-//        Boolean notPin = false;
-//        Boolean notActivated = true;
-//        for(int i = 0; i < 10; i++) {
-//            createNoticeMock(notTitle, notContent, notPin, notActivated);
-//        }
-//
-//        String keyword = "(고양이)";
-//
-//        Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-//
-//        // NumberOfElements 요청 페이지에서 조회 된 데이터의 갯수
-//        assertEquals(10, notice.getTotalElements());
-//    }
-//
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+
+        // when
+        Notice savedTestNotice = noticeRepository.save(notice);
+
+        // then
+        assertThat(savedTestNotice).isNotNull();
+        assertThat(savedTestNotice.getCreatedAt()).isBefore(LocalDateTime.now());
+    }
+
+    @Test
+    @DisplayName("공지사항을 최신순으로 가져온다.")
+    public void find_findAllNoticeByLatestDate_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        for (int i = 0; i < 3; i++) {
+            Notice notice = Notice.builder()
+                    .author(savedTestUser)
+                    .notTitle(notTitle)
+                    .notContents(notContents)
+                    .build();
+
+            noticeRepository.save(notice);
+        }
+
+        // when
+        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword("",PageRequest.of(0, 10));
+
+        // then
+        assertThat(savedTestNotices).isNotNull();
+        assertThat(savedTestNotices.size()).isEqualTo(3);
+    }
+
 //    @Test
 //    public void 인덱스로_공지사항_삭제() {
 //        String notTitle = "공지사항 테스트 제목";

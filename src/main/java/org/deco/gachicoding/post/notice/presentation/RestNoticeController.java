@@ -101,7 +101,7 @@ public class RestNoticeController {
     )
     @PutMapping("/notice/disable/{notIdx}")
     public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
-
+        System.out.println(userEmail);
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 
         noticeService.disableNotice(dto);

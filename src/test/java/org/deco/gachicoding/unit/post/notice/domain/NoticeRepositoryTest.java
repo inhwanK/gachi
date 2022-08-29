@@ -5,7 +5,6 @@ import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +34,7 @@ public class NoticeRepositoryTest {
 
     @Test
     @DisplayName("공지사항을 저장한다.")
-    void save_savedNotice_Success() {
+    void save_saveNotice_Success() {
         // given
         User savedTestUser = userRepository.save(
                 UserFactory.user()
@@ -59,7 +58,7 @@ public class NoticeRepositoryTest {
 
     @Test
     @DisplayName("공지사항을 저장하면 자동으로 생성 날짜가 주입된다.")
-    void save_SavedNoticeWithCreatedDate_Success() {
+    void save_saveNoticeWithCreatedDate_Success() {
         // given
         User savedTestUser = userRepository.save(
                 UserFactory.user()
@@ -106,7 +105,7 @@ public class NoticeRepositoryTest {
     }
 
     @Test
-    @DisplayName("검색어로 공지사항 리스트를 검색한다.")
+    @DisplayName("검색어로 공지사항 리스트를 가져온다.")
     public void find_findAllNoticeByKeyword_Success() {
         // given
         User savedTestUser = userRepository.save(
@@ -218,7 +217,7 @@ public class NoticeRepositoryTest {
 
     @Test
     @DisplayName("인덱스로 공지사항을 삭제한다.")
-    public void delete_deletedNoticeByNoticeIndex_Success() {
+    public void delete_deleteNoticeByNoticeIndex_Success() {
         // given
         User savedTestUser = userRepository.save(
                 UserFactory.user()

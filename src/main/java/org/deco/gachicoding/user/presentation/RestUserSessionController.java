@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api")
 public class RestUserSessionController {
 
-    private final UserService userService;
+
 
     @ApiOperation(value = "유저정보 받기", notes = "임시로 만든 API, 인가 처리 개발되는데로 삭제 예정")
     @ApiResponses(

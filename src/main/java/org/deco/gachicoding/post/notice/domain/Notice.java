@@ -58,7 +58,6 @@ public class Notice extends BaseTimeEntity {
     public static Builder builder() {
         return new Builder();
     }
-
     protected Notice() {}
 
     public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {

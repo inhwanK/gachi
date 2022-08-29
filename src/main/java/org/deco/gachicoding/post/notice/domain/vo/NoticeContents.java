@@ -8,7 +8,7 @@ public class NoticeContents {
 
     public static final int MAXIMUM_CONTENT_LENGTH = 10000;
 
-    @Column
+    @Column(name = "not_contents", columnDefinition = "text", nullable = false)
     private String notContents;
 
     protected NoticeContents() {}

@@ -5,6 +5,7 @@ import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -29,33 +31,7 @@ public class NoticeRepositoryTest {
 
     String notTitle = "공지사항 테스트 제목";
     String notContents = "공지사항 테스트 내용";
-    Boolean notPin = false;
-//    Boolean notActivated = true;
-
-//    @BeforeEach
-//    private void before() {
-//        // Factory를 이용한 생성 패턴으로 변경
-//        User user = User.builder()
-//                .userEmail("test111@test.com")
-//                .userPassword("test1234")
-//                .userName("테스트")
-//                .userNick("testMachine")
-//                .build();
-//
-//        testUser = userRepository.save(user);
-//    }
-//
-//    private Notice createNoticeMock() {
-//        Notice entity = Notice.builder()
-//                .author(testUser)
-//                .notTitle(notTitle)
-//                .notContents(notContent)
-//                .notPin(notPin)
-//                .notLocked(notActivated)
-//                .build();
-//
-//        return noticeRepository.save(entity);
-//    }
+    String keyword = "병아리";
 
     @Test
     @DisplayName("공지사항을 저장한다.")
@@ -104,8 +80,8 @@ public class NoticeRepositoryTest {
     }
 
     @Test
-    @DisplayName("공지사항을 최신순으로 가져온다.")
-    public void find_findAllNoticeByLatestDate_Success() {
+    @DisplayName("공지사항 리스트를 최신순으로 가져온다.")
+    public void find_findAllNoticeByLatestOrder_Success() {
         // given
         User savedTestUser = userRepository.save(
                 UserFactory.user()
@@ -129,47 +105,146 @@ public class NoticeRepositoryTest {
         assertThat(savedTestNotices.size()).isEqualTo(3);
     }
 
-//    @Test
-//    public void 인덱스로_공지사항_삭제() {
-//        String notTitle = "공지사항 테스트 제목";
-//        String notContent = "공지사항 테스트 내용";
-//        Boolean notPin = false;
-//        Boolean notActivated = true;
-//        Long noticeIdx = createNoticeMock(notTitle, notContent, notPin, notActivated);
-//
-//        Optional<Notice> notice = noticeRepository.findById(noticeIdx);
-//
-//        assertTrue(notice.isPresent());
-//
-//        noticeRepository.deleteById(noticeIdx);
-//
-//        notice = noticeRepository.findById(noticeIdx);
-//
-//        assertTrue(notice.isEmpty());
-//    }
-//
-//    @Test
-//    public void 검색어로_공지사항_검색_리스트() {
-//        String notTitle = "공지사항 테스트 제목 고양이 병아리";
-//        String notContent = "공지사항 테스트 내용 강아지 병아리";
-//        Boolean notPin = false;
-//        Boolean notActivated = true;
-//        Long noticeIdx = createNoticeMock(notTitle, notContent, notPin, notActivated);
-//
-//        Optional<Notice> notice = noticeRepository.findById(noticeIdx);
-//
-//        assertTrue(notice.isPresent());
-//
-//        String toFindKeyword = "고양이";
-//
-//        Page<Notice> search_notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(toFindKeyword, toFindKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-//
-//        for (Notice n : search_notice) {
-//            assertEquals(n.getNotTitle(),notTitle);
-//            assertEquals(n.getNotContent(),notContent);
-//            assertEquals(n.getNotPin(),notPin);
-//            assertEquals(n.getNotActivated(),notActivated);
-//        }
-//    }
+    @Test
+    @DisplayName("검색어로 공지사항 리스트를 검색한다.")
+    public void find_findAllNoticeByKeyword_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        for (int i = 0; i < 3; i++) {
+            Notice notice = Notice.builder()
+                    .author(savedTestUser)
+                    .notTitle(notTitle)
+                    .notContents(notContents)
+                    .build();
+
+            noticeRepository.save(notice);
+        }
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle + keyword)
+                .notContents(notContents)
+                .build();
+
+        noticeRepository.save(notice);
+
+        // when
+        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword(keyword,PageRequest.of(0, 10));
+
+        // then
+        assertThat(savedTestNotices).isNotNull();
+        assertThat(savedTestNotices.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("오직 활성화 된 공지사항만 가져온다.")
+    public void find_findNoticeByOnlyEnabled_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .notLocked(true)
+                .build();
+
+        noticeRepository.save(notice);
+
+        // when
+        Notice savedTestNotices = noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+
+        // then
+        assertThat(savedTestNotices).isNotNull();
+        assertThat(savedTestNotices.getNotLocked()).isTrue();
+    }
+
+    @Test
+    @DisplayName("비 활성화 된 공지사항에 접근하면 예외가 발생한다.")
+    public void find_findNoticeByOnlyEnabled_Exception() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .notLocked(false)
+                .build();
+
+        // when
+        noticeRepository.save(notice);
+
+        // then
+        assertThatThrownBy(() ->
+                noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("활성화, 비 활성화 공지사항 무엇이든 가져온다.")
+    public void find_findNoticeByDisabledAndEnable_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .notLocked(false)
+                .build();
+
+        noticeRepository.save(notice);
+
+        // when
+        Notice savedTestNotices = noticeRepository.findNoticeByIdx(notice.getNotIdx())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+
+        // then
+        assertThat(savedTestNotices).isNotNull();
+        assertThat(savedTestNotices.getNotLocked()).isFalse();
+    }
+
+    @Test
+    @DisplayName("인덱스로 공지사항을 삭제한다.")
+    public void delete_deletedNoticeByNoticeIndex_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+
+        Long savedNoticeIdx = noticeRepository.save(notice).getNotIdx();
+
+        // when
+        Notice savedNotice = noticeRepository.findNoticeByIdx(savedNoticeIdx)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+
+        assertThat(savedNotice).isNotNull();
+
+        noticeRepository.delete(savedNotice);
+
+        // then
+        assertThatThrownBy(() ->
+                noticeRepository.findNoticeByIdx(savedNoticeIdx)
+                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."))
+        ).isInstanceOf(IllegalArgumentException.class);
+    }
 
 }

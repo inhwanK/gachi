@@ -8,7 +8,7 @@ public class NoticeTitle {
 
     public static final int MAXIMUM_CONTENT_LENGTH = 100;
 
-    @Column
+    @Column(name = "not_title", columnDefinition = "varchar(255)", nullable = false)
     private String notTitle;
 
     protected NoticeTitle() {}

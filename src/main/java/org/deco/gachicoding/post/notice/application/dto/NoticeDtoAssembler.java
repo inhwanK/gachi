@@ -49,11 +49,12 @@ public class NoticeDtoAssembler {
     private static NoticeResponseDto convertForm(Notice notice) {
         return NoticeResponseDto.builder()
                 .notIdx(notice.getNotIdx())
-                .authorEmail(notice.getAuthorEmail())
-                .authorNick(notice.getAuthorNick())
+                .author(notice.getAuthor())
                 .notTitle(notice.getNotTitle())
                 .notContents(notice.getNotContents())
                 .notViews(notice.getNotViews())
+                .notPin(notice.getNotPin())
+                .notLocked(notice.getNotLocked())
                 .createdAt(notice.getCreatedAt())
                 .updatedAt(notice.getUpdatedAt())
                 .build();

@@ -7,6 +7,7 @@ import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.exception.ApplicationException;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -24,6 +25,8 @@ public class Notice extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "not_idx", columnDefinition = "bigint", nullable = false)
+    @Comment("PK")
     private Long notIdx;
 
     @Embedded
@@ -32,10 +35,13 @@ public class Notice extends BaseTimeEntity {
     @Embedded
     private NoticeContents notContents;
 
+    @Column(name = "not_views", columnDefinition = "bigint default '0'", nullable = false)
     private Long notViews;
 
+    @Column(name = "not_pin", columnDefinition = "boolean default 'false'", nullable = false)
     private Boolean notPin;
 
+    @Column(name = "not_locked", columnDefinition = "boolean default 'true'", nullable = false)
     private Boolean notLocked;
 
     // FetchType.EAGER 즉시 로딩
@@ -52,7 +58,6 @@ public class Notice extends BaseTimeEntity {
     public static Builder builder() {
         return new Builder();
     }
-
     protected Notice() {}
 
     public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {

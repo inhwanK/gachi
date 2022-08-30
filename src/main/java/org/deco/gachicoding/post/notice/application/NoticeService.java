@@ -33,7 +33,7 @@ public class NoticeService {
     String NOTICE = "NOTICE";
 
     @Transactional(rollbackFor = Exception.class)
-    public Long registerNotice(NoticeSaveRequestDto dto) throws Exception {
+    public Long registerNotice(NoticeSaveRequestDto dto) {
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
 

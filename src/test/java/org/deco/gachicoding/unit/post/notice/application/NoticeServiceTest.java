@@ -5,7 +5,9 @@ import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.application.NoticeService;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.user.domain.User;
@@ -15,7 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +51,7 @@ public class NoticeServiceTest {
     @DisplayName("사용자는 공지사항을 작성할 수 있다.")
     void write_writeNoticeWithLoginUser_Success() {
         // given
-        NoticeSaveRequestDto requestDto = NoticeFactory.mockLoginNoticeSaveRequestDto();
+        NoticeSaveRequestDto requestDto = NoticeFactory.mockUserNoticeSaveRequestDto();
         User user = UserFactory.user();
 
         Notice notice = NoticeFactory.mockNotice(1L, user);
@@ -73,9 +78,9 @@ public class NoticeServiceTest {
     @DisplayName("사용자가 아니면 공지사항을 작성할 수 없다.")
     void write_writeNoticeWithGuest_Exception() {
         // given
-        NoticeSaveRequestDto requestDto = NoticeFactory.mockLoginNoticeSaveRequestDto();
+        NoticeSaveRequestDto requestDto = NoticeFactory.mockGuestNoticeSaveRequestDto();
 
-        given(userRepository.findByUserEmail(anyString()))
+        given(userRepository.findByUserEmail(null))
                 .willReturn(Optional.empty());
 
         // assertThatThrownBy vs assertThatCode 비교하기 - Blog
@@ -184,5 +189,40 @@ public class NoticeServiceTest {
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(EMPTY_OR_NULL_CONTENTS);
+    }
+
+    @Test
+    @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항의 목록을 가져온다.")
+    public void read_readAllEnableNoticeList_Success() {
+        // given
+        User user = UserFactory.user();
+        String keyword = "";
+        Pageable pageable = PageRequest.of(0, 10);
+
+        NoticeListRequestDto requestDto = NoticeFactory.mockEmptyKeywordNoticeListRequestDto(keyword, pageable);
+
+        List<Notice> notices = List.of(
+                NoticeFactory.mockNotice(1L, user),
+                NoticeFactory.mockNotice(2L, user),
+                NoticeFactory.mockNotice(3L, user)
+        );
+
+        given(noticeRepository.findAllNoticeByKeyword(keyword, pageable))
+                .willReturn(notices);
+
+        // when
+        List<NoticeResponseDto> responseDtos = noticeService.getNoticeList(requestDto);
+
+        // then
+        assertThat(responseDtos).hasSize(3);
+        
+        // 동등성 비교 : 값만 같은지
+        // 동등성을 비교하기 때문에 값이 같아야 함
+        assertThat(responseDtos)
+                .usingRecursiveComparison()
+                .isEqualTo(notices);
+
+        verify(noticeRepository, times(1))
+                .findAllNoticeByKeyword(keyword, pageable);
     }
 }

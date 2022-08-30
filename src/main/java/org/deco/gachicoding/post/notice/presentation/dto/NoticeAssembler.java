@@ -63,8 +63,8 @@ public class NoticeAssembler {
     public static NoticeResponse noticeResponse(NoticeResponseDto dto) {
         return NoticeResponse.builder()
                 .notIdx(dto.getNotIdx())
-                .authorEmail(dto.getAuthorEmail())
-                .authorNick(dto.getAuthorNick())
+                .authorEmail(dto.getAuthor().getUserEmail())
+                .authorNick(dto.getAuthor().getUserNick())
                 .notTitle(dto.getNotTitle())
                 .notContents(dto.getNotContents())
                 .notViews(dto.getNotViews())
@@ -76,8 +76,8 @@ public class NoticeAssembler {
     private static Function<NoticeResponseDto, NoticeResponse> noticeResponse() {
         return noticeResponseDto -> NoticeResponse.builder()
                 .notIdx(noticeResponseDto.getNotIdx())
-                .authorEmail(noticeResponseDto.getAuthorEmail())
-                .authorNick(noticeResponseDto.getAuthorNick())
+                .authorEmail(noticeResponseDto.getAuthor().getUserEmail())
+                .authorNick(noticeResponseDto.getAuthor().getUserNick())
                 .notTitle(noticeResponseDto.getNotTitle())
                 .notContents(noticeResponseDto.getNotContents())
                 .notViews(noticeResponseDto.getNotViews())

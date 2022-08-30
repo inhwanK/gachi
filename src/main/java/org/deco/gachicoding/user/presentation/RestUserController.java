@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.domain.auth.Auth;
 import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.deco.gachicoding.user.application.UserAuthenticationService;
@@ -23,7 +24,7 @@ import java.util.UUID;
 public class RestUserController {
 
     private final UserService userService;
-    private final SocialService socialService;
+    private final UserRepository userRepository;
     private final UserAuthenticationService userAuthenticationService;
 
 
@@ -33,8 +34,8 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     )
     @GetMapping("/user/regist/check-email")
-    public boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email) {
-        return !userService.isDuplicatedEmail(email);
+    public Boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email) {
+        return !userRepository.existsByUserEmail(email);
     }
 
     /**
@@ -63,14 +64,13 @@ public class RestUserController {
     @GetMapping("/user/authentication-email")
     public boolean authenticateEmail(@ApiParam(value = "유저 이메일로 발송된 인증 토큰") @RequestParam UUID authToken) {
         Auth auth = userAuthenticationService.checkToken(authToken);
-        Optional<User> user = userService.getUserByUserEmail(auth.getAuthEmail());
+        Optional<User> user = userRepository.findByUserEmail(auth.getAuthEmail());
 
         auth.useToken();
         user.get().emailAuthenticated();
 
         return user.get().isUserEnabled();
     }
-
 
     @ApiOperation(value = "회원가입", notes = "회원가입 수행")
     @ApiResponses(
@@ -81,7 +81,7 @@ public class RestUserController {
         return userService.createUser(dto);
     }
 
-    @ApiOperation(value = "유저 정보 업데이트", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
+    @ApiOperation(value = "유저 정보 업데이트 (삭제될 예정)", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
     @ApiResponses(
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )

@@ -35,10 +35,10 @@ public class UserService {
 
         String inputEmail = dto.getUserEmail();
 
-        if (isDuplicatedEmail(inputEmail))
+        if (userRepository.existsByUserEmail(inputEmail))
             throw new DataIntegrityViolationException("중복된 이메일 입니다.");
 
-        String encryptedPassword = encodePassword(dto.getUserPassword());
+        String encryptedPassword = passwordEncoder.encode(dto.getUserPassword());
         dto.setUserPassword(encryptedPassword); // dto 대신 다른 객체를 사용하는 게 좋을 듯?
 
         Long userIdx = userRepository.save(dto.toEntity()).getUserIdx();
@@ -46,10 +46,6 @@ public class UserService {
         log.info("유저 이메일로 바로 인증 메일을 보낼지말지 고민");
 
         return userIdx;
-    }
-
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
     }
 
     @Transactional
@@ -67,15 +63,5 @@ public class UserService {
     public Long deleteUser(Long idx) {
         userRepository.deleteById(idx);
         return idx;
-    }
-
-    @Transactional
-    public boolean isDuplicatedEmail(String userEmail) {
-        return getUserByUserEmail(userEmail).isPresent();
-    }
-
-    @Transactional
-    public Optional<User> getUserByUserEmail(String email) {
-        return userRepository.findByUserEmail(email);
     }
 }

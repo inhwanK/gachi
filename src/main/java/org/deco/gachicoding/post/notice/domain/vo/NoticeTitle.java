@@ -18,6 +18,7 @@ public class NoticeTitle {
     protected NoticeTitle() {}
 
     public NoticeTitle(String notTitle) {
+        validateNullTitle(notTitle);
         validateEmptyTitle(notTitle);
         validateMaximumLength(notTitle);
         this.notTitle = notTitle;
@@ -27,9 +28,14 @@ public class NoticeTitle {
         return notTitle;
     }
 
+    private void validateNullTitle(String notTitle) {
+        if (notTitle == null)
+            throw new ApplicationException(NULL_TITLE);
+    }
+
     private void validateEmptyTitle(String notTitle) {
-        if (notTitle == null || notTitle.isEmpty())
-            throw new ApplicationException(EMPTY_OR_NULL_TITLE);
+        if (notTitle.isEmpty())
+            throw new ApplicationException(EMPTY_TITLE);
     }
 
     private void validateMaximumLength(String notTitle) {

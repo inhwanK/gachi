@@ -18,8 +18,10 @@ public enum StatusEnum {
     /* 400 BAD_REQUEST : 잘못된 요청*/
     MAXIMUM_LENGTH_OVER_TITLE(BAD_REQUEST, "제목의 길이가 제한을 넘었습니다."),
     MAXIMUM_LENGTH_OVER_CONTENTS(BAD_REQUEST, "내용의 길이가 제한을 넘었습니다."),
-    EMPTY_OR_NULL_TITLE(BAD_REQUEST, "제목을 입력해 주세요."),
-    EMPTY_OR_NULL_CONTENTS(BAD_REQUEST, "내용을 입력해 주세요."),
+    NULL_TITLE(BAD_REQUEST, "제목이 널일 수 없습니다."),
+    EMPTY_TITLE(BAD_REQUEST, "제목이 공백일 수 없습니다."),
+    NULL_CONTENTS(BAD_REQUEST, "내용이 널일 수 없습니다."),
+    EMPTY_CONTENTS(BAD_REQUEST, "내용이 공백일 수 없습니다."),
 
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     USER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),

@@ -37,13 +37,13 @@ public class MockNotice {
             return this;
         }
 
-        public  Builder notTitle(NoticeTitle notTitle) {
-            this.notTitle = notTitle;
+        public  Builder notTitle(String notTitle) {
+            this.notTitle = new NoticeTitle(notTitle);
             return this;
         }
 
-        public Builder notContents(NoticeContents notContents) {
-            this.notContents = notContents;
+        public Builder notContents(String notContents) {
+            this.notContents = new NoticeContents(notContents);
             return this;
         }
 

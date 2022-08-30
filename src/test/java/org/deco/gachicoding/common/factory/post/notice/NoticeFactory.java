@@ -4,16 +4,25 @@ import org.deco.gachicoding.post.notice.application.dto.request.NoticeListReques
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 public class NoticeFactory {
     private NoticeFactory() {}
 
-    public static Notice mockNotice(Long notIdx, User author) {
+    public static Notice mockNotice(Long notIdx, User author, Boolean notLocked) {
         return MockNotice.builder()
                 .notIdx(notIdx)
                 .author(author)
+                .notLocked(notLocked)
+                .build();
+    }
+
+    public static Notice mockNotice(Long notIdx, User author, String notTitle, String notContents) {
+        return MockNotice.builder()
+                .notIdx(notIdx)
+                .author(author)
+                .notTitle(notTitle)
+                .notContents(notContents)
                 .build();
     }
 

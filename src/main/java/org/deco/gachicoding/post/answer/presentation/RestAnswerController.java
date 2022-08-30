@@ -38,7 +38,7 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "답변 상세 정보 봔한")
     )
     @GetMapping("/answer/{ansIdx}")
-    public AnswerResponseDto getAnswerDetail(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
+    public AnswerResponseDto getAnswerDetail(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
         return answerService.getAnswerDetail(ansIdx);
     }
 
@@ -67,7 +67,7 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/answer/disable/{ansIdx}")
-    public ResponseEntity<ResponseState> disableAnswer(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
+    public ResponseEntity<ResponseState> disableAnswer(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
         return answerService.disableAnswer(ansIdx);
     }
 
@@ -76,7 +76,7 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/answer/enable/{ansIdx}")
-    public ResponseEntity<ResponseState> enableAnswer(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
+    public ResponseEntity<ResponseState> enableAnswer(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
         return answerService.enableAnswer(ansIdx);
     }
 
@@ -85,7 +85,7 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/answer/{ansIdx}")
-    public ResponseEntity<ResponseState> removeAnswer(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
+    public ResponseEntity<ResponseState> removeAnswer(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
         return answerService.removeAnswer(ansIdx);
     }
 }

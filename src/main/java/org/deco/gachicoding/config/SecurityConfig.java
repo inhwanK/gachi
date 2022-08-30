@@ -30,6 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+// 인가 정보 반환 기능 https://offbyone.tistory.com/217
 // 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
 @EnableWebSecurity(debug = false)
@@ -78,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .logout()
-                .logoutUrl("/logout")
+                .logoutUrl("/api/logout")
                 .logoutSuccessUrl("/") // 임시로 설정한 URL 프론트와 협의
                 .addLogoutHandler(new SecurityContextLogoutHandler());
     }

@@ -5,24 +5,25 @@ import org.deco.gachicoding.user.application.UserService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.mockito.BDDMockito.*;
 
 // 서비스 테스트에서 비즈니스 로직에서 발생할 수 있는 예외 상황의 테스트를 진행한다
-@ExtendWith(SpringExtension.class)
-@SpringBootTest
+@ExtendWith(MockitoExtension.class)
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class UserServiceTest {
 
-    @Autowired
-    UserService userService;
-
+    @Mock
+    private UserService userService;
 
     @Test
     @DisplayName("UserService - 회원가입 테스트")
-    void JoinUser() {
-        // Given
+    void createUser_Success() {
+
+//        given(userService.createUser());
+
         /*
         UserSaveRequestDto userSaveRequestDto = new UserSaveRequestDto();
         userSaveRequestDto.setEmail("ay9564@naver.com");

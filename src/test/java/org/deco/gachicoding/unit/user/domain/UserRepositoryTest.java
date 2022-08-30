@@ -17,7 +17,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Slf4j
 @DataJpaTest // JPA 에 관련된 의존성 제공, 자동으로 롤백
 public class UserRepositoryTest {
 
@@ -35,11 +34,7 @@ public class UserRepositoryTest {
                 .userEmail("inhan1009@naver.com")
                 .build();
 
-
         userRepository.save(user);
-
-//        testEntityManager.flush();
-//        testEntityManager.clear();
     }
 
     @DisplayName("유저 이메일로 유저를 조회한다.")

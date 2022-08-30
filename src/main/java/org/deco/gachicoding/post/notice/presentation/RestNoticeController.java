@@ -70,7 +70,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "공지사항 상세 정보 반환")
     )
     @GetMapping("/notice/{notIdx}")
-    public ResponseEntity<NoticeResponse> getNoticeDetail(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx) {
+    public ResponseEntity<NoticeResponse> getNoticeDetail(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx) {
 
         NoticeDetailRequestDto dto = NoticeAssembler.noticeDetailDto(notIdx);
 
@@ -84,7 +84,8 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     )
     @PutMapping("/notice/modify/{notIdx}")
-    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
+    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
+                                                                @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
 
         NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
 
@@ -100,7 +101,8 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/notice/disable/{notIdx}")
-    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> disableNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
+                                                       @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
 
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 
@@ -115,7 +117,8 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/notice/enable/{notIdx}")
-    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> enableNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
+                                                      @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
 
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 
@@ -130,7 +133,8 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/notice/remove/{notIdx}")
-    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호") @PathVariable Long notIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> removeNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
+                                                      @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
 
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 

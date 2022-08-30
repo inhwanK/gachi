@@ -86,7 +86,7 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
     @PutMapping("/user/{userIdx}")
-    public Long updateUser(@ApiParam(value = "수정할 유저의 번호") @PathVariable Long userIdx,
+    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx,
                            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
         return userService.updateUser(userIdx, dto);
     }
@@ -96,7 +96,7 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     )
     @DeleteMapping("/user/{userIdx}")
-    public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호") @PathVariable Long userIdx) {
+    public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호", example = "1") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);
     }
 }

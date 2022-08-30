@@ -53,7 +53,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "질문 상세 정보 반환")
     )
     @GetMapping("/question/{queIdx}")
-    public QuestionDetailPostResponseDto getQuestionDetail(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
+    public QuestionDetailPostResponseDto getQuestionDetail(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
         return questionService.getQuestionDetail(queIdx);
     }
 
@@ -71,7 +71,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/question/disable/{queIdx}")
-    public ResponseEntity<ResponseState> disableQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
+    public ResponseEntity<ResponseState> disableQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
         return questionService.disableQuestion(queIdx);
     }
 
@@ -80,7 +80,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/question/enable/{queIdx}")
-    public ResponseEntity<ResponseState> enableQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
+    public ResponseEntity<ResponseState> enableQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
         return questionService.enableQuestion(queIdx);
     }
 
@@ -89,7 +89,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/question/{queIdx}")
-    public ResponseEntity<ResponseState> removeQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
+    public ResponseEntity<ResponseState> removeQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
         return questionService.removeQuestion(queIdx);
     }
 }

@@ -63,7 +63,7 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
     )
     @GetMapping("/board/{boardIdx}")
-    public ResponseEntity<BoardResponse> getBoardDetail(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx) {
+    public ResponseEntity<BoardResponse> getBoardDetail(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx) {
 
         BoardDetailRequestDto dto = BoardAssembler.boardDetailRequestDto(boardIdx);
 
@@ -77,7 +77,8 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     )
     @PutMapping("/board/modify/{boardIdx}")
-    public ResponseEntity<BoardResponse> modifyBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx, @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request) {
+    public ResponseEntity<BoardResponse> modifyBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+                                                     @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request) {
 
         BoardUpdateRequestDto dto = BoardAssembler.boardUpdateRequestDto(boardIdx, request);
 
@@ -91,7 +92,8 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/board/disable/{boardIdx}")
-    public ResponseEntity<ResponseState> disableBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> disableBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+                                                      @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
 
         BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
 
@@ -105,7 +107,8 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/board/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> enableBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+                                                     @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
         BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
 
         boardService.enableBoard(dto);
@@ -118,7 +121,8 @@ public class RestBoardController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/board/{boardIdx}")
-    public ResponseEntity<ResponseState> removeBoard(@ApiParam(value = "게시판 번호") @PathVariable Long boardIdx, @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+    public ResponseEntity<ResponseState> removeBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+                                                     @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
         BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
 
         boardService.removeBoard(dto);

@@ -59,7 +59,7 @@ public class UserAuthenticationService implements UserDetailsService {
 //        List<GrantedAuthority> roles = new ArrayList<>();
 //        roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 유저 롤을 다시 적용해야함.
 
-        UserDetails userDetails = new UserAuthenticationDto(user.getUserEmail(), user.getUserPassword());
+        UserDetails userDetails = new UserAuthenticationDto(user.getUserEmail(), user.getUserPassword(), user.getUserNick());
 
         return userDetails;
     }

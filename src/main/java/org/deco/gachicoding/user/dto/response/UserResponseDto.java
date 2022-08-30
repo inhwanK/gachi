@@ -31,4 +31,9 @@ public class UserResponseDto {
         this.userLocked = user.isUserLocked();
         this.userEnabled = user.isUserEnabled();
     }
+
+    public UserResponseDto(String userEmail, String userNick) {
+        this.userEmail = userEmail;
+        this.userNick = userNick;
+    }
 }

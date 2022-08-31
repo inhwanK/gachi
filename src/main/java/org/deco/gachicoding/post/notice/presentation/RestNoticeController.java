@@ -83,18 +83,32 @@ public class RestNoticeController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     )
-    @PutMapping("/notice/modify/{notIdx}")
-    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
-                                                                @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
+    @PutMapping("/notice/modify")
+    public ResponseEntity<NoticeResponse> modifyNotice(@ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
 
-        NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
+        NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(request);
 
-        noticeService.modifyNotice(dto);
+        NoticeResponse response = NoticeAssembler.noticeResponse(noticeService.modifyNotice(dto));
 
-        String redirectUrl = String.format(REDIRECT_URL, notIdx);
-
-        return ResponseEntity.created(URI.create(redirectUrl)).build();
+        return ResponseEntity.ok(response);
     }
+
+//    @ApiOperation(value = "공지사항 수정")
+//    @ApiResponses(
+//            @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
+//    )
+//    @PutMapping("/notice/modify/{notIdx}")
+//    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
+//                                                                @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
+//
+//        NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
+//
+//        noticeService.modifyNotice(dto);
+//
+//        String redirectUrl = String.format(REDIRECT_URL, notIdx);
+//
+//        return ResponseEntity.created(URI.create(redirectUrl)).build();
+//    }
 
     @ApiOperation(value = "공지사항 비활성화")
     @ApiResponses(

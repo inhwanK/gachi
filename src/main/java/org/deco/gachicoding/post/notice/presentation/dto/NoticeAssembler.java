@@ -19,7 +19,8 @@ public class NoticeAssembler {
         return NoticeSaveRequestDto.builder()
                 .userEmail(request.getUserEmail())
                 .notTitle(request.getNotTitle())
-                .notContents(request.getNotContents())
+                .notContents(request.getNotContent())
+//                .notContents(request.getNotContents())
                 .notPin(request.getNotPin())
                 .tags(request.getTags())
                 .build();
@@ -44,14 +45,23 @@ public class NoticeAssembler {
                 .collect(Collectors.toList());
     }
 
-    public static NoticeUpdateRequestDto noticeUpdateRequestDto(Long notIdx, NoticeUpdateRequest request) {
+    public static NoticeUpdateRequestDto noticeUpdateRequestDto(NoticeUpdateRequest request) {
         return NoticeUpdateRequestDto.builder()
                 .userEmail(request.getUserEmail())
-                .notIdx(notIdx)
+                .notIdx(request.getNotIdx())
                 .notTitle(request.getNotTitle())
                 .notContents(request.getNotContents())
                 .build();
     }
+
+//    public static NoticeUpdateRequestDto noticeUpdateRequestDto(Long notIdx, NoticeUpdateRequest request) {
+//        return NoticeUpdateRequestDto.builder()
+//                .userEmail(request.getUserEmail())
+//                .notIdx(notIdx)
+//                .notTitle(request.getNotTitle())
+//                .notContents(request.getNotContents())
+//                .build();
+//    }
 
     public static NoticeBasicRequestDto noticeBasicRequestDto(Long notIdx, String userEmail) {
         return NoticeBasicRequestDto.builder()
@@ -68,6 +78,7 @@ public class NoticeAssembler {
                 .notTitle(dto.getNotTitle())
                 .notContents(dto.getNotContents())
                 .notViews(dto.getNotViews())
+                .notPin(dto.getNotPin())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();
@@ -81,6 +92,7 @@ public class NoticeAssembler {
                 .notTitle(noticeResponseDto.getNotTitle())
                 .notContents(noticeResponseDto.getNotContents())
                 .notViews(noticeResponseDto.getNotViews())
+                .notPin(noticeResponseDto.getNotPin())
                 .createdAt(noticeResponseDto.getCreatedAt())
                 .updatedAt(noticeResponseDto.getUpdatedAt())
                 .build();

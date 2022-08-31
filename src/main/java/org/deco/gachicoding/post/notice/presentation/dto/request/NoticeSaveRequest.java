@@ -19,7 +19,11 @@ public class NoticeSaveRequest {
 
     @NotNull
     @ApiModelProperty(value = "공지사항 내용", required = true, example = "안녕하세요 운영자A입니다.")
-    private String notContents;
+    private String notContent;
+
+//    @NotNull
+//    @ApiModelProperty(value = "공지사항 내용", required = true, example = "안녕하세요 운영자A입니다.")
+//    private String notContents;
 
     @Nullable
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")

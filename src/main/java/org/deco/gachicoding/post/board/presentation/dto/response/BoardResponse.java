@@ -11,15 +11,20 @@ import java.util.List;
 public class BoardResponse {
 
     private Long boardIdx;
-    private String authorEmail;
-    private String authorNick;
+
+    private String userEmail;
+    private String userNick;
+
+//    private String authorEmail;
+//    private String authorNick;
 
     private String boardTitle;
-    private String boardContents;
-    private String boardCategory;
+    private String boardContent;
+//    private String boardContents;
+//    private String boardCategory;
     private Long boardViews;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime boardRegdate;
+//    private LocalDateTime updateAt;
 
     //    private List<FileResponseDto> files;
     private List<TagResponseDto> tags;
@@ -28,14 +33,19 @@ public class BoardResponse {
     public BoardResponse(Long boardIdx, String authorEmail, String authorNick, String boardTitle, String boardContents, String boardCategory, Long boardViews, LocalDateTime createAt, LocalDateTime updateAt) {
         this.boardIdx = boardIdx;
 
-        this.authorEmail = authorEmail;
-        this.authorNick = authorNick;
+        this.userEmail = authorEmail;
+        this.userNick = authorNick;
+
+//        this.authorEmail = authorEmail;
+//        this.authorNick = authorNick;
 
         this.boardTitle = boardTitle;
-        this.boardContents = boardContents;
-        this.boardCategory = boardCategory;
+        this.boardContent = boardContents;
+//        this.boardContents = boardContents;
+//        this.boardCategory = boardCategory;
         this.boardViews = boardViews;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
+        this.boardRegdate = createAt;
+//        this.createAt = createAt;
+//        this.updateAt = updateAt;
     }
 }

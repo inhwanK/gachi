@@ -54,7 +54,7 @@ public class NoticeServiceTest {
         NoticeSaveRequestDto requestDto = NoticeFactory.mockUserNoticeSaveRequestDto();
         User user = UserFactory.user();
 
-        Notice notice = NoticeFactory.mockNotice(1L, user);
+        Notice notice = NoticeFactory.mockNotice(1L, user, null);
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -102,7 +102,7 @@ public class NoticeServiceTest {
 //    }
 
     @Test
-    @DisplayName("제목의 길이가 500보다 크면 공지사항을 등록할 수 없다.")
+    @DisplayName("제목의 길이가 100보다 크면 공지사항을 등록할 수 없다.")
     public void write_writeMaximumLengthOverTitle_Exception() {
         // given
         User user = UserFactory.user();
@@ -112,7 +112,7 @@ public class NoticeServiceTest {
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
                 .userEmail(user.getUserEmail())
-                .notTitle("a".repeat(501))
+                .notTitle("a".repeat(101))
                 .notContents("테스트 공지사항 내용")
                 .build();
 
@@ -136,7 +136,7 @@ public class NoticeServiceTest {
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
                 .userEmail(user.getUserEmail())
                 .notTitle("테스트 공지사항 제목")
-                .notContents("테스트 공지사항 내용".repeat(1000))
+                .notContents("a".repeat(10001))
                 .build();
 
         // when
@@ -148,7 +148,29 @@ public class NoticeServiceTest {
     }
 
     @Test
-    @DisplayName("제목이 없으면 공지사항을 등록할 수 없다.")
+    @DisplayName("제목이 널이면 공지사항을 등록할 수 없다.")
+    public void write_writeNullTitle_Exception() {
+        // given
+        User user = UserFactory.user();
+
+        given(userRepository.findByUserEmail(anyString()))
+                .willReturn(Optional.of(user));
+
+        NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
+                .userEmail(user.getUserEmail())
+                .notContents("테스트 공지사항 내용")
+                .build();
+
+        // when
+        // then
+        assertThatCode(() -> noticeService.registerNotice(requestDto))
+                .isInstanceOf(ApplicationException.class)
+                .extracting("statusEnum")
+                .isEqualTo(NULL_TITLE);
+    }
+
+    @Test
+    @DisplayName("제목이 공맥면 공지사항을 등록할 수 없다.")
     public void write_writeEmptyTitle_Exception() {
         // given
         User user = UserFactory.user();
@@ -158,7 +180,8 @@ public class NoticeServiceTest {
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
                 .userEmail(user.getUserEmail())
-                .notContents("테스트 공지사항 내용".repeat(1000))
+                .notTitle("")
+                .notContents("테스트 공지사항 내용")
                 .build();
 
         // when
@@ -166,12 +189,12 @@ public class NoticeServiceTest {
         assertThatCode(() -> noticeService.registerNotice(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(EMPTY_OR_NULL_TITLE);
+                .isEqualTo(EMPTY_TITLE);
     }
 
     @Test
-    @DisplayName("내용이 없으면 공지사항을 등록할 수 없다.")
-    public void write_writeEmptyContents_Exception() {
+    @DisplayName("내용이 널이면 공지사항을 등록할 수 없다.")
+    public void write_writeNullContents_Exception() {
         // given
         User user = UserFactory.user();
 
@@ -188,7 +211,30 @@ public class NoticeServiceTest {
         assertThatCode(() -> noticeService.registerNotice(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(EMPTY_OR_NULL_CONTENTS);
+                .isEqualTo(NULL_CONTENTS);
+    }
+
+    @Test
+    @DisplayName("내용이 공백이면 공지사항을 등록할 수 없다.")
+    public void write_writeEmptyContents_Exception() {
+        // given
+        User user = UserFactory.user();
+
+        given(userRepository.findByUserEmail(anyString()))
+                .willReturn(Optional.of(user));
+
+        NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
+                .userEmail(user.getUserEmail())
+                .notTitle("테스트 공지사항 제목")
+                .notContents("")
+                .build();
+
+        // when
+        // then
+        assertThatCode(() -> noticeService.registerNotice(requestDto))
+                .isInstanceOf(ApplicationException.class)
+                .extracting("statusEnum")
+                .isEqualTo(EMPTY_CONTENTS);
     }
 
     @Test
@@ -202,9 +248,9 @@ public class NoticeServiceTest {
         NoticeListRequestDto requestDto = NoticeFactory.mockEmptyKeywordNoticeListRequestDto(keyword, pageable);
 
         List<Notice> notices = List.of(
-                NoticeFactory.mockNotice(1L, user),
-                NoticeFactory.mockNotice(2L, user),
-                NoticeFactory.mockNotice(3L, user)
+                NoticeFactory.mockNotice(1L, user, null),
+                NoticeFactory.mockNotice(2L, user, null),
+                NoticeFactory.mockNotice(3L, user, null)
         );
 
         given(noticeRepository.findAllNoticeByKeyword(keyword, pageable))

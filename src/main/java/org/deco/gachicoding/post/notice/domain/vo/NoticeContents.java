@@ -18,6 +18,7 @@ public class NoticeContents {
     protected NoticeContents() {}
 
     public NoticeContents(String notContents) {
+        validateNullContents(notContents);
         validateEmptyContents(notContents);
         validateMaximumLength(notContents);
         this.notContents = notContents;
@@ -27,9 +28,14 @@ public class NoticeContents {
         return notContents;
     }
 
+    private void validateNullContents(String notContents) {
+        if (notContents == null)
+            throw new ApplicationException(NULL_CONTENTS);
+    }
+
     private void validateEmptyContents(String notContents) {
-        if (notContents == null || notContents.isEmpty())
-            throw new ApplicationException(EMPTY_OR_NULL_CONTENTS);
+        if (notContents.isEmpty())
+            throw new ApplicationException(EMPTY_CONTENTS);
     }
 
     private void validateMaximumLength(String notContents) {

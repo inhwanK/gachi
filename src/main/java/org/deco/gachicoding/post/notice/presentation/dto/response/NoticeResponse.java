@@ -11,26 +11,36 @@ import java.time.LocalDateTime;
 public class NoticeResponse {
     private Long notIdx;
 
-    private String authorEmail;
-    private String authorNick;
+    private String userEmail;
+    private String userNick;
+
+//    private String authorEmail;
+//    private String authorNick;
 
     private String notTitle;
     private String notContent;
+    private Boolean notPin;
     private Long notViews;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime notRegdate;
+//    private LocalDateTime createdAt;
+//    private LocalDateTime updatedAt;
 
     @Builder
-    public NoticeResponse(Long notIdx, String authorEmail, String authorNick, String notTitle, String notContents, Long notViews, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public NoticeResponse(Long notIdx, String authorEmail, String authorNick, String notTitle, String notContents, Long notViews, Boolean notPin, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.notIdx = notIdx;
 
-        this.authorEmail = authorEmail;
-        this.authorNick = authorNick;
+        this.userEmail = authorEmail;
+        this.userNick = authorNick;
+
+//        this.authorEmail = authorEmail;
+//        this.authorNick = authorNick;
 
         this.notTitle = notTitle;
         this.notContent = notContents;
         this.notViews = notViews;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.notPin = notPin;
+        this.notRegdate = createdAt;
+//        this.createdAt = createdAt;
+//        this.updatedAt = updatedAt;
     }
 }

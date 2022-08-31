@@ -8,7 +8,6 @@ import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.application.dto.NoticeDtoAssembler;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -98,7 +97,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public NoticeUpdateResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
+    public NoticeResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
         Notice notice = findEnableNotice(dto.getNotIdx());
 
         User user = findAuthor(dto.getUserEmail());
@@ -109,7 +108,7 @@ public class NoticeService {
 
         notice.updateContent(dto.getNotContents());
 
-        return NoticeDtoAssembler.noticeUpdateResponseDto(notice);
+        return NoticeDtoAssembler.noticeResponseDto(notice);
     }
 
     // 활성 -> 비활성

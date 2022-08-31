@@ -76,16 +76,30 @@ public class RestBoardController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     )
-    @PutMapping("/board/modify/{boardIdx}")
-    public ResponseEntity<BoardResponse> modifyBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
-                                                     @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request) {
+    @PutMapping("/board/modify")
+    public ResponseEntity<BoardResponse> modifyBoard(@ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request) {
 
-        BoardUpdateRequestDto dto = BoardAssembler.boardUpdateRequestDto(boardIdx, request);
+        BoardUpdateRequestDto dto = BoardAssembler.boardUpdateRequestDto(request);
 
         BoardResponse response = BoardAssembler.boardResponse(boardService.modifyBoard(dto));
 
         return ResponseEntity.ok(response);
     }
+
+//    @ApiOperation(value = "자유게시판 게시글 수정")
+//    @ApiResponses(
+//            @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
+//    )
+//    @PutMapping("/board/modify/{boardIdx}")
+//    public ResponseEntity<BoardResponse> modifyBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+//                                                     @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request) {
+//
+//        BoardUpdateRequestDto dto = BoardAssembler.boardUpdateRequestDto(boardIdx, request);
+//
+//        BoardResponse response = BoardAssembler.boardResponse(boardService.modifyBoard(dto));
+//
+//        return ResponseEntity.ok(response);
+//    }
 
     @ApiOperation(value = "자유게시판 게시글 비활성화")
     @ApiResponses(

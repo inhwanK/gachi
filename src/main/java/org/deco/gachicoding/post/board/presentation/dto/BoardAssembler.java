@@ -26,9 +26,9 @@ public class BoardAssembler {
         return BoardSaveRequestDto.builder()
                 .userEmail(request.getUserEmail())
                 .boardTitle(request.getBoardTitle())
-                .boardContents(request.getBoardContents())
-                .boardCategory(request.getBoardCategory())
-                .boardViews(request.getBoardViews())
+                .boardContents(request.getBoardContent())
+//                .boardContents(request.getBoardContents())
+//                .boardCategory(request.getBoardCategory())
                 .build();
     }
 
@@ -58,14 +58,23 @@ public class BoardAssembler {
                 .build();
     }
 
-    public static BoardUpdateRequestDto boardUpdateRequestDto(Long boardIdx, BoardUpdateRequest request) {
+    public static BoardUpdateRequestDto boardUpdateRequestDto(BoardUpdateRequest request) {
         return BoardUpdateRequestDto.builder()
-                .boardIdx(boardIdx)
+                .boardIdx(request.getBoardIdx())
                 .userEmail(request.getUserEmail())
                 .boardTitle(request.getBoardTitle())
                 .boardContents(request.getBoardContents())
                 .build();
     }
+
+//    public static BoardUpdateRequestDto boardUpdateRequestDto(Long boardIdx, BoardUpdateRequest request) {
+//        return BoardUpdateRequestDto.builder()
+//                .boardIdx(boardIdx)
+//                .userEmail(request.getUserEmail())
+//                .boardTitle(request.getBoardTitle())
+//                .boardContents(request.getBoardContents())
+//                .build();
+//    }
 
     public static List<BoardResponse> boardResponses(List<BoardResponseDto> boardResponseDtos) {
         return boardResponseDtos.stream()

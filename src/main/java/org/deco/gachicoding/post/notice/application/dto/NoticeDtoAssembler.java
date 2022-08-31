@@ -33,18 +33,18 @@ public class NoticeDtoAssembler {
         return convertForm(notice);
     }
 
-    public static NoticeUpdateResponseDto noticeUpdateResponseDto(Notice notice) {
-        return NoticeUpdateResponseDto.builder()
-                .notIdx(notice.getNotIdx())
-                .authorEmail(notice.getAuthorEmail())
-                .authorNick(notice.getAuthorNick())
-                .notTitle(notice.getNotTitle())
-                .notContents(notice.getNotContents())
-                .notViews(notice.getNotViews())
-                .createdAt(notice.getCreatedAt())
-                .updatedAt(notice.getUpdatedAt())
-                .build();
-    }
+//    public static NoticeUpdateResponseDto noticeUpdateResponseDto(Notice notice) {
+//        return NoticeUpdateResponseDto.builder()
+//                .notIdx(notice.getNotIdx())
+//                .authorEmail(notice.getAuthorEmail())
+//                .authorNick(notice.getAuthorNick())
+//                .notTitle(notice.getNotTitle())
+//                .notContents(notice.getNotContents())
+//                .notViews(notice.getNotViews())
+//                .createdAt(notice.getCreatedAt())
+//                .updatedAt(notice.getUpdatedAt())
+//                .build();
+//    }
 
     private static NoticeResponseDto convertForm(Notice notice) {
         return NoticeResponseDto.builder()

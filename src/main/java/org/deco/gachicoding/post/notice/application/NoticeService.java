@@ -93,12 +93,20 @@ public class NoticeService {
 
 //        tagService.getTags(notIdx, NOTICE, noticeDetail);
 
-        return NoticeDtoAssembler.noticeResponseDto(findEnableNotice(dto.getNotIdx()));
+        Notice notice = findNotice(dto.getNotIdx());
+
+        if (!notice.getNotLocked())
+            throw new ApplicationException(INACTIVE_RESOURCE);
+
+        return NoticeDtoAssembler.noticeResponseDto(notice);
     }
 
     @Transactional
     public NoticeResponseDto modifyNotice(NoticeUpdateRequestDto dto) {
-        Notice notice = findEnableNotice(dto.getNotIdx());
+        Notice notice = findNotice(dto.getNotIdx());
+
+        if (!notice.getNotLocked())
+            throw new ApplicationException(INACTIVE_RESOURCE);
 
         User user = findAuthor(dto.getUserEmail());
 
@@ -144,11 +152,6 @@ public class NoticeService {
         notice.hasSameAuthor(user);
 
         noticeRepository.delete(notice);
-    }
-
-    private Notice findEnableNotice(Long notIdx) {
-        return noticeRepository.findEnableNoticeByIdx(notIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
     }
 
     private Notice findNotice(Long notIdx) {

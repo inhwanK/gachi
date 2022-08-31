@@ -1,7 +1,6 @@
 package org.deco.gachicoding.common.factory.post.notice;
 
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.data.domain.Pageable;
@@ -17,12 +16,13 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static Notice mockNotice(Long notIdx, User author, String notTitle, String notContents) {
+    public static Notice mockNotice(Long notIdx, User author, String notTitle, String notContents, Boolean notLocked) {
         return MockNotice.builder()
                 .notIdx(notIdx)
                 .author(author)
                 .notTitle(notTitle)
                 .notContents(notContents)
+                .notLocked(notLocked)
                 .build();
     }
 
@@ -43,16 +43,32 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static NoticeListRequestDto mockEmptyKeywordNoticeListRequestDto(Pageable pageable) {
+    public static NoticeListRequestDto mockNoticeListRequestDto(String keyword, Pageable pageable) {
         return NoticeListRequestDto.builder()
+                .keyword(keyword)
                 .pageable(pageable)
                 .build();
     }
 
-    public static NoticeListRequestDto mockEmptyKeywordNoticeListRequestDto(String keyword, Pageable pageable) {
-        return NoticeListRequestDto.builder()
-                .keyword(keyword)
-                .pageable(pageable)
+    public static NoticeDetailRequestDto mockNoticeDetailRequestDto(Long notIdx) {
+        return NoticeDetailRequestDto.builder()
+                .notIdx(notIdx)
+                .build();
+    }
+
+    public static NoticeUpdateRequestDto mockNoticeUpdateRequestDto(String userEmail, Long notIdx, String notTitle, String notContents) {
+        return NoticeUpdateRequestDto.builder()
+                .userEmail(userEmail)
+                .notIdx(notIdx)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+    }
+
+    public static NoticeBasicRequestDto mockNoticeBasicRequestDto(String userEmail, Long notIdx) {
+        return NoticeBasicRequestDto.builder()
+                .userEmail(userEmail)
+                .notIdx(notIdx)
                 .build();
     }
 }

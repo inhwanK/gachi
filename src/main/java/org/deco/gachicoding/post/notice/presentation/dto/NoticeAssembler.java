@@ -22,7 +22,7 @@ public class NoticeAssembler {
                 .notContents(request.getNotContent())
 //                .notContents(request.getNotContents())
                 .notPin(request.getNotPin())
-                .tags(request.getTags())
+//                .tags(request.getTags())
                 .build();
     }
 

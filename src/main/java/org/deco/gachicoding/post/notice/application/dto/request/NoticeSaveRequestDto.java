@@ -26,20 +26,20 @@ public class NoticeSaveRequestDto {
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
     private Boolean notPin;
 
-    @Nullable
-    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
-    private List<String> tags;
+//    @Nullable
+//    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
+//    private List<String> tags;
 
     @Builder
-    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContents, Boolean notPin, List<String> tags) {
+    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContents, Boolean notPin/*, List<String> tags*/) {
         this.userEmail = userEmail;
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notPin = notPin;
-        this.tags = tags;
+//        this.tags = tags;
     }
 
-    public boolean isNullTags() {
-        return (tags == null || tags.isEmpty()) ? true : false;
-    }
+//    public boolean isNullTags() {
+//        return (tags == null || tags.isEmpty()) ? true : false;
+//    }
 }

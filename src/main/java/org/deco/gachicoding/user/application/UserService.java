@@ -4,17 +4,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.user.dto.request.LoginRequestDto;
-import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -48,13 +45,17 @@ public class UserService {
         return userIdx;
     }
 
+    // 기능별 분리 필요
     @Transactional
     public Long updateUser(Long idx, UserUpdateRequestDto dto) {
 
-        User user = userRepository.findById(idx)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. 회원 번호 = " + idx));
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserLocked(), dto.isUserEnabled());
+        User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        String encoded = passwordEncoder.encode(dto.getUserPassword());
+        user.update(dto.getUserNick(), encoded, dto.isUserLocked(), dto.isUserEnabled());
 
         return idx;
     }

@@ -2,14 +2,16 @@ package org.deco.gachicoding.user.presentation;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.auth.Auth;
+import org.deco.gachicoding.user.application.UserAuthenticationService;
+import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
-import org.deco.gachicoding.user.application.UserAuthenticationService;
-import org.deco.gachicoding.service.SocialService;
-import org.deco.gachicoding.user.application.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -21,6 +23,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class RestUserController {
 
     private final UserService userService;
@@ -85,9 +88,13 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
+    @PreAuthorize("hasRole('ROLE_USER')") // 와 대박
+//  and 'inhan1009@naver.com' == authentication.name"
     @PutMapping("/user/{userIdx}")
-    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx,
+    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx, // 딱히 필요 없을 수 있음.
                            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
+
+        log.info("{}", SecurityContextHolder.getContext().getAuthentication().getName());
         return userService.updateUser(userIdx, dto);
     }
 

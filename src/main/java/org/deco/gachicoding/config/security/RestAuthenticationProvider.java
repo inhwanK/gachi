@@ -2,6 +2,7 @@ package org.deco.gachicoding.config.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +23,7 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String loginEmail = (String) authentication.getPrincipal();
+        String loginEmail = authentication.getName();
         String password = (String) authentication.getCredentials();
 
         log.info("인증 시도 유저 이메일 - {}, 인증 시도 유저 비밀번호 - {}", loginEmail, password);

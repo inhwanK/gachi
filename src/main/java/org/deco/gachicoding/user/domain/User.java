@@ -4,9 +4,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -45,13 +45,13 @@ public class User {
     private boolean userEnabled;
 
     @Column(nullable = false, updatable = false)
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime userCreatedAt;
 
     @Column(nullable = false)
     @ColumnDefault("\'ROLE_USER\'")
-    private String userRole;
+    @Enumerated(EnumType.STRING)
+    private RoleType userRole;
 
     @Builder
     public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled) {
@@ -64,7 +64,7 @@ public class User {
         this.userEnabled = userEnabled;
     }
 
-    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, String userRole) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, RoleType userRole) {
         this.userIdx = userIdx;
         this.userName = userName;
         this.userNick = userNick;

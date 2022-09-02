@@ -1,5 +1,6 @@
 package org.deco.gachicoding.common.factory.user;
 
+import org.deco.gachicoding.user.domain.RoleType;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ public class MockUser {
         private boolean userLocked = true;
         private boolean userEnabled = true;
         private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
-        private String userRole = "ROLE_USER";
+        private RoleType userRole = RoleType.ROLE_USER;
 
         public Builder userIdx(Long userIdx) {
             this.userIdx = userIdx;
@@ -63,7 +64,7 @@ public class MockUser {
             return this;
         }
 
-        public Builder userRole(String userRole) {
+        public Builder userRole(RoleType userRole) {
             this.userRole = userRole;
             return this;
         }

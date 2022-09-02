@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,6 +35,7 @@ import java.util.Arrays;
 // 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
 @EnableWebSecurity(debug = false)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -64,10 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().configurationSource(corsConfigurationSource())
         .and()
                 .csrf().disable()
-                .headers().frameOptions().disable()
-        .and()
-                .authorizeRequests().antMatchers("/", "/swagger-ui.html")
-                .permitAll();
+                .headers().frameOptions().disable();
 
         http
                 .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);

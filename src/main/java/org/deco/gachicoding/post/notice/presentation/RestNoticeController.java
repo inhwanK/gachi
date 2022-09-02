@@ -7,7 +7,6 @@ import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.post.notice.presentation.dto.NoticeAssembler;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeUpdateRequest;

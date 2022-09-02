@@ -29,6 +29,7 @@ import static org.deco.gachicoding.exception.StatusEnum.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -920,6 +921,113 @@ public class NoticeServiceTest {
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(ALREADY_ACTIVE);
+
+        verify(noticeRepository, times(1))
+                .findNoticeByIdx(anyLong());
+        verify(userRepository, times(1))
+                .findByUserEmail(anyString());
+    }
+
+    @Test
+    @DisplayName("사용자는 공지사항을 삭제한다.")
+    public void delete_deleteAuthorMe_Success() {
+        // given
+        Long notIdx = 1L;
+        User user = UserFactory.user();
+
+        Notice notice = NoticeFactory.mockNotice(notIdx, user, true);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+
+        given(noticeRepository.findNoticeByIdx(anyLong()))
+                .willReturn(Optional.of(notice));
+        given(userRepository.findByUserEmail(anyString()))
+                .willReturn(Optional.of(user));
+        willDoNothing()
+                .given(noticeRepository)
+                .delete(any(Notice.class));
+
+        // when
+        noticeService.removeNotie(requestDto);
+
+        // then
+        verify(noticeRepository, times(1))
+                .findNoticeByIdx(anyLong());
+        verify(userRepository, times(1))
+                .findByUserEmail(anyString());
+        verify(noticeRepository, times(1))
+                .delete(any(Notice.class));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 공지사항을 삭제 요청할 경우 예외가 발생한다.")
+    public void delete_deleteNotExistNotice_Exception() {
+        // given
+        Long notIdx = 1L;
+        User user = UserFactory.user();
+
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+
+        given(noticeRepository.findNoticeByIdx(anyLong()))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
+                .isInstanceOf(ApplicationException.class)
+                .extracting("statusEnum")
+                .isEqualTo(DATA_NOT_EXIST);
+
+        verify(noticeRepository, times(1))
+                .findNoticeByIdx(anyLong());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자가 삭제 요청할 경우 예외가 발생한다.")
+    public void delete_deleteNotExistUser_Exception() {
+        // given
+        Long notIdx = 1L;
+        User user = UserFactory.user();
+
+        Notice notice = NoticeFactory.mockNotice(notIdx, user, false);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("okky@test.com", notIdx);
+
+        given(noticeRepository.findNoticeByIdx(anyLong()))
+                .willReturn(Optional.of(notice));
+        given(userRepository.findByUserEmail(anyString()))
+                .willReturn(Optional.empty());
+
+        // when, then
+        assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
+                .isInstanceOf(ApplicationException.class)
+                .extracting("statusEnum")
+                .isEqualTo(USER_NOT_FOUND);
+
+        verify(noticeRepository, times(1))
+                .findNoticeByIdx(anyLong());
+        verify(userRepository, times(1))
+                .findByUserEmail(anyString());
+    }
+
+    @Test
+    @DisplayName("공지사항 삭제 시 요청자와 작성자가 다르면 예외가 발생한다.")
+    public void delete_deleteDifferentAuthor_Exception() {
+        // given
+        Long notIdx = 1L;
+        User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
+        User user = UserFactory.user(2L, "okky@test.com", "1234");
+
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+
+        given(noticeRepository.findNoticeByIdx(anyLong()))
+                .willReturn(Optional.of(notice));
+        given(userRepository.findByUserEmail(anyString()))
+                .willReturn(Optional.of(user));
+
+        // when, then
+        assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
+                .isInstanceOf(ApplicationException.class)
+                .extracting("statusEnum")
+                .isEqualTo(INVALID_AUTH_USER);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());

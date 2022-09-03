@@ -55,10 +55,7 @@ public class RestUserController {
         return userAuthenticationService.sendEmailConfirmationToken(email);
     }
 
-    /**
-     * @param authToken
-     * @return userAuth
-     */
+
     @ApiOperation(value = "이메일 인증", notes = "UUID 토큰을 통한 이메일 인증")
     @ApiResponses(
             @ApiResponse(code = 200, message = "이메일 인증이 완료되었습니다.")
@@ -70,7 +67,7 @@ public class RestUserController {
         Optional<User> user = userRepository.findByUserEmail(auth.getAuthEmail());
 
         auth.useToken();
-        user.get().emailAuthenticated();
+        user.get().isEmailAuthenticated();
 
         return user.get().isUserEnabled();
     }
@@ -88,8 +85,7 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
-    @PreAuthorize("hasRole('ROLE_USER')") // 와 대박
-//  and 'inhan1009@naver.com' == authentication.name"
+    @PreAuthorize("hasRole('ROLE_USER')") //  and 'inhan1009@naver.com' == authentication.name"
     @PutMapping("/user/{userIdx}")
     public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx, // 딱히 필요 없을 수 있음.
                            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
@@ -102,6 +98,7 @@ public class RestUserController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     )
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     @DeleteMapping("/user/{userIdx}")
     public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호", example = "1") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);

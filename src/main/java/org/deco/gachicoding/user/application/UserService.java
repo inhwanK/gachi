@@ -30,13 +30,13 @@ public class UserService {
      */
     public Long createUser(UserSaveRequestDto dto) {
 
-        String inputEmail = dto.getUserEmail();
-
-        if (userRepository.existsByUserEmail(inputEmail))
+        if (userRepository.existsByUserEmail(dto.getUserEmail()))
             throw new DataIntegrityViolationException("중복된 이메일 입니다.");
 
+        // https://prohannah.tistory.com/82 참고
+        // {dto 객체를 받아서 비밀번호가 인코딩 된 Entity 객체를 반환하는 행동} 이 필요 - 한 객체에?
         String encryptedPassword = passwordEncoder.encode(dto.getUserPassword());
-        dto.setUserPassword(encryptedPassword); // dto 대신 다른 객체를 사용하는 게 좋을 듯?
+        dto.setUserPassword(encryptedPassword);
 
         Long userIdx = userRepository.save(dto.toEntity()).getUserIdx();
 
@@ -59,6 +59,10 @@ public class UserService {
 
         return idx;
     }
+
+    // 비밀번호 변경
+
+    // 닉네임 변경
 
     @Transactional
     public Long deleteUser(Long idx) {

@@ -7,9 +7,11 @@ import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
 
@@ -60,7 +62,23 @@ public class UserService {
         return idx;
     }
 
-    // 비밀번호 변경
+    @Transactional
+    public Long changeUserPassword(String password) { // 비밀번호 변경 dto 있으면 좋음
+
+        // 사전 조건 BCryptPasswordEncoder 클래스 참고하기
+        Assert.notNull(password, "새로운 비밀번호를 입력하세요.");
+
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByUserEmail(userEmail).get();
+
+        if(passwordEncoder.matches(password, user.getUserPassword())) {
+            throw new IllegalArgumentException("비밀번호가 이전과 동일합니다.");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(password);
+        user.changeNewPassword(encryptedPassword);
+        return user.getUserIdx();
+    }
 
     // 닉네임 변경
 

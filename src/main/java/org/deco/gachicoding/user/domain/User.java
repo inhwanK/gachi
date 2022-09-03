@@ -85,8 +85,12 @@ public class User {
         return this;
     }
 
-    public void emailAuthenticated() {
+    public void isEmailAuthenticated() {
         this.userEnabled = true;
+    }
+
+    public void changeNewPassword(String password) {
+        this.userPassword = password;
     }
 
     @Override

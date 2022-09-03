@@ -26,6 +26,9 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
+    // 시큐리티 테스트
+    testImplementation group: 'org.springframework.security', name: 'spring-security-test'
+
     implementation 'mysql:mysql-connector-java'
 
     // 롬복

@@ -9,7 +9,6 @@ import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
-import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.*;
@@ -51,8 +50,12 @@ public class NoticeServiceTest {
     @DisplayName("사용자는 공지사항을 작성할 수 있다.")
     void write_writeNoticeWithUser_Success() {
         // given
-        NoticeSaveRequestDto requestDto = NoticeFactory.mockUserNoticeSaveRequestDto();
         User user = UserFactory.user();
+
+        String notTitle = "테스트 공지사항 제목 수정 전";
+        String notContents = "테스트 공지사항 내용 수정 전";
+
+        NoticeSaveRequestDto requestDto = NoticeFactory.mockNoticeSaveRequestDto(user.getUserEmail(), notTitle, notContents);
 
         Notice notice = NoticeFactory.mockNotice(1L, user, null);
 
@@ -78,7 +81,10 @@ public class NoticeServiceTest {
     @DisplayName("사용자가 아니면 공지사항을 작성할 수 없다.")
     void write_writeNoticeWithGuest_Exception() {
         // given
-        NoticeSaveRequestDto requestDto = NoticeFactory.mockGuestNoticeSaveRequestDto();
+        String notTitle = "테스트 공지사항 제목 수정 전";
+        String notContents = "테스트 공지사항 내용 수정 전";
+
+        NoticeSaveRequestDto requestDto = NoticeFactory.mockNoticeSaveRequestDto(null, notTitle, notContents);
 
         given(userRepository.findByUserEmail(null))
                 .willReturn(Optional.empty());

@@ -38,7 +38,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
     )
     @PostMapping("/notice")
-    public ResponseEntity<Void> registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequest request) throws Exception {
+    public ResponseEntity<Void> registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequest request) {
         log.info("{} Register Controller", "Notice");
 
         Long notIdx = noticeService.registerNotice(NoticeAssembler.noticeSaveRequestDto(request));

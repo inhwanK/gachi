@@ -12,7 +12,7 @@ public class UserFactory {
     public static User user(Long userIdx) {
         return MockUser.builder()
                 .userIdx(userIdx)
-                .builder();
+                .build();
     }
 
     public static User user(Long userIdx, String userEmail, String userPassword) {
@@ -20,6 +20,6 @@ public class UserFactory {
                 .userIdx(userIdx)
                 .userEmail(userEmail)
                 .userPassword(userPassword)
-                .builder();
+                .build();
     }
 }

@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.user.dto.request.LoginRequestDto;
-import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
-import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -33,13 +32,13 @@ public class UserService {
      */
     public Long createUser(UserSaveRequestDto dto) {
 
-        String inputEmail = dto.getUserEmail();
-
-        if (isDuplicatedEmail(inputEmail))
+        if (userRepository.existsByUserEmail(dto.getUserEmail()))
             throw new DataIntegrityViolationException("중복된 이메일 입니다.");
 
-        String encryptedPassword = encodePassword(dto.getUserPassword());
-        dto.setUserPassword(encryptedPassword); // dto 대신 다른 객체를 사용하는 게 좋을 듯?
+        // https://prohannah.tistory.com/82 참고
+        // {dto 객체를 받아서 비밀번호가 인코딩 된 Entity 객체를 반환하는 행동} 이 필요 - 한 객체에?
+        String encryptedPassword = passwordEncoder.encode(dto.getUserPassword());
+        dto.setUserPassword(encryptedPassword);
 
         Long userIdx = userRepository.save(dto.toEntity()).getUserIdx();
 
@@ -48,34 +47,43 @@ public class UserService {
         return userIdx;
     }
 
-    private String encodePassword(String password) {
-        return passwordEncoder.encode(password);
-    }
-
+    // 기능별 분리 필요
     @Transactional
     public Long updateUser(Long idx, UserUpdateRequestDto dto) {
 
-        User user = userRepository.findById(idx)
-                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다. 회원 번호 = " + idx));
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        user.update(dto.getUserNick(), dto.getUserPassword(), dto.isUserLocked(), dto.isUserEnabled());
+        User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        String encoded = passwordEncoder.encode(dto.getUserPassword());
+        user.update(dto.getUserNick(), encoded, dto.isUserLocked(), dto.isUserEnabled());
 
         return idx;
     }
+
+    @Transactional
+    public Long changeUserPassword(String userEmail, String password) { // 비밀번호 변경 dto 있으면 좋음
+
+        // 사전 조건 BCryptPasswordEncoder 클래스 참고하기
+        Assert.notNull(password, "새로운 비밀번호를 입력하세요.");
+
+        User user = userRepository.findByUserEmail(userEmail).get();
+
+        if(passwordEncoder.matches(password, user.getUserPassword())) {
+            throw new IllegalArgumentException("비밀번호가 이전과 동일합니다.");
+        }
+
+        String encryptedPassword = passwordEncoder.encode(password);
+        user.changeNewPassword(encryptedPassword);
+        return user.getUserIdx();
+    }
+
+    // 닉네임 변경
 
     @Transactional
     public Long deleteUser(Long idx) {
         userRepository.deleteById(idx);
         return idx;
-    }
-
-    @Transactional
-    public boolean isDuplicatedEmail(String userEmail) {
-        return getUserByUserEmail(userEmail).isPresent();
-    }
-
-    @Transactional
-    public Optional<User> getUserByUserEmail(String email) {
-        return userRepository.findByUserEmail(email);
     }
 }

@@ -6,7 +6,7 @@ public class UserFactory {
     private UserFactory() {}
 
     public static User user() {
-        return MockUser.builder().builder();
+        return MockUser.builder().build();
     }
 
     public static User user(Long userIdx) {

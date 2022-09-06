@@ -2,13 +2,13 @@ package org.deco.gachicoding.user.dto.request;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.deco.gachicoding.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.List;
 
 public class UserAuthenticationDto implements UserDetails {
 
@@ -17,21 +17,24 @@ public class UserAuthenticationDto implements UserDetails {
     private String userEmail;
     private String password;
     private String userNick;
+    private List<GrantedAuthority> roles;
 
-    public UserAuthenticationDto(@JsonProperty("userEmail") String userEmail, @JsonProperty("password") String password) {
+    public UserAuthenticationDto(@JsonProperty("userEmail") String userEmail,
+                                 @JsonProperty("password") String password) {
         this.userEmail = userEmail;
         this.password = password;
     }
 
-    public UserAuthenticationDto(String userEmail, String password, String userNick) {
-        this.userEmail = userEmail;
-        this.password = password;
-        this.userNick = userNick;
+    public UserAuthenticationDto(User user, List<GrantedAuthority> roles) {
+        this.userEmail = user.getUserEmail();
+        this.password = user.getUserPassword();
+        this.userNick = user.getUserNick();
+        this.roles = roles;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return this.roles;
     }
 
     @Override

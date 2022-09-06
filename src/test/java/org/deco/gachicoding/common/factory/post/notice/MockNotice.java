@@ -19,8 +19,8 @@ public class MockNotice {
         private Long notIdx;
         private User author;
 
-        private NoticeTitle notTitle = new NoticeTitle("테스트 공지 제목");
-        private NoticeContents notContents = new NoticeContents("테스트 공지 내용");
+        private NoticeTitle notTitle = new NoticeTitle("Test Notice Title");
+        private NoticeContents notContents = new NoticeContents("Test Notice Contents");
         private Long notViews = 0L;
         private Boolean notPin = false;
         private Boolean notLocked = true;

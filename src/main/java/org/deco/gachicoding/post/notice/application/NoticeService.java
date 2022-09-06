@@ -96,7 +96,7 @@ public class NoticeService {
         Notice notice = findNotice(dto.getNotIdx());
 
         if (!notice.getNotLocked())
-            throw new ApplicationException(INACTIVE_RESOURCE);
+            throw new ApplicationException(INACTIVE_NOTICE);
 
         return NoticeDtoAssembler.noticeResponseDto(notice);
     }
@@ -106,7 +106,7 @@ public class NoticeService {
         Notice notice = findNotice(dto.getNotIdx());
 
         if (!notice.getNotLocked())
-            throw new ApplicationException(INACTIVE_RESOURCE);
+            throw new ApplicationException(INACTIVE_NOTICE);
 
         User user = findAuthor(dto.getUserEmail());
 
@@ -156,7 +156,7 @@ public class NoticeService {
 
     private Notice findNotice(Long notIdx) {
         return noticeRepository.findNoticeByIdx(notIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(() -> new ApplicationException(NOTICE_NOT_FOUND));
     }
 
     private User findAuthor(String userEmail) {

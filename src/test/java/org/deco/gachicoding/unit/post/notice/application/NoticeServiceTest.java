@@ -349,7 +349,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.getNoticeDetail(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(DATA_NOT_EXIST);
+                .isEqualTo(NOTICE_NOT_FOUND);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -372,7 +372,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.getNoticeDetail(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(INACTIVE_RESOURCE);
+                .isEqualTo(INACTIVE_NOTICE);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -434,7 +434,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(DATA_NOT_EXIST);
+                .isEqualTo(NOTICE_NOT_FOUND);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -464,7 +464,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(INACTIVE_RESOURCE);
+                .isEqualTo(INACTIVE_NOTICE);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -715,7 +715,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.disableNotice(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(DATA_NOT_EXIST);
+                .isEqualTo(NOTICE_NOT_FOUND);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -846,7 +846,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(DATA_NOT_EXIST);
+                .isEqualTo(NOTICE_NOT_FOUND);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -980,7 +980,7 @@ public class NoticeServiceTest {
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
-                .isEqualTo(DATA_NOT_EXIST);
+                .isEqualTo(NOTICE_NOT_FOUND);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());

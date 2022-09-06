@@ -41,11 +41,6 @@ public class RestUserController {
         return !userRepository.existsByUserEmail(email);
     }
 
-    /**
-     * 이메일 인증을 위한 토큰 발행
-     *
-     * @return UUID 토큰
-     */
     @ApiOperation(value = "이메일 인증 토큰 발행", notes = "이메일 인증을 위한 토큰 생성 후 메일 발송")
     @ApiResponses(
             @ApiResponse(code = 200, message = "인증 메일이 발송되었습니다.")
@@ -86,12 +81,26 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
     @PreAuthorize("hasRole('ROLE_USER')") //  and 'inhan1009@naver.com' == authentication.name"
-    @PutMapping("/user/{userIdx}")
-    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx, // 딱히 필요 없을 수 있음.
+    @PutMapping("/user/{userIdx}") // Patch로 바꿔야함
+    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx, // 필요 없을 수 있음.
                            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
 
         log.info("{}", SecurityContextHolder.getContext().getAuthentication().getName());
         return userService.updateUser(userIdx, dto);
+    }
+
+    @ApiOperation(value = "유저 비밀번호 변경", notes = "테스트 전")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다."),
+            @ApiResponse(code = 400, message = "비밀번호 파라미터 잘못됨.")
+    })
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PatchMapping("/user/change-password")
+    public Long updateUserPassword(@ApiParam(value = "변경할 비밀번호") @RequestParam String password) {
+        // 사용자 이메일을 이렇게 가져오는게 맞을까?
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.changeUserPassword(userEmail, password);
+        return 0L;
     }
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")

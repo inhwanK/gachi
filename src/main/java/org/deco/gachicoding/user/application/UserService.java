@@ -63,12 +63,11 @@ public class UserService {
     }
 
     @Transactional
-    public Long changeUserPassword(String password) { // 비밀번호 변경 dto 있으면 좋음
+    public Long changeUserPassword(String userEmail, String password) { // 비밀번호 변경 dto 있으면 좋음
 
         // 사전 조건 BCryptPasswordEncoder 클래스 참고하기
         Assert.notNull(password, "새로운 비밀번호를 입력하세요.");
 
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUserEmail(userEmail).get();
 
         if(passwordEncoder.matches(password, user.getUserPassword())) {

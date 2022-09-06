@@ -23,7 +23,7 @@ public class NoticeTest {
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
                 .doesNotThrowAnyException();
     }
 
@@ -36,7 +36,7 @@ public class NoticeTest {
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(MAXIMUM_LENGTH_OVER_TITLE);
@@ -46,12 +46,11 @@ public class NoticeTest {
     @DisplayName("제목이 널인 공지사항을 생성할 수 없다.")
     void create_NoticeNullTitle_Exception() {
         // given
-        String notTitle = null;
         String notContents = "테스트 공지사항 내용";
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, null, notContents, true))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(NULL_TITLE);
@@ -61,12 +60,11 @@ public class NoticeTest {
     @DisplayName("제목이 공백인 공지사항을 생성할 수 없다.")
     void create_NoticeEmptyTitle_Exception() {
         // given
-        String notTitle = "";
         String notContents = "테스트 공지사항 내용";
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, "", notContents, true))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(EMPTY_TITLE);
@@ -81,7 +79,7 @@ public class NoticeTest {
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
                 .doesNotThrowAnyException();
     }
 
@@ -94,7 +92,7 @@ public class NoticeTest {
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(MAXIMUM_LENGTH_OVER_CONTENTS);
@@ -105,11 +103,10 @@ public class NoticeTest {
     void create_NoticeNullContents_Exception() {
         // given
         String notTitle = "테스트 공지사항 제목";
-        String notContents = null;
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, null, true))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(NULL_CONTENTS);
@@ -120,11 +117,10 @@ public class NoticeTest {
     void create_NoticeEmptyContents_Exception() {
         // given
         String notTitle = "테스트 공지사항 제목";
-        String notContents = "";
         User author = UserFactory.user();
 
         // when, then
-        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents))
+        assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, "", true))
                 .isInstanceOf(ApplicationException.class)
                 .extracting("statusEnum")
                 .isEqualTo(EMPTY_CONTENTS);
@@ -227,7 +223,7 @@ public class NoticeTest {
         String beforeNotContents = "테스트 공지사항 내용 수정 전";
         String afterNotContents = "테스트 공지사항 내용 수정 후";
 
-        Notice notice = NoticeFactory.mockNotice(1L, author, beforeNotTitle, beforeNotContents);
+        Notice notice = NoticeFactory.mockNotice(1L, author, beforeNotTitle, beforeNotContents, true);
 
         // when
         notice.update(afterNotTitle, afterNotContents);
@@ -245,7 +241,7 @@ public class NoticeTest {
         String beforeNotTitle = "테스트 공지사항 제목 수정 전";
         String afterNotTitle = "테스트 공지사항 제목 수정 후";
 
-        Notice notice = NoticeFactory.mockNotice(1L, author, beforeNotTitle, "테스트 공지사항 내용");
+        Notice notice = NoticeFactory.mockNotice(1L, author, beforeNotTitle, "테스트 공지사항 내용", true);
 
         // when
         notice.updateTitle(afterNotTitle);
@@ -262,7 +258,7 @@ public class NoticeTest {
         String beforeNotContents = "테스트 공지사항 내용 수정 전";
         String afterNotContents = "테스트 공지사항 내용 수정 후";
 
-        Notice notice = NoticeFactory.mockNotice(1L, author, "테스트 공지사항 제목", beforeNotContents);
+        Notice notice = NoticeFactory.mockNotice(1L, author, "테스트 공지사항 제목", beforeNotContents, true);
 
         // when, then
         notice.updateContent(afterNotContents);

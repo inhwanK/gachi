@@ -1,6 +1,7 @@
 package org.deco.gachicoding.post.notice.presentation.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
 
@@ -8,6 +9,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
+@Builder
 public class NoticeSaveRequest {
     @NotNull
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
@@ -29,7 +31,7 @@ public class NoticeSaveRequest {
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
     private Boolean notPin;
 
-    @Nullable
-    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
-    private List<String> tags;
+//    @Nullable
+//    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
+//    private List<String> tags;
 }

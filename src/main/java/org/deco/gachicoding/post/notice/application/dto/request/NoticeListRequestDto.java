@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 public class NoticeListRequestDto {
     @NotNull
-    @ApiModelProperty(value = "검색어", required = true, example = "운영")
+//    @ApiModelProperty(value = "검색어", required = true, example = "운영")
     private String keyword;
 
     @NotNull

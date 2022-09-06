@@ -2,7 +2,6 @@ package org.deco.gachicoding.post.notice.application.dto;
 
 import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
 
@@ -32,19 +31,6 @@ public class NoticeDtoAssembler {
     public static NoticeResponseDto noticeResponseDto(Notice notice) {
         return convertForm(notice);
     }
-
-//    public static NoticeUpdateResponseDto noticeUpdateResponseDto(Notice notice) {
-//        return NoticeUpdateResponseDto.builder()
-//                .notIdx(notice.getNotIdx())
-//                .authorEmail(notice.getAuthorEmail())
-//                .authorNick(notice.getAuthorNick())
-//                .notTitle(notice.getNotTitle())
-//                .notContents(notice.getNotContents())
-//                .notViews(notice.getNotViews())
-//                .createdAt(notice.getCreatedAt())
-//                .updatedAt(notice.getUpdatedAt())
-//                .build();
-//    }
 
     private static NoticeResponseDto convertForm(Notice notice) {
         return NoticeResponseDto.builder()

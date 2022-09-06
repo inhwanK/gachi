@@ -7,7 +7,6 @@ import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.application.dto.response.NoticeUpdateResponseDto;
 import org.deco.gachicoding.post.notice.presentation.dto.NoticeAssembler;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeUpdateRequest;
@@ -39,7 +38,7 @@ public class RestNoticeController {
             @ApiResponse(code = 200, message = "등록된 공지사항 번호 반환")
     )
     @PostMapping("/notice")
-    public ResponseEntity<Void> registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequest request) throws Exception {
+    public ResponseEntity<Void> registerNotice(@ApiParam(value = "공지사항 요청 body 정보") @RequestBody NoticeSaveRequest request) {
         log.info("{} Register Controller", "Notice");
 
         Long notIdx = noticeService.registerNotice(NoticeAssembler.noticeSaveRequestDto(request));

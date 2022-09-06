@@ -24,7 +24,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation "org.springframework.boot:spring-boot-starter-jdbc"
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     // 시큐리티 테스트
     testImplementation group: 'org.springframework.security', name: 'spring-security-test'
@@ -35,22 +34,17 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    // 테스트 환경 롬복
+
+    // 테스트
     testAnnotationProcessor('org.projectlombok:lombok')
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
     runtimeOnly 'com.h2database:h2'
 
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '2.6.4'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '2.6.4'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-security
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.6.3'
-    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-client
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '2.6.4'
-
-    // jwt
-    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 
     // gson
     implementation 'com.google.code.gson:gson'
@@ -62,7 +56,6 @@ dependencies {
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
     implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
 
-    // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 
 }

@@ -1,12 +1,15 @@
 package org.deco.gachicoding.user.application;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.auth.Auth;
 import org.deco.gachicoding.domain.auth.AuthRepository;
 import org.deco.gachicoding.service.MailService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,9 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserAuthenticationService implements UserDetailsService {
@@ -56,10 +62,12 @@ public class UserAuthenticationService implements UserDetailsService {
         User user = userRepository.findByUserEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Invalid Username"));
 
-//        List<GrantedAuthority> roles = new ArrayList<>();
-//        roles.add(new SimpleGrantedAuthority("ROLE_USER")); // 유저 롤을 다시 적용해야함.
+        String userRole = user.getUserRole().toString();
 
-        UserDetails userDetails = new UserAuthenticationDto(user.getUserEmail(), user.getUserPassword(), user.getUserNick());
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(userRole));
+
+        UserDetails userDetails = new UserAuthenticationDto(user, roles);
 
         return userDetails;
     }

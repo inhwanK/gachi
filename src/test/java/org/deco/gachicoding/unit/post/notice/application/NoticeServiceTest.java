@@ -512,7 +512,6 @@ public class NoticeServiceTest {
         User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
         User user = UserFactory.user(2L, "okky@test.com", "1234");
 
-
         String beforeNotTitle = "테스트 공지사항 제목 수정 전";
         String beforeNotContents = "테스트 공지사항 내용 수정 전";
 

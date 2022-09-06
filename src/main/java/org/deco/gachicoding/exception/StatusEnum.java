@@ -11,8 +11,11 @@ import static org.springframework.http.HttpStatus.*;
 public enum StatusEnum {
     SAVE_SUCCESS(OK, "저장 성공"),
     REMOVE_SUCCESS(OK, "삭제 성공"),
+    NOTICE_REMOVE_SUCCESS(OK, "공지사항 삭제 성공"),
     DISABLE_SUCCESS(OK, "비활성화 성공"),
+    NOTICE_DISABLE_SUCCESS(OK, "공지사항 비활성화 성공"),
     ENABLE_SUCCESS(OK, "활성화 성공"),
+    NOTICE_ENABLE_SUCCESS(OK, "공지사항 활성화 성공"),
     SELECT_SUCCESS(OK, "채택 성공"),
 
     /* 400 BAD_REQUEST : 잘못된 요청*/
@@ -23,13 +26,16 @@ public enum StatusEnum {
     NULL_CONTENTS(BAD_REQUEST, "내용이 널일 수 없습니다."),
     EMPTY_CONTENTS(BAD_REQUEST, "내용이 공백일 수 없습니다."),
 
+    /* 401 UNAUTHORIZED : 권한이 없는 요청 */
+    INVALID_AUTH_USER(UNAUTHORIZED, "권한이 없는 유저입니다."),
+
     /**
      * 404 NOT_FOUND : 리소스를 찾을 수 없음
      * <br>
      * 참고 : https://tecoble.techcourse.co.kr/post/2020-08-31-http-status-code/
      *
      */
-    USER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
+    USER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다."),
     NOTICE_NOT_FOUND(NOT_FOUND, "해당 공지사항이 존재하지 않습니다."),
     DATA_NOT_EXIST(NOT_FOUND, "데이터가 존재하지 않습니다."),
 
@@ -45,8 +51,7 @@ public enum StatusEnum {
     /* 500 INTERNAL_SERVER_ERROR : 서버 내부 오류. 웹 서버가 요청사항을 수행할 수 없을 경우 발생  */
     NULL_POINTER(INTERNAL_SERVER_ERROR, "참조 변수에 값이 존재하지 않습니다."),
     INPUT_OUTPUT_EXCEPTION(INTERNAL_SERVER_ERROR, "파일 읽기, 쓰기 실패"),
-    AMAZONS_S3_EXCEPTION(INTERNAL_SERVER_ERROR, "S3에 파일이 존재하지 않습니다."),
-    INVALID_AUTH_USER(INTERNAL_SERVER_ERROR, "권한이 없는 유저입니다");
+    AMAZONS_S3_EXCEPTION(INTERNAL_SERVER_ERROR, "S3에 파일이 존재하지 않습니다.");
 
     private final HttpStatus httpStatus;
     private final String detail;

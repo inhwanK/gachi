@@ -122,7 +122,7 @@ public class RestNoticeController {
         noticeService.disableNotice(dto);
 
         // 활성 비활성 삭제도 리다이렉트..?
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+        return ResponseState.toResponseEntity(NOTICE_DISABLE_SUCCESS);
     }
 
     @ApiOperation(value = "공지사항 활성화")
@@ -138,7 +138,7 @@ public class RestNoticeController {
         noticeService.enableNotice(dto);
 
         // 활성 비활성 삭제도 리다이렉트..?
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+        return ResponseState.toResponseEntity(NOTICE_ENABLE_SUCCESS);
     }
 
     @ApiOperation(value = "공지사항 삭제", notes = "공지사항 번호를 받아 공지사항 삭제 수행")
@@ -154,7 +154,7 @@ public class RestNoticeController {
         noticeService.removeNotie(dto);
 
         // 활성 비활성 삭제도 리다이렉트..?
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+        return ResponseState.toResponseEntity(NOTICE_REMOVE_SUCCESS);
     }
 
 }

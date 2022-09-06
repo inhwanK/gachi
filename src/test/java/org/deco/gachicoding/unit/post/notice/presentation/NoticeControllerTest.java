@@ -6,10 +6,7 @@ import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.config.SecurityConfig;
 import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.post.notice.application.NoticeService;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeDetailRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeSaveRequestDto;
-import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.presentation.RestNoticeController;
@@ -39,6 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.deco.gachicoding.exception.StatusEnum.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -309,6 +307,309 @@ public class NoticeControllerTest {
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 공지사항에 수정 요청할 경우 예외가 발생한다.")
+    public void modify_modifyNotExistNotice_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notTitle = "Test Notice Modified Title";
+        String notContents = "Test Notice Modified Contents";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(NOTICE_NOT_FOUND));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("해당 공지사항이 존재하지 않습니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("비 활성화 된 공지사항을 수정할 경우 예외가 발생한다.")
+    public void modify_modifyDisableNotice_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notTitle = "Test Notice Modified Title";
+        String notContents = "Test Notice Modified Contents";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(INACTIVE_NOTICE));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("비활성 처리 된 공지사항입니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자가 공지사항 수정 요청할 경우 예외가 발생한다.")
+    public void modify_modifyNotExistUser_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notTitle = "Test Notice Modified Title";
+        String notContents = "Test Notice Modified Contents";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(USER_NOT_FOUND));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("해당 유저 정보를 찾을 수 없습니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 요청자와 작정자가 다를 경우 예외가 발생한다.")
+    public void modify_modifyDifferentAuthor_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notTitle = "Test Notice Modified Title";
+        String notContents = "Test Notice Modified Contents";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(INVALID_AUTH_USER));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("권한이 없는 유저입니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 제목이 널이면 예외가 발생한다.")
+    public void modify_modifyNotExistTitle_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notContents = "Test Notice Modified Contents";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, null, notContents);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(NULL_TITLE));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("제목이 널일 수 없습니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 제목이 공백이면 예외가 발생한다.")
+    public void modify_modifyEmptyTitle_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notContents = "Test Notice Modified Contents";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, null, notContents);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(EMPTY_TITLE));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("제목이 공백일 수 없습니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 내용이 널이면 예외가 발생한다.")
+    public void modify_modifyNotExistContents_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notTitle = "Test Notice Modified Title";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, null);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(NULL_CONTENTS));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("내용이 널일 수 없습니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 내용이 공백이면 예외가 발생한다.")
+    public void modify_modifyEmptyContents_Exception() throws Exception {
+        // given
+        User user = UserFactory.user();
+
+        Long notIdx = 1L;
+        String notTitle = "Test Notice Modified Title";
+
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, null);
+
+        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
+                .willThrow(new ApplicationException(EMPTY_CONTENTS));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("message").value("내용이 공백일 수 없습니다."));
+
+        verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항의 작성자는 공지사항을 비활성화할 수 있다.")
+    public void disable_disableAuthorMe_Success() throws Exception {
+        // given
+        Long notIdx = 1L;
+        User user = UserFactory.user();
+
+        willDoNothing()
+                .given(noticeService)
+                .disableNotice(any(NoticeBasicRequestDto.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/disable/{notIdx}", notIdx)
+                .param("userEmail", user.getUserEmail())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("code").value("NOTICE_DISABLE_SUCCESS"));
+
+        verify(noticeService, times(1))
+                .disableNotice(any(NoticeBasicRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항의 작성자는 공지사항을 활성화할 수 있다.")
+    public void enable_enableAuthorMe_Success() throws Exception {
+        // given
+        Long notIdx = 1L;
+        User user = UserFactory.user();
+
+        willDoNothing()
+                .given(noticeService)
+                .enableNotice(any(NoticeBasicRequestDto.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/enable/{notIdx}", notIdx)
+                .param("userEmail", user.getUserEmail())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("code").value("NOTICE_ENABLE_SUCCESS"));
+
+        verify(noticeService, times(1))
+                .enableNotice(any(NoticeBasicRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("사용자는 공지사항을 삭제한다.")
+    public void delete_deleteAuthorMe_Success() throws Exception {
+        // given
+        Long notIdx = 1L;
+        User user = UserFactory.user();
+
+        willDoNothing()
+                .given(noticeService)
+                .removeNotie(any(NoticeBasicRequestDto.class));
+
+        // when
+        ResultActions perform = mockMvc.perform(delete("/api/notice/remove/{notIdx}", notIdx)
+                .param("userEmail", user.getUserEmail())
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().isOk())
+                .andExpect(jsonPath("code").value("NOTICE_REMOVE_SUCCESS"));
+
+        verify(noticeService, times(1))
+                .removeNotie(any(NoticeBasicRequestDto.class));
     }
 
 }

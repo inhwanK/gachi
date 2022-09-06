@@ -13,7 +13,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -79,6 +82,44 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.createUser(dto))
                 .isInstanceOf(DataIntegrityViolationException.class)
                 .hasMessageContaining("중복된");
+    }
+
+    @DisplayName("유저의 비밀번호를 변경한다.")
+    @Test
+    void updateUserPassword_Success() {
+
+        User user = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani_inaning")
+                .userPassword("1234")
+                .build();
+
+        given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
+        given(passwordEncoder.matches("newPassword", "1234")).willReturn(false);
+        given(passwordEncoder.encode("newPassword")).willReturn("changedPassword");
+
+        userService.changeUserPassword("1234@1234.com", "newPassword");
+        assertThat(user.getUserPassword()).isEqualTo("changedPassword");
+    }
+
+    @DisplayName("유저가 변경하려하는 비밀번호가 이전의 비밀번호와 같을 수 없다.")
+    @Test
+    void updateUserPassword_Exception() {
+
+        User user = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani_inaning")
+                .userPassword("1234")
+                .build();
+
+        given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
+        given(passwordEncoder.matches("1234", "1234")).willReturn(true);
+
+        assertThatThrownBy(() -> userService.changeUserPassword("1234@1234.com", "1234"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("이전과 동일");
     }
 
     @DisplayName("회원 탈퇴한다.")

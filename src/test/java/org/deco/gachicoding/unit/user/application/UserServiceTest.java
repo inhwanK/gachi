@@ -5,6 +5,7 @@ import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
+import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -120,6 +121,38 @@ public class UserServiceTest {
         assertThatThrownBy(() -> userService.changeUserPassword("1234@1234.com", "1234"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이전과 동일");
+    }
+
+    @DisplayName("회원 정보를 수정한다. (레거시 수정 메서드)")
+    @Test
+    void updateUser_Legacy_Success() {
+        User user = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani_inaning")
+                .userPassword("1234")
+                .build();
+
+        User expectedUser = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani")
+                .userPassword("newPassword")
+                .userLocked(true)
+                .userEnabled(true)
+                .build();
+
+        UserUpdateRequestDto dto = new UserUpdateRequestDto("nani", "1235", true, true);
+
+        given(userRepository.findByUserEmail(any())).willReturn(Optional.of(user));
+        given(passwordEncoder.encode("1235")).willReturn("newPassword");
+
+        userService.updateUser("1234@1234.com", dto);
+
+        assertThat(user)
+                .usingRecursiveComparison()
+                .ignoringFields("userIdx")
+                .isEqualTo(expectedUser);
     }
 
     @DisplayName("회원 탈퇴한다.")

@@ -15,14 +15,16 @@ public class MockUser {
     public static class Builder {
 
         private Long userIdx;
-        private String userName = "테스트 유저 이름";
-        private String userNick = "테스트 유저 닉네임";
+        private String userName = "Test User Name";
+        private String userNick = "Test User Nick";
         private String userEmail = "test@gachicoding.com";
-        private String userPassword = "테스트 유저 비밀번호";
+        private String userPassword = "Test User Password";
         private boolean userLocked = true;
         private boolean userEnabled = true;
         private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
+
         private RoleType userRole = RoleType.ROLE_USER;
+
 
         public Builder userIdx(Long userIdx) {
             this.userIdx = userIdx;

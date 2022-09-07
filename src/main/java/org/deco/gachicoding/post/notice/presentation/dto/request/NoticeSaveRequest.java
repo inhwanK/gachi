@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Builder
 public class NoticeSaveRequest {
+
     @NotNull
     @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
     private String userEmail;

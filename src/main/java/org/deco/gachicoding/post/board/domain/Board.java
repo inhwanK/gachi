@@ -3,6 +3,9 @@ package org.deco.gachicoding.post.board.domain;
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.exception.ApplicationException;
+import org.deco.gachicoding.exception.post.board.BoardAlreadyActiveException;
+import org.deco.gachicoding.exception.post.board.BoardAlreadyInactiveException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;
 import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
 import org.deco.gachicoding.user.domain.User;
@@ -36,7 +39,15 @@ public class Board extends BaseTimeEntity {
     @JoinColumn(name = "user_idx")
     private User author;
 
-    public Board(Long boardIdx, User author, BoardTitle boardTitle, BoardContents boardContents, String boardCategory, Long boardViews, Boolean boardLocked) {
+    public Board(
+            Long boardIdx,
+            User author,
+            BoardTitle boardTitle,
+            BoardContents boardContents,
+            String boardCategory,
+            Long boardViews,
+            Boolean boardLocked
+    ) {
         this.boardIdx = boardIdx;
         this.author = author;
         this.boardTitle = boardTitle;
@@ -64,19 +75,19 @@ public class Board extends BaseTimeEntity {
 
     public void hasSameAuthor(User user) {
         if (author != user) {
-            throw new ApplicationException(INVALID_AUTH_USER);
+            throw new UserUnAuthorizedException();
         }
     }
 
     public void enableBoard() {
         if (this.boardLocked)
-            throw new ApplicationException(ALREADY_ACTIVE);
+            throw new BoardAlreadyActiveException();
         this.boardLocked = true;
     }
 
     public void disableBoard() {
         if (!this.boardLocked)
-            throw new ApplicationException(ALREADY_INACTIVE);
+            throw new BoardAlreadyInactiveException();
         this.boardLocked = false;
     }
 

@@ -1,6 +1,9 @@
 package org.deco.gachicoding.post.notice.domain.vo;
 
 import org.deco.gachicoding.exception.ApplicationException;
+import org.deco.gachicoding.exception.post.notice.NoticeTitleEmptyException;
+import org.deco.gachicoding.exception.post.notice.NoticeTitleFormatException;
+import org.deco.gachicoding.exception.post.notice.NoticeTitleNullException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -30,16 +33,16 @@ public class NoticeTitle {
 
     private void validateNullTitle(String notTitle) {
         if (notTitle == null)
-            throw new ApplicationException(NULL_TITLE);
+            throw new NoticeTitleNullException();
     }
 
     private void validateEmptyTitle(String notTitle) {
         if (notTitle.isEmpty())
-            throw new ApplicationException(EMPTY_TITLE);
+            throw new NoticeTitleEmptyException();
     }
 
     private void validateMaximumLength(String notTitle) {
         if (notTitle.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new ApplicationException(MAXIMUM_LENGTH_OVER_TITLE);
+            throw new NoticeTitleFormatException();
     }
 }

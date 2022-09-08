@@ -2,6 +2,9 @@ package org.deco.gachicoding.post.question.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
@@ -36,7 +39,7 @@ public class QuestionService {
     @Transactional
     public Long registerQuestion(QuestionSaveRequestDto dto) throws Exception {
         User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         Question question = questionRepository.save(dto.toEntity(writer));
 
@@ -83,7 +86,7 @@ public class QuestionService {
     @Transactional(readOnly = true)
     public QuestionDetailPostResponseDto getQuestionDetail(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(QuestionNotFoundException::new);
 
         QuestionDetailPostResponseDto questionDetail = QuestionDetailPostResponseDto.builder()
                 .question(question)
@@ -98,15 +101,15 @@ public class QuestionService {
     @Transactional
     public QuestionDetailPostResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
         Question question = questionRepository.findById(dto.getQueIdx())
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(QuestionNotFoundException::new);
 
         // 작성자와 수정 시도하는 유저가 같은지 판별
         // 아마 제공되는 인증 로직이 있지 않을까 싶음.
         User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         if (!isSameWriter(question, user)) {
-            throw new ApplicationException(INVALID_AUTH_USER);
+            throw new UserUnAuthorizedException();
         }
 
         // null 문제 해결 못함
@@ -122,7 +125,7 @@ public class QuestionService {
     @Transactional
     public ResponseEntity<ResponseState> disableQuestion(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(QuestionNotFoundException::new);
 
         question.isDisable();
         return ResponseState.toResponseEntity(DISABLE_SUCCESS);
@@ -131,7 +134,7 @@ public class QuestionService {
     @Transactional
     public ResponseEntity<ResponseState> enableQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(QuestionNotFoundException::new);
 
         question.isEnable();
         return ResponseState.toResponseEntity(ENABLE_SUCCESS);
@@ -140,7 +143,7 @@ public class QuestionService {
     @Transactional
     public ResponseEntity<ResponseState> removeQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(QuestionNotFoundException::new);
 
         questionRepository.delete(question);
         return ResponseState.toResponseEntity(REMOVE_SUCCESS);

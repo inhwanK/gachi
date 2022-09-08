@@ -48,7 +48,14 @@ public class Answer {
     private LocalDateTime ansRegdate;
 
     @Builder
-    public Answer(User writer, Question question, String ansContents, Boolean ansSelect, Boolean ansActivated, LocalDateTime ansRegdate) {
+    public Answer(
+            User writer,
+            Question question,
+            String ansContents,
+            Boolean ansSelect,
+            Boolean ansActivated,
+            LocalDateTime ansRegdate
+    ) {
         this.writer = writer;
         this.question = question;
         this.ansContents = ansContents;

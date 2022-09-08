@@ -19,6 +19,8 @@ import static org.deco.gachicoding.exception.StatusEnum.*;
 @RestControllerAdvice
 public class ApiControllerAdvice {
 
+    private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
+
     // 익셉션 메세지를 response에 넣을때 좀더 디테일 하게 넣을 수 있도록 공부해 봅시다.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException e) {
@@ -53,8 +55,18 @@ public class ApiControllerAdvice {
     }
 
     @ExceptionHandler(ApplicationException.class)
-    protected ResponseEntity<ResponseState> handleCustomException(ApplicationException e) {
-        log.error("handleCustomException throw CustomException : {}", e.getStatusEnum());
-        return ResponseState.toResponseEntity(e.getStatusEnum());
+    protected ResponseEntity<ApiErrorResponse> handleCustomException(ApplicationException e) {
+        String errorCode = e.getErrorCode();
+        String message = e.getMessage();
+        log.warn(
+                LOG_FORMAT,
+                e.getClass().getSimpleName(),
+                errorCode,
+                message
+        );
+//        return ResponseState.toResponseEntity(e.getStatusEnum());
+        return ResponseEntity
+                .status(e.getHttpStatus())
+                .body(new ApiErrorResponse(errorCode, message));
     }
 }

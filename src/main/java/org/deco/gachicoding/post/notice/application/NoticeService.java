@@ -2,6 +2,9 @@ package org.deco.gachicoding.post.notice.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.notice.NoticeInactiveException;
+import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
@@ -96,7 +99,7 @@ public class NoticeService {
         Notice notice = findNotice(dto.getNotIdx());
 
         if (!notice.getNotLocked())
-            throw new ApplicationException(INACTIVE_NOTICE);
+            throw new NoticeInactiveException();
 
         return NoticeDtoAssembler.noticeResponseDto(notice);
     }
@@ -106,7 +109,7 @@ public class NoticeService {
         Notice notice = findNotice(dto.getNotIdx());
 
         if (!notice.getNotLocked())
-            throw new ApplicationException(INACTIVE_NOTICE);
+            throw new NoticeInactiveException();
 
         User user = findAuthor(dto.getUserEmail());
 
@@ -144,7 +147,7 @@ public class NoticeService {
     }
 
     @Transactional
-    public void removeNotie(NoticeBasicRequestDto dto) {
+    public void removeNotice(NoticeBasicRequestDto dto) {
         Notice notice = findNotice(dto.getNotIdx());
 
         User user = findAuthor(dto.getUserEmail());
@@ -156,12 +159,11 @@ public class NoticeService {
 
     private Notice findNotice(Long notIdx) {
         return noticeRepository.findNoticeByIdx(notIdx)
-                .orElseThrow(() -> new ApplicationException(NOTICE_NOT_FOUND));
+                .orElseThrow(NoticeNotFoundException::new);
     }
 
     private User findAuthor(String userEmail) {
-        System.out.println("userEmail : " + userEmail);
         return userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
     }
 }

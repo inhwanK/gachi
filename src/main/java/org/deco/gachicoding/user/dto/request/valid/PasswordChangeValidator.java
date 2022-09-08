@@ -17,7 +17,7 @@ public class PasswordChangeValidator implements ConstraintValidator<PasswordChan
 
         if(!value.getUpdatePassword().equals(value.getConfirmPassword())){
             context
-                    .buildConstraintViolationWithTemplate("")
+                    .buildConstraintViolationWithTemplate("수정할 비밀번호와 같은 값을 입력하세요.")
                     .addConstraintViolation();
             return false;
         }

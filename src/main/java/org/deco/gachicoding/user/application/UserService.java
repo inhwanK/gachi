@@ -55,13 +55,28 @@ public class UserService {
     }
 
     @Transactional
+    public boolean confirmUser(
+            String userEmail,
+            String userPassword
+    ) {
+        User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (!passwordEncoder.matches(userPassword, user.getUserPassword())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Transactional
     public Long changeUserPassword(
             String userEmail,
             PasswordUpdateRequestDto dto
     ) {
         User user = userRepository.findByUserEmail(userEmail).get();
 
-        if(passwordEncoder.matches(dto.getConfirmPassword(), user.getUserPassword())) {
+        if (passwordEncoder.matches(dto.getConfirmPassword(), user.getUserPassword())) {
             throw new IllegalArgumentException("비밀번호가 이전과 동일합니다.");
         }
 

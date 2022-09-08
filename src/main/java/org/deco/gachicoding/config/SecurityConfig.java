@@ -79,7 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .logout()
                 .logoutUrl("/api/logout")
-                .logoutSuccessUrl("/") // 임시로 설정한 URL 프론트와 협의
+                .logoutSuccessUrl("http://localhost:3000")
                 .addLogoutHandler(new SecurityContextLogoutHandler());
     }
 

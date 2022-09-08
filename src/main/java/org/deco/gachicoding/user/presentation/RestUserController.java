@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -105,11 +106,21 @@ public class RestUserController {
         return userService.updateUser(userEmail, dto);
     }
 
+    @ApiOperation(value = "유저 확인", notes = "유저 정보 수정 전에 확인하는 api")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PatchMapping("/user/confirm")
+    public Boolean confirmUser(
+            @ApiParam(value = "비밀번호 변경 전 사용자 확인")
+            @RequestParam @NotBlank String password
+    ) {
+
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        return userService.confirmUser(userEmail, password);
+    }
+
     @ApiOperation(value = "유저 비밀번호 변경", notes = "테스트 전")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다."),
-            @ApiResponse(code = 400, message = "비밀번호 파라미터 잘못됨.")
-    })
+    @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/user/change-password")
     public void updateUserPassword(

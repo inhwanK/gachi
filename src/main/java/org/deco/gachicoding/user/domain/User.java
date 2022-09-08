@@ -1,20 +1,21 @@
 package org.deco.gachicoding.user.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @DynamicInsert
 @DynamicUpdate
+@EqualsAndHashCode(of = "userIdx")
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
@@ -45,13 +46,13 @@ public class User {
     private boolean userEnabled;
 
     @Column(nullable = false, updatable = false)
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @CreatedDate
+    @CreationTimestamp
     private LocalDateTime userCreatedAt;
 
     @Column(nullable = false)
     @ColumnDefault("\'ROLE_USER\'")
-    private String userRole;
+    @Enumerated(EnumType.STRING)
+    private RoleType userRole;
 
     @Builder
     public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled) {
@@ -64,7 +65,7 @@ public class User {
         this.userEnabled = userEnabled;
     }
 
-    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, String userRole) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, RoleType userRole) {
         this.userIdx = userIdx;
         this.userName = userName;
         this.userNick = userNick;
@@ -84,21 +85,12 @@ public class User {
         return this;
     }
 
-    public void emailAuthenticated() {
+    public void isEmailAuthenticated() {
         this.userEnabled = true;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final User user = (User) o;
-        return Objects.equals(userIdx, user.getUserIdx());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(userIdx);
+    public void changeNewPassword(String password) {
+        this.userPassword = password;
     }
 
     @Override

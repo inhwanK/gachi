@@ -2,13 +2,16 @@ package org.deco.gachicoding.user.presentation;
 
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.auth.Auth;
+import org.deco.gachicoding.user.application.UserAuthenticationService;
+import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
-import org.deco.gachicoding.user.application.UserAuthenticationService;
-import org.deco.gachicoding.service.SocialService;
-import org.deco.gachicoding.user.application.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -20,10 +23,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class RestUserController {
 
     private final UserService userService;
-    private final SocialService socialService;
+    private final UserRepository userRepository;
     private final UserAuthenticationService userAuthenticationService;
 
 
@@ -33,15 +37,10 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     )
     @GetMapping("/user/regist/check-email")
-    public boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email) {
-        return !userService.isDuplicatedEmail(email);
+    public Boolean checkEmail(@ApiParam(name = "email") @RequestParam("email") String email) {
+        return !userRepository.existsByUserEmail(email);
     }
 
-    /**
-     * 이메일 인증을 위한 토큰 발행
-     *
-     * @return UUID 토큰
-     */
     @ApiOperation(value = "이메일 인증 토큰 발행", notes = "이메일 인증을 위한 토큰 생성 후 메일 발송")
     @ApiResponses(
             @ApiResponse(code = 200, message = "인증 메일이 발송되었습니다.")
@@ -51,10 +50,7 @@ public class RestUserController {
         return userAuthenticationService.sendEmailConfirmationToken(email);
     }
 
-    /**
-     * @param authToken
-     * @return userAuth
-     */
+
     @ApiOperation(value = "이메일 인증", notes = "UUID 토큰을 통한 이메일 인증")
     @ApiResponses(
             @ApiResponse(code = 200, message = "이메일 인증이 완료되었습니다.")
@@ -63,14 +59,13 @@ public class RestUserController {
     @GetMapping("/user/authentication-email")
     public boolean authenticateEmail(@ApiParam(value = "유저 이메일로 발송된 인증 토큰") @RequestParam UUID authToken) {
         Auth auth = userAuthenticationService.checkToken(authToken);
-        Optional<User> user = userService.getUserByUserEmail(auth.getAuthEmail());
+        Optional<User> user = userRepository.findByUserEmail(auth.getAuthEmail());
 
         auth.useToken();
-        user.get().emailAuthenticated();
+        user.get().isEmailAuthenticated();
 
         return user.get().isUserEnabled();
     }
-
 
     @ApiOperation(value = "회원가입", notes = "회원가입 수행")
     @ApiResponses(
@@ -81,20 +76,38 @@ public class RestUserController {
         return userService.createUser(dto);
     }
 
-    @ApiOperation(value = "유저 정보 업데이트", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
+    @ApiOperation(value = "유저 정보 업데이트 (삭제될 예정)", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
     @ApiResponses(
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
-    @PutMapping("/user/{userIdx}")
-    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx,
+    @PreAuthorize("hasRole('ROLE_USER')") //  and 'inhan1009@naver.com' == authentication.name"
+    @PutMapping("/user/{userIdx}") // Patch로 바꿔야함
+    public Long updateUser(@ApiParam(value = "수정할 유저의 번호", example = "1") @PathVariable Long userIdx, // 필요 없을 수 있음.
                            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보") @RequestBody UserUpdateRequestDto dto) {
+
+        log.info("{}", SecurityContextHolder.getContext().getAuthentication().getName());
         return userService.updateUser(userIdx, dto);
+    }
+
+    @ApiOperation(value = "유저 비밀번호 변경", notes = "테스트 전")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다."),
+            @ApiResponse(code = 400, message = "비밀번호 파라미터 잘못됨.")
+    })
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @PatchMapping("/user/change-password")
+    public Long updateUserPassword(@ApiParam(value = "변경할 비밀번호") @RequestParam String password) {
+        // 사용자 이메일을 이렇게 가져오는게 맞을까?
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.changeUserPassword(userEmail, password);
+        return 0L;
     }
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
     @ApiResponses(
             @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     )
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     @DeleteMapping("/user/{userIdx}")
     public Long deleteUser(@ApiParam(value = "삭제할 사용자의 번호", example = "1") @PathVariable Long userIdx) {
         return userService.deleteUser(userIdx);

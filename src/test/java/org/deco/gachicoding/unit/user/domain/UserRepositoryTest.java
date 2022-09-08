@@ -1,9 +1,8 @@
 package org.deco.gachicoding.unit.user.domain;
 
-import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.common.factory.user.MockUser;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +15,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.*;
 
 @DataJpaTest // JPA 에 관련된 의존성 제공, 자동으로 롤백
 public class UserRepositoryTest {
@@ -31,7 +31,7 @@ public class UserRepositoryTest {
     @BeforeEach
     void setUp() {
         user = MockUser.builder()
-                .userEmail("inhan1009@naver.com")
+                .userEmail("test@test.com")
                 .build();
 
         userRepository.save(user);
@@ -66,12 +66,24 @@ public class UserRepositoryTest {
         assertThat(saveUser).isEqualTo(retrievedUser.get());
     }
 
+    @DisplayName("중복된 이메일이 존재한다.")
+    @Test
+    void existsByUserEmail_True() {
+        assertThat(userRepository.existsByUserEmail("test@test.com")).isTrue();
+    }
+
+    @DisplayName("중복된 이메일이 존재하지 않는다.")
+    @Test
+    void existsByUserEmail_False() {
+        assertThat(userRepository.existsByUserEmail("notDuplicated@test.com")).isFalse();
+    }
+
     @DisplayName("중복된 이메일로 유저를 저장할 수 없다.")
     @Test
     public void save_DuplicateEmail_Failed() {
 
         User duplicateEmailUser = MockUser.builder()
-                .userEmail("inhan1009@naver.com")
+                .userEmail("test@test.com")
                 .userNick("saveTestNick")
                 .build();
 
@@ -86,7 +98,7 @@ public class UserRepositoryTest {
     @Test
     public void deleteById_Success() {
 
-        Optional<User> delUser = userRepository.findByUserEmail("inhan1009@naver.com");
+        Optional<User> delUser = userRepository.findByUserEmail("test@test.com");
 
         userRepository.deleteById(delUser.get().getUserIdx());
 

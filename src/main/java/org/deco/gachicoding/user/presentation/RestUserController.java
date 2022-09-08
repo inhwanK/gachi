@@ -8,9 +8,11 @@ import org.deco.gachicoding.user.application.UserAuthenticationService;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.Assert;
@@ -93,10 +95,8 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 수정 완료")
     )
     @PreAuthorize("hasRole('ROLE_USER')") // and 'inhan1009@naver.com' == authentication.name"
-    @PutMapping("/user/{userIdx}") // Patch로 바꿔야함
+    @PatchMapping("/user/update")
     public Long updateUser(
-            @ApiParam(value = "수정할 유저의 번호", example = "1")
-            @PathVariable Long userIdx,
             @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보")
             @RequestBody UserUpdateRequestDto dto
     ) {
@@ -113,13 +113,13 @@ public class RestUserController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/user/change-password")
     public void updateUserPassword(
-            @ApiParam(value = "변경할 비밀번호")
-            @RequestParam String password
+            @ApiParam(value = "변경할 비밀번호 요청 body")
+            @RequestBody @Valid PasswordUpdateRequestDto dto
     ) {
-        Assert.notNull(password, "비밀번호를 입력하세요.");
+        // 여기서 dto 안의 두 필드가 같은지 다른지 체크된 상태여야함.
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.changeUserPassword(userEmail, password);
+        userService.changeUserPassword(userEmail, dto);
     }
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
@@ -127,11 +127,12 @@ public class RestUserController {
             @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     )
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
-    @DeleteMapping("/user/{userIdx}")
-    public Long deleteUser(
-            @ApiParam(value = "삭제할 사용자의 번호", example = "1")
-            @PathVariable Long userIdx
-    ) {
-        return userService.deleteUser(userIdx);
+    @DeleteMapping("/user")
+    public ResponseEntity<Void> deleteUser() {
+
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        userService.deleteUser(userEmail);
+
+        return ResponseEntity.noContent().build();
     }
 }

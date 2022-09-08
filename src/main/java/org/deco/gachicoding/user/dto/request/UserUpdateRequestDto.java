@@ -10,9 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UserUpdateRequestDto {
 
-    @ApiModelProperty(value = "수정할 비밀번호", required = false, example = "12345")
-    private String userPassword;
-
     @ApiModelProperty(value = "수정할 사용자 별명", required = false, example = "비밀번호:12345")
     private String userNick;
 
@@ -24,12 +21,10 @@ public class UserUpdateRequestDto {
 
     public UserUpdateRequestDto(
             String userNick,
-            String userPassword,
             boolean userLocked,
             boolean userEnabled
     ) {
         this.userNick = userNick;
-        this.userPassword = userPassword;
         this.userLocked = userLocked;
         this.userEnabled = userEnabled;
     }

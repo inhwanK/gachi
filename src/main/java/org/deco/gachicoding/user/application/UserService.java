@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -48,8 +49,7 @@ public class UserService {
         User user = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        String encoded = passwordEncoder.encode(dto.getUserPassword());
-        user.update(dto.getUserNick(), encoded, dto.isUserLocked(), dto.isUserEnabled());
+        user.update(dto.getUserNick(), dto.isUserLocked(), dto.isUserEnabled());
 
         return user.getUserIdx();
     }
@@ -57,23 +57,22 @@ public class UserService {
     @Transactional
     public Long changeUserPassword(
             String userEmail,
-            String password // 비밀번호 변경 dto 필요
+            PasswordUpdateRequestDto dto
     ) {
         User user = userRepository.findByUserEmail(userEmail).get();
 
-        if(passwordEncoder.matches(password, user.getUserPassword())) {
+        if(passwordEncoder.matches(dto.getConfirmPassword(), user.getUserPassword())) {
             throw new IllegalArgumentException("비밀번호가 이전과 동일합니다.");
         }
 
-        String encryptedPassword = passwordEncoder.encode(password);
+        String encryptedPassword = passwordEncoder.encode(dto.getConfirmPassword());
         user.changeNewPassword(encryptedPassword);
 
         return user.getUserIdx();
     }
 
     @Transactional
-    public Long deleteUser(Long idx) {
-        userRepository.deleteById(idx);
-        return idx;
+    public void deleteUser(String userEmail) {
+        userRepository.deleteByUserEmail(userEmail);
     }
 }

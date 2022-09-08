@@ -91,19 +91,4 @@ public class User {
     public void changeNewPassword(String password) {
         this.userPassword = password;
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userIdx=" + userIdx +
-                ", userName='" + userName + '\'' +
-                ", userNick='" + userNick + '\'' +
-                ", userEmail='" + userEmail + '\'' +
-                ", userPassword='" + userPassword + '\'' +
-                ", userLocked=" + userLocked +
-                ", userEnabled=" + userEnabled +
-                ", userCreatedAt=" + userCreatedAt +
-                ", userRole='" + userRole + '\'' +
-                '}';
-    }
 }

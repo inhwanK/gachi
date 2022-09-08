@@ -4,7 +4,9 @@ import org.deco.gachicoding.common.factory.user.MockUser;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
+import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -95,11 +97,16 @@ public class UserServiceTest {
                 .userPassword("1234")
                 .build();
 
+        PasswordUpdateRequestDto dto = new PasswordUpdateRequestDto(
+                "newPassword",
+                "newPassword"
+        );
+
         given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
         given(passwordEncoder.matches("newPassword", "1234")).willReturn(false);
         given(passwordEncoder.encode("newPassword")).willReturn("changedPassword");
 
-        userService.changeUserPassword("1234@1234.com", "newPassword");
+        userService.changeUserPassword("1234@1234.com", dto);
         assertThat(user.getUserPassword()).isEqualTo("changedPassword");
     }
 
@@ -114,19 +121,62 @@ public class UserServiceTest {
                 .userPassword("1234")
                 .build();
 
+        PasswordUpdateRequestDto dto = new PasswordUpdateRequestDto(
+                "1234",
+                "1234"
+        );
+
         given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
         given(passwordEncoder.matches("1234", "1234")).willReturn(true);
 
-        assertThatThrownBy(() -> userService.changeUserPassword("1234@1234.com", "1234"))
+        assertThatThrownBy(() -> userService.changeUserPassword("1234@1234.com", dto))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이전과 동일");
     }
 
-    @DisplayName("회원 탈퇴한다.")
+    @DisplayName("회원 정보를 일괄적으로 수정한다.")
+    @Test
+    void updateUser_Legacy_Success() {
+        User user = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani_inaning")
+                .userPassword("1234")
+                .build();
+
+        User expectedUser = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani")
+                .userPassword("1234")
+                .userLocked(true)
+                .userEnabled(true)
+                .build();
+
+        UserUpdateRequestDto dto = new UserUpdateRequestDto("nani", true, true);
+
+        given(userRepository.findByUserEmail(any())).willReturn(Optional.of(user));
+
+        userService.updateUser("1234@1234.com", dto);
+
+        assertThat(user)
+                .usingRecursiveComparison()
+                .ignoringFields("userIdx")
+                .isEqualTo(expectedUser);
+    }
+
+    @DisplayName("회원 삭제한다.")
     @Test
     void deleteUser_Success() {
-        userService.deleteUser(1L);
-        then(userRepository).should().deleteById(anyLong());
+        User user = MockUser.builder()
+                .userEmail("1234@1234.com")
+                .userName("InHwan")
+                .userNick("nani_inaning")
+                .userPassword("1234")
+                .build();
+
+        userService.deleteUser("1234@1234.com");
+        then(userRepository).should().deleteByUserEmail(anyString());
     }
 
     @Test

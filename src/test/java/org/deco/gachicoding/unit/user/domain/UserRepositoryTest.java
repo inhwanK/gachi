@@ -87,11 +87,23 @@ public class UserRepositoryTest {
                 .userNick("saveTestNick")
                 .build();
 
-        assertThatThrownBy(
-                () -> {
+        assertThatThrownBy(() -> {
                     userRepository.save(duplicateEmailUser);
-                }
-        ).isInstanceOf(DataIntegrityViolationException.class);
+        }).isInstanceOf(DataIntegrityViolationException.class);
+    }
+
+    @DisplayName("유저이메일로 유저를 삭제한다.")
+    @Test
+    public void deleteByUserEmail_Success() {
+
+        Optional<User> delUser = userRepository.findByUserEmail("test@test.com");
+
+        userRepository.deleteByUserEmail(delUser.get().getUserEmail());
+
+        assertThat(
+                userRepository.findByUserEmail("test@test.com")
+                        .isEmpty()
+        ).isTrue();
     }
 
     @DisplayName("유저번호로 유저를 삭제한다.")
@@ -102,9 +114,9 @@ public class UserRepositoryTest {
 
         userRepository.deleteById(delUser.get().getUserIdx());
 
-        assertThatThrownBy(
-                () -> userRepository.findById(delUser.get().getUserIdx())
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."))
-        ).isInstanceOf(IllegalArgumentException.class);
+        assertThat(
+                userRepository.findById(delUser.get().getUserIdx())
+                        .isEmpty()
+        ).isTrue();
     }
 }

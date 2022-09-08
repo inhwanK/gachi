@@ -1,20 +1,20 @@
 package org.deco.gachicoding.user.presentation;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.application.UserService;
+import org.deco.gachicoding.user.dto.request.LoginRequestDto;
 import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
 import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Api(tags = "사용자 세션 API")
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -30,5 +30,20 @@ public class RestUserSessionController {
         UserAuthenticationDto dto = (UserAuthenticationDto) authentication.getPrincipal();
         UserResponseDto responseDto = new UserResponseDto(dto.getUsername(), dto.getUserNick());
         return responseDto;
+    }
+
+    @ApiOperation(value = "로그인 요청", notes = "로그인 요청 api 문서")
+    @PostMapping("/login")
+    public void login(
+            @ApiParam(name = "로그인 요청 dto")
+            @Valid @RequestBody LoginRequestDto dto
+    ) {
+
+    }
+
+    @ApiOperation(value = "로그아웃 요청", notes = "로그아웃 요청 api 문서")
+    @PostMapping("/logout")
+    public void logout() {
+
     }
 }

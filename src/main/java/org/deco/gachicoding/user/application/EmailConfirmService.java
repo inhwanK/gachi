@@ -1,9 +1,9 @@
 package org.deco.gachicoding.user.application;
 
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.domain.auth.Auth;
-import org.deco.gachicoding.domain.auth.AuthRepository;
-import org.deco.gachicoding.service.MailService;
+import org.deco.gachicoding.auth.Auth;
+import org.deco.gachicoding.auth.AuthRepository;
+import org.deco.gachicoding.mail.MailService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 

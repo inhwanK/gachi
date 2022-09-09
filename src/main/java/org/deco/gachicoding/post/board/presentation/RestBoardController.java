@@ -3,7 +3,6 @@ package org.deco.gachicoding.post.board.presentation;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.application.BoardService;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Api(tags = "자유게시판 정보 처리 API")
 @Slf4j
@@ -101,46 +98,46 @@ public class RestBoardController {
 //        return ResponseEntity.ok(response);
 //    }
 
-    @ApiOperation(value = "자유게시판 게시글 비활성화")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "비활성화 성공")
-    )
-    @PutMapping("/board/disable/{boardIdx}")
-    public ResponseEntity<ResponseState> disableBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
-                                                      @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
-
-        BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
-
-        boardService.disableBoard(dto);
-
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
-    }
-
-    @ApiOperation(value = "자유게시판 게시글 활성화")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "활성화 성공")
-    )
-    @PutMapping("/board/enable/{boardIdx}")
-    public ResponseEntity<ResponseState> enableBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
-                                                     @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
-        BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
-
-        boardService.enableBoard(dto);
-
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-    }
-
-    @ApiOperation(value = "자유게시판 게시글 삭제")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "삭제 성공")
-    )
-    @DeleteMapping("/board/{boardIdx}")
-    public ResponseEntity<ResponseState> removeBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
-                                                     @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
-        BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
-
-        boardService.removeBoard(dto);
-
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
-    }
+//    @ApiOperation(value = "자유게시판 게시글 비활성화")
+//    @ApiResponses(
+//            @ApiResponse(code = 200, message = "비활성화 성공")
+//    )
+//    @PutMapping("/board/disable/{boardIdx}")
+//    public ResponseEntity<ResponseState> disableBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+//                                                      @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+//
+//        BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
+//
+//        boardService.disableBoard(dto);
+//
+//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+//    }
+//
+//    @ApiOperation(value = "자유게시판 게시글 활성화")
+//    @ApiResponses(
+//            @ApiResponse(code = 200, message = "활성화 성공")
+//    )
+//    @PutMapping("/board/enable/{boardIdx}")
+//    public ResponseEntity<ResponseState> enableBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+//                                                     @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+//        BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
+//
+//        boardService.enableBoard(dto);
+//
+//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+//    }
+//
+//    @ApiOperation(value = "자유게시판 게시글 삭제")
+//    @ApiResponses(
+//            @ApiResponse(code = 200, message = "삭제 성공")
+//    )
+//    @DeleteMapping("/board/{boardIdx}")
+//    public ResponseEntity<ResponseState> removeBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
+//                                                     @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail) {
+//        BoardBasicRequestDto dto = BoardAssembler.boardBasicRequestDto(boardIdx, userEmail);
+//
+//        boardService.removeBoard(dto);
+//
+//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+//    }
 }

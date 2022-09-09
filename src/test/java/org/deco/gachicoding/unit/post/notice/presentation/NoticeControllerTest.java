@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.config.SecurityConfig;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.presentation.RestNoticeController;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeUpdateRequest;
@@ -33,10 +31,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.deco.gachicoding.exception.StatusEnum.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;

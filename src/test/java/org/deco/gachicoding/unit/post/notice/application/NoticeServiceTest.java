@@ -2,7 +2,6 @@ package org.deco.gachicoding.unit.post.notice.application;
 
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.deco.gachicoding.exception.StatusEnum.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;

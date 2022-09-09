@@ -2,7 +2,6 @@ package org.deco.gachicoding.unit.post.notice.domain;
 
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.Notice;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 public class NoticeTest {
 

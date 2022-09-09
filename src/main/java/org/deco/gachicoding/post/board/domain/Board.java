@@ -2,7 +2,6 @@ package org.deco.gachicoding.post.board.domain;
 
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyActiveException;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyInactiveException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
@@ -13,8 +12,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Getter
 @Entity

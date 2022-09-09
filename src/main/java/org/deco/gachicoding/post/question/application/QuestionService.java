@@ -15,15 +15,10 @@ import org.deco.gachicoding.post.question.dto.response.QuestionDetailPostRespons
 import org.deco.gachicoding.post.question.dto.response.QuestionListResponseDto;
 import org.deco.gachicoding.post.question.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.dto.request.QuestionUpdateRequestDto;
-import org.deco.gachicoding.exception.ApplicationException;
-import org.deco.gachicoding.exception.ResponseState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Slf4j
 @Service
@@ -57,7 +52,7 @@ public class QuestionService {
         } catch (Exception e) {
             log.error("Failed To Extract {} File", "Question Content");
             e.printStackTrace();
-            removeQuestion(queIdx);
+//            removeQuestion(queIdx);
             tagService.removeBoardTags(queIdx, BOARD_TYPE);
             throw e;
         }
@@ -123,30 +118,30 @@ public class QuestionService {
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> disableQuestion(Long queIdx) {
+    public void disableQuestion(Long queIdx) {
         Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
                 .orElseThrow(QuestionNotFoundException::new);
 
         question.isDisable();
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> enableQuestion(Long queIdx) {
+    public void enableQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
                 .orElseThrow(QuestionNotFoundException::new);
 
         question.isEnable();
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> removeQuestion(Long queIdx) {
+    public void removeQuestion(Long queIdx) {
         Question question = questionRepository.findById(queIdx)
                 .orElseThrow(QuestionNotFoundException::new);
 
         questionRepository.delete(question);
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
     private Boolean isSameWriter(Question question, User user) {

@@ -9,7 +9,6 @@ import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,8 +16,6 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 
 import java.time.LocalDateTime;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Getter
 @DynamicInsert

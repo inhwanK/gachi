@@ -58,6 +58,7 @@ public class Notice extends BaseTimeEntity {
     public static Builder builder() {
         return new Builder();
     }
+
     protected Notice() {}
 
     public Notice(

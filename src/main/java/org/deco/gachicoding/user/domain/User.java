@@ -38,10 +38,6 @@ public class User {
     private String userPassword;
 
     @Column(nullable = false)
-    @ColumnDefault("true")
-    private boolean userLocked;
-
-    @Column(nullable = false)
     @ColumnDefault("false")
     private boolean userEnabled;
 
@@ -55,36 +51,33 @@ public class User {
     private RoleType userRole;
 
     @Builder
-    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userEnabled) {
         this.userIdx = userIdx;
         this.userName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
-        this.userLocked = userLocked;
         this.userEnabled = userEnabled;
     }
 
-    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userLocked, boolean userEnabled, LocalDateTime userCreatedAt, RoleType userRole) {
+    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userEnabled, LocalDateTime userCreatedAt, RoleType userRole) {
         this.userIdx = userIdx;
         this.userName = userName;
         this.userNick = userNick;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
-        this.userLocked = userLocked;
         this.userEnabled = userEnabled;
         this.userCreatedAt = userCreatedAt;
         this.userRole = userRole;
     }
 
-    public User update(String userNick, boolean userActivated, boolean userEnabled) {
+    public User update(String userNick, boolean userEnabled) {
         this.userNick = userNick;
-        this.userLocked = userActivated;
         this.userEnabled = userEnabled;
         return this;
     }
 
-    public void isEmailAuthenticated() {
+    public void enableUser() {
         this.userEnabled = true;
     }
 

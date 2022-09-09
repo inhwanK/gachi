@@ -1,7 +1,7 @@
-package org.deco.gachicoding.user.dto.request;
+package org.deco.gachicoding.user.dto.request.authentication;
 
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.NoArgsConstructor;
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
@@ -18,12 +18,6 @@ public class UserAuthenticationDto implements UserDetails {
     private String password;
     private String userNick;
     private List<GrantedAuthority> roles;
-
-    public UserAuthenticationDto(@JsonProperty("userEmail") String userEmail,
-                                 @JsonProperty("password") String password) {
-        this.userEmail = userEmail;
-        this.password = password;
-    }
 
     public UserAuthenticationDto(User user, List<GrantedAuthority> roles) {
         this.userEmail = user.getUserEmail();

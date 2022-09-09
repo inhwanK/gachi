@@ -1,9 +1,9 @@
-package org.deco.gachicoding.service;
+package org.deco.gachicoding.user.application;
 
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.domain.social.Social;
-import org.deco.gachicoding.domain.social.SocialRepository;
-import org.deco.gachicoding.dto.social.SocialSaveRequestDto;
+import org.deco.gachicoding.social.Social;
+import org.deco.gachicoding.social.SocialRepository;
+import org.deco.gachicoding.social.dto.SocialSaveRequestDto;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

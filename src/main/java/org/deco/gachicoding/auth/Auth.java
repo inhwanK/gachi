@@ -1,4 +1,4 @@
-package org.deco.gachicoding.domain.auth;
+package org.deco.gachicoding.auth;
 
 import lombok.AccessLevel;
 import lombok.Getter;

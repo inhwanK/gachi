@@ -1,10 +1,10 @@
-package org.deco.gachicoding.dto.social;
+package org.deco.gachicoding.social.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.deco.gachicoding.domain.social.Social;
+import org.deco.gachicoding.social.Social;
 
 @Getter
 @Setter

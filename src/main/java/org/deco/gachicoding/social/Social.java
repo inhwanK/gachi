@@ -1,4 +1,4 @@
-package org.deco.gachicoding.domain.social;
+package org.deco.gachicoding.social;
 
 import lombok.Builder;
 import lombok.Getter;

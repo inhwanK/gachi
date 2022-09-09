@@ -1,6 +1,5 @@
 package org.deco.gachicoding.unit.user.application;
 
-import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.common.factory.user.MockUser;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
@@ -16,14 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-
 
 //@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ExtendWith({MockitoExtension.class})
@@ -33,7 +30,7 @@ public class UserServiceTest {
     private UserService userService;
 
     @Mock
-    PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     @Mock
     private UserRepository userRepository;
@@ -204,11 +201,5 @@ public class UserServiceTest {
 
         // then
         then(userRepository).should().deleteByUserEmail("1234@1234.com");
-    }
-
-    @Test
-    @DisplayName("UserService - 이메일 형식이 아닌 아이디 회원가입 테스트")
-    void notEmailFormatIdJoinUser() {
-        fail("미구현");
     }
 }

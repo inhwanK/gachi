@@ -3,6 +3,9 @@ package org.deco.gachicoding.post.notice.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.post.notice.NoticeAlreadyActiveException;
+import org.deco.gachicoding.exception.post.notice.NoticeAlreadyInactiveException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
@@ -60,7 +63,16 @@ public class Notice extends BaseTimeEntity {
     }
     protected Notice() {}
 
-    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Notice(
+            Long notIdx,
+            User author,
+            NoticeTitle notTitle,
+            NoticeContents notContents,
+            Long notViews, Boolean notPin,
+            Boolean notLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.notIdx = notIdx;
         this.author = author;
         this.notTitle = notTitle;
@@ -90,19 +102,19 @@ public class Notice extends BaseTimeEntity {
 
     public void hasSameAuthor(User user) {
         if (author != user) {
-            throw new ApplicationException(INVALID_AUTH_USER);
+            throw new UserUnAuthorizedException();
         }
     }
 
     public void enableNotice() {
         if (this.notLocked)
-            throw new ApplicationException(ALREADY_ACTIVE);
+            throw new NoticeAlreadyActiveException();
         this.notLocked = true;
     }
 
     public void disableNotice() {
         if (!this.notLocked)
-            throw new ApplicationException(ALREADY_INACTIVE);
+            throw new NoticeAlreadyInactiveException();
         this.notLocked = false;
     }
 

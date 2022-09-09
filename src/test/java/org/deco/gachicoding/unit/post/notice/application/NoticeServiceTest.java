@@ -952,7 +952,7 @@ public class NoticeServiceTest {
                 .delete(any(Notice.class));
 
         // when
-        noticeService.removeNotie(requestDto);
+        noticeService.removeNotice(requestDto);
 
         // then
         verify(noticeRepository, times(1))

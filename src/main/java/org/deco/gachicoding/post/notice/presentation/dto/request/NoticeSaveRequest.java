@@ -35,4 +35,18 @@ public class NoticeSaveRequest {
 //    @Nullable
 //    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
 //    private List<String> tags;
+
+    private NoticeSaveRequest() {}
+
+    public NoticeSaveRequest(
+            String userEmail,
+            String notTitle,
+            String notContents,
+            Boolean notPin
+    ) {
+        this.userEmail = userEmail;
+        this.notTitle = notTitle;
+        this.notContent = notContents;
+        this.notPin = notPin;
+    }
 }

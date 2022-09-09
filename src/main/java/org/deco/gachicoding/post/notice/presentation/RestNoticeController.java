@@ -151,7 +151,7 @@ public class RestNoticeController {
 
         NoticeBasicRequestDto dto = NoticeAssembler.noticeBasicRequestDto(notIdx, userEmail);
 
-        noticeService.removeNotie(dto);
+        noticeService.removeNotice(dto);
 
         // 활성 비활성 삭제도 리다이렉트..?
         return ResponseState.toResponseEntity(NOTICE_REMOVE_SUCCESS);

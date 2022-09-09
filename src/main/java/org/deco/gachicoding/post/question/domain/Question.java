@@ -61,7 +61,17 @@ public class Question {
     private LocalDateTime queRegdate;
 
     @Builder
-    public Question(User writer, Long queIdx, String queTitle, String queContents, String queError, String queCategory, Boolean queSolve, Boolean queActivated, LocalDateTime queRegdate) {
+    public Question(
+            User writer,
+            Long queIdx,
+            String queTitle,
+            String queContents,
+            String queError,
+            String queCategory,
+            Boolean queSolve,
+            Boolean queActivated,
+            LocalDateTime queRegdate
+    ) {
         this.writer = writer;
         this.queIdx = queIdx;
         this.queTitle = queTitle;

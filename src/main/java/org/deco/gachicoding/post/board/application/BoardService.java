@@ -2,6 +2,8 @@ package org.deco.gachicoding.post.board.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.board.BoardNotFoundException;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.board.application.dto.BoardDtoAssembler;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
@@ -133,16 +135,16 @@ public class BoardService {
 
     private Board findEnableBoard(Long boardIdx) {
         return boardRepository.findEnableBoardByIdx(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(BoardNotFoundException::new);
     }
 
     private Board findBoard(Long boardIdx) {
         return boardRepository.findBoardByIdx(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(BoardNotFoundException::new);
     }
 
     private User findAuthor(String userEmail) {
         return userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
     }
 }

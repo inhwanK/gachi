@@ -596,7 +596,7 @@ public class NoticeControllerTest {
 
         willDoNothing()
                 .given(noticeService)
-                .removeNotie(any(NoticeBasicRequestDto.class));
+                .removeNotice(any(NoticeBasicRequestDto.class));
 
         // when
         ResultActions perform = mockMvc.perform(delete("/api/notice/remove/{notIdx}", notIdx)
@@ -609,7 +609,7 @@ public class NoticeControllerTest {
                 .andExpect(jsonPath("code").value("NOTICE_REMOVE_SUCCESS"));
 
         verify(noticeService, times(1))
-                .removeNotie(any(NoticeBasicRequestDto.class));
+                .removeNotice(any(NoticeBasicRequestDto.class));
     }
 
 }

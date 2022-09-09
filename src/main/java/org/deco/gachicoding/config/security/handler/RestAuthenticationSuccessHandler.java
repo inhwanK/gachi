@@ -1,6 +1,7 @@
 package org.deco.gachicoding.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -21,8 +23,9 @@ public class RestAuthenticationSuccessHandler implements AuthenticationSuccessHa
         UserAuthenticationDto user = (UserAuthenticationDto) authentication.getPrincipal();
 
         response.setStatus(HttpStatus.OK.value());
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        objectMapper.writeValue(response.getWriter(), user);
+        log.info("로그인 성공");
+//        objectMapper.writeValue(response.getWriter(), user);
     }
 }

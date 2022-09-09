@@ -17,7 +17,7 @@ public class LoginRequestDto {
     @NotNull @Email(message = "올바르지 않은 이메일 형식입니다.")
     private String userEmail;
 
-    @ApiModelProperty(value = "비밀번호", required = true, example = "1234")
+    @ApiModelProperty(value = "비밀번호", required = true, example = "\"1234\"")
     @NotNull
     private String password;
 }

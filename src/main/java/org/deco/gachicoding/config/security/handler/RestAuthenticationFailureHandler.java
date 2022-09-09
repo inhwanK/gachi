@@ -22,7 +22,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
+    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
 
         String errMsg = "Invalid Username or Password";
 
@@ -38,6 +38,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
             errMsg = "Expired password";
         }
 
+        log.info("로그인 실패");
         objectMapper.writeValue(response.getWriter(), errMsg);
     }
 }

@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.domain.auth.Auth;
+import org.deco.gachicoding.user.application.EmailConfirmService;
 import org.deco.gachicoding.user.application.UserAuthenticationService;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
@@ -33,7 +34,7 @@ public class RestUserController {
 
     private final UserService userService;
     private final UserRepository userRepository;
-    private final UserAuthenticationService userAuthenticationService;
+    private final EmailConfirmService emailConfirmService;
 
     @ApiOperation(value = "이메일 중복 체크", notes = "이메일의 중복을 체크 수행")
     @ApiImplicitParam(name = "email", value = "중복체크 이메일", required = true)
@@ -53,7 +54,7 @@ public class RestUserController {
             @ApiParam(value = "인증을 진행할 이메일")
             @RequestParam String email
     ) {
-        return userAuthenticationService.sendEmailConfirmationToken(email);
+        return emailConfirmService.sendEmailConfirmationToken(email);
     }
 
     @ApiOperation(value = "이메일 인증", notes = "UUID 토큰을 통한 이메일 인증")
@@ -66,7 +67,7 @@ public class RestUserController {
             @ApiParam(value = "유저 이메일로 발송된 인증 토큰")
             @RequestParam UUID authToken
     ) {
-        Auth auth = userAuthenticationService.checkToken(authToken);
+        Auth auth = emailConfirmService.checkToken(authToken);
         Optional<User> user = userRepository.findByUserEmail(auth.getAuthEmail());
 
         auth.useToken();

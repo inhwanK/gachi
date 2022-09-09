@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
-@Builder
 public class NoticeUpdateRequest implements PostRequestDto {
 
     @NotNull(message = "F0001")
@@ -32,6 +31,7 @@ public class NoticeUpdateRequest implements PostRequestDto {
 
     private NoticeUpdateRequest() {}
 
+    @Builder
     public NoticeUpdateRequest(
             String userEmail,
             Long notIdx,

@@ -3,13 +3,13 @@ package org.deco.gachicoding.post.notice.presentation.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
-@Builder
 public class NoticeSaveRequest {
 
     @NotNull
@@ -38,15 +38,16 @@ public class NoticeSaveRequest {
 
     private NoticeSaveRequest() {}
 
+    @Builder
     public NoticeSaveRequest(
             String userEmail,
             String notTitle,
-            String notContents,
+            String notContent,
             Boolean notPin
     ) {
         this.userEmail = userEmail;
         this.notTitle = notTitle;
-        this.notContent = notContents;
+        this.notContent = notContent;
         this.notPin = notPin;
     }
 }

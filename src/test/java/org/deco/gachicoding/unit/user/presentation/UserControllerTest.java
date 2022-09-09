@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.user.presentation;
 
 
-import org.deco.gachicoding.user.presentation.RestUserController;
+import org.deco.gachicoding.user.presentation.UserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,8 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 // 컨트롤러 테스트에서 데이터의 유효성, API의 반환값에 대한 검증 테스트를 진행한다.
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = RestUserController.class)	// (2)
-public class RestUserControllerTest {
+@WebMvcTest(controllers = UserController.class)	// (2)
+public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

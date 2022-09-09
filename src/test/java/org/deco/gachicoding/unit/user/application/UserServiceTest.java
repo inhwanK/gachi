@@ -174,7 +174,6 @@ public class UserServiceTest {
                 .userName("InHwan")
                 .userNick("nani")
                 .userPassword("1234")
-                .userLocked(true)
                 .userEnabled(true)
                 .build();
 

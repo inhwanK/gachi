@@ -1,4 +1,4 @@
-package org.deco.gachicoding.user.application;
+package org.deco.gachicoding.social;
 
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.social.Social;

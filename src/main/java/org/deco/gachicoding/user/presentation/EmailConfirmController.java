@@ -4,17 +4,11 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.application.EmailConfirmService;
-import org.deco.gachicoding.user.domain.User;
-import org.deco.gachicoding.auth.Auth;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.transaction.Transactional;
-import java.util.Optional;
-import java.util.UUID;
 
 @Api(tags = "이메일 인증 처리 API")
 @Slf4j
@@ -25,7 +19,7 @@ public class EmailConfirmController {
 
     private final UserRepository userRepository;
     private final EmailConfirmService emailConfirmService;
-
+/*
     @ApiOperation(value = "이메일 인증 토큰 발행", notes = "이메일 인증을 위한 토큰 생성 후 메일 발송")
     @ApiResponse(code = 200, message = "인증 메일이 발송되었습니다.")
     @GetMapping("/user/auth-token")
@@ -52,4 +46,6 @@ public class EmailConfirmController {
 
         return user.get().isUserEnabled();
     }
+
+ */
 }

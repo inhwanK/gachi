@@ -61,7 +61,7 @@ public class EmailConfirmTokenService {
 
         if (token.get().validCheck(tokenId)) {
             token.get().confirmToken();
-            targetUser.enable();
+            targetUser.enableUser();
             return true;
         }
 

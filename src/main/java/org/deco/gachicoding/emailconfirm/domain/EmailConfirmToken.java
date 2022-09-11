@@ -46,7 +46,9 @@ public class EmailConfirmToken {
         this.expiredAt = expiredAt;
     }
 
-    public static EmailConfirmToken createEmailConfirmToken(String targetEmail) {
+    public static EmailConfirmToken createEmailConfirmToken(
+            String targetEmail
+    ) {
 
         LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
         EmailConfirmToken authenticationToken = new EmailConfirmToken(targetEmail, expiredAt);

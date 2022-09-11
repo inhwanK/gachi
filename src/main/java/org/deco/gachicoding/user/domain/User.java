@@ -77,7 +77,7 @@ public class User {
         return this;
     }
 
-    public void enable() {
+    public void enableUser() {
         this.userEnabled = true;
     }
 

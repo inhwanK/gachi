@@ -21,7 +21,6 @@ public class MockUser {
         private String userPassword = "Test User Password";
         private boolean userEnabled = true;
         private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
-
         private RoleType userRole = RoleType.ROLE_USER;
 
 

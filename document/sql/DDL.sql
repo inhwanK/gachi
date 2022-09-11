@@ -100,26 +100,6 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`agora_vote`
 
 
 -- -----------------------------------------------------
--- Table `gachicoding`.`auth`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `gachicoding`.`auth`;
-
-CREATE TABLE IF NOT EXISTS `gachicoding`.`auth`
-(
-    `auth_token`   BINARY(16)   NOT NULL COMMENT '토큰',
-    `auth_email`   VARCHAR(255) NOT NULL COMMENT '이메일',
-    `auth_regdate` DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일시',
-    `auth_expdate` DATETIME     NOT NULL COMMENT '만료일시',
-    `expired`      TINYINT(1)   NOT NULL DEFAULT '0' COMMENT '만료여부',
-    PRIMARY KEY (`auth_token`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci
-    COMMENT = '인증';
-
-
--- -----------------------------------------------------
 -- Table `gachicoding`.`board`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `gachicoding`.`board`;
@@ -171,6 +151,23 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`comment`
     DEFAULT CHARACTER SET = utf8mb4
     COLLATE = utf8mb4_0900_ai_ci
     COMMENT = '댓글';
+
+-- -----------------------------------------------------
+-- Table `gachicoding`.`email_confirm_token`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `gachicoding`.`email_confirm_token`;
+
+CREATE TABLE IF NOT EXISTS `gachicoding`.`email_confirm_token`
+(
+    `token_id`     BINARY(255)  NOT NULL,
+    `confirmed`    BIT(1)       NOT NULL DEFAULT b'0',
+    `expired_at`   DATETIME(6)  NOT NULL,
+    `target_email` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`token_id`)
+)
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb4
+    COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------

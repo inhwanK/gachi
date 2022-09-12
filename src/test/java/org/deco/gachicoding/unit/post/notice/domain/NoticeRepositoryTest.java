@@ -1,6 +1,7 @@
 package org.deco.gachicoding.unit.post.notice.domain;
 
 import org.deco.gachicoding.common.factory.user.UserFactory;
+import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.user.domain.User;
@@ -50,7 +51,7 @@ public class NoticeRepositoryTest {
 
         // when
         Notice savedActualNotice = noticeRepository.findNoticeByIdx(savedTestNotice.getNotIdx())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+                .orElseThrow(NoticeNotFoundException::new);
 
         // then
         assertThat(savedTestNotice.getNotIdx()).isEqualTo(savedActualNotice.getNotIdx());
@@ -97,7 +98,7 @@ public class NoticeRepositoryTest {
         }
 
         // when
-        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword("",PageRequest.of(0, 10));
+        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword("", PageRequest.of(0, 10));
 
         // then
         assertThat(savedTestNotices).isNotNull();
@@ -131,7 +132,7 @@ public class NoticeRepositoryTest {
         noticeRepository.save(notice);
 
         // when
-        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword(keyword,PageRequest.of(0, 10));
+        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword(keyword, PageRequest.of(0, 10));
 
         // then
         assertThat(savedTestNotices).isNotNull();
@@ -156,12 +157,12 @@ public class NoticeRepositoryTest {
         noticeRepository.save(notice);
 
         // when
-        Notice savedTestNotices = noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+        Notice savedTestNotice = noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
+                .orElseThrow(NoticeNotFoundException::new);
 
         // then
-        assertThat(savedTestNotices).isNotNull();
-        assertThat(savedTestNotices.getNotLocked()).isTrue();
+        assertThat(savedTestNotice).isNotNull();
+        assertThat(savedTestNotice.getNotLocked()).isTrue();
     }
 
     @Test
@@ -185,7 +186,7 @@ public class NoticeRepositoryTest {
         // then
         assertThatThrownBy(() ->
                 noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."))
+                        .orElseThrow(NoticeNotFoundException::new)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -207,12 +208,12 @@ public class NoticeRepositoryTest {
         noticeRepository.save(notice);
 
         // when
-        Notice savedTestNotices = noticeRepository.findNoticeByIdx(notice.getNotIdx())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+        Notice savedTestNotice = noticeRepository.findNoticeByIdx(notice.getNotIdx())
+                .orElseThrow(NoticeNotFoundException::new);
 
         // then
-        assertThat(savedTestNotices).isNotNull();
-        assertThat(savedTestNotices.getNotLocked()).isFalse();
+        assertThat(savedTestNotice).isNotNull();
+        assertThat(savedTestNotice.getNotLocked()).isFalse();
     }
 
     @Test
@@ -233,7 +234,7 @@ public class NoticeRepositoryTest {
 
         // when
         Notice savedNotice = noticeRepository.findNoticeByIdx(savedNoticeIdx)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."));
+                .orElseThrow(NoticeNotFoundException::new);
 
         assertThat(savedNotice).isNotNull();
 
@@ -242,7 +243,7 @@ public class NoticeRepositoryTest {
         // then
         assertThatThrownBy(() ->
                 noticeRepository.findNoticeByIdx(savedNoticeIdx)
-                        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 공지사항 입니다."))
+                        .orElseThrow(NoticeNotFoundException::new)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 

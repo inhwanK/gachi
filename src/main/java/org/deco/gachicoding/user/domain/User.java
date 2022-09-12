@@ -77,9 +77,8 @@ public class User {
         this.userRole = userRole;
     }
 
-    public User update(String userNick, String userPassword, boolean userActivated, boolean userEnabled) {
+    public User update(String userNick, boolean userActivated, boolean userEnabled) {
         this.userNick = userNick;
-        this.userPassword = userPassword;
         this.userLocked = userActivated;
         this.userEnabled = userEnabled;
         return this;

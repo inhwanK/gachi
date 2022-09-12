@@ -19,7 +19,9 @@ bin/
 
 /test/resources/application.properties
 /main/resources/tempImg
+
 application.properties
+application.yml
 
 ### IntelliJ IDEA ###
 .idea

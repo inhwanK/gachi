@@ -7,7 +7,6 @@ import org.deco.gachicoding.exception.post.board.BoardAlreadyInactiveException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;
 import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
-import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;

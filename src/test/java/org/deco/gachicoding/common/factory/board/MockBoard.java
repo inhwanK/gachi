@@ -1,12 +1,8 @@
 package org.deco.gachicoding.common.factory.board;
 
-import org.deco.gachicoding.common.factory.post.notice.MockNotice;
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;
 import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
-import org.deco.gachicoding.post.notice.domain.Notice;
-import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
-import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;

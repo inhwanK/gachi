@@ -17,15 +17,10 @@ import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerSaveRequestDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerSelectRequestDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerUpdateRequestDto;
-import org.deco.gachicoding.exception.ApplicationException;
-import org.deco.gachicoding.exception.ResponseState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Slf4j
 @Service
@@ -54,14 +49,14 @@ public class AnswerService {
         Long ansIdx = answer.getAnsIdx();
         String ansContent = answer.getAnsContents();
 
-        try {
-            answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));
-            log.info("Success Upload Question Idx : {}", ansIdx);
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Answer Content");
-            e.printStackTrace();
-            removeAnswer(ansIdx);
-        }
+//        try {
+//            answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));
+//            log.info("Success Upload Question Idx : {}", ansIdx);
+//        } catch (Exception e) {
+//            log.error("Failed To Extract {} File", "Answer Content");
+//            e.printStackTrace();
+//            removeAnswer(ansIdx);
+//        }
 
         return ansIdx;
     }
@@ -109,7 +104,7 @@ public class AnswerService {
 
     // 질문 작성자 확인 로직 추가
     @Transactional
-    public ResponseEntity<ResponseState> selectAnswer(AnswerSelectRequestDto dto) {
+    public void selectAnswer(AnswerSelectRequestDto dto) {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
                 .orElseThrow(AnswerNotFoundException::new);
 
@@ -120,42 +115,42 @@ public class AnswerService {
 
         // 좀 헷갈리지만 같을때 true가 나오기 때문에 !를 붙여야함
         if(!selectAuthCheck(question, user))
-            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
+//            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
 
         if(!question.getQueSolve()) {
             answer.toSelect();
             question.toSolve();
-            return ResponseState.toResponseEntity(SELECT_SUCCESS);
+//            return ResponseState.toResponseEntity(SELECT_SUCCESS);
         } else {
-            return ResponseState.toResponseEntity(ALREADY_SOLVE);
+//            return ResponseState.toResponseEntity(ALREADY_SOLVE);
         }
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> disableAnswer(Long ansIdx) {
+    public void disableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
                 .orElseThrow(AnswerNotFoundException::new);
 
         answer.disableAnswer();
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> enableAnswer(Long ansIdx) {
+    public void enableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
                 .orElseThrow(AnswerNotFoundException::new);
 
         answer.enableAnswer();
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> removeAnswer(Long ansIdx) {
+    public void removeAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
                 .orElseThrow(AnswerNotFoundException::new);
 
         answerRepository.delete(answer);
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
     private Boolean isSameWriter(Answer answer, User user) {

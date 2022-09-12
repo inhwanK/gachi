@@ -12,7 +12,7 @@ public class BoardTitle {
 
     public static final int MAXIMUM_CONTENT_LENGTH = 100;
 
-    @Column
+    @Column(name = "board_title", columnDefinition = "varchar(255)", nullable = false)
     private String boardTitle;
 
     protected BoardTitle() {}

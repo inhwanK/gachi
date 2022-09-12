@@ -2,7 +2,9 @@ package org.deco.gachicoding.unit.post.notice.application;
 
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
-import org.deco.gachicoding.exception.ApplicationException;
+import org.deco.gachicoding.exception.post.notice.*;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
@@ -24,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.deco.gachicoding.exception.StatusEnum.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -94,9 +95,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(USER_NOT_FOUND);
+                .isInstanceOf(UserNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 사용자를 찾을 수 없습니다.");
 
         verify(userRepository, times(1))
                 .findByUserEmail(requestDto.getUserEmail());
@@ -125,9 +126,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(MAXIMUM_LENGTH_OVER_TITLE);
+                .isInstanceOf(NoticeTitleFormatException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 길이 제한을 초과하였습니다.");
     }
 
     @Test
@@ -148,9 +149,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(MAXIMUM_LENGTH_OVER_CONTENTS);
+                .isInstanceOf(NoticeContentsFormatException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 길이 제한을 초과하였습니다.");
     }
 
     @Test
@@ -170,9 +171,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NULL_TITLE);
+                .isInstanceOf(NoticeTitleNullException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 널이어서는 안됩니다.");
     }
 
     @Test
@@ -193,9 +194,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(EMPTY_TITLE);
+                .isInstanceOf(NoticeTitleEmptyException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 공백이어서는 안됩니다.");
     }
 
     @Test
@@ -215,9 +216,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NULL_CONTENTS);
+                .isInstanceOf(NoticeContentsNullException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 널이어서는 안됩니다.");
     }
 
     @Test
@@ -238,9 +239,9 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(EMPTY_CONTENTS);
+                .isInstanceOf(NoticeContentsEmptyException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 공백이어서는 안됩니다.");
     }
 
     @Test
@@ -347,9 +348,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.getNoticeDetail(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NOTICE_NOT_FOUND);
+                .isInstanceOf(NoticeNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 공지사항을 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -370,9 +371,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.getNoticeDetail(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INACTIVE_NOTICE);
+                .isInstanceOf(NoticeInactiveException.class)
+                .extracting("message")
+                .isEqualTo("비활성 처리 된 공지사항입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -432,9 +433,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NOTICE_NOT_FOUND);
+                .isInstanceOf(NoticeNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 공지사항을 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -462,9 +463,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INACTIVE_NOTICE);
+                .isInstanceOf(NoticeInactiveException.class)
+                .extracting("message")
+                .isEqualTo("비활성 처리 된 공지사항입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -494,9 +495,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(USER_NOT_FOUND);
+                .isInstanceOf(UserNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 사용자를 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -529,9 +530,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INVALID_AUTH_USER);
+                .isInstanceOf(UserUnAuthorizedException.class)
+                .extracting("message")
+                .isEqualTo("권한이 없는 사용자입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -562,9 +563,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NULL_TITLE);
+                .isInstanceOf(NoticeTitleNullException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 널이어서는 안됩니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -595,9 +596,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(EMPTY_TITLE);
+                .isInstanceOf(NoticeTitleEmptyException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 공백이어서는 안됩니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -628,9 +629,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NULL_CONTENTS);
+                .isInstanceOf(NoticeContentsNullException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 널이어서는 안됩니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -661,9 +662,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(EMPTY_CONTENTS);
+                .isInstanceOf(NoticeContentsEmptyException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 공백이어서는 안됩니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -712,9 +713,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.disableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NOTICE_NOT_FOUND);
+                .isInstanceOf(NoticeNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 공지사항을 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -737,9 +738,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.disableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(USER_NOT_FOUND);
+                .isInstanceOf(UserNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 사용자를 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -765,9 +766,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.disableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INVALID_AUTH_USER);
+                .isInstanceOf(UserUnAuthorizedException.class)
+                .extracting("message")
+                .isEqualTo("권한이 없는 사용자입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -792,9 +793,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.disableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(ALREADY_INACTIVE);
+                .isInstanceOf(NoticeAlreadyInactiveException.class)
+                .extracting("message")
+                .isEqualTo("이미 비활성화 된 공지사항 입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -843,9 +844,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NOTICE_NOT_FOUND);
+                .isInstanceOf(NoticeNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 공지사항을 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -868,9 +869,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(USER_NOT_FOUND);
+                .isInstanceOf(UserNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 사용자를 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -896,9 +897,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INVALID_AUTH_USER);
+                .isInstanceOf(UserUnAuthorizedException.class)
+                .extracting("message")
+                .isEqualTo("권한이 없는 사용자입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -923,9 +924,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(ALREADY_ACTIVE);
+                .isInstanceOf(NoticeAlreadyActiveException.class)
+                .extracting("message")
+                .isEqualTo("이미 활성화 된 공지사항 입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -977,9 +978,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NOTICE_NOT_FOUND);
+                .isInstanceOf(NoticeNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 공지사항을 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -1002,9 +1003,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(USER_NOT_FOUND);
+                .isInstanceOf(UserNotFoundException.class)
+                .extracting("message")
+                .isEqualTo("해당하는 사용자를 찾을 수 없습니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -1030,9 +1031,9 @@ public class NoticeServiceTest {
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INVALID_AUTH_USER);
+                .isInstanceOf(UserUnAuthorizedException.class)
+                .extracting("message")
+                .isEqualTo("권한이 없는 사용자입니다.");
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());

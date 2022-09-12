@@ -12,7 +12,7 @@ public class BoardContents {
 
     public static final int MAXIMUM_CONTENT_LENGTH = 10000;
 
-    @Column
+    @Column(name = "board_contents", columnDefinition = "text", nullable = false)
     private String boardContents;
 
     protected BoardContents() {}

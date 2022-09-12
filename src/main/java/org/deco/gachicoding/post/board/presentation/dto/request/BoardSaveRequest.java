@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
-@Builder
 public class BoardSaveRequest {
 
     @NotNull(message = "F0001")
@@ -37,12 +36,13 @@ public class BoardSaveRequest {
 //    @ApiModelProperty(value = "게시판 카테고리", required = false, example = "개발 일상 토론")
 //    private String boardCategory;
 
-    @Nullable
-    @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
-    private List<String> tags;
+//    @Nullable
+//    @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
+//    private List<String> tags;
 
     private BoardSaveRequest() {}
 
+    @Builder
     public BoardSaveRequest(
             String userEmail,
             String boardTitle,

@@ -73,7 +73,7 @@ public class MockNotice {
         }
 
         public Notice build() {
-            Notice notice = new Notice(
+            return new Notice(
                     notIdx,
                     author,
                     notTitle,
@@ -84,8 +84,6 @@ public class MockNotice {
                     createdAt,
                     updatedAt
             );
-
-            return notice;
         }
     }
 }

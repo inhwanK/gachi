@@ -3,7 +3,6 @@ package org.deco.gachicoding.post.notice.presentation.dto.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Email;
@@ -12,7 +11,6 @@ import javax.validation.constraints.Size;
 import java.util.List;
 
 @Getter
-@Builder
 public class NoticeSaveRequest {
 
     @NotNull(message = "F0001")
@@ -44,6 +42,7 @@ public class NoticeSaveRequest {
 
     private NoticeSaveRequest() {}
 
+    @Builder
     public NoticeSaveRequest(
             String userEmail,
             String notTitle,

@@ -187,7 +187,7 @@ public class NoticeRepositoryTest {
         assertThatThrownBy(() ->
                 noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
                         .orElseThrow(NoticeNotFoundException::new)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoticeNotFoundException.class);
     }
 
     @Test
@@ -244,7 +244,7 @@ public class NoticeRepositoryTest {
         assertThatThrownBy(() ->
                 noticeRepository.findNoticeByIdx(savedNoticeIdx)
                         .orElseThrow(NoticeNotFoundException::new)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(NoticeNotFoundException.class);
     }
 
 }

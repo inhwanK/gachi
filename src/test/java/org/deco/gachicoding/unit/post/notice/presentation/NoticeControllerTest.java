@@ -247,7 +247,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("해당하는 공지사항을 찾을 수 없습니다."));
+                .andExpect(jsonPath("errorMessage").value("해당하는 공지사항을 찾을 수 없습니다."));
 
         verify(noticeService, times(1))
                 .getNoticeDetail(any(NoticeDetailRequestDto.class));
@@ -269,7 +269,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("비활성 처리 된 공지사항입니다."));
+                .andExpect(jsonPath("errorMessage").value("비활성 처리 된 공지사항입니다."));
 
         verify(noticeService, times(1))
                 .getNoticeDetail(any(NoticeDetailRequestDto.class));
@@ -331,7 +331,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("해당하는 공지사항을 찾을 수 없습니다."));
+                .andExpect(jsonPath("errorMessage").value("해당하는 공지사항을 찾을 수 없습니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -360,7 +360,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("비활성 처리 된 공지사항입니다."));
+                .andExpect(jsonPath("errorMessage").value("비활성 처리 된 공지사항입니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -389,7 +389,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("해당하는 사용자를 찾을 수 없습니다."));
+                .andExpect(jsonPath("errorMessage").value("해당하는 사용자를 찾을 수 없습니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -418,7 +418,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("권한이 없는 사용자입니다."));
+                .andExpect(jsonPath("errorMessage").value("권한이 없는 사용자입니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -446,7 +446,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("공지사항의 제목이 널이어서는 안됩니다."));
+                .andExpect(jsonPath("errorMessage").value("공지사항의 제목이 널이어서는 안됩니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -474,7 +474,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("공지사항의 제목이 공백이어서는 안됩니다."));
+                .andExpect(jsonPath("errorMessage").value("공지사항의 제목이 공백이어서는 안됩니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -502,7 +502,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("공지사항의 내용이 널이어서는 안됩니다."));
+                .andExpect(jsonPath("errorMessage").value("공지사항의 내용이 널이어서는 안됩니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -530,7 +530,7 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("공지사항의 내용이 공백이어서는 안됩니다."));
+                .andExpect(jsonPath("errorMessage").value("공지사항의 내용이 공백이어서는 안됩니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -554,8 +554,7 @@ public class NoticeControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("code").value("NOTICE_DISABLE_SUCCESS"));
+        perform.andExpect(status().isNoContent());
 
         verify(noticeService, times(1))
                 .disableNotice(any(NoticeBasicRequestDto.class));
@@ -579,8 +578,7 @@ public class NoticeControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("code").value("NOTICE_ENABLE_SUCCESS"));
+        perform.andExpect(status().isNoContent());
 
         verify(noticeService, times(1))
                 .enableNotice(any(NoticeBasicRequestDto.class));
@@ -604,8 +602,7 @@ public class NoticeControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("code").value("NOTICE_REMOVE_SUCCESS"));
+        perform.andExpect(status().isNoContent());
 
         verify(noticeService, times(1))
                 .removeNotice(any(NoticeBasicRequestDto.class));

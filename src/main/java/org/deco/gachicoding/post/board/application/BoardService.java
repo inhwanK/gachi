@@ -2,6 +2,7 @@ package org.deco.gachicoding.post.board.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.board.BoardInactiveException;
 import org.deco.gachicoding.exception.post.board.BoardNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.board.application.dto.BoardDtoAssembler;
@@ -34,7 +35,7 @@ public class BoardService {
     String BOARD = "BOARD";
 
     @Transactional
-    public Long registerBoard(BoardSaveRequestDto dto) throws Exception {
+    public Long registerBoard(BoardSaveRequestDto dto) {
         Board board = boardRepository.save(createBoard(dto));
 
 //        Long boardIdx = board.getBoardIdx();
@@ -84,18 +85,30 @@ public class BoardService {
 //        fileService.getFiles(boardIdx, boardCategory, boardDetail);
 //        tagService.getTags(boardIdx, BOARD, boardDetail);
 
-        return BoardDtoAssembler.boardResponseDto(findEnableBoard(dto.getBoardIdx()));
+        Board board = findBoard(dto.getBoardIdx());
+
+        if (!board.getBoardLocked())
+            throw new BoardInactiveException();
+
+        return BoardDtoAssembler.boardResponseDto(board);
     }
 
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
-        Board board = findEnableBoard(dto.getBoardIdx());
+        Board board = findBoard(dto.getBoardIdx());
+
+        if (!board.getBoardLocked())
+            throw new BoardInactiveException();
 
         User user = findAuthor(dto.getUserEmail());
 
         board.hasSameAuthor(user);
 
-        board.update(dto.getBoardTitle(), dto.getBoardContents());
+        board.updateTitle(dto.getBoardTitle());
+
+        board.updateContent(dto.getBoardContents());
+
+//        board.update(dto.getBoardTitle(), dto.getBoardContents());
 
         return BoardDtoAssembler.boardResponseDto(board);
     }
@@ -131,11 +144,6 @@ public class BoardService {
         board.hasSameAuthor(user);
 
         boardRepository.delete(board);
-    }
-
-    private Board findEnableBoard(Long boardIdx) {
-        return boardRepository.findEnableBoardByIdx(boardIdx)
-                .orElseThrow(BoardNotFoundException::new);
     }
 
     private Board findBoard(Long boardIdx) {

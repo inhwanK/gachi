@@ -96,11 +96,11 @@ public class Board extends BaseTimeEntity {
         updateContent(boardContent);
     }
 
-    private void updateTitle(String boardTitle) {
+    public void updateTitle(String boardTitle) {
         this.boardTitle = new BoardTitle(boardTitle);
     }
 
-    private void updateContent(String boardContent) {
+    public void updateContent(String boardContent) {
         this.boardContents = new BoardContents(boardContent);
     }
 

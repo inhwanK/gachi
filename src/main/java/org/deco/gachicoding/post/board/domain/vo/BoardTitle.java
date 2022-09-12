@@ -1,8 +1,6 @@
 package org.deco.gachicoding.post.board.domain.vo;
 
-import org.deco.gachicoding.exception.post.board.BoardContentsEmptyException;
-import org.deco.gachicoding.exception.post.board.BoardContentsFormatException;
-import org.deco.gachicoding.exception.post.board.BoardContentsNullException;
+import org.deco.gachicoding.exception.post.board.*;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -18,6 +16,8 @@ public class BoardTitle {
     protected BoardTitle() {}
 
     public BoardTitle(String boardTitle) {
+        validateNullContents(boardTitle);
+        validateEmptyContents(boardTitle);
         validateMaximumLength(boardTitle);
         this.boardTitle = boardTitle;
     }
@@ -28,17 +28,17 @@ public class BoardTitle {
 
     private void validateNullContents(String boardTitle) {
         if (boardTitle == null)
-            throw new BoardContentsNullException();
+            throw new BoardTitleNullException();
     }
 
     private void validateEmptyContents(String boardTitle) {
         if (boardTitle.isEmpty())
-            throw new BoardContentsEmptyException();
+            throw new BoardTitleEmptyException();
     }
 
     private void validateMaximumLength(String boardTitle) {
         // 개발
         if (boardTitle.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new BoardContentsFormatException();
+            throw new BoardTitleFormatException();
     }
 }

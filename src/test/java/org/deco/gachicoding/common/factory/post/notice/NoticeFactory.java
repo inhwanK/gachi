@@ -13,7 +13,11 @@ public class NoticeFactory {
     private NoticeFactory() {}
 
     /* Notice Object start */
-    public static Notice mockNotice(Long notIdx, User author, Boolean notLocked) {
+    public static Notice mockNotice(
+            Long notIdx,
+            User author,
+            Boolean notLocked
+    ) {
         return MockNotice.builder()
                 .notIdx(notIdx)
                 .author(author)
@@ -21,7 +25,13 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static Notice mockNotice(Long notIdx, User author, String notTitle, String notContents, Boolean notLocked) {
+    public static Notice mockNotice(
+            Long notIdx,
+            User author,
+            String notTitle,
+            String notContents,
+            Boolean notLocked
+    ) {
         return MockNotice.builder()
                 .notIdx(notIdx)
                 .author(author)
@@ -31,7 +41,11 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static NoticeSaveRequestDto mockNoticeSaveRequestDto(String userEmail, String notTitle, String notContents) {
+    public static NoticeSaveRequestDto mockNoticeSaveRequestDto(
+            String userEmail,
+            String notTitle,
+            String notContents
+    ) {
         return NoticeSaveRequestDto.builder()
                 .userEmail(userEmail)
                 .notTitle(notTitle)
@@ -42,20 +56,30 @@ public class NoticeFactory {
     /* Notice Object end */
 
     /* Notice Dto start */
-    public static NoticeListRequestDto mockNoticeListRequestDto(String keyword, Pageable pageable) {
+    public static NoticeListRequestDto mockNoticeListRequestDto(
+            String keyword,
+            Pageable pageable
+    ) {
         return NoticeListRequestDto.builder()
                 .keyword(keyword)
                 .pageable(pageable)
                 .build();
     }
 
-    public static NoticeDetailRequestDto mockNoticeDetailRequestDto(Long notIdx) {
+    public static NoticeDetailRequestDto mockNoticeDetailRequestDto(
+            Long notIdx
+    ) {
         return NoticeDetailRequestDto.builder()
                 .notIdx(notIdx)
                 .build();
     }
 
-    public static NoticeUpdateRequestDto mockNoticeUpdateRequestDto(String userEmail, Long notIdx, String notTitle, String notContents) {
+    public static NoticeUpdateRequestDto mockNoticeUpdateRequestDto(
+            String userEmail,
+            Long notIdx,
+            String notTitle,
+            String notContents
+    ) {
         return NoticeUpdateRequestDto.builder()
                 .userEmail(userEmail)
                 .notIdx(notIdx)
@@ -64,14 +88,19 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static NoticeBasicRequestDto mockNoticeBasicRequestDto(String userEmail, Long notIdx) {
+    public static NoticeBasicRequestDto mockNoticeBasicRequestDto(
+            String userEmail,
+            Long notIdx
+    ) {
         return NoticeBasicRequestDto.builder()
                 .userEmail(userEmail)
                 .notIdx(notIdx)
                 .build();
     }
 
-    public static NoticeResponseDto mockNoticeResponseDto(Notice notice) {
+    public static NoticeResponseDto mockNoticeResponseDto(
+            Notice notice
+    ) {
         return NoticeResponseDto.builder()
                 .notIdx(notice.getNotIdx())
                 .author(notice.getAuthor())
@@ -87,7 +116,11 @@ public class NoticeFactory {
     /* Notice Dto end */
 
     /* Notice Request start */
-    public static NoticeSaveRequest mockNoticeSaveRequest(String userEmail, String notTitle, String notContents) {
+    public static NoticeSaveRequest mockNoticeSaveRequest(
+            String userEmail,
+            String notTitle,
+            String notContents
+    ) {
         return NoticeSaveRequest.builder()
                 .userEmail(userEmail)
                 .notTitle(notTitle)
@@ -96,7 +129,12 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static NoticeUpdateRequest mockNoticeUpdateRequest(String userEmail, Long notIdx, String notTitle, String notContents) {
+    public static NoticeUpdateRequest mockNoticeUpdateRequest(
+            String userEmail,
+            Long notIdx,
+            String notTitle,
+            String notContents
+    ) {
         return NoticeUpdateRequest.builder()
                 .userEmail(userEmail)
                 .notIdx(notIdx)
@@ -105,13 +143,17 @@ public class NoticeFactory {
                 .build();
     }
 
-    public static NoticeDetailRequestDto mockNoticeDetailRequest(Long notIdx) {
+    public static NoticeDetailRequestDto mockNoticeDetailRequest(
+            Long notIdx
+    ) {
         return NoticeDetailRequestDto.builder()
                 .notIdx(notIdx)
                 .build();
     }
 
-    public static NoticeResponse mockNoticeResponse(NoticeResponseDto dto) {
+    public static NoticeResponse mockNoticeResponse(
+            NoticeResponseDto dto
+    ) {
         return NoticeResponse.builder()
                 .notIdx(dto.getNotIdx())
                 .authorEmail(dto.getAuthor().getUserEmail())

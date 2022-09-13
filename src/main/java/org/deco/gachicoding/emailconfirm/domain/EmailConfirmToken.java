@@ -1,5 +1,6 @@
 package org.deco.gachicoding.emailconfirm.domain;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -17,13 +18,14 @@ import java.util.UUID;
 @DynamicInsert
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 public class EmailConfirmToken {
 
     private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;
 
-    @Id @Column(length = 32)
-    @GeneratedValue(generator = "uuid2") // size ?
+    @Id @Column(length = 16)
+    @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID tokenId;
 

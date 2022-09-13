@@ -159,7 +159,7 @@ DROP TABLE IF EXISTS `gachicoding`.`email_confirm_token`;
 
 CREATE TABLE IF NOT EXISTS `gachicoding`.`email_confirm_token`
 (
-    `token_id`     BINARY(255)  NOT NULL,
+    `token_id`     BINARY(16)  NOT NULL,
     `confirmed`    BIT(1)       NOT NULL DEFAULT b'0',
     `expired_at`   DATETIME(6)  NOT NULL,
     `target_email` VARCHAR(255) NOT NULL,

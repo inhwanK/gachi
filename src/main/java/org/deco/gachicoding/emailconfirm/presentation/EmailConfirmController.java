@@ -34,7 +34,7 @@ public class EmailConfirmController {
             @ApiParam(value = "인증을 진행할 이메일")
             @RequestParam @Email String email
     ) {
-        UUID tokenId = emailConfirmTokenService.createOrRenewToken(email);
+        UUID tokenId = emailConfirmTokenService.createToken(email);
 
         log.info("이메일 토큰 - {}", tokenId);
 

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.UUID;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class EmailConfirmTokenService {
@@ -19,8 +18,8 @@ public class EmailConfirmTokenService {
     private final EmailConfirmTokenRepository emailConfirmTokenRepository;
     private final UserRepository userRepository;
 
-    @Transactional // 책임이 제대로 분리되지 않은 것 같음....
-    public UUID createOrRenewToken(
+    @Transactional
+    public UUID createToken(
             String targetEmail
     ) {
 

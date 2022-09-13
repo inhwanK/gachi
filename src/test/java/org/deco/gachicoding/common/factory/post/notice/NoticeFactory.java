@@ -40,7 +40,9 @@ public class NoticeFactory {
                 .notLocked(notLocked)
                 .build();
     }
+    /* Notice Object end */
 
+    /* Notice Dto start */
     public static NoticeSaveRequestDto mockNoticeSaveRequestDto(
             String userEmail,
             String notTitle,
@@ -53,9 +55,7 @@ public class NoticeFactory {
                 .notPin(false)
                 .build();
     }
-    /* Notice Object end */
 
-    /* Notice Dto start */
     public static NoticeListRequestDto mockNoticeListRequestDto(
             String keyword,
             Pageable pageable

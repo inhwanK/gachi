@@ -177,7 +177,7 @@ public class NoticeServiceTest {
     }
 
     @Test
-    @DisplayName("제목이 공맥면 공지사항을 등록할 수 없다.")
+    @DisplayName("제목이 공백이면 공지사항을 등록할 수 없다.")
     public void write_writeEmptyTitle_Exception() {
         // given
         User user = UserFactory.user();
@@ -977,7 +977,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
+        assertThatThrownBy(() -> noticeService.removeNotice(requestDto))
                 .isInstanceOf(NoticeNotFoundException.class)
                 .extracting("message")
                 .isEqualTo("해당하는 공지사항을 찾을 수 없습니다.");
@@ -1002,7 +1002,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.empty());
 
         // when, then
-        assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
+        assertThatThrownBy(() -> noticeService.removeNotice(requestDto))
                 .isInstanceOf(UserNotFoundException.class)
                 .extracting("message")
                 .isEqualTo("해당하는 사용자를 찾을 수 없습니다.");
@@ -1030,7 +1030,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(user));
 
         // when, then
-        assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
+        assertThatThrownBy(() -> noticeService.removeNotice(requestDto))
                 .isInstanceOf(UserUnAuthorizedException.class)
                 .extracting("message")
                 .isEqualTo("권한이 없는 사용자입니다.");

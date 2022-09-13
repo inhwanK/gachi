@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.*;
 
 @DataJpaTest
@@ -32,16 +35,32 @@ public class EmailConfirmTokenRepositoryTest {
         emailConfirmTokenRepository.save(emailConfirmToken);
     }
 
+    @DisplayName("이메일 인증 토큰을 생성한다.")
+    @Test
+    void createEmailConfirmToken_Success() {
+
+        // given
+        EmailConfirmToken createdToken = EmailConfirmToken.createEmailConfirmToken("test@test.com");
+        emailConfirmTokenRepository.save(createdToken);
+
+        UUID token = createdToken.getTokenId();
+        Optional<EmailConfirmToken> expected = emailConfirmTokenRepository.findByTokenId(token);
+
+        // then
+        assertThat(createdToken)
+                .isEqualTo(expected.get());
+
+    }
+
     @DisplayName("유효한 토큰을 조회한다.")
     @Test
     void retrieveValidToken_Success() {
 
-        EmailConfirmToken validToken =
-                emailConfirmTokenRepository.findByTokenId(emailConfirmToken.getTokenId())
-                                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 인증 코드입니다."));
+        // given
+        boolean valid = emailConfirmTokenRepository.existsByTargetEmail("1234@1234.com");
 
-        assertThat(validToken)
-                .isEqualTo(emailConfirmToken);
+        // then
+        assertThat(valid).isTrue();
     }
 
     @DisplayName("5분 이상이 지난 토큰을 조회할수 없다.")

@@ -1,4 +1,4 @@
-package org.deco.gachicoding.unit.emailconfirm;
+package org.deco.gachicoding.unit.emailconfirm.domain;
 
 import org.deco.gachicoding.common.factory.user.MockUser;
 import org.deco.gachicoding.emailconfirm.domain.EmailConfirmToken;
@@ -36,21 +36,23 @@ public class EmailConfirmTokenRepositoryTest {
     @Test
     void retrieveValidToken_Success() {
 
-        EmailConfirmToken retrievedToken =
-                emailConfirmTokenRepository.retrieveValidToken(user.getUserEmail()).get();
+        EmailConfirmToken validToken =
+                emailConfirmTokenRepository.findByTokenId(emailConfirmToken.getTokenId())
+                                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 인증 코드입니다."));
 
-        assertThat(retrievedToken)
+        assertThat(validToken)
                 .isEqualTo(emailConfirmToken);
     }
 
-    @DisplayName("5분 이상이 지난 토큰을 조회할수 없다..")
+    @DisplayName("5분 이상이 지난 토큰을 조회할수 없다.")
     @Test
     void retrieveValidToken_Exception() {
 
-        EmailConfirmToken retrievedToken =
-                emailConfirmTokenRepository.retrieveValidToken(user.getUserEmail()).get();
+        EmailConfirmToken validToken =
+                emailConfirmTokenRepository.findByTokenId(emailConfirmToken.getTokenId())
+                        .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 인증 코드입니다."));
 
-        assertThat(retrievedToken)
+        assertThat(validToken)
                 .isEqualTo(emailConfirmToken);
         fail("미구현");
     }

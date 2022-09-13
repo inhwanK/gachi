@@ -1,11 +1,13 @@
 package org.deco.gachicoding.emailconfirm.presentation;
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.mail.MailService;
 import org.deco.gachicoding.emailconfirm.application.EmailConfirmTokenService;
-import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.mail.MailService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +24,6 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class EmailConfirmController {
 
-    private final UserRepository userRepository;
     private final EmailConfirmTokenService emailConfirmTokenService;
     private final MailService mailService;
 
@@ -34,6 +35,8 @@ public class EmailConfirmController {
             @RequestParam @Email String email
     ) {
         UUID tokenId = emailConfirmTokenService.createOrRenewToken(email);
+
+        log.info("이메일 토큰 - {}", tokenId);
 
         mailService.sendConfirmToken(email, tokenId);
     }

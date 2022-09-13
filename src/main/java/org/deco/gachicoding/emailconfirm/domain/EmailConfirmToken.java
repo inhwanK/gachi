@@ -23,7 +23,7 @@ public class EmailConfirmToken {
     private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;
 
     @Id
-    @GeneratedValue(generator = "uuid2")
+    @GeneratedValue(generator = "uuid2") // size ?
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID tokenId;
 
@@ -56,22 +56,14 @@ public class EmailConfirmToken {
         return authenticationToken;
     }
 
-    public UUID renewToken() {
-        this.tokenId = UUID.randomUUID();
-        this.expiredAt = LocalDateTime.now()
-                .plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
-
-        return tokenId;
-    }
-
     public boolean validCheck(
             UUID tokenId
     ) {
 
-        if (tokenId.equals(this.tokenId)) {
-            return true;
+        if (!tokenId.equals(this.tokenId) || expiredAt.isBefore(LocalDateTime.now())) {
+            return false;
         }
-        return false;
+        return true;
     }
 
     public void confirmToken() {

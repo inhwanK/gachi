@@ -22,7 +22,7 @@ public class EmailConfirmToken {
 
     private static final long EMAIL_TOKEN_EXPIRATION_TIME_VALUE = 5L;
 
-    @Id
+    @Id @Column(length = 32)
     @GeneratedValue(generator = "uuid2") // size ?
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID tokenId;

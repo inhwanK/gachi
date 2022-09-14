@@ -1,7 +1,11 @@
 package org.deco.gachicoding.common.factory.board;
 
 import org.deco.gachicoding.post.board.application.dto.request.*;
+import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.domain.Board;
+import org.deco.gachicoding.post.board.presentation.dto.request.BoardSaveRequest;
+import org.deco.gachicoding.post.board.presentation.dto.request.BoardUpdateRequest;
+import org.deco.gachicoding.post.board.presentation.dto.response.BoardResponse;
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.data.domain.Pageable;
 
@@ -96,5 +100,63 @@ public class BoardFactory {
                 .boardIdx(boardIdx)
                 .build();
     }
+
+    public static BoardResponseDto mockBoardResponseDto(
+            Long boardIdx,
+            User author,
+            Boolean boardLocked
+    ) {
+        return BoardResponseDto.builder()
+                .boardIdx(boardIdx)
+                .author(author)
+                .boardLocked(boardLocked)
+                .build();
+    }
     /* Board Dto End */
+
+    /* Board Request Start */
+    public static BoardSaveRequest mockBoardSaveRequest(
+        String userEmail,
+        String boardTitle,
+        String boardContents,
+        String boardCategory
+    ) {
+        return BoardSaveRequest.builder()
+                .userEmail(userEmail)
+                .boardTitle(boardTitle)
+                .boardContent(boardContents)
+                .boardCategory(boardCategory)
+                .build();
+    }
+
+    public static BoardResponse mockBoardResponse(
+            BoardResponseDto dto
+    ) {
+        return BoardResponse.builder()
+                .boardIdx(dto.getBoardIdx())
+                .authorNick(dto.getAuthor().getUserNick())
+                .authorEmail(dto.getAuthor().getUserEmail())
+                .boardTitle(dto.getBoardTitle())
+                .boardContents(dto.getBoardContents())
+                .boardCategory(dto.getBoardCategory())
+                .boardViews(dto.getBoardViews())
+                .createAt(dto.getCreatedAt())
+                .updateAt(dto.getUpdatedAt())
+                .build();
+    }
+
+    public static BoardUpdateRequest mockBoardUpdateRequest(
+            String userEmail,
+            Long boardIdx,
+            String boardTitle,
+            String boardContents
+    ) {
+        return BoardUpdateRequest.builder()
+                .userEmail(userEmail)
+                .boardIdx(boardIdx)
+                .boardTitle(boardTitle)
+                .boardContents(boardContents)
+                .build();
+    }
+    /* Board Request End */
 }

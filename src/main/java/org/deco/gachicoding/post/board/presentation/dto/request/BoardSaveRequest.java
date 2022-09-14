@@ -28,13 +28,12 @@ public class BoardSaveRequest {
     @ApiModelProperty(value = "게시판 내용", required = true, example = "안녕하세요 반갑습니다.")
     private String boardContent;
 
+    @ApiModelProperty(value = "게시판 분류", required = false, example = "자유  개발  일상  토론")
+    private String boardCategory;
+
 //    @NotNull
 //    @ApiModelProperty(value = "게시판 내용", required = true, example = "안녕하세요 반갑습니다.")
 //    private String boardContents;
-//
-//    @NotNull
-//    @ApiModelProperty(value = "게시판 카테고리", required = false, example = "개발 일상 토론")
-//    private String boardCategory;
 
 //    @Nullable
 //    @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
@@ -46,10 +45,12 @@ public class BoardSaveRequest {
     public BoardSaveRequest(
             String userEmail,
             String boardTitle,
-            String boardContent
+            String boardContent,
+            String boardCategory
     ) {
         this.userEmail = userEmail;
         this.boardTitle = boardTitle;
         this.boardContent = boardContent;
+        this.boardCategory = boardCategory;
     }
 }

@@ -27,8 +27,8 @@ public class BoardAssembler {
                 .userEmail(request.getUserEmail())
                 .boardTitle(request.getBoardTitle())
                 .boardContents(request.getBoardContent())
+                .boardCategory(request.getBoardCategory())
 //                .boardContents(request.getBoardContents())
-//                .boardCategory(request.getBoardCategory())
                 .build();
     }
 

@@ -32,7 +32,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -88,8 +87,8 @@ public class NoticeControllerTest {
     void write_writeNoticeWithUser_Success() throws Exception {
         // given
         String userEmail = "gachicoding@test.com";
-        String notTitle = "테스트 공지사항 제목 수정 전";
-        String notContents = "테스트 공지사항 내용 수정 전";
+        String notTitle = "테스트 공지사항 제목";
+        String notContents = "테스트 공지사항 내용";
 
         NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(userEmail, notTitle, notContents);
 
@@ -461,7 +460,7 @@ public class NoticeControllerTest {
         Long notIdx = 1L;
         String notContents = "Test Notice Modified Contents";
 
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, null, notContents);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, "", notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new NoticeTitleEmptyException());
@@ -596,7 +595,7 @@ public class NoticeControllerTest {
                 .removeNotice(any(NoticeBasicRequestDto.class));
 
         // when
-        ResultActions perform = mockMvc.perform(delete("/api/notice/remove/{notIdx}", notIdx)
+        ResultActions perform = mockMvc.perform(delete("/api/notice/{notIdx}", notIdx)
                 .param("userEmail", user.getUserEmail())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));

@@ -157,7 +157,7 @@ public class RestNoticeController {
     @ApiResponses(
             @ApiResponse(code = 200, message = "삭제 성공")
     )
-    @DeleteMapping("/notice/remove/{notIdx}")
+    @DeleteMapping("/notice/{notIdx}")
     public ResponseEntity<Void> removeNotice(
             @ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
             @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail

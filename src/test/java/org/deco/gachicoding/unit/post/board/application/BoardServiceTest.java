@@ -1,10 +1,8 @@
 package org.deco.gachicoding.unit.post.board.application;
 
 import org.deco.gachicoding.common.factory.board.BoardFactory;
-import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.exception.post.board.*;
-import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.application.BoardService;
@@ -12,9 +10,6 @@ import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.repository.BoardRepository;
-import org.deco.gachicoding.post.notice.application.dto.request.*;
-import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;

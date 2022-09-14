@@ -1,7 +1,6 @@
 package org.deco.gachicoding.emailconfirm.application;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.emailconfirm.domain.EmailConfirmToken;
 import org.deco.gachicoding.emailconfirm.domain.repository.EmailConfirmTokenRepository;
 import org.deco.gachicoding.user.domain.User;
@@ -49,9 +48,9 @@ public class EmailConfirmTokenService {
             return false;
         }
 
-        confirmToken.confirmToken();
+        confirmToken.confirm();
         targetUser.enableUser();
 
-        return false;
+        return true;
     }
 }

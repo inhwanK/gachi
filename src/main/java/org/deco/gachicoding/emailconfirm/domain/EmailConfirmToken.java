@@ -3,6 +3,7 @@ package org.deco.gachicoding.emailconfirm.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
@@ -39,6 +40,18 @@ public class EmailConfirmToken {
     @ColumnDefault("false")
     private boolean confirmed;
 
+    public EmailConfirmToken(
+            UUID tokenId,
+            String targetEmail,
+            LocalDateTime expiredAt,
+            boolean confirmed
+    ) {
+        this.tokenId = tokenId;
+        this.targetEmail = targetEmail;
+        this.expiredAt = expiredAt;
+        this.confirmed = confirmed;
+    }
+
     private EmailConfirmToken(
             String targetEmail,
             LocalDateTime expiredAt
@@ -62,13 +75,13 @@ public class EmailConfirmToken {
             UUID tokenId
     ) {
 
-        if (!tokenId.equals(this.tokenId) || expiredAt.isBefore(LocalDateTime.now())) {
+        if (!this.tokenId.equals(tokenId) || expiredAt.isBefore(LocalDateTime.now())) {
             return false;
         }
         return true;
     }
 
-    public void confirmToken() {
+    public void confirm() {
         this.confirmed = true;
     }
 }

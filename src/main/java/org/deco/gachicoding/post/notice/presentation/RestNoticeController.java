@@ -88,7 +88,7 @@ public class RestNoticeController {
     )
     @PutMapping("/notice/modify")
     public ResponseEntity<NoticeResponse> modifyNotice(
-            @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request
+            @ApiParam(value = "공지사항 수정 요청 body 정보") @Valid @RequestBody NoticeUpdateRequest request
     ) {
 
         NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(request);

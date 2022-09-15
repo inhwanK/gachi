@@ -29,9 +29,9 @@ public class NoticeRepositoryTest {
     @Autowired
     UserRepository userRepository;
 
-    String notTitle = "공지사항 테스트 제목";
-    String notContents = "공지사항 테스트 내용";
-    String keyword = "병아리";
+    private static final String notTitle = "공지사항 테스트 제목";
+    private static final String notContents = "공지사항 테스트 내용";
+    private static final String keyword = "병아리";
 
     @Test
     @DisplayName("공지사항을 저장한다.")

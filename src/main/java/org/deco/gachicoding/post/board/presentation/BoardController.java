@@ -24,7 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class RestBoardController {
+public class BoardController {
     private final BoardService boardService;
 
     @ApiOperation(value = "게시물 쓰기")
@@ -33,7 +33,8 @@ public class RestBoardController {
     )
     @PostMapping("/board")
     public ResponseEntity<Long> registerBoard(
-            @ApiParam(value = "게시판 요청 body 정보") @Valid @RequestBody BoardSaveRequest request
+            @ApiParam(value = "게시판 요청 body 정보")
+            @Valid @RequestBody BoardSaveRequest request
     ) throws Exception {
         log.info("{} Register Controller", "Board");
 

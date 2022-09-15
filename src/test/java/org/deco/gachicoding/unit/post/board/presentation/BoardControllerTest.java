@@ -10,7 +10,7 @@ import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.application.BoardService;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
-import org.deco.gachicoding.post.board.presentation.RestBoardController;
+import org.deco.gachicoding.post.board.presentation.BoardController;
 import org.deco.gachicoding.post.board.presentation.dto.request.BoardSaveRequest;
 import org.deco.gachicoding.post.board.presentation.dto.request.BoardUpdateRequest;
 import org.deco.gachicoding.post.board.presentation.dto.response.BoardResponse;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(controllers = RestBoardController.class,
+@WebMvcTest(controllers = BoardController.class,
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
         })

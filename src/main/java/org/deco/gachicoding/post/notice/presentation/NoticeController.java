@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class RestNoticeController {
+public class NoticeController {
 
     private static final String REDIRECT_URL = "/api/notice/%d";
 

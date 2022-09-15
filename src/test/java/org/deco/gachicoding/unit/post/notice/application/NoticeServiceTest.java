@@ -44,24 +44,26 @@ public class NoticeServiceTest {
     @Mock
     private UserRepository userRepository;
 
-    @Mock
-    private FileService fileService;
+    private static final User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
+    private static final User user = UserFactory.user(2L, "okky@test.com", "1234");
+
+    private static final Long notIdx = 1L;
+    private static final String notTitle = "Test Notice Title";
+    private static final String notContents = "Test Notice Contents";
+
+    private static final String updateNotTitle = "Update Test Notice Title";
+    private static final String updateNotContents = "Update Test Notice Contents";
 
     @Test
     @DisplayName("사용자는 공지사항을 작성할 수 있다.")
     void write_writeNoticeWithUser_Success() {
         // given
-        User user = UserFactory.user();
+        NoticeSaveRequestDto requestDto = NoticeFactory.mockNoticeSaveRequestDto(author.getUserEmail(), notTitle, notContents);
 
-        String notTitle = "테스트 공지사항 제목 수정 전";
-        String notContents = "테스트 공지사항 내용 수정 전";
-
-        NoticeSaveRequestDto requestDto = NoticeFactory.mockNoticeSaveRequestDto(user.getUserEmail(), notTitle, notContents);
-
-        Notice notice = NoticeFactory.mockNotice(1L, user, null);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, null);
 
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
         given(noticeRepository.save(any(Notice.class)))
                 .willReturn(notice);
 
@@ -82,9 +84,6 @@ public class NoticeServiceTest {
     @DisplayName("사용자가 아니면 공지사항을 작성할 수 없다.")
     void write_writeNoticeWithGuest_Exception() {
         // given
-        String notTitle = "테스트 공지사항 제목 수정 전";
-        String notContents = "테스트 공지사항 내용 수정 전";
-
         NoticeSaveRequestDto requestDto = NoticeFactory.mockNoticeSaveRequestDto(null, notTitle, notContents);
 
         given(userRepository.findByUserEmail(null))
@@ -112,15 +111,13 @@ public class NoticeServiceTest {
     @DisplayName("제목의 길이가 100보다 크면 공지사항을 등록할 수 없다.")
     public void write_writeMaximumLengthOverTitle_Exception() {
         // given
-        User user = UserFactory.user();
-
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
-                .userEmail(user.getUserEmail())
-                .notTitle("a".repeat(101))
-                .notContents("테스트 공지사항 내용")
+                .userEmail(author.getUserEmail())
+                .notTitle(notTitle.repeat(101))
+                .notContents(notContents)
                 .build();
 
         // when
@@ -135,15 +132,13 @@ public class NoticeServiceTest {
     @DisplayName("내용의 길이가 10000보다 크면 공지사항을 등록할 수 없다.")
     public void write_writeMaximumLengthOverContents_Exception() {
         // given
-        User user = UserFactory.user();
-
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
-                .userEmail(user.getUserEmail())
-                .notTitle("테스트 공지사항 제목")
-                .notContents("a".repeat(10001))
+                .userEmail(author.getUserEmail())
+                .notTitle(notTitle)
+                .notContents(notContents.repeat(1000))
                 .build();
 
         // when
@@ -158,14 +153,12 @@ public class NoticeServiceTest {
     @DisplayName("제목이 널이면 공지사항을 등록할 수 없다.")
     public void write_writeNullTitle_Exception() {
         // given
-        User user = UserFactory.user();
-
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
-                .userEmail(user.getUserEmail())
-                .notContents("테스트 공지사항 내용")
+                .userEmail(author.getUserEmail())
+                .notContents(notContents)
                 .build();
 
         // when
@@ -180,15 +173,13 @@ public class NoticeServiceTest {
     @DisplayName("제목이 공백이면 공지사항을 등록할 수 없다.")
     public void write_writeEmptyTitle_Exception() {
         // given
-        User user = UserFactory.user();
-
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
-                .userEmail(user.getUserEmail())
+                .userEmail(author.getUserEmail())
                 .notTitle("")
-                .notContents("테스트 공지사항 내용")
+                .notContents(notContents)
                 .build();
 
         // when
@@ -203,14 +194,12 @@ public class NoticeServiceTest {
     @DisplayName("내용이 널이면 공지사항을 등록할 수 없다.")
     public void write_writeNullContents_Exception() {
         // given
-        User user = UserFactory.user();
-
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
-                .userEmail(user.getUserEmail())
-                .notTitle("테스트 공지사항 제목")
+                .userEmail(author.getUserEmail())
+                .notTitle(notTitle)
                 .build();
 
         // when
@@ -225,14 +214,12 @@ public class NoticeServiceTest {
     @DisplayName("내용이 공백이면 공지사항을 등록할 수 없다.")
     public void write_writeEmptyContents_Exception() {
         // given
-        User user = UserFactory.user();
-
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         NoticeSaveRequestDto requestDto = NoticeSaveRequestDto.builder()
-                .userEmail(user.getUserEmail())
-                .notTitle("테스트 공지사항 제목")
+                .userEmail(author.getUserEmail())
+                .notTitle(notTitle)
                 .notContents("")
                 .build();
 
@@ -248,16 +235,16 @@ public class NoticeServiceTest {
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항의 목록을 가져온다.")
     public void read_readAllEnableList_Success() {
         // given
-        User user = UserFactory.user();
         String keyword = "";
+
         Pageable pageable = PageRequest.of(0, 10);
 
         NoticeListRequestDto requestDto = NoticeFactory.mockNoticeListRequestDto(keyword, pageable);
 
         List<Notice> notices = List.of(
-                NoticeFactory.mockNotice(1L, user, true),
-                NoticeFactory.mockNotice(2L, user, true),
-                NoticeFactory.mockNotice(3L, user, true)
+                NoticeFactory.mockNotice(1L, author, true),
+                NoticeFactory.mockNotice(2L, author, true),
+                NoticeFactory.mockNotice(3L, author, true)
         );
 
         given(noticeRepository.findAllNoticeByKeyword(keyword, pageable))
@@ -284,6 +271,7 @@ public class NoticeServiceTest {
     public void read_readNotExistList_Success() {
         // given
         String keyword = "";
+
         Pageable pageable = PageRequest.of(0, 10);
 
         NoticeListRequestDto requestDto = NoticeFactory.mockNoticeListRequestDto(keyword, pageable);
@@ -313,11 +301,9 @@ public class NoticeServiceTest {
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항 내용을 가져온다.")
     public void read_readEnableDetail_Success() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
         NoticeDetailRequestDto requestDto = NoticeFactory.mockNoticeDetailRequestDto(notIdx);
 
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, true);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, true);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
@@ -340,7 +326,6 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 공지사항에 접근할 경우 예외가 발생한다.")
     public void read_readNotExistDetail_Exception() {
         // given
-        Long notIdx = 1L;
         NoticeDetailRequestDto requestDto = NoticeFactory.mockNoticeDetailRequestDto(notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
@@ -360,11 +345,9 @@ public class NoticeServiceTest {
     @DisplayName("비 활성화 된 공지사항에 접근할 경우 예외가 발생한다.")
     public void read_readDisableDetail_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
         NoticeDetailRequestDto requestDto = NoticeFactory.mockNoticeDetailRequestDto(notIdx);
 
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, false);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
@@ -383,24 +366,15 @@ public class NoticeServiceTest {
     @DisplayName("공지사항의 작성자는 공지사항을 수정할 수 있다.")
     public void modify_modifyNotice_Success() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotTitle = "테스트 공지사항 제목 수정 후";
-        String afterNotContents = "테스트 공지사항 내용 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, afterNotTitle, afterNotContents);
-        Notice afterNotice = NoticeFactory.mockNotice(notIdx, user, afterNotTitle, afterNotContents, true);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, updateNotTitle, updateNotContents);
+        Notice updateNotice = NoticeFactory.mockNotice(notIdx, author, updateNotTitle, updateNotContents, true);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when
         NoticeResponseDto responseDto = noticeService.modifyNotice(updateRequestDto);
@@ -408,7 +382,7 @@ public class NoticeServiceTest {
         // then
         assertThat(responseDto)
                 .usingRecursiveComparison()
-                .isEqualTo(afterNotice);
+                .isEqualTo(updateNotice);
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -420,13 +394,7 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 공지사항에 수정 요청할 경우 예외가 발생한다.")
     public void modify_modifyNotExistNotice_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        String notTitle = "테스트 공지사항 제목";
-        String notContents = "테스트 공지사항 내용";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -445,21 +413,12 @@ public class NoticeServiceTest {
     @DisplayName("비 활성화 된 공지사항을 수정할 경우 예외가 발생한다.")
     public void modify_modifyDisableNotice_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, false);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, false);
-
-        String afterNotTitle = "테스트 공지사항 제목 수정 후";
-        String afterNotContents = "테스트 공지사항 내용 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, afterNotTitle, afterNotContents);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, updateNotTitle, updateNotContents);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
@@ -475,21 +434,12 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 사용자가 공지사항 수정 요청할 경우 예외가 발생한다.")
     public void modify_modifyNotExistUser_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotTitle = "테스트 공지사항 제목 수정 후";
-        String afterNotContents = "테스트 공지사항 내용 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, afterNotTitle, afterNotContents);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, updateNotTitle, updateNotContents);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.empty());
 
@@ -509,22 +459,12 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 수정 시 요청자와 작정자가 다를 경우 예외가 발생한다.")
     public void modify_modifyDifferentAuthor_Exception() {
         // given
-        Long notIdx = 1L;
-        User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
-        User user = UserFactory.user(2L, "okky@test.com", "1234");
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, author, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotTitle = "테스트 공지사항 제목 수정 후";
-        String afterNotContents = "테스트 공지사항 내용 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, afterNotTitle, afterNotContents);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, updateNotTitle, updateNotContents);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
 
@@ -544,22 +484,14 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 수정 시 제목이 널이면 예외가 발생한다.")
     public void modify_modifyNotExistTitle_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotContents = "테스트 공지사항 내용 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, null, afterNotContents);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, null, updateNotContents);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
@@ -577,22 +509,14 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 수정 시 제목이 공백이면 예외가 발생한다.")
     public void modify_modifyEmptyTitle_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotContents = "테스트 공지사항 내용 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, "", afterNotContents);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, "", updateNotContents);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
@@ -610,22 +534,14 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 수정 시 내용이 널이면 예외가 발생한다.")
     public void modify_modifyNotExistContents_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotTitle = "테스트 공지사항 제목 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, afterNotTitle, null);
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, updateNotTitle, null);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
@@ -643,22 +559,14 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 수정 시 내용이 공백이면 예외가 발생한다.")
     public void modify_modifyEmptyContents_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true);
 
-        String beforeNotTitle = "테스트 공지사항 제목 수정 전";
-        String beforeNotContents = "테스트 공지사항 내용 수정 전";
-
-        Notice beforeNotice = NoticeFactory.mockNotice(notIdx, user, beforeNotTitle, beforeNotContents, true);
-
-        String afterNotTitle = "테스트 공지사항 제목 수정 후";
-
-        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(user.getUserEmail(), notIdx, afterNotTitle, "");
+        NoticeUpdateRequestDto updateRequestDto = NoticeFactory.mockNoticeUpdateRequestDto(author.getUserEmail(), notIdx, updateNotTitle, "");
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
-                .willReturn(Optional.of(beforeNotice));
+                .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))
@@ -676,16 +584,13 @@ public class NoticeServiceTest {
     @DisplayName("공지사항의 작성자는 공지사항을 비활성화할 수 있다.")
     public void disable_disableAuthorMe_Success() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, true);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, true);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when
         noticeService.disableNotice(requestDto);
@@ -703,10 +608,7 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 공지사항에 비활성화 요청할 경우 예외가 발생한다.")
     public void disable_disableNotExistNotice_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -725,11 +627,8 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 사용자가 비활성화 요청할 경우 예외가 발생한다.")
     public void disable_disableNotExistUser_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, true);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("okky@test.com", notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, true);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("anonymous@test.com", notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
@@ -752,10 +651,6 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 비활성화 시 요청자와 작성자가 다르면 예외가 발생한다.")
     public void disable_disableDifferentAuthor_Exception() {
         // given
-        Long notIdx = 1L;
-        User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
-        User user = UserFactory.user(2L, "okky@test.com", "1234");
-
         Notice notice = NoticeFactory.mockNotice(notIdx, author, true);
         NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
 
@@ -780,16 +675,13 @@ public class NoticeServiceTest {
     @DisplayName("이미 비활성화 상태의 공지사항에 비활성화 요청할 경우 예외가 발생한다.")
     public void disable_disableAlreadyDisabled_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, false);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when, then
         assertThatThrownBy(() -> noticeService.disableNotice(requestDto))
@@ -807,16 +699,13 @@ public class NoticeServiceTest {
     @DisplayName("공지사항의 작성자는 공지사항을 활성화할 수 있다.")
     public void enable_enableAuthorMe_Success() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, false);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when
         noticeService.enableNotice(requestDto);
@@ -834,9 +723,6 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 공지사항에 활성화 요청할 경우 예외가 발생한다.")
     public void enable_enableNotExistNotice_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
         NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
@@ -856,11 +742,8 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 사용자가 활성화 요청할 경우 예외가 발생한다.")
     public void enable_enableNotExistUser_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, false);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("okky@test.com", notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("anonymous@test.com", notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
@@ -883,10 +766,6 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 활성화 시 요청자와 작성자가 다르면 예외가 발생한다.")
     public void enable_enableDifferentAuthor_Exception() {
         // given
-        Long notIdx = 1L;
-        User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
-        User user = UserFactory.user(2L, "okky@test.com", "1234");
-
         Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
         NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
 
@@ -911,16 +790,13 @@ public class NoticeServiceTest {
     @DisplayName("이미 활성화 상태의 공지사항에 활성화 요청할 경우 예외가 발생한다.")
     public void enable_enableAlreadyEnabled_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, true);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, true);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
 
         // when, then
         assertThatThrownBy(() -> noticeService.enableNotice(requestDto))
@@ -938,16 +814,13 @@ public class NoticeServiceTest {
     @DisplayName("사용자는 공지사항을 삭제한다.")
     public void delete_deleteAuthorMe_Success() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, true);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, true);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
-                .willReturn(Optional.of(user));
+                .willReturn(Optional.of(author));
         willDoNothing()
                 .given(noticeRepository)
                 .delete(any(Notice.class));
@@ -968,10 +841,7 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 공지사항을 삭제 요청할 경우 예외가 발생한다.")
     public void delete_deleteNotExistNotice_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(author.getUserEmail(), notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -990,11 +860,8 @@ public class NoticeServiceTest {
     @DisplayName("존재하지 않는 사용자가 삭제 요청할 경우 예외가 발생한다.")
     public void delete_deleteNotExistUser_Exception() {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        Notice notice = NoticeFactory.mockNotice(notIdx, user, false);
-        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("okky@test.com", notIdx);
+        Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
+        NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto("anonymous@test.com", notIdx);
 
         given(noticeRepository.findNoticeByIdx(anyLong()))
                 .willReturn(Optional.of(notice));
@@ -1017,10 +884,6 @@ public class NoticeServiceTest {
     @DisplayName("공지사항 삭제 시 요청자와 작성자가 다르면 예외가 발생한다.")
     public void delete_deleteDifferentAuthor_Exception() {
         // given
-        Long notIdx = 1L;
-        User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
-        User user = UserFactory.user(2L, "okky@test.com", "1234");
-
         Notice notice = NoticeFactory.mockNotice(notIdx, author, false);
         NoticeBasicRequestDto requestDto = NoticeFactory.mockNoticeBasicRequestDto(user.getUserEmail(), notIdx);
 

@@ -40,36 +40,25 @@ public class EmailConfirmToken {
     @ColumnDefault("false")
     private boolean confirmed;
 
+
+
     public EmailConfirmToken(
-            UUID tokenId,
-            String targetEmail,
-            LocalDateTime expiredAt,
-            boolean confirmed
-    ) {
-        this.tokenId = tokenId;
-        this.targetEmail = targetEmail;
-        this.expiredAt = expiredAt;
-        this.confirmed = confirmed;
-    }
-
-    private EmailConfirmToken(
-            String targetEmail,
-            LocalDateTime expiredAt
-    ) {
-
-        this.targetEmail = targetEmail;
-        this.expiredAt = expiredAt;
-    }
-
-    public static EmailConfirmToken createEmailConfirmToken(
             String targetEmail
     ) {
 
-        LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
-        EmailConfirmToken authenticationToken = new EmailConfirmToken(targetEmail, expiredAt);
-
-        return authenticationToken;
+        this.targetEmail = targetEmail;
+        this.expiredAt = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
     }
+
+//    public static EmailConfirmToken createEmailConfirmToken(
+//            String targetEmail
+//    ) {
+//
+//        LocalDateTime expiredAt = LocalDateTime.now().plusMinutes(EMAIL_TOKEN_EXPIRATION_TIME_VALUE);
+//        EmailConfirmToken authenticationToken = new EmailConfirmToken(targetEmail, expiredAt);
+//
+//        return authenticationToken;
+//    }
 
     public boolean validCheck(
             UUID tokenId

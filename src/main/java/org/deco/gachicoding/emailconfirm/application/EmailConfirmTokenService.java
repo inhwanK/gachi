@@ -18,7 +18,7 @@ public class EmailConfirmTokenService {
     private final UserRepository userRepository;
 
     @Transactional
-    public UUID createToken(
+    public EmailConfirmToken createToken(
             String targetEmail
     ) {
 
@@ -26,10 +26,10 @@ public class EmailConfirmTokenService {
             emailConfirmTokenRepository.deleteByTargetEmail(targetEmail);
         }
 
-        EmailConfirmToken token = EmailConfirmToken.createEmailConfirmToken(targetEmail);
+        EmailConfirmToken token = new EmailConfirmToken(targetEmail);
         emailConfirmTokenRepository.save(token);
 
-        return token.getTokenId();
+        return token;
     }
 
     @Transactional

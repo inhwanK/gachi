@@ -31,7 +31,7 @@ public class EmailConfirmTokenRepositoryTest {
                 .userEmail("1234@1234.com")
                 .build();
 
-        emailConfirmToken = EmailConfirmToken.createEmailConfirmToken("1234@1234.com");
+        emailConfirmToken = new EmailConfirmToken("1234@1234.com");
         emailConfirmTokenRepository.save(emailConfirmToken);
     }
 
@@ -40,7 +40,7 @@ public class EmailConfirmTokenRepositoryTest {
     void createEmailConfirmToken_Success() {
 
         // given
-        EmailConfirmToken createdToken = EmailConfirmToken.createEmailConfirmToken("test@test.com");
+        EmailConfirmToken createdToken = new EmailConfirmToken("test@test.com");
         emailConfirmTokenRepository.save(createdToken);
 
         UUID token = createdToken.getTokenId();

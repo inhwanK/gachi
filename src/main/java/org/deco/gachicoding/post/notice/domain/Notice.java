@@ -3,16 +3,19 @@ package org.deco.gachicoding.post.notice.domain;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.post.notice.NoticeAlreadyActiveException;
+import org.deco.gachicoding.exception.post.notice.NoticeAlreadyInactiveException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
-import org.deco.gachicoding.exception.ApplicationException;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
-import static org.deco.gachicoding.exception.StatusEnum.*;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -22,6 +25,8 @@ public class Notice extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "not_idx", columnDefinition = "bigint", nullable = false)
+    @Comment("PK")
     private Long notIdx;
 
     @Embedded
@@ -30,10 +35,13 @@ public class Notice extends BaseTimeEntity {
     @Embedded
     private NoticeContents notContents;
 
+    @Column(name = "not_views", columnDefinition = "bigint default '0'", nullable = false)
     private Long notViews;
 
+    @Column(name = "not_pin", columnDefinition = "boolean default 'false'", nullable = false)
     private Boolean notPin;
 
+    @Column(name = "not_locked", columnDefinition = "boolean default 'true'", nullable = false)
     private Boolean notLocked;
 
     // FetchType.EAGER 즉시 로딩
@@ -53,7 +61,16 @@ public class Notice extends BaseTimeEntity {
 
     protected Notice() {}
 
-    public Notice(Long notIdx, User author, NoticeTitle notTitle, NoticeContents notContents, Long notViews, Boolean notPin, Boolean notLocked) {
+    public Notice(
+            Long notIdx,
+            User author,
+            NoticeTitle notTitle,
+            NoticeContents notContents,
+            Long notViews, Boolean notPin,
+            Boolean notLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.notIdx = notIdx;
         this.author = author;
         this.notTitle = notTitle;
@@ -61,6 +78,8 @@ public class Notice extends BaseTimeEntity {
         this.notViews = notViews;
         this.notPin = notPin;
         this.notLocked = notLocked;
+        setCreatedAt(createdAt);
+        setUpdatedAt(updatedAt);
     }
 
     public String getAuthorNick() {
@@ -81,19 +100,19 @@ public class Notice extends BaseTimeEntity {
 
     public void hasSameAuthor(User user) {
         if (author != user) {
-            throw new ApplicationException(INVALID_AUTH_USER);
+            throw new UserUnAuthorizedException();
         }
     }
 
     public void enableNotice() {
         if (this.notLocked)
-            throw new ApplicationException(ALREADY_ACTIVE);
+            throw new NoticeAlreadyActiveException();
         this.notLocked = true;
     }
 
     public void disableNotice() {
         if (!this.notLocked)
-            throw new ApplicationException(ALREADY_INACTIVE);
+            throw new NoticeAlreadyInactiveException();
         this.notLocked = false;
     }
 
@@ -113,12 +132,14 @@ public class Notice extends BaseTimeEntity {
     public static class Builder {
 
         private Long notIdx;
-        private User writer;
+        private User author;
         private NoticeTitle notTitle;
         private NoticeContents notContents;
         private Long notViews;
         private Boolean notPin;
         private Boolean notLocked;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public Builder notIdx(Long notIdx) {
             this.notIdx = notIdx;
@@ -126,7 +147,7 @@ public class Notice extends BaseTimeEntity {
         }
 
         public Builder author(User user) {
-            this.writer = user;
+            this.author = user;
             return this;
         }
 
@@ -155,18 +176,28 @@ public class Notice extends BaseTimeEntity {
             return this;
         }
 
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder updatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
         public Notice build() {
-            Notice notice = new Notice(
+            return new Notice(
                     notIdx,
-                    writer,
+                    author,
                     notTitle,
                     notContents,
                     notViews,
                     notPin,
-                    notLocked
+                    notLocked,
+                    createdAt,
+                    updatedAt
                     );
-
-            return notice;
         }
     }
 }

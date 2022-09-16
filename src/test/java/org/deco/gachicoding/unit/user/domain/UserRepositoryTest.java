@@ -1,144 +1,130 @@
 package org.deco.gachicoding.unit.user.domain;
 
+import org.deco.gachicoding.common.factory.user.MockUser;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-//assertEquals(a, b);	객체 A와 B의 실제 값이 일치한지 확인한다.
-//assertSame(a, b);     객체 A와 B가 같은 객체임을 확인한다.
-//        - assertEquals 메서드는 두 객체의 값의 비교
-//        - assertSame 메서드는 두 객체가 동일한지 객체의 비교 (== 연산자와 같다)
-
-//assertTrue(a);	조건 A가 참인가를 확인한다.
-//assertNotNull(a);	객체 A가 null이 아님을 확인한다.
-
-// 리포지토리 테스트 에선 디비와 연동된 CRUD 기능을 테스트 한다(관련된 예외처리에 대해선 아직 잘 모르겠음)
-// @SpringBootTest : 스프링 부트 환경에서 모든 의존성을 제공
 @DataJpaTest // JPA 에 관련된 의존성 제공, 자동으로 롤백
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-// AutoConfigureTestDatabase => ANY(기본설정) : 내장 메모리 DB를 사용(휘발성)
-// NONE : DataSource를 이용한 외장 DB사용
-// **주의 ANY설정 시 DataSource 정보가 application.properties에 있다면 에러 발생
 public class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
 
-    private Long createUserMock(String userName, String userNick, String userEmail, String userPassword) {
-        User entity = User.builder()
-                .userName(userName)
-                .userNick(userNick)
-                .userEmail(userEmail)
-                .userPassword(userPassword)
+    User user;
+
+    @BeforeEach
+    void setUp() {
+        user = MockUser.builder()
+                .userEmail("test@test.com")
                 .build();
 
-        return userRepository.save(entity).getUserIdx();
+        userRepository.save(user);
     }
 
+    @DisplayName("유저 이메일로 유저를 조회한다.")
     @Test
-    public void 인덱스로_유저조회() {
+    public void findByUserEmail_Success() {
+        User retrievedUser = userRepository.findByUserEmail(user.getUserEmail()).get();
 
-        Long userIdx = createUserMock("테스트", "테스트 별명", "test@test.com", "1234");
-
-        Optional<User> user = userRepository.findById(userIdx);
-        assertEquals("test@test.com", user.get().getUserEmail());
-        assertEquals("테스트", user.get().getUserName());
+        assertThat(retrievedUser).isEqualTo(user);
     }
 
+    @DisplayName("가입되지 않은 유저 이메일로 유저를 조회할 수 없다.")
     @Test
-    public void 이메일로_유저조회() {
+    public void findByUserEmail_InvalidUserEmail_Empty() {
 
-        createUserMock("테스트", "테스트 별명", "test@test.com", "1234");
+        assertThat(userRepository.findByUserEmail("invalidUser")).isEmpty();
 
-        Optional<User> user = userRepository.findByUserEmail("test@test.com");
-
-        assertEquals("test@test.com", user.get().getUserEmail());
-        assertEquals("테스트", user.get().getUserName());
+        assertThatThrownBy(
+                () -> userRepository
+                        .findByUserEmail("invalidUser")
+                        .orElseThrow(
+                                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                        )
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
-//    @Test
-//    public void 닉네임으로_유저조회() {
-//        Long userIdx = createUserMock("테스트", "테스트 별명", "test@test.com", "1234");
-//
-//        Optional<User> findUser = userRepository.findByUserNick("테스트 별명");
-//        Optional<User> createUser = userRepository.findById(userIdx);
-//        assertEquals(createUser, findUser);
-//    }
-
+    @DisplayName("유저를 저장한다.")
     @Test
-    public void 유저_저장() {
-
-        String userName = "가치코딩";
-        String userNick = "가치코코코딩";
-        String userEmail = "gachicoding@gachicoding.com";
-        String userPassword = "gachi1234";
-
-//        String userName = "가치코딩";
-//        String userNick = "공지사항 테스트 별명";
-//        String userEmail = "notice@test.com";
-//        String userPassword = "gachi1234";
-
-        User entity = User.builder()
-                .userName(userName)
-                .userNick(userNick)
-                .userEmail(userEmail)
-                .userPassword(userPassword)
+    public void save_Success() {
+        User saveUser = MockUser.builder()
+                .userEmail("saveTestEmail@test.com")
+                .userNick("saveTestNick")
                 .build();
 
-        Long userIdx = userRepository.save(entity).getUserIdx();
-        User user = userRepository.findById(userIdx).get();
+        Long saveIdx = userRepository.save(saveUser).getUserIdx();
 
-        assertEquals(entity, user);
+        Optional<User> retrievedUser = userRepository.findById(saveIdx);
+
+        assertThat(saveUser).isEqualTo(retrievedUser.get());
     }
 
+    @DisplayName("중복된 이메일이 존재한다.")
     @Test
-    public void 인덱스로_유저_삭제() {
-
-        Long userIdx = createUserMock("테스트", "테스트 별명", "test@test.com", "1234");
-
-        Optional<User> user = userRepository.findById(userIdx);
-
-        assertTrue(user.isPresent());
-
-        userRepository.deleteById(userIdx);
-        user = userRepository.findById(userIdx);
-
-        assertTrue(user.isEmpty());
+    void existsByUserEmail_True() {
+        assertThat(userRepository.existsByUserEmail("test@test.com")).isTrue();
     }
 
+    @DisplayName("중복된 이메일이 존재하지 않는다.")
     @Test
-    public void 유저정보_수정() {
+    void existsByUserEmail_False() {
+        assertThat(userRepository.existsByUserEmail("notDuplicated@test.com")).isFalse();
+    }
 
-        // 유니크 키 칼럼은 수정이 안됨.
-        String userName = "가치코딩";
-        String userNick = "가치코코코딩";
-        String userEmail = "gachicoding@gachicoding.com";
-        String userPassword = "gachi1234";
+    @DisplayName("중복된 이메일로 유저를 저장할 수 없다.")
+    @Test
+    public void save_DuplicateEmail_Failed() {
 
-        Long userIdx = createUserMock(userName, userNick, userEmail, userPassword);
+        User duplicateEmailUser = MockUser.builder()
+                .userEmail("test@test.com")
+                .userNick("saveTestNick")
+                .build();
 
-        User user = userRepository.findById(userIdx).get();
+        assertThatThrownBy(() -> {
+            userRepository.save(duplicateEmailUser);
+        }).isInstanceOf(DataIntegrityViolationException.class);
+    }
 
-        String updateName = "수정된 이름";
-        String updateNick = "수정된 별명";
-        String updatePassword = "수정된 비밀번호";
-        boolean updateAuth = true;
-        boolean updateActivated = false;
+    @DisplayName("유저이메일로 유저를 삭제한다.")
+    @Test
+    public void deleteByUserEmail_Success() {
 
+        Optional<User> delUser = userRepository.findByUserEmail("test@test.com");
 
-        User testUser = user.update(updateNick, updatePassword, updateActivated, updateAuth);
+        userRepository.deleteByUserEmail(delUser.get().getUserEmail());
 
-        Optional<User> updateUser = userRepository.findById(userIdx);
+        assertThat(
+                userRepository
+                        .findByUserEmail("test@test.com")
+                        .isEmpty()
+        ).isTrue();
+    }
 
-        assertEquals(testUser, updateUser.get());
-//        assertNotEquals(user, updateUser.get());
+    @DisplayName("유저번호로 유저를 삭제한다.")
+    @Test
+    public void deleteById_Success() {
 
+        Optional<User> delUser = userRepository.findByUserEmail("test@test.com");
+
+        userRepository.deleteById(delUser.get().getUserIdx());
+
+        assertThat(
+                userRepository
+                        .findById(delUser.get().getUserIdx())
+                        .isEmpty()
+        ).isTrue();
     }
 }

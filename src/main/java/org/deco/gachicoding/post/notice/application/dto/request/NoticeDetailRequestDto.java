@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 public class NoticeDetailRequestDto {
 
     @NotNull(message = "F0001")
-    @ApiModelProperty(value = "공지사항 번호", required = true, example = "1")
+//    @ApiModelProperty(value = "공지사항 번호", required = true, example = "1")
     private Long notIdx;
 
     @Builder

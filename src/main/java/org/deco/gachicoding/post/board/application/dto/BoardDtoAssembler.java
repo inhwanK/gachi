@@ -25,14 +25,14 @@ public class BoardDtoAssembler {
     public static BoardResponseDto boardResponseDto(Board board) {
         return BoardResponseDto.builder()
                 .boardIdx(board.getBoardIdx())
-                .authorEmail(board.getAuthorEmail())
-                .authorNick(board.getAuthorNick())
+                .author(board.getAuthor())
                 .boardTitle(board.getBoardTitle())
                 .boardContents(board.getBoardContents())
                 .boardCategory(board.getBoardCategory())
                 .boardViews(board.getBoardViews())
-                .createAt(board.getCreatedAt())
-                .updateAt(board.getUpdatedAt())
+                .boardLocked(board.getBoardLocked())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
                 .build();
     }
 
@@ -45,14 +45,14 @@ public class BoardDtoAssembler {
     private static BoardResponseDto convertForm(Board board) {
         return BoardResponseDto.builder()
                 .boardIdx(board.getBoardIdx())
-                .authorEmail(board.getAuthorEmail())
-                .authorNick(board.getAuthorNick())
+                .author(board.getAuthor())
                 .boardTitle(board.getBoardTitle())
                 .boardContents(board.getBoardContents())
                 .boardCategory(board.getBoardCategory())
                 .boardViews(board.getBoardViews())
-                .createAt(board.getCreatedAt())
-                .updateAt(board.getUpdatedAt())
+                .boardLocked(board.getBoardLocked())
+                .createdAt(board.getCreatedAt())
+                .updatedAt(board.getUpdatedAt())
                 .build();
     }
 }

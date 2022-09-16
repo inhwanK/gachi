@@ -2,6 +2,10 @@ package org.deco.gachicoding.post.answer.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.answer.AnswerNotFoundException;
+import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
 import org.deco.gachicoding.post.question.domain.Question;
@@ -13,15 +17,10 @@ import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerSaveRequestDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerSelectRequestDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerUpdateRequestDto;
-import org.deco.gachicoding.exception.ApplicationException;
-import org.deco.gachicoding.exception.ResponseState;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Slf4j
 @Service
@@ -36,10 +35,10 @@ public class AnswerService {
     @Transactional
     public Long registerAnswer(AnswerSaveRequestDto dto) {
         User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         Question question = questionRepository.findById(dto.getQueIdx())
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(QuestionNotFoundException::new);
 
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
         // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
@@ -50,14 +49,14 @@ public class AnswerService {
         Long ansIdx = answer.getAnsIdx();
         String ansContent = answer.getAnsContents();
 
-        try {
-            answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));
-            log.info("Success Upload Question Idx : {}", ansIdx);
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Answer Content");
-            e.printStackTrace();
-            removeAnswer(ansIdx);
-        }
+//        try {
+//            answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));
+//            log.info("Success Upload Question Idx : {}", ansIdx);
+//        } catch (Exception e) {
+//            log.error("Failed To Extract {} File", "Answer Content");
+//            e.printStackTrace();
+//            removeAnswer(ansIdx);
+//        }
 
         return ansIdx;
     }
@@ -74,7 +73,7 @@ public class AnswerService {
     @Transactional(readOnly = true)
     public AnswerResponseDto getAnswerDetail(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(AnswerNotFoundException::new);
 
         AnswerResponseDto answerDetail = AnswerResponseDto.builder()
                 .answer(answer)
@@ -85,13 +84,13 @@ public class AnswerService {
     @Transactional
     public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) throws RuntimeException {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(AnswerNotFoundException::new);
 
         User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         if (!isSameWriter(answer, user)) {
-            throw new ApplicationException(INVALID_AUTH_USER);
+            throw new UserUnAuthorizedException();
         }
 
         answer = answer.update(dto.getAnsContent());
@@ -105,53 +104,53 @@ public class AnswerService {
 
     // 질문 작성자 확인 로직 추가
     @Transactional
-    public ResponseEntity<ResponseState> selectAnswer(AnswerSelectRequestDto dto) {
+    public void selectAnswer(AnswerSelectRequestDto dto) {
         Answer answer = answerRepository.findById(dto.getAnsIdx())
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(AnswerNotFoundException::new);
 
         Question question = answer.getQuestion();
 
         User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
 
         // 좀 헷갈리지만 같을때 true가 나오기 때문에 !를 붙여야함
         if(!selectAuthCheck(question, user))
-            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
+//            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
 
         if(!question.getQueSolve()) {
             answer.toSelect();
             question.toSolve();
-            return ResponseState.toResponseEntity(SELECT_SUCCESS);
+//            return ResponseState.toResponseEntity(SELECT_SUCCESS);
         } else {
-            return ResponseState.toResponseEntity(ALREADY_SOLVE);
+//            return ResponseState.toResponseEntity(ALREADY_SOLVE);
         }
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> disableAnswer(Long ansIdx) {
+    public void disableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(AnswerNotFoundException::new);
 
         answer.disableAnswer();
-        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> enableAnswer(Long ansIdx) {
+    public void enableAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(AnswerNotFoundException::new);
 
         answer.enableAnswer();
-        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
+//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Transactional
-    public ResponseEntity<ResponseState> removeAnswer(Long ansIdx) {
+    public void removeAnswer(Long ansIdx) {
         Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(AnswerNotFoundException::new);
 
         answerRepository.delete(answer);
-        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
+//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
     private Boolean isSameWriter(Answer answer, User user) {

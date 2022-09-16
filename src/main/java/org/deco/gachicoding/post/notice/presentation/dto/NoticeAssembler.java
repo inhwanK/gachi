@@ -19,9 +19,10 @@ public class NoticeAssembler {
         return NoticeSaveRequestDto.builder()
                 .userEmail(request.getUserEmail())
                 .notTitle(request.getNotTitle())
-                .notContents(request.getNotContents())
+                .notContents(request.getNotContent())
+//                .notContents(request.getNotContents())
                 .notPin(request.getNotPin())
-                .tags(request.getTags())
+//                .tags(request.getTags())
                 .build();
     }
 
@@ -44,14 +45,23 @@ public class NoticeAssembler {
                 .collect(Collectors.toList());
     }
 
-    public static NoticeUpdateRequestDto noticeUpdateRequestDto(Long notIdx, NoticeUpdateRequest request) {
+    public static NoticeUpdateRequestDto noticeUpdateRequestDto(NoticeUpdateRequest request) {
         return NoticeUpdateRequestDto.builder()
                 .userEmail(request.getUserEmail())
-                .notIdx(notIdx)
+                .notIdx(request.getNotIdx())
                 .notTitle(request.getNotTitle())
                 .notContents(request.getNotContents())
                 .build();
     }
+
+//    public static NoticeUpdateRequestDto noticeUpdateRequestDto(Long notIdx, NoticeUpdateRequest request) {
+//        return NoticeUpdateRequestDto.builder()
+//                .userEmail(request.getUserEmail())
+//                .notIdx(notIdx)
+//                .notTitle(request.getNotTitle())
+//                .notContents(request.getNotContents())
+//                .build();
+//    }
 
     public static NoticeBasicRequestDto noticeBasicRequestDto(Long notIdx, String userEmail) {
         return NoticeBasicRequestDto.builder()
@@ -63,11 +73,12 @@ public class NoticeAssembler {
     public static NoticeResponse noticeResponse(NoticeResponseDto dto) {
         return NoticeResponse.builder()
                 .notIdx(dto.getNotIdx())
-                .authorEmail(dto.getAuthorEmail())
-                .authorNick(dto.getAuthorNick())
+                .authorEmail(dto.getAuthor().getUserEmail())
+                .authorNick(dto.getAuthor().getUserNick())
                 .notTitle(dto.getNotTitle())
                 .notContents(dto.getNotContents())
                 .notViews(dto.getNotViews())
+                .notPin(dto.getNotPin())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();
@@ -76,11 +87,12 @@ public class NoticeAssembler {
     private static Function<NoticeResponseDto, NoticeResponse> noticeResponse() {
         return noticeResponseDto -> NoticeResponse.builder()
                 .notIdx(noticeResponseDto.getNotIdx())
-                .authorEmail(noticeResponseDto.getAuthorEmail())
-                .authorNick(noticeResponseDto.getAuthorNick())
+                .authorEmail(noticeResponseDto.getAuthor().getUserEmail())
+                .authorNick(noticeResponseDto.getAuthor().getUserNick())
                 .notTitle(noticeResponseDto.getNotTitle())
                 .notContents(noticeResponseDto.getNotContents())
                 .notViews(noticeResponseDto.getNotViews())
+                .notPin(noticeResponseDto.getNotPin())
                 .createdAt(noticeResponseDto.getCreatedAt())
                 .updatedAt(noticeResponseDto.getUpdatedAt())
                 .build();

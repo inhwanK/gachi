@@ -1,147 +1,250 @@
-//package org.deco.gachicoding.unit.post.notice.domain;
-//
-//import org.deco.gachicoding.post.notice.domain.Notice;
-//import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
-//import org.deco.gachicoding.user.domain.User;
-//import org.deco.gachicoding.user.domain.repository.UserRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-//import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-//
-//import java.util.Optional;
-//
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.junit.jupiter.api.Assertions.assertTrue;
-//
-//@DataJpaTest
-//@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-//public class NoticeRepositoryTest {
-//
-//    @Autowired
-//    NoticeRepository noticeRepository;
-//
-//    @Autowired
-//    UserRepository userRepository;
-//
-//    User testUser;
-//
-//    String notTitle = "공지사항 테스트 제목";
-//    String notContent = "공지사항 테스트 내용";
-//    Boolean notPin = false;
-//    Boolean notActivated = true;
-//
-//    @BeforeEach
-//    private void before() {
-//        // Factory를 이용한 생성 패턴으로 변경
-//        User user = User.builder()
-//                .userEmail("test111@test.com")
-//                .userPassword("test1234")
-//                .userName("테스트")
-//                .userNick("testMachine")
-//                .build();
-//
-//        testUser = userRepository.save(user);
-//    }
-//
-//    private Notice createNoticeMock() {
-//        Notice entity = Notice.builder()
-//                .writer(testUser)
-//                .notTitle(notTitle)
-//                .notContent(notContent)
-//                .notPin(notPin)
-//                .notActivated(notActivated)
-//                .build();
-//
-//        return noticeRepository.save(entity);
-//    }
-//
-//    @Test
-//    @DisplayName("공지사항을 저장한다.")
-//    void save_savedNotice_Success() {
-//        // given
-//
-//
-//        // when
-//
-//
-//        // then
-//
-//
-//    }
-//
-//    @Test
-//    void 인덱스로_공지사항_조회() {
-//        Notice testNotice = createNoticeMock();
-//        Long noticeIdx = testNotice.getNotIdx();
-//
-//        Optional<Notice> notice = noticeRepository.findById(noticeIdx);
-//        assertTrue(notice.isPresent());
-//        assertEquals("공지사항 테스트 제목", notice.get().getNotTitle());
-//        assertEquals("공지사항 테스트 내용", notice.get().getNotContent());
-//    }
-//
-////    @Test
-////    public void 공지사항_목록_조회() {
-////        String notTitle = "공지사항 목록 테스트 제목 (고양이)";
-////        String notContent = "공지사항 목록 테스트 내용";
-////        Boolean notPin = false;
-////        Boolean notActivated = true;
-////        for(int i = 0; i < 10; i++) {
-////            createNoticeMock(notTitle, notContent, notPin, notActivated);
-////        }
-////
-////        String keyword = "(고양이)";
-////
-////        Page<Notice> notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(keyword, keyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-////
-////        // NumberOfElements 요청 페이지에서 조회 된 데이터의 갯수
-////        assertEquals(10, notice.getTotalElements());
-////    }
-////
-////    @Test
-////    public void 인덱스로_공지사항_삭제() {
-////        String notTitle = "공지사항 테스트 제목";
-////        String notContent = "공지사항 테스트 내용";
-////        Boolean notPin = false;
-////        Boolean notActivated = true;
-////        Long noticeIdx = createNoticeMock(notTitle, notContent, notPin, notActivated);
-////
-////        Optional<Notice> notice = noticeRepository.findById(noticeIdx);
-////
-////        assertTrue(notice.isPresent());
-////
-////        noticeRepository.deleteById(noticeIdx);
-////
-////        notice = noticeRepository.findById(noticeIdx);
-////
-////        assertTrue(notice.isEmpty());
-////    }
-////
-////    @Test
-////    public void 검색어로_공지사항_검색_리스트() {
-////        String notTitle = "공지사항 테스트 제목 고양이 병아리";
-////        String notContent = "공지사항 테스트 내용 강아지 병아리";
-////        Boolean notPin = false;
-////        Boolean notActivated = true;
-////        Long noticeIdx = createNoticeMock(notTitle, notContent, notPin, notActivated);
-////
-////        Optional<Notice> notice = noticeRepository.findById(noticeIdx);
-////
-////        assertTrue(notice.isPresent());
-////
-////        String toFindKeyword = "고양이";
-////
-////        Page<Notice> search_notice = noticeRepository.findByNotContentContainingIgnoreCaseAndNotActivatedTrueOrNotTitleContainingIgnoreCaseAndNotActivatedTrueOrderByNotIdxDesc(toFindKeyword, toFindKeyword, PageRequest.of(0, 10, Sort.by(Sort.Direction.DESC, "notIdx")));
-////
-////        for (Notice n : search_notice) {
-////            assertEquals(n.getNotTitle(),notTitle);
-////            assertEquals(n.getNotContent(),notContent);
-////            assertEquals(n.getNotPin(),notPin);
-////            assertEquals(n.getNotActivated(),notActivated);
-////        }
-////    }
-//
-//}
+package org.deco.gachicoding.unit.post.notice.domain;
+
+import org.deco.gachicoding.common.factory.user.UserFactory;
+import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
+import org.deco.gachicoding.post.notice.domain.Notice;
+import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
+import org.deco.gachicoding.user.domain.User;
+import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.PageRequest;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+@DataJpaTest
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+public class NoticeRepositoryTest {
+
+    @Autowired
+    NoticeRepository noticeRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    private static final String notTitle = "공지사항 테스트 제목";
+    private static final String notContents = "공지사항 테스트 내용";
+    private static final String keyword = "병아리";
+
+    @Test
+    @DisplayName("공지사항을 저장한다.")
+    void save_saveNotice_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+
+        Notice savedTestNotice = noticeRepository.save(notice);
+
+        // when
+        Notice savedActualNotice = noticeRepository.findNoticeByIdx(savedTestNotice.getNotIdx())
+                .orElseThrow(NoticeNotFoundException::new);
+
+        // then
+        assertThat(savedTestNotice.getNotIdx()).isEqualTo(savedActualNotice.getNotIdx());
+    }
+
+    @Test
+    @DisplayName("공지사항을 저장하면 자동으로 생성 날짜가 주입된다.")
+    void save_saveNoticeWithCreatedDate_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+
+        // when
+        Notice savedTestNotice = noticeRepository.save(notice);
+
+        // then
+        assertThat(savedTestNotice).isNotNull();
+        assertThat(savedTestNotice.getCreatedAt()).isBefore(LocalDateTime.now());
+    }
+
+    @Test
+    @DisplayName("공지사항 리스트를 최신순으로 가져온다.")
+    public void find_findAllNoticeByLatestOrder_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        for (int i = 0; i < 3; i++) {
+            Notice notice = Notice.builder()
+                    .author(savedTestUser)
+                    .notTitle(notTitle)
+                    .notContents(notContents)
+                    .build();
+
+            noticeRepository.save(notice);
+        }
+
+        // when
+        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword("", PageRequest.of(0, 10));
+
+        // then
+        assertThat(savedTestNotices).isNotNull();
+        assertThat(savedTestNotices.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("검색어로 공지사항 리스트를 가져온다.")
+    public void find_findAllNoticeByKeyword_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        for (int i = 0; i < 3; i++) {
+            Notice notice = Notice.builder()
+                    .author(savedTestUser)
+                    .notTitle(notTitle)
+                    .notContents(notContents)
+                    .build();
+
+            noticeRepository.save(notice);
+        }
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle + keyword)
+                .notContents(notContents)
+                .build();
+
+        noticeRepository.save(notice);
+
+        // when
+        List<Notice> savedTestNotices = noticeRepository.findAllNoticeByKeyword(keyword, PageRequest.of(0, 10));
+
+        // then
+        assertThat(savedTestNotices).isNotNull();
+        assertThat(savedTestNotices.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("오직 활성화 된 공지사항만 가져온다.")
+    public void find_findNoticeByOnlyEnabled_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .notLocked(true)
+                .build();
+
+        noticeRepository.save(notice);
+
+        // when
+        Notice savedTestNotice = noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
+                .orElseThrow(NoticeNotFoundException::new);
+
+        // then
+        assertThat(savedTestNotice).isNotNull();
+        assertThat(savedTestNotice.getNotLocked()).isTrue();
+    }
+
+    @Test
+    @DisplayName("비 활성화 된 공지사항에 접근하면 예외가 발생한다.")
+    public void find_findNoticeByOnlyEnabled_Exception() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .notLocked(false)
+                .build();
+
+        // when
+        noticeRepository.save(notice);
+
+        // then
+        assertThatThrownBy(() ->
+                noticeRepository.findEnableNoticeByIdx(notice.getNotIdx())
+                        .orElseThrow(NoticeNotFoundException::new)
+        ).isInstanceOf(NoticeNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("활성화, 비 활성화 공지사항 무엇이든 가져온다.")
+    public void find_findNoticeByDisabledAndEnable_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .notLocked(false)
+                .build();
+
+        noticeRepository.save(notice);
+
+        // when
+        Notice savedTestNotice = noticeRepository.findNoticeByIdx(notice.getNotIdx())
+                .orElseThrow(NoticeNotFoundException::new);
+
+        // then
+        assertThat(savedTestNotice).isNotNull();
+        assertThat(savedTestNotice.getNotLocked()).isFalse();
+    }
+
+    @Test
+    @DisplayName("인덱스로 공지사항을 삭제한다.")
+    public void delete_deleteNoticeByNoticeIndex_Success() {
+        // given
+        User savedTestUser = userRepository.save(
+                UserFactory.user()
+        );
+
+        Notice notice = Notice.builder()
+                .author(savedTestUser)
+                .notTitle(notTitle)
+                .notContents(notContents)
+                .build();
+
+        Long savedNoticeIdx = noticeRepository.save(notice).getNotIdx();
+
+        // when
+        Notice savedNotice = noticeRepository.findNoticeByIdx(savedNoticeIdx)
+                .orElseThrow(NoticeNotFoundException::new);
+
+        assertThat(savedNotice).isNotNull();
+
+        noticeRepository.delete(savedNotice);
+
+        // then
+        assertThatThrownBy(() ->
+                noticeRepository.findNoticeByIdx(savedNoticeIdx)
+                        .orElseThrow(NoticeNotFoundException::new)
+        ).isInstanceOf(NoticeNotFoundException.class);
+    }
+
+}

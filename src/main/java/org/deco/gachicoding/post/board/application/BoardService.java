@@ -2,6 +2,9 @@ package org.deco.gachicoding.post.board.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.board.BoardInactiveException;
+import org.deco.gachicoding.exception.post.board.BoardNotFoundException;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.board.application.dto.BoardDtoAssembler;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
@@ -11,13 +14,10 @@ import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Slf4j
 @Service
@@ -32,7 +32,7 @@ public class BoardService {
     String BOARD = "BOARD";
 
     @Transactional
-    public Long registerBoard(BoardSaveRequestDto dto) throws Exception {
+    public Long registerBoard(BoardSaveRequestDto dto) {
         Board board = boardRepository.save(createBoard(dto));
 
 //        Long boardIdx = board.getBoardIdx();
@@ -82,18 +82,30 @@ public class BoardService {
 //        fileService.getFiles(boardIdx, boardCategory, boardDetail);
 //        tagService.getTags(boardIdx, BOARD, boardDetail);
 
-        return BoardDtoAssembler.boardResponseDto(findEnableBoard(dto.getBoardIdx()));
+        Board board = findBoard(dto.getBoardIdx());
+
+        if (!board.getBoardLocked())
+            throw new BoardInactiveException();
+
+        return BoardDtoAssembler.boardResponseDto(board);
     }
 
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
-        Board board = findEnableBoard(dto.getBoardIdx());
+        Board board = findBoard(dto.getBoardIdx());
+
+        if (!board.getBoardLocked())
+            throw new BoardInactiveException();
 
         User user = findAuthor(dto.getUserEmail());
 
         board.hasSameAuthor(user);
 
-        board.update(dto.getBoardTitle(), dto.getBoardContents());
+        board.updateTitle(dto.getBoardTitle());
+
+        board.updateContent(dto.getBoardContents());
+
+//        board.update(dto.getBoardTitle(), dto.getBoardContents());
 
         return BoardDtoAssembler.boardResponseDto(board);
     }
@@ -131,18 +143,13 @@ public class BoardService {
         boardRepository.delete(board);
     }
 
-    private Board findEnableBoard(Long boardIdx) {
-        return boardRepository.findEnableBoardByIdx(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
-    }
-
     private Board findBoard(Long boardIdx) {
         return boardRepository.findBoardByIdx(boardIdx)
-                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
+                .orElseThrow(BoardNotFoundException::new);
     }
 
     private User findAuthor(String userEmail) {
         return userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new ApplicationException(USER_NOT_FOUND));
+                .orElseThrow(UserNotFoundException::new);
     }
 }

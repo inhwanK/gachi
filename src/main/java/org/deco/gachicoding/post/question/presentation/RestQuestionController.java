@@ -7,7 +7,6 @@ import org.deco.gachicoding.post.question.dto.response.QuestionDetailPostRespons
 import org.deco.gachicoding.post.question.dto.response.QuestionListResponseDto;
 import org.deco.gachicoding.post.question.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.dto.request.QuestionUpdateRequestDto;
-import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.question.application.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,7 +52,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "질문 상세 정보 반환")
     )
     @GetMapping("/question/{queIdx}")
-    public QuestionDetailPostResponseDto getQuestionDetail(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
+    public QuestionDetailPostResponseDto getQuestionDetail(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
         return questionService.getQuestionDetail(queIdx);
     }
 
@@ -71,8 +70,9 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/question/disable/{queIdx}")
-    public ResponseEntity<ResponseState> disableQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
-        return questionService.disableQuestion(queIdx);
+    public ResponseEntity<Void> disableQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
+//        return questionService.disableQuestion(queIdx);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "질문 활성화", notes = "사용자 입장에서 삭제된 질문 데이터 복구")
@@ -80,8 +80,9 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/question/enable/{queIdx}")
-    public ResponseEntity<ResponseState> enableQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
-        return questionService.enableQuestion(queIdx);
+    public ResponseEntity<Void> enableQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
+//        return questionService.enableQuestion(queIdx);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "질문 삭제", notes = "질문 데이터를 DB에서 완전히 삭제")
@@ -89,7 +90,8 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/question/{queIdx}")
-    public ResponseEntity<ResponseState> removeQuestion(@ApiParam(value = "질문 번호") @PathVariable Long queIdx) {
-        return questionService.removeQuestion(queIdx);
+    public ResponseEntity<Void> removeQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
+//        return questionService.removeQuestion(queIdx);
+        return ResponseEntity.noContent().build();
     }
 }

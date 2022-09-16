@@ -12,11 +12,11 @@ import javax.validation.constraints.NotNull;
 public class NoticeBasicRequestDto implements PostRequestDto {
     @NotNull
     @Email(message = "올바른 형식의 아이디가 아닙니다.")
-    @ApiModelProperty(value = "요청자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "Swagger@swagger.com")
+//    @ApiModelProperty(value = "요청자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "Swagger@swagger.com")
     private String userEmail;
 
     @NotNull
-    @ApiModelProperty(value = "공지사항 번호", required = true, example = "1")
+//    @ApiModelProperty(value = "공지사항 번호", required = true, example = "1")
     private Long notIdx;
 
     @Builder

@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.comment.dto.response.CommentResponseDto;
 import org.deco.gachicoding.comment.dto.request.CommentSaveRequestDto;
 import org.deco.gachicoding.comment.dto.request.CommentUpdateRequestDto;
-import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.comment.application.CommentService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +39,7 @@ public class RestCommentComtroller {
     )
     @GetMapping("/comment/list")
     public Page<CommentResponseDto> getCommentList(@ApiParam(value = "글 카테고리") @RequestParam(value = "articleCategory", defaultValue = "") String articleCategory,
-                                                   @ApiParam(value = "글 번호") @RequestParam(value = "articleIdx", defaultValue = "") Long articleIdx,
+                                                   @ApiParam(value = "글 번호", example = "1") @RequestParam(value = "articleIdx", defaultValue = "") Long articleIdx,
                                                    @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return commentService.getCommentList(articleCategory, articleIdx, pageable);
@@ -60,8 +59,9 @@ public class RestCommentComtroller {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/comment/disable/{commentIdx}")
-    public ResponseEntity<ResponseState> disableComment(@ApiParam(value = "댓글 번호") @PathVariable Long commentIdx) {
-        return commentService.disableComment(commentIdx);
+    public ResponseEntity<Void> disableComment(@ApiParam(value = "댓글 번호", example = "1") @PathVariable Long commentIdx) {
+//        return commentService.disableComment(commentIdx);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "댓글 활성화", notes = "사용자 입장에서 삭제된 댓글 데이터 복구")
@@ -69,8 +69,9 @@ public class RestCommentComtroller {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/comment/enable/{commentIdx}")
-    public ResponseEntity<ResponseState> enableComment(@ApiParam(value = "댓글 번호") @PathVariable Long commentIdx) {
-        return commentService.enableComment(commentIdx);
+    public ResponseEntity<Void> enableComment(@ApiParam(value = "댓글 번호", example = "1") @PathVariable Long commentIdx) {
+//        return commentService.enableComment(commentIdx);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글 데이터를 DB에서 완전히 삭제")
@@ -78,7 +79,8 @@ public class RestCommentComtroller {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/comment/{commentIdx}")
-    public ResponseEntity<ResponseState> removeComment(@ApiParam(value = "댓글 번호") @PathVariable Long commentIdx) {
-        return commentService.removeComment(commentIdx);
+    public ResponseEntity<Void> removeComment(@ApiParam(value = "댓글 번호", example = "1") @PathVariable Long commentIdx) {
+//        return commentService.removeComment(commentIdx);
+        return ResponseEntity.noContent().build();
     }
 }

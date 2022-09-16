@@ -27,20 +27,15 @@ public class BoardSaveRequestDto {
     private String boardCategory;
 
     @Nullable
-    @ApiModelProperty(value = "조회수", required = false, example = "0")
-    private Long boardViews;
-
-    @Nullable
     @ApiModelProperty(value = "태그 목록", required = false, example = "Java")
     private List<String> tags;
 
     @Builder
-    public BoardSaveRequestDto(String userEmail, String boardTitle, String boardContents, String boardCategory, Long boardViews, List<String> tags) {
+    public BoardSaveRequestDto(String userEmail, String boardTitle, String boardContents, String boardCategory, List<String> tags) {
         this.userEmail = userEmail;
         this.boardTitle = boardTitle;
         this.boardContents = boardContents;
         this.boardCategory = boardCategory;
-        this.boardViews = boardViews;
         this.tags = tags;
     }
 }

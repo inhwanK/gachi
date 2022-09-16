@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -30,9 +31,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+// 인가 정보 반환 기능 https://offbyone.tistory.com/217
 // 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
 @EnableWebSecurity(debug = false)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -43,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(restAuthenticationProvider());
     }
 
@@ -63,10 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors().configurationSource(corsConfigurationSource())
         .and()
                 .csrf().disable()
-                .headers().frameOptions().disable()
-        .and()
-                .authorizeRequests().antMatchers("/", "/swagger-ui.html")
-                .permitAll();
+                .headers().frameOptions().disable();
 
         http
                 .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -78,8 +78,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/") // 임시로 설정한 URL 프론트와 협의
+                .logoutUrl("/api/logout")
+                .logoutSuccessUrl("http://localhost:3000")
                 .addLogoutHandler(new SecurityContextLogoutHandler());
     }
 

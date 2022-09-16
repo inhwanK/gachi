@@ -6,7 +6,6 @@ import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerSaveRequestDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerSelectRequestDto;
 import org.deco.gachicoding.post.answer.dto.request.AnswerUpdateRequestDto;
-import org.deco.gachicoding.exception.ResponseState;
 import org.deco.gachicoding.post.answer.application.AnswerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +37,7 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "답변 상세 정보 봔한")
     )
     @GetMapping("/answer/{ansIdx}")
-    public AnswerResponseDto getAnswerDetail(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
+    public AnswerResponseDto getAnswerDetail(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
         return answerService.getAnswerDetail(ansIdx);
     }
 
@@ -58,8 +57,9 @@ public class RestAnswerController {
             @ApiResponse(code = 500, message = "권한이 없는 유저입니다")
     })
     @PutMapping("/answer/select")
-    public ResponseEntity<ResponseState> selectAnswer(@ApiParam(value = "답변 채택 요청 body 정보") @RequestBody AnswerSelectRequestDto dto) {
-        return answerService.selectAnswer(dto);
+    public ResponseEntity<Void> selectAnswer(@ApiParam(value = "답변 채택 요청 body 정보") @RequestBody AnswerSelectRequestDto dto) {
+//        return answerService.selectAnswer(dto);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "답변 비활성화")
@@ -67,8 +67,9 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "비활성화 성공")
     )
     @PutMapping("/answer/disable/{ansIdx}")
-    public ResponseEntity<ResponseState> disableAnswer(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
-        return answerService.disableAnswer(ansIdx);
+    public ResponseEntity<Void> disableAnswer(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
+//        return answerService.disableAnswer(ansIdx);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "답변 활성화")
@@ -76,8 +77,9 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "활성화 성공")
     )
     @PutMapping("/answer/enable/{ansIdx}")
-    public ResponseEntity<ResponseState> enableAnswer(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
-        return answerService.enableAnswer(ansIdx);
+    public ResponseEntity<Void> enableAnswer(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
+//        return answerService.enableAnswer(ansIdx);
+        return ResponseEntity.noContent().build();
     }
 
     @ApiOperation(value = "답변 삭제")
@@ -85,7 +87,8 @@ public class RestAnswerController {
             @ApiResponse(code = 200, message = "삭제 성공")
     )
     @DeleteMapping("/answer/{ansIdx}")
-    public ResponseEntity<ResponseState> removeAnswer(@ApiParam(value = "답변 번호") @PathVariable Long ansIdx) {
-        return answerService.removeAnswer(ansIdx);
+    public ResponseEntity<Void> removeAnswer(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
+//        return answerService.removeAnswer(ansIdx);
+        return ResponseEntity.noContent().build();
     }
 }

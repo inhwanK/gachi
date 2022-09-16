@@ -44,7 +44,7 @@ public class EmailConfirmTokenService {
         User targetUser = userRepository.findByUserEmail(targetEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        if (!confirmToken.validCheck(tokenId)) {
+        if (confirmToken.isExpired()) {
             return false;
         }
 

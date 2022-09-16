@@ -24,4 +24,6 @@ public interface EmailConfirmTokenRepository extends JpaRepository<EmailConfirmT
             "from EmailConfirmToken ect " +
             "where ect.targetEmail = :targetEmail")
     void deleteByTargetEmail(@Param("targetEmail") String targetEmail);
+
+//    EmailConfirmToken save(EmailConfirmToken emailConfirmToken);
 }

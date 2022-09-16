@@ -3,27 +3,26 @@
 
 <br>
 
-* [김인표](https://github.com/kiminpyo)
-* [김인환](https://github.com/inhwanK)
-* [서영준](https://github.com/95Seo)
-* [배지왕](https://github.com/BAE-JI-WANG)
-* [김세현](https://github.com/saehyen)
+## 인원 
+* [김인환](https://github.com/inhwanK) - BE
+* [서영준](https://github.com/95Seo) - BE
+
+[//]: # (* [김인표]&#40;https://github.com/kiminpyo&#41;)
+[//]: # (* [배지왕]&#40;https://github.com/BAE-JI-WANG&#41;)
+[//]: # (* [김세현]&#40;https://github.com/saehyen&#41;)
 
 <br>
 
 ## 사용 기술
 * Java 11 (jdk-11.0.13)
-* gradle 7.4
-* react 8.1.2
-* aws - ec2, rds, s3
-* terraform 1.1.7
 * Spring Data JPA
-* Spring Security
+* Spring Security 
+* gradle 7.4
+* aws - ec2, rds, s3
 * swagger2
-* lombok
 
 ## ERD
-![가치코딩 ERD](document/gachicoding ERD.png)
+![](document/erd.png)
 
 ## 저장소
 * [백엔드 저장소 (현재 저장소)](https://github.com/inhwanK/gachicoding)

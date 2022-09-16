@@ -18,7 +18,6 @@ public class UserResponseDto {
     private String userEmail;
     private String userPassword;
     private LocalDateTime userCreatedAt;
-    private boolean userLocked;
     private boolean userEnabled;
 
     public UserResponseDto(User user) {
@@ -28,7 +27,6 @@ public class UserResponseDto {
         this.userEmail = user.getUserEmail();
         this.userPassword = user.getUserPassword();
         this.userCreatedAt = user.getUserCreatedAt();
-        this.userLocked = user.isUserLocked();
         this.userEnabled = user.isUserEnabled();
     }
 

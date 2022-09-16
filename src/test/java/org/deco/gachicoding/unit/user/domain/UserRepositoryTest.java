@@ -8,23 +8,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.BDDMockito.*;
 
 @DataJpaTest // JPA 에 관련된 의존성 제공, 자동으로 롤백
 public class UserRepositoryTest {
 
     @Autowired
     UserRepository userRepository;
-
-    @Autowired
-    TestEntityManager testEntityManager;
 
     User user;
 
@@ -48,7 +43,18 @@ public class UserRepositoryTest {
     @DisplayName("가입되지 않은 유저 이메일로 유저를 조회할 수 없다.")
     @Test
     public void findByUserEmail_InvalidUserEmail_Empty() {
+
         assertThat(userRepository.findByUserEmail("invalidUser")).isEmpty();
+
+        assertThatThrownBy(
+                () -> userRepository
+                        .findByUserEmail("invalidUser")
+                        .orElseThrow(
+                                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                        )
+        )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 사용자입니다.");
     }
 
     @DisplayName("유저를 저장한다.")
@@ -88,7 +94,7 @@ public class UserRepositoryTest {
                 .build();
 
         assertThatThrownBy(() -> {
-                    userRepository.save(duplicateEmailUser);
+            userRepository.save(duplicateEmailUser);
         }).isInstanceOf(DataIntegrityViolationException.class);
     }
 
@@ -101,7 +107,8 @@ public class UserRepositoryTest {
         userRepository.deleteByUserEmail(delUser.get().getUserEmail());
 
         assertThat(
-                userRepository.findByUserEmail("test@test.com")
+                userRepository
+                        .findByUserEmail("test@test.com")
                         .isEmpty()
         ).isTrue();
     }
@@ -115,7 +122,8 @@ public class UserRepositoryTest {
         userRepository.deleteById(delUser.get().getUserIdx());
 
         assertThat(
-                userRepository.findById(delUser.get().getUserIdx())
+                userRepository
+                        .findById(delUser.get().getUserIdx())
                         .isEmpty()
         ).isTrue();
     }

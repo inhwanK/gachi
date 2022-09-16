@@ -2,13 +2,12 @@ package org.deco.gachicoding.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
+import org.deco.gachicoding.user.dto.request.authentication.LoginRequestDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,16 +26,16 @@ public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-
-        UserAuthenticationDto userDto = objectMapper.readValue(request.getReader(), UserAuthenticationDto.class);
+        // 역직렬화 할 때는 유효성 검사 로직이 작동을 안하는 듯... 사이클을 찾아봐야함.
+        LoginRequestDto requestDto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);
 
         log.info("이메일 유효성 검사 로직 필요");
 
-        if (!StringUtils.hasText(userDto.getUsername()) || !StringUtils.hasText(userDto.getPassword())) {
+        if (!StringUtils.hasText(requestDto.getUserEmail()) || !StringUtils.hasText(requestDto.getPassword())) {
             throw new IllegalArgumentException("Username or Password is empty");
         }
 
-        RestAuthenticationToken restAuthenticationToken = new RestAuthenticationToken(userDto.getUsername(), userDto.getPassword());
+        RestAuthenticationToken restAuthenticationToken = new RestAuthenticationToken(requestDto.getUserEmail(), requestDto.getPassword());
 
         return getAuthenticationManager().authenticate(restAuthenticationToken);
     }

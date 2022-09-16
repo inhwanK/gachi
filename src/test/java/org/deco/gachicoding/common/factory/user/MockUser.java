@@ -19,10 +19,8 @@ public class MockUser {
         private String userNick = "Test User Nick";
         private String userEmail = "test@gachicoding.com";
         private String userPassword = "Test User Password";
-        private boolean userLocked = true;
         private boolean userEnabled = true;
         private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
-
         private RoleType userRole = RoleType.ROLE_USER;
 
 
@@ -51,11 +49,6 @@ public class MockUser {
             return this;
         }
 
-        public Builder userLocked(boolean userLocked) {
-            this.userLocked = userLocked;
-            return this;
-        }
-
         public Builder userEnabled(boolean userEnabled) {
             this.userEnabled = userEnabled;
             return this;
@@ -78,7 +71,6 @@ public class MockUser {
                     userNick,
                     userEmail,
                     userPassword,
-                    userLocked,
                     userEnabled,
                     userCreatedAt,
                     userRole

@@ -3,9 +3,8 @@ package org.deco.gachicoding.user.presentation;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.user.application.UserService;
-import org.deco.gachicoding.user.dto.request.LoginRequestDto;
-import org.deco.gachicoding.user.dto.request.UserAuthenticationDto;
+import org.deco.gachicoding.user.dto.request.authentication.LoginRequestDto;
+import org.deco.gachicoding.user.dto.request.authentication.UserAuthenticationDto;
 import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,7 +17,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class RestUserSessionController {
+public class UserSessionController {
 
     @ApiOperation(value = "유저정보 받기", notes = "임시로 만든 API, 인가 처리 개발되는데로 삭제 예정")
     @ApiResponses(
@@ -38,12 +37,9 @@ public class RestUserSessionController {
             @ApiParam(name = "로그인 요청 dto")
             @Valid @RequestBody LoginRequestDto dto
     ) {
-
     }
 
     @ApiOperation(value = "로그아웃 요청", notes = "로그아웃 요청 api 문서")
     @PostMapping("/logout")
-    public void logout() {
-
-    }
+    public void logout() {}
 }

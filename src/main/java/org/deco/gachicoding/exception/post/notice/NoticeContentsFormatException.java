@@ -7,7 +7,7 @@ public class NoticeContentsFormatException extends PostException {
 
     private static final String ERROR_CODE = "N1004";
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String MESSAGE = "공지사항 내용의 길이가 제한을 넘었습니다.";
+    private static final String MESSAGE = "공지사항의 내용이 길이 제한을 초과하였습니다.";
 
     public NoticeContentsFormatException() {
         this(ERROR_CODE, HTTP_STATUS, MESSAGE);

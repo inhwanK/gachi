@@ -2,19 +2,18 @@ package org.deco.gachicoding.post.board.domain;
 
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
-import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyActiveException;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyInactiveException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;
 import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
 import org.deco.gachicoding.user.domain.User;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Entity
@@ -24,6 +23,8 @@ public class Board extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_idx", columnDefinition = "bigint", nullable = false)
+    @Comment("PK")
     private Long boardIdx;
 
     @Embedded
@@ -31,8 +32,14 @@ public class Board extends BaseTimeEntity {
 
     @Embedded
     private BoardContents boardContents;
+
+    @Column(name = "board_category", columnDefinition = "varchar(20)")
     private String boardCategory;
+
+    @Column(name = "board_views", columnDefinition = "bigint default '0'", nullable = false)
     private Long boardViews;
+
+    @Column(name = "board_locked", columnDefinition = "boolean default 'true'", nullable = false)
     private Boolean boardLocked;
 
     @ManyToOne
@@ -46,7 +53,9 @@ public class Board extends BaseTimeEntity {
             BoardContents boardContents,
             String boardCategory,
             Long boardViews,
-            Boolean boardLocked
+            Boolean boardLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
     ) {
         this.boardIdx = boardIdx;
         this.author = author;
@@ -55,6 +64,8 @@ public class Board extends BaseTimeEntity {
         this.boardCategory = boardCategory;
         this.boardViews = boardViews;
         this.boardLocked = boardLocked;
+        setCreatedAt(createdAt);
+        setUpdatedAt(updatedAt);
     }
 
     public String getBoardTitle() {
@@ -96,11 +107,11 @@ public class Board extends BaseTimeEntity {
         updateContent(boardContent);
     }
 
-    private void updateTitle(String boardTitle) {
+    public void updateTitle(String boardTitle) {
         this.boardTitle = new BoardTitle(boardTitle);
     }
 
-    private void updateContent(String boardContent) {
+    public void updateContent(String boardContent) {
         this.boardContents = new BoardContents(boardContent);
     }
 
@@ -119,6 +130,8 @@ public class Board extends BaseTimeEntity {
         private String boardCategory;
         private Long boardViews;
         private Boolean boardLocked;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
 
         public Builder boardIdx(Long boardIdx) {
             this.boardIdx = boardIdx;
@@ -155,18 +168,28 @@ public class Board extends BaseTimeEntity {
             return this;
         }
 
+        public Builder createdAt(LocalDateTime createdAt) {
+            this.createdAt = createdAt;
+            return this;
+        }
+
+        public Builder updatedAt(LocalDateTime updatedAt) {
+            this.updatedAt = updatedAt;
+            return this;
+        }
+
         public Board build() {
-            Board board = new Board(
+            return new Board(
                     boardIdx,
                     writer,
                     boardTitle,
                     boardContents,
                     boardCategory,
                     boardViews,
-                    boardLocked
+                    boardLocked,
+                    createdAt,
+                    updatedAt
             );
-
-            return board;
         }
     }
 }

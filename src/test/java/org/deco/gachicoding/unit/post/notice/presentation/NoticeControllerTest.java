@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.config.SecurityConfig;
-import org.deco.gachicoding.exception.ApplicationException;
+import org.deco.gachicoding.exception.post.notice.*;
+import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.post.notice.domain.Notice;
-import org.deco.gachicoding.post.notice.presentation.RestNoticeController;
+import org.deco.gachicoding.post.notice.presentation.NoticeController;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeUpdateRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse;
@@ -30,15 +31,11 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.deco.gachicoding.exception.StatusEnum.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -67,7 +64,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 **/
 
 // 특정 컨트롤러 클래스만 지정하여 스캔
-@WebMvcTest(controllers = RestNoticeController.class,
+@WebMvcTest(controllers = NoticeController.class,
             excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
             })
@@ -84,18 +81,20 @@ public class NoticeControllerTest {
     @MockBean
     private NoticeService noticeService;
 
+    private static final User author = UserFactory.user(1L, "gachicoding@test.com", "1234");
+
+    private static final Long notIdx = 1L;
+    private static final String notTitle = "Test Notice Title";
+    private static final String notContents = "Test Notice Contents";
+
     @Test
     @DisplayName("사용자는 공지사항을 작성할 수 있다.")
     void write_writeNoticeWithUser_Success() throws Exception {
         // given
-        String userEmail = "gachicoding@test.com";
-        String notTitle = "테스트 공지사항 제목 수정 전";
-        String notContents = "테스트 공지사항 내용 수정 전";
-
-        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(userEmail, notTitle, notContents);
+        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents);
 
         given(noticeService.registerNotice(any(NoticeSaveRequestDto.class)))
-                .willReturn(1L);
+                .willReturn(notIdx);
 
         // when
         ResultActions perform = mockMvc.perform(post("/api/notice")
@@ -110,6 +109,94 @@ public class NoticeControllerTest {
         verify(noticeService, times(1))
                 .registerNotice(any(NoticeSaveRequestDto.class));
     }
+
+    @Test
+    @DisplayName("공지사항 작성 시 제목이 제한을 초과하면 예외가 발생한다.")
+    void write_writeMaximumLengthOverTitle_Exception() throws Exception {
+        // given
+        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle.repeat(10), notContents);
+
+        // when
+        ResultActions perform = mockMvc.perform(post("/api/notice")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorCode").value("F0004"))
+                .andExpect(jsonPath("errorMessage").value("notTitle - 제한길이를 초과하였습니다."));
+
+        verify(noticeService, never())
+                .registerNotice(any(NoticeSaveRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 작성 시 제목이 널이면 예외가 발생한다.")
+    void write_writeNotExistTitle_Exception() throws Exception {
+        // given
+        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), null, notContents);
+
+        // when
+        ResultActions perform = mockMvc.perform(post("/api/notice")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorCode").value("F0001"))
+                .andExpect(jsonPath("errorMessage").value("notTitle - 널이어서는 안됩니다."));
+
+        verify(noticeService, never())
+                .registerNotice(any(NoticeSaveRequestDto.class));
+    }
+    
+    // 제목 공백 예외도 테스트 할것인지 결정
+
+    @Test
+    @DisplayName("공지사항 작성 시 내용이 제한을 초과하면 예외가 발생한다.")
+    void write_writeMaximumLengthOverContents_Exception() throws Exception {
+        // given
+        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents.repeat(1000));
+
+        // when
+        ResultActions perform = mockMvc.perform(post("/api/notice")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorCode").value("F0004"))
+                .andExpect(jsonPath("errorMessage").value("notContent - 제한길이를 초과하였습니다."));
+
+        verify(noticeService, never())
+                .registerNotice(any(NoticeSaveRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 작성 시 내용이 널이면 예외가 발생한다.")
+    void write_writeNotExistContents_Exception() throws Exception {
+        // given
+        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, null);
+
+        // when
+        ResultActions perform = mockMvc.perform(post("/api/notice")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorCode").value("F0001"))
+                .andExpect(jsonPath("errorMessage").value("notContent - 널이어서는 안됩니다."));
+
+        verify(noticeService, never())
+                .registerNotice(any(NoticeSaveRequestDto.class));
+    }
+    
+    // 내용 공백 예외도 테스트 할것인지 결정
 
     // 인가 로직 개발 완료 후 추가 개발
 //    @Test
@@ -138,17 +225,13 @@ public class NoticeControllerTest {
 //                .registerNotice(any(NoticeSaveRequestDto.class));
 //    }
 
-
-
     @Test
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항의 목록을 가져온다.")
-    public void read_readAllEnableList_Success() throws Exception {
+    void read_readAllEnableList_Success() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        NoticeResponseDto noticeResponseDto1 = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(1L, user, true));
-        NoticeResponseDto noticeResponseDto2 = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(2L, user, true));
-        NoticeResponseDto noticeResponseDto3 = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(3L, user, true));
+        NoticeResponseDto noticeResponseDto1 = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(1L, author, true));
+        NoticeResponseDto noticeResponseDto2 = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(2L, author, true));
+        NoticeResponseDto noticeResponseDto3 = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(3L, author, true));
 
         List<NoticeResponseDto> noticeResponseDtos = List.of(
                 noticeResponseDto1,
@@ -161,7 +244,6 @@ public class NoticeControllerTest {
                 NoticeFactory.mockNoticeResponse(noticeResponseDto2),
                 NoticeFactory.mockNoticeResponse(noticeResponseDto3)
         );
-
 
         given(noticeService.getNoticeList(any(NoticeListRequestDto.class)))
                 .willReturn(noticeResponseDtos);
@@ -183,7 +265,7 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("활성화 된 공지사항이 존재하지 않는 경우 빈배열을 가져온다.")
-    public void read_readNotExistList_Success() throws Exception {
+    void read_readNotExistList_Success() throws Exception {
         // given
         List<NoticeResponseDto> noticeResponseDtos = new ArrayList<>();
 
@@ -207,12 +289,9 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항 내용을 가져온다.")
-    public void read_readEnableDetail_Success() throws Exception {
+    void read_readEnableDetail_Success() throws Exception {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
-        NoticeResponseDto noticeResponseDto = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(notIdx, user, true));
+        NoticeResponseDto noticeResponseDto = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(notIdx, author, true));
 
         given(noticeService.getNoticeDetail(any(NoticeDetailRequestDto.class)))
                 .willReturn(noticeResponseDto);
@@ -234,12 +313,10 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 공지사항에 접근할 경우 예외가 발생한다.")
-    public void read_readNotExistDetail_Exception() throws Exception {
+    void read_readNotExistDetail_Exception() throws Exception {
         // given
-        Long notIdx = 1L;
-
         given(noticeService.getNoticeDetail(any(NoticeDetailRequestDto.class)))
-                .willThrow(new ApplicationException(NOTICE_NOT_FOUND));
+                .willThrow(new NoticeNotFoundException());
 
         // when
         ResultActions perform = mockMvc.perform(get("/api/notice/{notIdx}", notIdx)
@@ -248,7 +325,8 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("해당 공지사항이 존재하지 않습니다."));
+                .andExpect(jsonPath("errorCode").value("N0001"))
+                .andExpect(jsonPath("errorMessage").value("해당하는 공지사항을 찾을 수 없습니다."));
 
         verify(noticeService, times(1))
                 .getNoticeDetail(any(NoticeDetailRequestDto.class));
@@ -256,12 +334,10 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("비 활성화 된 공지사항에 접근할 경우 예외가 발생한다.")
-    public void read_readDisableDetail_Exception() throws Exception {
+    void read_readDisableDetail_Exception() throws Exception {
         // given
-        Long notIdx = 1L;
-
         given(noticeService.getNoticeDetail(any(NoticeDetailRequestDto.class)))
-                .willThrow(new ApplicationException(INACTIVE_NOTICE));
+                .willThrow(new NoticeInactiveException());
 
         // when
         ResultActions perform = mockMvc.perform(get("/api/notice/{notIdx}", notIdx)
@@ -270,7 +346,8 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("비활성 처리 된 공지사항입니다."));
+                .andExpect(jsonPath("errorCode").value("N0002"))
+                .andExpect(jsonPath("errorMessage").value("비활성 처리 된 공지사항입니다."));
 
         verify(noticeService, times(1))
                 .getNoticeDetail(any(NoticeDetailRequestDto.class));
@@ -278,17 +355,11 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("공지사항의 작성자는 공지사항을 수정할 수 있다.")
-    public void modify_modifyNotice_Success() throws Exception {
+    void modify_modifyNotice_Success() throws Exception {
         // given
-        User user = UserFactory.user();
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
-
-        NoticeResponseDto noticeResponseDto = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(notIdx, user, notTitle, notContents, true));
+        NoticeResponseDto noticeResponseDto = NoticeFactory.mockNoticeResponseDto(NoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true));
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willReturn(noticeResponseDto);
@@ -311,18 +382,12 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 공지사항에 수정 요청할 경우 예외가 발생한다.")
-    public void modify_modifyNotExistNotice_Exception() throws Exception {
+    void modify_modifyNotExistNotice_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(NOTICE_NOT_FOUND));
+                .willThrow(new NoticeNotFoundException());
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -332,7 +397,8 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("해당 공지사항이 존재하지 않습니다."));
+                .andExpect(jsonPath("errorCode").value("N0001"))
+                .andExpect(jsonPath("errorMessage").value("해당하는 공지사항을 찾을 수 없습니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -340,18 +406,12 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("비 활성화 된 공지사항을 수정할 경우 예외가 발생한다.")
-    public void modify_modifyDisableNotice_Exception() throws Exception {
+    void modify_modifyDisableNotice_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(INACTIVE_NOTICE));
+                .willThrow(new NoticeInactiveException());
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -361,7 +421,8 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("비활성 처리 된 공지사항입니다."));
+                .andExpect(jsonPath("errorCode").value("N0002"))
+                .andExpect(jsonPath("errorMessage").value("비활성 처리 된 공지사항입니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -369,18 +430,12 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("존재하지 않는 사용자가 공지사항 수정 요청할 경우 예외가 발생한다.")
-    public void modify_modifyNotExistUser_Exception() throws Exception {
+    void modify_modifyNotExistUser_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(USER_NOT_FOUND));
+                .willThrow(new UserNotFoundException());
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -390,7 +445,8 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("해당 유저 정보를 찾을 수 없습니다."));
+                .andExpect(jsonPath("errorCode").value("U0001"))
+                .andExpect(jsonPath("errorMessage").value("해당하는 사용자를 찾을 수 없습니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -398,18 +454,12 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("공지사항 수정 시 요청자와 작정자가 다를 경우 예외가 발생한다.")
-    public void modify_modifyDifferentAuthor_Exception() throws Exception {
+    void modify_modifyDifferentAuthor_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(INVALID_AUTH_USER));
+                .willThrow(new UserUnAuthorizedException());
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -419,25 +469,39 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("권한이 없는 유저입니다."));
+                .andExpect(jsonPath("errorCode").value("U0002"))
+                .andExpect(jsonPath("errorMessage").value("권한이 없는 사용자입니다."));
 
         verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 제목이 제한을 초과하면 예외가 발생한다.")
+    void modify_modifyMaximumLengthOverTitle_Exception() throws Exception {
+        // given
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle.repeat(10), notContents);
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorCode").value("F0004"))
+                .andExpect(jsonPath("errorMessage").value("notTitle - 제한길이를 초과하였습니다."));
+
+        verify(noticeService, never())
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
     }
 
     @Test
     @DisplayName("공지사항 수정 시 제목이 널이면 예외가 발생한다.")
-    public void modify_modifyNotExistTitle_Exception() throws Exception {
+    void modify_modifyNotExistTitle_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, null, notContents);
-
-        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(NULL_TITLE));
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, null, notContents);
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -447,25 +511,21 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("제목이 널일 수 없습니다."));
+                .andExpect(jsonPath("errorCode").value("F0001"))
+                .andExpect(jsonPath("errorMessage").value("notTitle - 널이어서는 안됩니다."));
 
-        verify(noticeService, times(1))
+        verify(noticeService, never())
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
     }
 
     @Test
     @DisplayName("공지사항 수정 시 제목이 공백이면 예외가 발생한다.")
-    public void modify_modifyEmptyTitle_Exception() throws Exception {
+    void modify_modifyEmptyTitle_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notContents = "Test Notice Modified Contents";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, null, notContents);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, "", notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(EMPTY_TITLE));
+                .willThrow(new NoticeTitleEmptyException());
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -475,25 +535,39 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("제목이 공백일 수 없습니다."));
+                .andExpect(jsonPath("errorCode").value("N1003"))
+                .andExpect(jsonPath("errorMessage").value("공지사항의 제목이 공백이어서는 안됩니다."));
 
         verify(noticeService, times(1))
+                .modifyNotice(any(NoticeUpdateRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("공지사항 수정 시 내용이 제한을 초과하면 예외가 발생한다.")
+    void modify_modifyMaximumLengthOverContents_Exception() throws Exception {
+        // given
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents.repeat(1000));
+
+        // when
+        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+
+        // then
+        perform.andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorCode").value("F0004"))
+                .andExpect(jsonPath("errorMessage").value("notContents - 제한길이를 초과하였습니다."));
+
+        verify(noticeService, never())
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
     }
 
     @Test
     @DisplayName("공지사항 수정 시 내용이 널이면 예외가 발생한다.")
-    public void modify_modifyNotExistContents_Exception() throws Exception {
+    void modify_modifyNotExistContents_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, null);
-
-        given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(NULL_CONTENTS));
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, null);
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -503,25 +577,21 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("내용이 널일 수 없습니다."));
+                .andExpect(jsonPath("errorCode").value("F0001"))
+                .andExpect(jsonPath("errorMessage").value("notContents - 널이어서는 안됩니다."));
 
-        verify(noticeService, times(1))
+        verify(noticeService, never())
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
     }
 
     @Test
     @DisplayName("공지사항 수정 시 내용이 공백이면 예외가 발생한다.")
-    public void modify_modifyEmptyContents_Exception() throws Exception {
+    void modify_modifyEmptyContents_Exception() throws Exception {
         // given
-        User user = UserFactory.user();
-
-        Long notIdx = 1L;
-        String notTitle = "Test Notice Modified Title";
-
-        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(user.getUserEmail(), notIdx, notTitle, null);
+        NoticeUpdateRequest request = NoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, "");
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
-                .willThrow(new ApplicationException(EMPTY_CONTENTS));
+                .willThrow(new NoticeContentsEmptyException());
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -531,7 +601,8 @@ public class NoticeControllerTest {
 
         // then
         perform.andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("message").value("내용이 공백일 수 없습니다."));
+                .andExpect(jsonPath("errorCode").value("N1006"))
+                .andExpect(jsonPath("errorMessage").value("공지사항의 내용이 공백이어서는 안됩니다."));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -539,24 +610,20 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("공지사항의 작성자는 공지사항을 비활성화할 수 있다.")
-    public void disable_disableAuthorMe_Success() throws Exception {
+    void disable_disableAuthorMe_Success() throws Exception {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
         willDoNothing()
                 .given(noticeService)
                 .disableNotice(any(NoticeBasicRequestDto.class));
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/disable/{notIdx}", notIdx)
-                .param("userEmail", user.getUserEmail())
+                .param("userEmail", author.getUserEmail())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("code").value("NOTICE_DISABLE_SUCCESS"));
+        perform.andExpect(status().isNoContent());
 
         verify(noticeService, times(1))
                 .disableNotice(any(NoticeBasicRequestDto.class));
@@ -564,24 +631,20 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("공지사항의 작성자는 공지사항을 활성화할 수 있다.")
-    public void enable_enableAuthorMe_Success() throws Exception {
+    void enable_enableAuthorMe_Success() throws Exception {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
         willDoNothing()
                 .given(noticeService)
                 .enableNotice(any(NoticeBasicRequestDto.class));
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/enable/{notIdx}", notIdx)
-                .param("userEmail", user.getUserEmail())
+                .param("userEmail", author.getUserEmail())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("code").value("NOTICE_ENABLE_SUCCESS"));
+        perform.andExpect(status().isNoContent());
 
         verify(noticeService, times(1))
                 .enableNotice(any(NoticeBasicRequestDto.class));
@@ -589,27 +652,22 @@ public class NoticeControllerTest {
 
     @Test
     @DisplayName("사용자는 공지사항을 삭제한다.")
-    public void delete_deleteAuthorMe_Success() throws Exception {
+    void delete_deleteAuthorMe_Success() throws Exception {
         // given
-        Long notIdx = 1L;
-        User user = UserFactory.user();
-
         willDoNothing()
                 .given(noticeService)
                 .removeNotice(any(NoticeBasicRequestDto.class));
 
         // when
-        ResultActions perform = mockMvc.perform(delete("/api/notice/remove/{notIdx}", notIdx)
-                .param("userEmail", user.getUserEmail())
+        ResultActions perform = mockMvc.perform(delete("/api/notice/{notIdx}", notIdx)
+                .param("userEmail", author.getUserEmail())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(jsonPath("code").value("NOTICE_REMOVE_SUCCESS"));
+        perform.andExpect(status().isNoContent());
 
         verify(noticeService, times(1))
                 .removeNotice(any(NoticeBasicRequestDto.class));
     }
-
 }

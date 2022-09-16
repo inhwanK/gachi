@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.deco.gachicoding.post.PostResponseDto;
 import org.deco.gachicoding.file.dto.response.FileResponseDto;
 import org.deco.gachicoding.tag.dto.response.TagResponseDto;
+import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,32 +14,32 @@ import java.util.List;
 public class BoardResponseDto implements PostResponseDto {
 
     private Long boardIdx;
-    private String authorEmail;
-    private String authorNick;
+    private User author;
 
     private String boardTitle;
     private String boardContents;
     private String boardCategory;
     private Long boardViews;
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    private Boolean boardLocked;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 //    private List<FileResponseDto> files;
-    private List<TagResponseDto> tags;
+//    private List<TagResponseDto> tags;
 
     @Builder
-    public BoardResponseDto(Long boardIdx, String authorEmail, String authorNick, String boardTitle, String boardContents, String boardCategory, Long boardViews, LocalDateTime createAt, LocalDateTime updateAt) {
+    public BoardResponseDto(Long boardIdx, User author, String boardTitle, String boardContents, String boardCategory, Long boardViews, Boolean boardLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.boardIdx = boardIdx;
 
-        this.authorEmail = authorEmail;
-        this.authorNick = authorNick;
+        this.author = author;
 
         this.boardTitle = boardTitle;
         this.boardContents = boardContents;
         this.boardCategory = boardCategory;
         this.boardViews = boardViews;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
+        this.boardLocked = boardLocked;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     @Override
@@ -48,6 +49,6 @@ public class BoardResponseDto implements PostResponseDto {
 
     @Override
     public void setTags(List<TagResponseDto> tags) {
-        this.tags = tags;
+//        this.tags = tags;
     }
 }

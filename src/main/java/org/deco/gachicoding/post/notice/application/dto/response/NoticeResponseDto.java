@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 
 @Getter
 public class NoticeResponseDto {
-    private Long notIdx;
 
+    private Long notIdx;
     private User author;
 
     private String notTitle;

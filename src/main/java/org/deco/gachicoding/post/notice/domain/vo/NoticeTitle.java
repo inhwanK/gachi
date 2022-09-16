@@ -1,14 +1,11 @@
 package org.deco.gachicoding.post.notice.domain.vo;
 
-import org.deco.gachicoding.exception.ApplicationException;
 import org.deco.gachicoding.exception.post.notice.NoticeTitleEmptyException;
 import org.deco.gachicoding.exception.post.notice.NoticeTitleFormatException;
 import org.deco.gachicoding.exception.post.notice.NoticeTitleNullException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 @Embeddable
 public class NoticeTitle {

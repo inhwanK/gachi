@@ -2,7 +2,8 @@ package org.deco.gachicoding.unit.post.notice.domain;
 
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
-import org.deco.gachicoding.exception.ApplicationException;
+import org.deco.gachicoding.exception.post.notice.*;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
@@ -10,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.deco.gachicoding.exception.StatusEnum.*;
 
 public class NoticeTest {
 
@@ -37,9 +37,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(MAXIMUM_LENGTH_OVER_TITLE);
+                .isInstanceOf(NoticeTitleFormatException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 길이 제한을 초과하였습니다.");
     }
 
     @Test
@@ -51,9 +51,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, null, notContents, true))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NULL_TITLE);
+                .isInstanceOf(NoticeTitleNullException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 널이어서는 안됩니다.");
     }
 
     @Test
@@ -65,9 +65,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, "", notContents, true))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(EMPTY_TITLE);
+                .isInstanceOf(NoticeTitleEmptyException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 제목이 공백이어서는 안됩니다.");
     }
 
     @Test
@@ -93,9 +93,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(MAXIMUM_LENGTH_OVER_CONTENTS);
+                .isInstanceOf(NoticeContentsFormatException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 길이 제한을 초과하였습니다.");
     }
 
     @Test
@@ -107,9 +107,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, null, true))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(NULL_CONTENTS);
+                .isInstanceOf(NoticeContentsNullException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 널이어서는 안됩니다.");
     }
 
     @Test
@@ -121,9 +121,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, "", true))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(EMPTY_CONTENTS);
+                .isInstanceOf(NoticeContentsEmptyException.class)
+                .extracting("message")
+                .isEqualTo("공지사항의 내용이 공백이어서는 안됩니다.");
     }
 
     @Test
@@ -150,9 +150,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> notice.hasSameAuthor(user))
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(INVALID_AUTH_USER);
+                .isInstanceOf(UserUnAuthorizedException.class)
+                .extracting("message")
+                .isEqualTo("권한이 없는 사용자입니다.");
     }
 
     @Test
@@ -178,9 +178,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> notice.disableNotice())
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(ALREADY_INACTIVE);
+                .isInstanceOf(NoticeAlreadyInactiveException.class)
+                .extracting("message")
+                .isEqualTo("이미 비활성화 된 공지사항 입니다.");
     }
 
     @Test
@@ -207,9 +207,9 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> notice.enableNotice())
-                .isInstanceOf(ApplicationException.class)
-                .extracting("statusEnum")
-                .isEqualTo(ALREADY_ACTIVE);
+                .isInstanceOf(NoticeAlreadyActiveException.class)
+                .extracting("message")
+                .isEqualTo("이미 활성화 된 공지사항 입니다.");
     }
 
     @Test

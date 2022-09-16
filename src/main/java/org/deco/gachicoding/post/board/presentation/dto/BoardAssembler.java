@@ -27,8 +27,8 @@ public class BoardAssembler {
                 .userEmail(request.getUserEmail())
                 .boardTitle(request.getBoardTitle())
                 .boardContents(request.getBoardContent())
+                .boardCategory(request.getBoardCategory())
 //                .boardContents(request.getBoardContents())
-//                .boardCategory(request.getBoardCategory())
                 .build();
     }
 
@@ -48,13 +48,13 @@ public class BoardAssembler {
     public static BoardResponse boardResponse(BoardResponseDto dto) {
         return BoardResponse.builder()
                 .boardIdx(dto.getBoardIdx())
-                .authorEmail(dto.getAuthorEmail())
-                .authorNick(dto.getAuthorNick())
+                .authorEmail(dto.getAuthor().getUserEmail())
+                .authorNick(dto.getAuthor().getUserNick())
                 .boardTitle(dto.getBoardTitle())
                 .boardContents(dto.getBoardContents())
                 .boardViews(dto.getBoardViews())
-                .createAt(dto.getCreateAt())
-                .updateAt(dto.getUpdateAt())
+                .createAt(dto.getCreatedAt())
+                .updateAt(dto.getUpdatedAt())
                 .build();
     }
 
@@ -85,13 +85,13 @@ public class BoardAssembler {
     private static Function<BoardResponseDto, BoardResponse> boardResponse() {
         return boardResponseDto -> BoardResponse.builder()
                 .boardIdx(boardResponseDto.getBoardIdx())
-                .authorEmail(boardResponseDto.getAuthorEmail())
-                .authorNick(boardResponseDto.getAuthorNick())
+                .authorEmail(boardResponseDto.getAuthor().getUserEmail())
+                .authorNick(boardResponseDto.getAuthor().getUserNick())
                 .boardTitle(boardResponseDto.getBoardTitle())
                 .boardContents(boardResponseDto.getBoardContents())
                 .boardViews(boardResponseDto.getBoardViews())
-                .createAt(boardResponseDto.getCreateAt())
-                .updateAt(boardResponseDto.getUpdateAt())
+                .createAt(boardResponseDto.getCreatedAt())
+                .updateAt(boardResponseDto.getUpdatedAt())
                 .build();
     }
 

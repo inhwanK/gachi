@@ -14,10 +14,10 @@ public class NoticeNotFoundException extends PostException {
     }
 
     private NoticeNotFoundException(
-            String ERROR_CODE,
-            HttpStatus HTTP_STATUS,
-            String MESSAGE
+            String errorCode,
+            HttpStatus httpStatus,
+            String message
     ) {
-        super(ERROR_CODE, HTTP_STATUS, MESSAGE);
+        super(errorCode, httpStatus, message);
     }
 }

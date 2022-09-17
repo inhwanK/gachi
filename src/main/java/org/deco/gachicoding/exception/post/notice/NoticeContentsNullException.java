@@ -16,8 +16,8 @@ public class NoticeContentsNullException extends PostException {
     private NoticeContentsNullException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

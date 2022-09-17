@@ -16,8 +16,8 @@ public class NoticeAlreadyInactiveException extends PostException {
     private NoticeAlreadyInactiveException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

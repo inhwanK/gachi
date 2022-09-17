@@ -16,8 +16,8 @@ public class BoardTitleFormatException extends PostException {
     private BoardTitleFormatException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

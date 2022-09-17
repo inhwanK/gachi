@@ -77,11 +77,6 @@ public class UserAuthenticationServiceTest {
                 .userPassword("1234")
                 .build();
 
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(user.getUserRole().toString()));
-        UserDetails expectedUserDetails = new UserAuthenticationDto(user, roles);
-
-        String userEmail = user.getUserEmail();
         given(userRepository.findByUserEmail("invalid Username"))
                 .willThrow(new UsernameNotFoundException("Invalid Username"));
 

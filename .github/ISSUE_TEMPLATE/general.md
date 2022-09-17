@@ -1,9 +1,7 @@
 ---
 name: general
-
 about: 일반적으로 사용하는 이슈 템플릿
 title: ''
-
 labels: ''
 assignees: ''
 
@@ -12,3 +10,6 @@ assignees: ''
 ## 개요
 
 ## 체크 리스트
+- [ ]
+
+## 참고 자료

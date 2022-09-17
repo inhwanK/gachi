@@ -63,3 +63,16 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+//processResources.dependsOn('copyPrivate')
+tasks.compileJava.doLast {
+    tasks.copyPrivate.execute()
+}
+
+task copyPrivate(type: Copy) {
+    copy {
+        from './gachicoding-config'
+        include "*.yml"
+        into 'src/main/resources'
+    }
+}

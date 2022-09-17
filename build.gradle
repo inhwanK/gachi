@@ -64,9 +64,14 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
-processResources.dependsOn('copyConfig')
+processResources.dependsOn('copyMainConfig', 'copyTestConfig')
 
-task copyConfig(type: Copy) {
-    from '../gachicoding-config/application.yml'
+task copyMainConfig(type: Copy) {
+    from '../gachicoding-config/main/application.yml'
     into './src/main/resources'
+}
+
+task copyTestConfig(type: Copy) {
+    from '../gachicoding-config/test/application.yml'
+    into './src/test/resources'
 }

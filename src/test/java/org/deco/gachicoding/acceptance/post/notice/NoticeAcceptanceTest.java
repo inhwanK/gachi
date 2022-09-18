@@ -94,7 +94,7 @@ public class NoticeAcceptanceTest extends BaseAcceptanceTest {
     }
 
     @Test
-    @DisplayName("제목이 널이면 공지사항을 등록할 수 없다.")
+    @DisplayName("제목이 널이면 공지사항을 등록할 수 없다")
     public void writeNullTitle_Exception() throws Exception {
         // given
         NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(

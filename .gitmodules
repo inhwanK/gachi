@@ -1,0 +1,3 @@
+[submodule "gachicoding-config"]
+	path = gachicoding-config
+	url = https://github.com/inhwanK/gachicoding-config.git

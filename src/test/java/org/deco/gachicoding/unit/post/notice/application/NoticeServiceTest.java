@@ -5,7 +5,6 @@ import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
-import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.application.NoticeService;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;

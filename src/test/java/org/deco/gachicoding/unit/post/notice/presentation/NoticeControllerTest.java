@@ -250,7 +250,7 @@ public class NoticeControllerTest {
 
         // when
         ResultActions perform = mockMvc.perform(get("/api/notice/list")
-                .param("page", "1")
+                .param("page", "0")
                 .param("size", "10")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -274,7 +274,7 @@ public class NoticeControllerTest {
 
         // when
         ResultActions perform = mockMvc.perform(get("/api/notice/list")
-                .param("page", "1")
+                .param("page", "0")
                 .param("size", "10")
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));

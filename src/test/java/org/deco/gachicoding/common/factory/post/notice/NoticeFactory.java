@@ -13,6 +13,11 @@ public class NoticeFactory {
     private NoticeFactory() {}
 
     /* Notice Object start */
+    public static Notice mockNotice(User author) {
+        return MockNotice.builder()
+                .author(author)
+                .build();
+    }
     public static Notice mockNotice(
             Long notIdx,
             User author,

@@ -21,6 +21,10 @@
 * aws - ec2, rds, s3
 * swagger2
 
+## 컨벤션
+- [Commit Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/commit_convention.md)
+- [Issue Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/issue_convention.md)
+
 ## ERD
 ![](document/erd.png)
 

@@ -16,8 +16,8 @@ public class BoardContentsFormatException extends PostException {
     private BoardContentsFormatException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

@@ -16,8 +16,8 @@ public class BoardAlreadyActiveException extends PostException {
     private BoardAlreadyActiveException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

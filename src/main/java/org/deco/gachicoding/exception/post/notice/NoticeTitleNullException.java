@@ -16,8 +16,8 @@ public class NoticeTitleNullException extends PostException {
     private NoticeTitleNullException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

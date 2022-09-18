@@ -1,11 +1,10 @@
 ---
-name: general
+name: feature_template
 
-about: 일반적으로 사용하는 이슈 템플릿
+about: feature 이슈에 사용되는 이슈 탬플릿
 title: '[브랜치이름] 이슈'
 
-labels: ''
-assignees: ''
+labels: '개발'
 
 ---
 

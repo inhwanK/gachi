@@ -1,5 +1,7 @@
 package org.deco.gachicoding.config;
 
+import org.deco.gachicoding.config.handler.FileValidArgumentResolver;
+import org.deco.gachicoding.file.presentation.dto.request.FileValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
@@ -55,6 +57,13 @@ public class WebConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
+        argumentResolvers.add(new FileValidArgumentResolver(createFileValidators()));
         super.addArgumentResolvers(argumentResolvers);
+    }
+
+    private List<FileValidator> createFileValidators() {
+        return List.of(
+                new FileValidator()
+        );
     }
 }

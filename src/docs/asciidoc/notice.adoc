@@ -1,0 +1,10 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+== Notice
+=== 공지사항 작성 (로그인)
+==== Request
+include::{snippets}/post/notice/save-success/http-request.adoc[]
+==== Response
+include::{snippets}/post/notice/save-success/http-response.adoc[]

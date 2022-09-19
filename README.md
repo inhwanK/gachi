@@ -24,6 +24,7 @@
 ## 컨벤션
 - [Commit Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/commit_convention.md)
 - [Issue Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/issue_convention.md)
+- [PR Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/pull_request_convention.md)
 
 ## ERD
 ![](document/erd.png)

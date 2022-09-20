@@ -38,9 +38,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입", notes = "회원가입 수행")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "회원가입 완료")
-    )
+    @ApiResponse(code = 200, message = "회원가입 완료")
     @PostMapping("/user/create")
     public Long registerUser(
             @ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보")

@@ -17,7 +17,7 @@
 # 3. 범위 (Scope)
 
 커밋을 통해 수정된 범위를 기재해주세요. 작게는 클래스명, 넓개는 패키지부터 도메인 영역까지 기재할 수 있습니다.
-- ex) Docs(document), Test(NoticeService), Feat(Notice)
+- ex) `Docs(document), Test(NoticeService), Feat(Notice)`
 
 # 4. 주의 사항
 

@@ -41,11 +41,10 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.*;
-import static org.springframework.restdocs.headers.HeaderDocumentation.*;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -80,7 +79,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
             })
 @MockBean(JpaMetamodelMappingContext.class)     // jpaAuditingHandler
 @WithMockUser
-@AutoConfigureRestDocs(uriScheme = "https", uriHost = "docs.api.com")
+@AutoConfigureRestDocs
 public class NoticeControllerTest {
 
     @Autowired
@@ -121,7 +120,7 @@ public class NoticeControllerTest {
                 .registerNotice(any(NoticeSaveRequestDto.class));
 
         // documentation
-        perform.andDo(document("post/notice/save/success",
+        perform.andDo(document("post/notice/save-success",
                 getDocumentRequest(),
                 getDocumentResponse(),
                 requestFields(

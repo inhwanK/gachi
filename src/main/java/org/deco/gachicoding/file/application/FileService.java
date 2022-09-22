@@ -3,17 +3,20 @@ package org.deco.gachicoding.file.application;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.auth.InstanceProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.file.domain.File;
 import org.deco.gachicoding.file.domain.repository.FileRepository;
 import org.deco.gachicoding.file.dto.FileResponse;
 import org.deco.gachicoding.file.dto.response.FileResponseDto;
 import org.deco.gachicoding.file.dto.request.FileSaveRequestDto;
+import org.deco.gachicoding.file.infrastructure.FileNameGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,8 +41,9 @@ import java.util.regex.Pattern;
 // 리팩토링1 @Autowired -> @RequiredArgsConstructor
 @Slf4j
 @Service
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class FileService {
+
         @Autowired
         private FileRepository fileRepository;
         
@@ -53,56 +57,32 @@ public class FileService {
 //        private final static String absolutePath = new File("").getAbsolutePath() + "\\";
 //        private final static Path path = Path.of(absolutePath + tempRoot);
 
-        private AmazonS3 s3Client;
+        private final FileNameGenerator fileNameGenerator;
 
-        @Value("${cloud.aws.credentials.accessKey}")
-        private String accessKey;
-
-        @Value("${cloud.aws.credentials.secretKey}")
-        private String secretKey;
+        private final AmazonS3 s3Client;
 
         @Value("${cloud.aws.s3.bucket}")
         private String bucket;
-
-        @Value("${cloud.aws.region.static}")
-        private String region;
-
-        @PostConstruct
-        public void setS3Client() {
-                AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-
-                s3Client = AmazonS3ClientBuilder.standard()
-                        .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                        .withRegion(this.region)
-                        .build();
-
-//                try {
-//                        if (!Files.exists(path)) {
-//                                Files.createDirectories(path);
-//                        }
-//                } catch (IOException e) {
-//                        e.printStackTrace();
-//                }
-        }
 
         public List<String> uploadTempImg(List<MultipartFile> files) throws IOException {
                 List<String> result = new ArrayList<>();
 
                 // 저장 경로 바꿔야 함 (날짜도 추가)
                 for(MultipartFile f : files) {
-                        String origFileName = null;
-                        String saveFileName = null;
-                        String filePath = null;
-
-                        System.out.println("f : "+f.getOriginalFilename());
-                        // 파일 정보 추출 (이걸 dto 생성 시 바로 해버리면?)
-                        origFileName = f.getOriginalFilename();
-                        // 경로에 userId 추가
-                        saveFileName = "temp/" + UUID.randomUUID() + "_" + origFileName;
-
-                        filePath = putS3(f, saveFileName);
-
-                        result.add(filePath);
+                        fileNameGenerator.generate(f, "gachicoding1@naver.com");
+//                        String origFileName = null;
+//                        String saveFileName = null;
+//                        String filePath = null;
+//
+//                        System.out.println("f : "+f.getOriginalFilename());
+//                        // 파일 정보 추출 (이걸 dto 생성 시 바로 해버리면?)
+//                        origFileName = f.getOriginalFilename();
+//                        // 경로에 userId 추가
+//                        saveFileName = "temp/" + UUID.randomUUID() + "_" + origFileName;
+//
+//                        filePath = putS3(f, saveFileName);
+//
+//                        result.add(filePath);
                 }
                 return result;
         }

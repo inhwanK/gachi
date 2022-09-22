@@ -27,7 +27,7 @@ public class RestFileController {
 
         System.out.println(request.getFiles().get(0).getOriginalFilename());
 
-        return null;
-//        return fileService.uploadTempImg(files);
+//        return null;
+        return fileService.uploadTempImg(request.getFiles());
     }
 }

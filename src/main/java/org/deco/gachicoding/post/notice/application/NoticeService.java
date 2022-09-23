@@ -47,20 +47,19 @@ public class NoticeService {
         Notice notice = noticeRepository.save(createNotice(dto));
 
         // 에러에 취약 할까?
-//        Long notIdx = notice.getNotIdx();
-//        String notContent = notice.getNotContent();
+        Long notIdx = notice.getNotIdx();
+        String notContent = notice.getNotContents();
 
 //        if (!dto.isNullTags())
 //            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
 //
-//        try {
-//            notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Notice Content");
-//            e.printStackTrace();
-//            // throw해줘야 Advice에서 예외를 감지 함
-//            throw e;
-//        }
+        try {
+            fileService.extractImgSrc(notIdx, notContent, NOTICE);
+        } catch (Exception e) {
+            log.error("Failed To Extract {} File", "Notice Content");
+            e.printStackTrace();
+            // throw해줘야 Advice에서 예외를 감지 함
+        }
 
         return notice.getNotIdx();
     }

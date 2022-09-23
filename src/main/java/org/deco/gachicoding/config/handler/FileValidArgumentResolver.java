@@ -1,10 +1,9 @@
 package org.deco.gachicoding.config.handler;
 
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.file.domain.File;
 import org.deco.gachicoding.file.presentation.dto.request.FileSaveRequest;
-import org.deco.gachicoding.file.presentation.dto.request.FileValid;
-import org.deco.gachicoding.file.presentation.dto.request.FileValidator;
+import org.deco.gachicoding.file.presentation.dto.request.ImageFileValid;
+import org.deco.gachicoding.file.presentation.dto.request.ImageFileValidator;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -23,11 +22,11 @@ public class FileValidArgumentResolver implements HandlerMethodArgumentResolver 
     private static final String FILE_NAME = "files";
     private static final String USER_EMAIL = "userEmail";
 
-    private final List<FileValidator> fileValidators;
+    private final List<ImageFileValidator> fileValidators;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(FileValid.class);
+        return parameter.hasParameterAnnotation(ImageFileValid.class);
     }
 
     @Override
@@ -40,14 +39,14 @@ public class FileValidArgumentResolver implements HandlerMethodArgumentResolver 
         MultipartHttpServletRequest multipartHttpServletRequest = getMultipartHttpServletRequest(webRequest);
 
         List<MultipartFile> files = multipartHttpServletRequest.getFiles(FILE_NAME);
-        files.forEach(this::validateIsRightFile);
+        files.forEach(this::imageFileValidationCheck);
 
         String userEmail = (String) multipartHttpServletRequest.getAttribute(USER_EMAIL);
 
         return new FileSaveRequest(userEmail, files);
     }
 
-    private void validateIsRightFile(MultipartFile multipartFile) {
+    private void imageFileValidationCheck(MultipartFile multipartFile) {
         fileValidators.forEach(fileValidator -> fileValidator.execute(multipartFile));
     }
 

@@ -1,12 +1,10 @@
 package org.deco.gachicoding.config;
 
 import org.deco.gachicoding.config.handler.FileValidArgumentResolver;
-import org.deco.gachicoding.file.presentation.dto.request.FileValidator;
+import org.deco.gachicoding.file.presentation.dto.request.ImageFileValidator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -61,9 +59,9 @@ public class WebConfig extends WebMvcConfigurationSupport {
         super.addArgumentResolvers(argumentResolvers);
     }
 
-    private List<FileValidator> createFileValidators() {
+    private List<ImageFileValidator> createFileValidators() {
         return List.of(
-                new FileValidator()
+                new ImageFileValidator()
         );
     }
 }

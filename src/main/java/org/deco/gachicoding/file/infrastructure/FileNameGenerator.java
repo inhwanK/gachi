@@ -14,26 +14,23 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Component
 public class FileNameGenerator {
 
     private static final Tika tika = new Tika();
 
-    public String generate(MultipartFile multipartFile, String userEmail) {
-        String generate = md5(multipartFile, userEmail) + extension(multipartFile);
-        System.out.println("generate : " + generate);
+//    public String generate(MultipartFile multipartFile) {
+////        String generate = md5(multipartFile, userEmail) + extension(multipartFile);
+//
+//        return uuid(multipartFile) + extension(multipartFile);
+//    }
 
-        return generate;
-//        return md5(multipartFile, userEmail) + extension(multipartFile);
-    }
-
-    private static String md5(MultipartFile multipartFile, String userEmail) {
+    public static String md5(String fileName) {
         try {
-            final String fileName = multipartFile.getOriginalFilename();
-
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            messageDigest.update((fileName + userEmail + LocalDateTime.now())
+            messageDigest.update((fileName + LocalDateTime.now())
                     .getBytes(StandardCharsets.UTF_8));
             return Hex.encodeHexString(messageDigest.digest());
         } catch (NoSuchAlgorithmException e) {
@@ -42,6 +39,14 @@ public class FileNameGenerator {
         }
     }
 
+    public static String uuid(MultipartFile multipartFile) {
+        String fileName = multipartFile.getOriginalFilename();
+        String uuid = UUID.randomUUID().toString();
+
+        return uuid+"_"+fileName;
+    }
+
+    // 변조 확인으로 바꾸자
     private String extension(MultipartFile multipartFile) {
         MimeTypes defaultMimeTypes = MimeTypes.getDefaultMimeTypes();
         try {

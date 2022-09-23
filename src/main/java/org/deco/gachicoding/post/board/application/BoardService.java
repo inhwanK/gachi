@@ -31,26 +31,26 @@ public class BoardService {
 
     String BOARD = "BOARD";
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Long registerBoard(BoardSaveRequestDto dto) {
         Board board = boardRepository.save(createBoard(dto));
 
-//        Long boardIdx = board.getBoardIdx();
-//        String boardContent = board.getBoardContents().getBoardContents();
+        Long boardIdx = board.getBoardIdx();
+        String boardContent = board.getBoardContents();
 
 //        if (dto.getTags() != null)
 //            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
 
-//        try {
-//            board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, BOARD));
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Board Content");
-//            e.printStackTrace();
+        try {
+            fileService.extractImgSrc(boardIdx, boardContent, BOARD);
+        } catch (Exception e) {
+            log.error("Failed To Extract {} File", "Board Content");
+            e.printStackTrace();
 //            removeBoard(boardIdx);
-//            tagService.removeBoardTags(boardIdx, BOARD);
-//            // throw해줘야 Advice에서 예외를 감지 함
+            tagService.removeBoardTags(boardIdx, BOARD);
+            // throw해줘야 Advice에서 예외를 감지 함
 //            throw e;
-//        }
+        }
 
         return board.getBoardIdx();
     }

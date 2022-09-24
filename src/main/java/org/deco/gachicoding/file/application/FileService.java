@@ -1,40 +1,16 @@
 package org.deco.gachicoding.file.application;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.file.UploadFailureException;
 import org.deco.gachicoding.file.domain.File;
 import org.deco.gachicoding.file.domain.repository.FileRepository;
-import org.deco.gachicoding.file.application.dto.FileResponse;
-import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
-import org.deco.gachicoding.file.application.dto.request.FileSaveRequestDto;
-import org.deco.gachicoding.file.infrastructure.FileNameGenerator;
-import org.deco.gachicoding.file.presentation.dto.request.FileSaveRequest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @Service
@@ -47,9 +23,6 @@ public class FileService {
 
         @Value("${cloud.aws.s3.url}")
         private String s3Url;
-
-        @Value("${cloud.aws.s3.temp.dir}")
-        private String tempDir;
 
         @Transactional
         public void registerFile(File file) {
@@ -80,9 +53,12 @@ public class FileService {
 
         public void extractImgSrc(Long idx, String content, String category) throws IOException {
                 // 정규 표현식 공부하자
+                System.out.println("111");
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
+
                 Matcher matcher = nonValidPattern.matcher(content);
+                System.out.println("222");
 
                 while (matcher.find()) {
                         String beforeImg = matcher.group(1);
@@ -100,15 +76,15 @@ public class FileService {
 
                 log.info("path : " + path);
 
-                String tamperingFileName = path.replace(s3Url+tempDir, "");
+                String tamperingFileName = path.replace(s3Url, "");
 
                 log.info("tamperingFileName : " + tamperingFileName);
 
-                File file = FileDtoAssembler.file(idx, category, tamperingFileName);
+                File file = FileAssembler.file(idx, category, tamperingFileName);
 
                 registerFile(file);
 
-                String oldPath = tempDir+tamperingFileName;
+                String oldPath = tamperingFileName;
                 String newPath = file.getFilePath();
 
                 log.info("oldPath : " + oldPath);

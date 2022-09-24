@@ -3,38 +3,31 @@ package org.deco.gachicoding.file.application;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.file.domain.File;
 import org.deco.gachicoding.file.infrastructure.FileNameGenerator;
-import org.deco.gachicoding.post.board.application.dto.request.BoardSaveRequestDto;
-import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
-import org.deco.gachicoding.post.board.domain.Board;
-import org.deco.gachicoding.user.domain.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 @Slf4j
 @Component
-public class FileDtoAssembler {
+public class FileAssembler {
+
+    private static String tempDir;
 
     private static String s3Format;
-
-    private static String s3Url;
 
     @Value("${cloud.aws.s3.url.format}")
     public void setS3Format(String s3Format) {
         this.s3Format = s3Format;
     }
 
-    @Value("${cloud.aws.s3.url}")
-    public void setS3Url(String s3Url) {
-        this.s3Url = s3Url;
+    @Value("${cloud.aws.s3.temp.dir}")
+    public void setTempDir(String tempDir) {
+        this.tempDir = tempDir;
     }
 
-    private FileDtoAssembler() {}
+    private FileAssembler() {}
 
     public static File file(Long articleIdx, String articleCategory, String temporaryFileName) {
+        temporaryFileName = temporaryFileName.replace(tempDir, "");
         String saveFileName = FileNameGenerator.md5(temporaryFileName) + getOriginFileExtension(temporaryFileName);
 
         log.info("articleIdx : " + articleIdx);

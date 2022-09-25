@@ -2,8 +2,8 @@ package org.deco.gachicoding.post.board.application.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
 import org.deco.gachicoding.post.PostResponseDto;
-import org.deco.gachicoding.file.dto.response.FileResponseDto;
 import org.deco.gachicoding.tag.dto.response.TagResponseDto;
 import org.deco.gachicoding.user.domain.User;
 

@@ -12,18 +12,12 @@ import java.util.List;
 public class FileSaveRequest {
 
     @NotNull(message = "F0001")
-    @Email(message = "F0002")
-    @ApiModelProperty(value = "작성자 아이디", required = true, example = "Swagger@swagger.com")
-    private String userEmail;
-
-    @NotNull(message = "F0001")
     @ApiModelProperty(value = "파일 리스트", required = true, example = "example.img")
     private List<MultipartFile> files;
 
     private FileSaveRequest() {}
 
-    public FileSaveRequest(String userEmail, List<MultipartFile> files) {
-        this.userEmail = userEmail;
+    public FileSaveRequest(List<MultipartFile> files) {
         this.files = files;
     }
 }

@@ -20,7 +20,6 @@ import java.util.Objects;
 public class FileValidArgumentResolver implements HandlerMethodArgumentResolver {
 
     private static final String FILE_NAME = "files";
-    private static final String USER_EMAIL = "userEmail";
 
     private final List<ImageFileValidator> fileValidators;
 
@@ -41,9 +40,7 @@ public class FileValidArgumentResolver implements HandlerMethodArgumentResolver 
         List<MultipartFile> files = multipartHttpServletRequest.getFiles(FILE_NAME);
         files.forEach(this::imageFileValidationCheck);
 
-        String userEmail = (String) multipartHttpServletRequest.getAttribute(USER_EMAIL);
-
-        return new FileSaveRequest(userEmail, files);
+        return new FileSaveRequest(files);
     }
 
     private void imageFileValidationCheck(MultipartFile multipartFile) {

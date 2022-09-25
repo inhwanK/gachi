@@ -32,7 +32,6 @@ public class S3Service {
 
     public List<FileResponseDto> uploadStorage(FileSaveRequest request) throws IOException {
         List<MultipartFile> multipartFiles = request.getFiles();
-        String userEmail = request.getUserEmail();
 
         return multipartFiles.stream()
                 .map(multipartFile -> upload(

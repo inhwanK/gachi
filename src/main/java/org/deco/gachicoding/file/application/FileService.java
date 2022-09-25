@@ -26,16 +26,7 @@ public class FileService {
 
         @Transactional
         public void registerFile(File file) {
-                // Uncheck Exception 발생 가능
-                // 어떤 식으로 로그를 남길 수 있을까?
-                try {
-                        fileRepository.save(file);
-                        log.info("Success Save File");
-                        // 구체적인 익셉션?
-                } catch (Exception e) {
-                        log.info("Error Save File");
-                        e.printStackTrace();
-                }
+                fileRepository.save(file);
         }
 
 //        @Transactional
@@ -53,12 +44,10 @@ public class FileService {
 
         public void extractImgSrc(Long idx, String content, String category) throws IOException {
                 // 정규 표현식 공부하자
-                System.out.println("111");
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
 
                 Matcher matcher = nonValidPattern.matcher(content);
-                System.out.println("222");
 
                 while (matcher.find()) {
                         String beforeImg = matcher.group(1);

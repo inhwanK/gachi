@@ -5,7 +5,8 @@ import org.apache.tika.Tika;
 import org.apache.tika.mime.MimeType;
 import org.apache.tika.mime.MimeTypeException;
 import org.apache.tika.mime.MimeTypes;
-import org.deco.gachicoding.exception.file.UploadFailureException;
+import org.deco.gachicoding.exception.file.FileExtensionException;
+import org.deco.gachicoding.exception.file.HashFailureException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,8 +35,7 @@ public class FileNameGenerator {
                     .getBytes(StandardCharsets.UTF_8));
             return Hex.encodeHexString(messageDigest.digest());
         } catch (NoSuchAlgorithmException e) {
-            throw new UploadFailureException();
-//            throw new HashFailureException();
+            throw new HashFailureException();
         }
     }
 
@@ -55,8 +55,7 @@ public class FileNameGenerator {
             );
             return mimeType.getExtension();
         } catch (MimeTypeException | IOException e) {
-            throw new UploadFailureException();
-//            throw new FileExtensionException();
+            throw new FileExtensionException();
         }
     }
 }

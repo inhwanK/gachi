@@ -1,9 +1,12 @@
 package org.deco.gachicoding.file.application;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
+import org.deco.gachicoding.exception.file.S3CopyException;
 import org.deco.gachicoding.exception.file.UploadFailureException;
+import org.deco.gachicoding.exception.file.UtfDecodingException;
 import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
 import org.deco.gachicoding.file.infrastructure.FileNameGenerator;
 import org.deco.gachicoding.file.presentation.dto.request.FileSaveRequest;
@@ -49,7 +52,6 @@ public class S3Service {
 
             return new FileResponseDto(multipartFile.getOriginalFilename(), getS3Url(path));
         } catch (Exception e) {
-            e.printStackTrace();
             throw new UploadFailureException();
         }
     }
@@ -88,9 +90,13 @@ public class S3Service {
     }
 
     private String copyS3(String oldPath, String newPath) {
-        s3Client.copyObject(bucket, oldPath, bucket, newPath);
+        try {
+            s3Client.copyObject(bucket, oldPath, bucket, newPath);
 
-        return getS3Url(newPath);
+            return getS3Url(newPath);
+        } catch (Exception/*AmazonS3Exception*/ e) {
+            throw new S3CopyException();
+        }
     }
 
     private String getS3Url(String filePath) {
@@ -99,7 +105,7 @@ public class S3Service {
             return URLDecoder.decode(s3Client.getUrl(bucket, filePath).toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
             //디코딩 실패 예외로 바꾸기
-            throw new UploadFailureException();
+            throw new UtfDecodingException();
         }
     }
 

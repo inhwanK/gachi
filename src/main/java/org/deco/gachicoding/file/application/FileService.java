@@ -42,7 +42,8 @@ public class FileService {
 //                return dto;
 //        }
 
-        public void extractImgSrc(Long idx, String content, String category) throws IOException {
+        @Transactional
+        public String extractImgSrc(Long idx, String content, String category) {
                 // 정규 표현식 공부하자
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
@@ -57,8 +58,14 @@ public class FileService {
                         // File DB에 업로드
                         // content 리플레이스
                         String afterImg = uploadRealImg(idx, beforeImg, category);
-                        content.replace(beforeImg, afterImg);
+
+                        log.info("beforeImg = " + beforeImg);
+                        log.info("afterImg = " + afterImg);
+                        content = content.replace(beforeImg, afterImg);
+                        log.info(content);
                 }
+
+                return content;
         }
 
         private String uploadRealImg(Long idx, String path, String category) {

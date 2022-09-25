@@ -4,7 +4,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 

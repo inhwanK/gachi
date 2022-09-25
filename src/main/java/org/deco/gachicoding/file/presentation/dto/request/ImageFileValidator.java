@@ -1,7 +1,7 @@
 package org.deco.gachicoding.file.presentation.dto.request;
 
 import org.apache.tika.Tika;
-import org.deco.gachicoding.exception.file.UploadFailureException;
+import org.deco.gachicoding.exception.file.FileExtensionException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -14,10 +14,10 @@ public class ImageFileValidator {
         try{
             String MIMEType = tika.detect(multipartFile.getInputStream());
             if (!MIMEType.startsWith(MIME_TYPE)) {
-                throw new UploadFailureException();
+                throw new FileExtensionException();
             }
         } catch (IOException e) {
-            throw new UploadFailureException();
+            throw new FileExtensionException();
         }
     }
 }

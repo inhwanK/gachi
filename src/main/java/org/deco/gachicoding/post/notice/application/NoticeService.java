@@ -52,14 +52,18 @@ public class NoticeService {
 
 //        if (!dto.isNullTags())
 //            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
-//
-        try {
-            fileService.extractImgSrc(notIdx, notContent, NOTICE);
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Notice Content");
-            e.printStackTrace();
-            // throw해줘야 Advice에서 예외를 감지 함
-        }
+
+        // updateContent 부분을 extractImgSrc안으로 옮기자
+        // 그러기 위해선 post 엔티티들을 계층타입으로 묶는
+        // Post.interface가 있어야 할듯 => updateContent 메서드를 가지는 추상 클래스로 만들면 좋을듯
+        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
+
+//        try {
+//        } catch (Exception e) {
+//            log.error("Failed To Extract {} File", "Notice Content");
+//            e.printStackTrace();
+//            // throw해줘야 Advice에서 예외를 감지 함
+//        }
 
         return notice.getNotIdx();
     }

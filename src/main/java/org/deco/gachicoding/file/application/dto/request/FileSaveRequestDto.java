@@ -1,4 +1,4 @@
-package org.deco.gachicoding.file.dto.request;
+package org.deco.gachicoding.file.application.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

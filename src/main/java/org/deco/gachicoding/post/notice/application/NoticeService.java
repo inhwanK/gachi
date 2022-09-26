@@ -47,19 +47,22 @@ public class NoticeService {
         Notice notice = noticeRepository.save(createNotice(dto));
 
         // 에러에 취약 할까?
-//        Long notIdx = notice.getNotIdx();
-//        String notContent = notice.getNotContent();
+        Long notIdx = notice.getNotIdx();
+        String notContent = notice.getNotContents();
 
 //        if (!dto.isNullTags())
 //            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
-//
+
+        // updateContent 부분을 extractImgSrc안으로 옮기자
+        // 그러기 위해선 post 엔티티들을 계층타입으로 묶는
+        // Post.interface가 있어야 할듯 => updateContent 메서드를 가지는 추상 클래스로 만들면 좋을듯
+        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
+
 //        try {
-//            notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
 //        } catch (Exception e) {
 //            log.error("Failed To Extract {} File", "Notice Content");
 //            e.printStackTrace();
 //            // throw해줘야 Advice에서 예외를 감지 함
-//            throw e;
 //        }
 
         return notice.getNotIdx();

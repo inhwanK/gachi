@@ -1,7 +1,6 @@
 package org.deco.gachicoding.unit.post.notice.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.http.client.methods.HttpHead;
 import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.config.SecurityConfig;

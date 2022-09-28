@@ -41,16 +41,16 @@ public class BoardService {
 //        if (dto.getTags() != null)
 //            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
 
-        try {
-            fileService.extractImgSrc(boardIdx, boardContent, BOARD);
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Board Content");
-            e.printStackTrace();
-//            removeBoard(boardIdx);
-            tagService.removeBoardTags(boardIdx, BOARD);
-            // throw해줘야 Advice에서 예외를 감지 함
-//            throw e;
-        }
+//        try {
+//            fileService.extractImgSrc(boardIdx, boardContent, BOARD);
+//        } catch (Exception e) {
+//            log.error("Failed To Extract {} File", "Board Content");
+//            e.printStackTrace();
+////            removeBoard(boardIdx);
+//            tagService.removeBoardTags(boardIdx, BOARD);
+//            // throw해줘야 Advice에서 예외를 감지 함
+////            throw e;
+//        }
 
         return board.getBoardIdx();
     }

@@ -83,6 +83,7 @@ public class UserControllerTest {
                 .andExpect(content().string("false"));
     }
 
+    @DisplayName("회원가입을 성공한다.")
     @Test
     void registerUser_Success() throws Exception {
 
@@ -104,6 +105,48 @@ public class UserControllerTest {
                 .andExpect(status().isOk());
          */
         fail("미완성");
+    }
 
+    @DisplayName("회원가입을 실패한다.")
+    @Test
+    void registerUser_Fail() {
+        fail("미구현");
+    }
+
+    @DisplayName("사용자 정보를 일괄적으로 수정한다.")
+    @Test
+    void updateUser_Success() {
+        fail("미구현");
+    }
+
+    // 이 메소드 이름 변경되어야함.
+    @DisplayName("비밀번호를 입력받아 올바른 사용자인지 확인 성공한다.")
+    @Test
+    void confirmUser_Success() {
+        fail("미구현");
+    }
+
+    @DisplayName("비밀번호를 입력받아 올바른 사용자인지 확인 실패한다.")
+    @Test
+    void confirmUser_Fail() {
+        fail("미구현");
+    }
+
+    @DisplayName("사용자 비밀번호를 변경 성공한다.")
+    @Test
+    void updateUserPassword_Success() {
+        fail("미구현");
+    }
+
+    @DisplayName("사용자 비밀번호를 변경 실패한다.")
+    @Test
+    void updateUserPassword_Fail() {
+        fail("미구현");
+    }
+
+    @DisplayName("사용자를 삭제한다.")
+    @Test
+    void deleteUser_Success() {
+        fail("미구현");
     }
 }

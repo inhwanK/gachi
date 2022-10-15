@@ -12,7 +12,11 @@ public class CommentNotFoundException extends CommentException {
         this(ERROR_CODE, HTTP_STATUS, MESSAGE);
     }
 
-    private CommentNotFoundException(String errorCode, HttpStatus httpStatus, String message) {
+    private CommentNotFoundException(
+            String errorCode,
+            HttpStatus httpStatus,
+            String message
+    ) {
         super(errorCode, httpStatus, message);
     }
 }

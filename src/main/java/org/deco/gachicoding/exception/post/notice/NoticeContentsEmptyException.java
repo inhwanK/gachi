@@ -16,8 +16,8 @@ public class NoticeContentsEmptyException extends PostException {
     private NoticeContentsEmptyException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

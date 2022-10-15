@@ -17,7 +17,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-/test/resources/application.properties
+/test/resources/application-test.properties
 /main/resources/tempImg
 
 application.properties

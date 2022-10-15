@@ -16,8 +16,8 @@ public class NoticeContentsFormatException extends PostException {
     private NoticeContentsFormatException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

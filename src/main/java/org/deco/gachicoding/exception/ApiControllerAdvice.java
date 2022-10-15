@@ -23,7 +23,6 @@ public class ApiControllerAdvice {
     public ResponseEntity<ExceptionResponse> handleValidationExceptions(
             MethodArgumentNotValidException e
     ) {
-
         String field = e.getFieldError().getField();
         String errorCode = e.getFieldError().getDefaultMessage();
 
@@ -38,11 +37,6 @@ public class ApiControllerAdvice {
                 errorMessage
         );
 
-//        Map<String, String> errors = new HashMap<>();
-//        e.getBindingResult().getAllErrors()
-//                .forEach(c -> errors.put(((FieldError) c).getField(), c.getDefaultMessage()));
-
-//        return ResponseEntity.badRequest().body(errors);
         return ExceptionResponse.toResponseEntity(
                 new ApplicationException(
                         errorCode,

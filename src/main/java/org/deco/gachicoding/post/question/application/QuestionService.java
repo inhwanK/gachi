@@ -46,8 +46,8 @@ public class QuestionService {
             tagService.registerBoardTag(queIdx, dto.getTags(), BOARD_TYPE);
 
         try {
-            question.updateContent(fileService.extractImgSrc(queIdx, queContent, BOARD_TYPE));
-            question.updateError(fileService.extractImgSrc(queIdx, queError, BOARD_TYPE));
+//            question.updateContent(fileService.extractImgSrc(queIdx, queContent, BOARD_TYPE));
+//            question.updateError(fileService.extractImgSrc(queIdx, queError, BOARD_TYPE));
             log.info("Success Upload Question Idx : {}", queIdx);
         } catch (Exception e) {
             log.error("Failed To Extract {} File", "Question Content");

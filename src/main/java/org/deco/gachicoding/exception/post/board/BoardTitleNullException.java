@@ -16,8 +16,8 @@ public class BoardTitleNullException extends PostException {
     private BoardTitleNullException(
             String errorCode,
             HttpStatus httpStatus,
-            String Message
+            String message
     ) {
-        super(errorCode, httpStatus, Message);
+        super(errorCode, httpStatus, message);
     }
 }

@@ -12,7 +12,6 @@ import javax.persistence.Id;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
 @DynamicInsert
 @Getter
 @NoArgsConstructor

@@ -26,9 +26,7 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-
     @ApiOperation(value = "아이디 중복 체크", notes = "아이디로 사용할 이메일의 중복 체크")
-    @ApiImplicitParam(name = "email", value = "중복체크 이메일", required = true)
     @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     @GetMapping("/user/regist/check-email")
     public Boolean checkEmail(
@@ -40,9 +38,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입", notes = "회원가입 수행")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "회원가입 완료")
-    )
+    @ApiResponse(code = 200, message = "회원가입 완료")
     @PostMapping("/user/create")
     public Long registerUser(
             @ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보")

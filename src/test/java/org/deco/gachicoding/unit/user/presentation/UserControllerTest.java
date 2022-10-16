@@ -47,7 +47,7 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    @DisplayName("회원가입시 존재하지 않는 이메일을 입력받았을 경우 true를 반환한다.")
+    @DisplayName("존재하지 않는 이메일의 경우 true를 반환한다.")
     @Test
     void checkEmail_Return_True() throws Exception {
 
@@ -65,7 +65,7 @@ public class UserControllerTest {
                 .andExpect(content().string("true"));
     }
 
-    @DisplayName("회원가입시 이미 존재하는 이메일을 입력받았을 경우 false를 반환한다.")
+    @DisplayName("존재하는 이메일의 경우 false를 반환한다.")
     @Test
     void checkEmail_Return_False() throws Exception {
 

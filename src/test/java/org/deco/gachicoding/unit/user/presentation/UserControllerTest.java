@@ -7,6 +7,7 @@ import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
 import org.deco.gachicoding.user.presentation.UserController;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -26,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 // 참고 자료 : https://brunch.co.kr/@springboot/418
 // 컨트롤러 테스트에서 데이터의 유효성, API의 반환값에 대한 검증 테스트를 진행한다.
@@ -62,7 +65,8 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
-                .andExpect(content().string("true"));
+                .andExpect(content().string("true"))
+                .andDo(print());
     }
 
     @DisplayName("존재하는 이메일의 경우 false를 반환한다.")
@@ -80,7 +84,8 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 // then
                 .andExpect(status().isOk())
-                .andExpect(content().string("false"));
+                .andExpect(content().string("false"))
+                .andDo(print());
     }
 
     @DisplayName("회원가입을 성공한다.")
@@ -98,19 +103,13 @@ public class UserControllerTest {
 
         ObjectMapper mapper = new ObjectMapper();
 
-        /*
-        mockMvc.perform(post("/api/user/create")
-                        .param(mapper.write,mapper.writeValueAsString(dto))
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-         */
-        fail("미완성");
-    }
 
-    @DisplayName("회원가입을 실패한다.")
-    @Test
-    void registerUser_Fail() {
-        fail("미구현");
+        mockMvc.perform(post("/api/user/create")
+                        .with(csrf())
+                        .content(mapper.writeValueAsBytes(dto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @DisplayName("사용자 정보를 일괄적으로 수정한다.")

@@ -6,7 +6,6 @@ import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,16 +38,16 @@ public class UserService {
     }
 
     @Transactional
-    public Long updateUser(
+    public String modifyNickname(
             String userEmail,
-            UserUpdateRequestDto dto
+            String newNickname
     ) {
         User user = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        user.update(dto.getUserNick(), dto.isUserEnabled());
+        user.updateNick(newNickname);
 
-        return user.getUserIdx();
+        return user.getUserNick();
     }
 
     @Transactional

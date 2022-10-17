@@ -7,7 +7,6 @@ import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -51,15 +50,17 @@ public class UserController {
     @ApiOperation(value = "유저 일괄적으로 수정", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
     @ApiResponse(code = 200, message = "사용자 수정 완료")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping("/user/update")
-    public Long updateUser(
-            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보")
-            @RequestBody UserUpdateRequestDto dto
+    @PatchMapping("/user/update-nickname")
+    public ResponseEntity<String> updateUser(
+            @ApiParam(value = "변경할 닉네임")
+            @RequestParam("newNickname") @NotBlank String newNickname
     ) {
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String modifiedNickname = userService.modifyNickname(userEmail, newNickname);
 
-        return userService.updateUser(userEmail, dto);
+        return ResponseEntity.ok(modifiedNickname);
+
     }
 
     @ApiOperation(value = "유저 확인", notes = "유저 정보 수정 전에 확인하는 api")

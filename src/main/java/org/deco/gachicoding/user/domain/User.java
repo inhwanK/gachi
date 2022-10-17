@@ -51,15 +51,6 @@ public class User {
     private RoleType userRole;
 
     @Builder
-    public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userEnabled) {
-        this.userIdx = userIdx;
-        this.userName = userName;
-        this.userNick = userNick;
-        this.userEmail = userEmail;
-        this.userPassword = userPassword;
-        this.userEnabled = userEnabled;
-    }
-
     public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userEnabled, LocalDateTime userCreatedAt, RoleType userRole) {
         this.userIdx = userIdx;
         this.userName = userName;
@@ -71,9 +62,8 @@ public class User {
         this.userRole = userRole;
     }
 
-    public User update(String userNick, boolean userEnabled) {
+    public User updateNick(String userNick) {
         this.userNick = userNick;
-        this.userEnabled = userEnabled;
         return this;
     }
 

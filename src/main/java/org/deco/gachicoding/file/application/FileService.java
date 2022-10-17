@@ -21,7 +21,7 @@ public class FileService {
 
         private final S3Service s3Service;
 
-        @Value("${cloud.aws.s3.url}")
+        @Value("${cloud.aws.s3.url.baseUrl}")
         private String s3Url;
 
         @Transactional

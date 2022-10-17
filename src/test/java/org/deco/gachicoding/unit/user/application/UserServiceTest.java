@@ -6,7 +6,6 @@ import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -164,26 +163,26 @@ public class UserServiceTest {
                 .hasMessageContaining("이전과 동일");
     }
 
-    @DisplayName("회원 정보를 일괄적으로 수정한다.")
+    @DisplayName("회원의 닉네임을 수정한다.")
     @Test
-    void updateUser_Success() {
+    void updateUserNickname_Success() {
 
         // given
         User expectedUser = MockUser.builder()
                 .userEmail("1234@1234.com")
                 .userName("InHwan")
-                .userNick("nani")
+                .userNick("nani_inaning")
                 .userPassword("1234")
                 .userEnabled(true)
                 .build();
 
-        UserUpdateRequestDto dto = new UserUpdateRequestDto("nani", true, true);
+        String newNickname = "nani_inaning";
 
         given(userRepository.findByUserEmail(user.getUserEmail()))
                 .willReturn(Optional.of(user));
 
         // when
-        userService.updateUser("1234@1234.com", dto);
+        userService.modifyNickname("1234@1234.com", newNickname);
 
         // then
         assertThat(user)

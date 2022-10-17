@@ -3,37 +3,47 @@ package org.deco.gachicoding.unit.user.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.config.SecurityConfig;
+import org.deco.gachicoding.config.security.RestAuthenticationToken;
 import org.deco.gachicoding.user.application.UserService;
+import org.deco.gachicoding.user.domain.RoleType;
+import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
+import org.deco.gachicoding.user.dto.request.authentication.UserAuthenticationDto;
 import org.deco.gachicoding.user.presentation.UserController;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.ResultActions;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 // 참고 자료 : https://brunch.co.kr/@springboot/418
 // 컨트롤러 테스트에서 데이터의 유효성, API의 반환값에 대한 검증 테스트를 진행한다.
 //@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UserController.class,
+        excludeAutoConfiguration = SecurityAutoConfiguration.class,
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
         })
@@ -105,17 +115,47 @@ public class UserControllerTest {
 
 
         mockMvc.perform(post("/api/user/create")
-                        .with(csrf())
                         .content(mapper.writeValueAsBytes(dto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
 
-    @DisplayName("사용자 정보를 일괄적으로 수정한다.")
+    @DisplayName("로그인한 사용자는 자신의 별명을 수정할 수 있다.")
     @Test
-    void updateUser_Success() {
-        fail("미구현");
+    void updateUser_Success() throws Exception {
+
+        // given
+        User user = User.builder()
+                .userEmail("1234@1234.com")
+                .userName("김인환")
+                .userNick("이나닝")
+                .userPassword("1234")
+                .userRole(RoleType.ROLE_USER)
+                .build();
+
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(RoleType.ROLE_USER.toString()));
+
+        UserDetails userDetails = new UserAuthenticationDto(user, roles);
+        Authentication token = new RestAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(token);
+
+        String newNickname = "nani_inaning";
+
+        given(userService.modifyNickname("1234@1234.com", newNickname))
+                .willReturn("nani_inaning");
+
+        // when
+        ResultActions perform = mockMvc.perform(patch("/api/user/update-nickname")
+                .param("newNickname", newNickname)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        perform
+                .andExpect(status().isOk())
+                .andExpect(content().string("nani_inaning"))
+                .andDo(print());
     }
 
     // 이 메소드 이름 변경되어야함.

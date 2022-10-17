@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.post.board.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.deco.gachicoding.common.factory.board.BoardFactory;
+import org.deco.gachicoding.common.factory.post.board.BoardFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.config.SecurityConfig;
 import org.deco.gachicoding.exception.post.board.*;

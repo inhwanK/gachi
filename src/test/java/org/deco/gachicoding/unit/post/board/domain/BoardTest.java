@@ -1,13 +1,10 @@
 package org.deco.gachicoding.unit.post.board.domain;
 
-import org.deco.gachicoding.common.factory.board.BoardFactory;
-import org.deco.gachicoding.common.factory.post.notice.NoticeFactory;
+import org.deco.gachicoding.common.factory.post.board.BoardFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.exception.post.board.*;
-import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.domain.Board;
-import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

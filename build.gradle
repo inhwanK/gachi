@@ -103,11 +103,11 @@ task copyDocument(type: Copy) {
 processResources.dependsOn('copyMainConfig', 'copyTestConfig')
 
 task copyMainConfig(type: Copy) {
-    from '../gachicoding-config/main/application.yml'
+    from './gachicoding-config/main/application.yml'
     into './src/main/resources'
 }
 
 task copyTestConfig(type: Copy) {
-    from '../gachicoding-config/test/application.yml'
+    from './gachicoding-config/test/application.yml'
     into './src/test/resources'
 }

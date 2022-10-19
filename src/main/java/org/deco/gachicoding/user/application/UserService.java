@@ -52,13 +52,10 @@ public class UserService {
 
     @Transactional
     public boolean confirmUser(
-            String userEmail,
+            String confirmPassword,
             String userPassword
     ) {
-        User user = userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        if (!passwordEncoder.matches(userPassword, user.getUserPassword())) {
+        if (!passwordEncoder.matches(confirmPassword, userPassword)) {
             return false;
         }
 

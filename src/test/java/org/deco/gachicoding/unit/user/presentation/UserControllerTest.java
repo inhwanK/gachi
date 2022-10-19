@@ -21,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -158,26 +159,80 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    // 이 메소드 이름 변경되어야함.
-    @DisplayName("비밀번호를 입력받아 올바른 사용자인지 확인 성공한다.")
+    @DisplayName("올바른 비밀번호를 입력받아 올바른 사용자임을 확인한다.")
     @Test
-    void confirmUser_Success() {
-        fail("미구현");
+    void confirmUser_Success() throws Exception {
+        // given
+        User user = User.builder()
+                .userEmail("1234@1234.com")
+                .userName("김인환")
+                .userNick("이나닝")
+                .userPassword("1234")
+                .userRole(RoleType.ROLE_USER)
+                .build();
+
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(RoleType.ROLE_USER.toString()));
+
+        UserDetails userDetails = new UserAuthenticationDto(user, roles);
+        Authentication token = new RestAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(token);
+
+        given(userService.confirmUser("1234", user.getUserPassword()))
+                .willReturn(true);
+
+        // when
+        ResultActions perform = mockMvc.perform(get("/api/user/confirm")
+                .param("confirmPassword", "1234")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        perform
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 
-    @DisplayName("비밀번호를 입력받아 올바른 사용자인지 확인 실패한다.")
+    @DisplayName("잘못된 비밀번호를 입력받아 올바른 사용자가 아님을 확인한다.")
     @Test
-    void confirmUser_Fail() {
-        fail("미구현");
+    void confirmUser_Fail() throws Exception {
+
+        // given
+        User user = User.builder()
+                .userEmail("1234@1234.com")
+                .userName("김인환")
+                .userNick("이나닝")
+                .userPassword("1234")
+                .userRole(RoleType.ROLE_USER)
+                .build();
+
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(RoleType.ROLE_USER.toString()));
+
+        UserDetails userDetails = new UserAuthenticationDto(user, roles);
+        Authentication token = new RestAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(token);
+
+        given(userService.confirmUser("12345", user.getUserPassword()))
+                .willReturn(false);
+
+        // when
+        ResultActions perform = mockMvc.perform(get("/api/user/confirm")
+                .param("confirmPassword", "12345")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        perform
+                .andExpect(status().isBadRequest())
+                .andDo(print());
     }
 
-    @DisplayName("사용자 비밀번호를 변경 성공한다.")
+    @DisplayName("사용자 비밀번호 변경이 성공한다.")
     @Test
     void updateUserPassword_Success() {
         fail("미구현");
     }
 
-    @DisplayName("사용자 비밀번호를 변경 실패한다.")
+    @DisplayName("사용자 비밀번호 변경이 실패한다.")
     @Test
     void updateUserPassword_Fail() {
         fail("미구현");

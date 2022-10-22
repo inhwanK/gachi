@@ -3,13 +3,10 @@ package org.deco.gachicoding.unit.user.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.config.SecurityConfig;
-import org.deco.gachicoding.config.security.RestAuthenticationToken;
 import org.deco.gachicoding.user.application.UserService;
-import org.deco.gachicoding.user.domain.RoleType;
-import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.dto.request.authentication.UserAuthenticationDto;
 import org.deco.gachicoding.user.presentation.UserController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,24 +18,17 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.BDDMockito.eq;
+import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // 참고 자료 : https://brunch.co.kr/@springboot/418
 // 컨트롤러 테스트에서 데이터의 유효성, API의 반환값에 대한 검증 테스트를 진행한다.
@@ -49,7 +39,6 @@ import static org.mockito.BDDMockito.*;
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
         })
 @MockBean(JpaMetamodelMappingContext.class)     // jpaAuditingHandler
-@WithMockUser
 public class UserControllerTest {
 
     @Autowired
@@ -124,27 +113,13 @@ public class UserControllerTest {
 
     @DisplayName("로그인한 사용자는 자신의 별명을 수정할 수 있다.")
     @Test
+    @WithMockUser(username = "1234@1234.com")
     void updateUser_Success() throws Exception {
 
         // given
-        User user = User.builder()
-                .userEmail("1234@1234.com")
-                .userName("김인환")
-                .userNick("이나닝")
-                .userPassword("1234")
-                .userRole(RoleType.ROLE_USER)
-                .build();
-
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(RoleType.ROLE_USER.toString()));
-
-        UserDetails userDetails = new UserAuthenticationDto(user, roles);
-        Authentication token = new RestAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(token);
-
         String newNickname = "nani_inaning";
 
-        given(userService.modifyNickname("1234@1234.com", newNickname))
+        given(userService.modifyNickname(eq("1234@1234.com"), eq(newNickname)))
                 .willReturn("nani_inaning");
 
         // when
@@ -161,24 +136,10 @@ public class UserControllerTest {
 
     @DisplayName("올바른 비밀번호를 입력받아 올바른 사용자임을 확인한다.")
     @Test
+    @WithMockUser(password = "1234")
     void confirmUser_Success() throws Exception {
         // given
-        User user = User.builder()
-                .userEmail("1234@1234.com")
-                .userName("김인환")
-                .userNick("이나닝")
-                .userPassword("1234")
-                .userRole(RoleType.ROLE_USER)
-                .build();
-
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(RoleType.ROLE_USER.toString()));
-
-        UserDetails userDetails = new UserAuthenticationDto(user, roles);
-        Authentication token = new RestAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(token);
-
-        given(userService.confirmUser("1234", user.getUserPassword()))
+        given(userService.confirmUser(eq("1234"), eq("1234")))
                 .willReturn(true);
 
         // when
@@ -194,25 +155,11 @@ public class UserControllerTest {
 
     @DisplayName("잘못된 비밀번호를 입력받았을 시 올바른 사용자가 아님을 확인한다.")
     @Test
+    @WithMockUser(password = "1234")
     void confirmUser_Fail() throws Exception {
 
         // given
-        User user = User.builder()
-                .userEmail("1234@1234.com")
-                .userName("김인환")
-                .userNick("이나닝")
-                .userPassword("1234")
-                .userRole(RoleType.ROLE_USER)
-                .build();
-
-        List<GrantedAuthority> roles = new ArrayList<>();
-        roles.add(new SimpleGrantedAuthority(RoleType.ROLE_USER.toString()));
-
-        UserDetails userDetails = new UserAuthenticationDto(user, roles);
-        Authentication token = new RestAuthenticationToken(userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(token);
-
-        given(userService.confirmUser("12345", user.getUserPassword()))
+        given(userService.confirmUser(eq("12345"), eq("1234")))
                 .willReturn(false);
 
         // when
@@ -228,13 +175,46 @@ public class UserControllerTest {
 
     @DisplayName("사용자 비밀번호 변경이 성공한다.")
     @Test
-    void updateUserPassword_Success() {
-        fail("미구현");
+    @WithMockUser(username = "1234@1234.com", password = "1234")
+    void updateUserPassword_Success() throws Exception {
+        // given
+        PasswordUpdateRequestDto dto =
+                new PasswordUpdateRequestDto("12345", "12345");
+
+        given(userService.changeUserPassword(eq("1234@1234.com"), eq(dto)))
+                .willReturn(1L);
+
+        // when
+        ResultActions perform = mockMvc.perform(patch("/api/user/change-password")
+                .content(new ObjectMapper().writeValueAsBytes(dto))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        perform
+                .andExpect(status().isOk())
+                .andDo(print());
     }
 
     @DisplayName("사용자 비밀번호 변경이 실패한다.")
     @Test
-    void updateUserPassword_Fail() {
+    @WithMockUser(username = "1234@1234.com", password = "1234")
+    void updateUserPassword_Fail() throws Exception {
+        // given
+        PasswordUpdateRequestDto dto =
+                new PasswordUpdateRequestDto("1234", "1234");
+
+        given(userService.changeUserPassword(eq("1234@1234.com"), eq(dto)))
+                .willThrow(new IllegalArgumentException("비밀번호가 이전과 동일합니다."));
+
+        // when
+        ResultActions perform = mockMvc.perform(patch("/api/user/change-password")
+                .content(new ObjectMapper().writeValueAsBytes(dto))
+                .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        perform
+                .andExpect(status().isOk())
+                .andDo(print());
         fail("미구현");
     }
 
@@ -243,4 +223,5 @@ public class UserControllerTest {
     void deleteUser_Success() {
         fail("미구현");
     }
+
 }

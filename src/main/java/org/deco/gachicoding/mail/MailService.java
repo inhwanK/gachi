@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.emailconfirm.domain.EmailConfirmToken;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class MailService {
 
     private static final String DOMAIN_URL = "http://localhost:8080";
-    private final JavaMailSender mailSender;
+    private final JavaMailSender mailSender = new JavaMailSenderImpl();
 
     public void sendConfirmToken(String receiver, UUID tokenId) {
 

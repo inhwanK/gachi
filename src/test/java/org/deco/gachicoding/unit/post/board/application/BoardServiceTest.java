@@ -1,6 +1,6 @@
 package org.deco.gachicoding.unit.post.board.application;
 
-import org.deco.gachicoding.common.factory.board.BoardFactory;
+import org.deco.gachicoding.common.factory.post.board.BoardFactory;
 import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.exception.post.board.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;

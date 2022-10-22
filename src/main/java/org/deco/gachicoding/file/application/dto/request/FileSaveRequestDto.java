@@ -37,7 +37,6 @@ public class FileSaveRequestDto {
                 .originFilename(originFilename)
                 .saveFilename(saveFilename)
                 .fileExt(fileExt)
-                .fileSize(fileSize)
                 .filePath(filePath)
                 .build();
     }

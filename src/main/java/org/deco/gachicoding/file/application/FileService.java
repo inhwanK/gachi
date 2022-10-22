@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.file.domain.File;
 import org.deco.gachicoding.file.domain.repository.FileRepository;
+import org.deco.gachicoding.file.infrastructure.S3Service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +21,7 @@ public class FileService {
 
         private final S3Service s3Service;
 
-        @Value("${cloud.aws.s3.url}")
+        @Value("${cloud.aws.s3.url.baseUrl}")
         private String s3Url;
 
         @Transactional

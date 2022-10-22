@@ -3,7 +3,7 @@ package org.deco.gachicoding.file.presentation;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.file.application.FileService;
-import org.deco.gachicoding.file.application.S3Service;
+import org.deco.gachicoding.file.infrastructure.S3Service;
 import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
 import org.deco.gachicoding.file.presentation.dto.request.FileSaveRequest;
 import org.deco.gachicoding.file.presentation.dto.request.ImageFileValid;

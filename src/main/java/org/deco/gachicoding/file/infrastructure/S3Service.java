@@ -1,4 +1,4 @@
-package org.deco.gachicoding.file.application;
+package org.deco.gachicoding.file.infrastructure;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;

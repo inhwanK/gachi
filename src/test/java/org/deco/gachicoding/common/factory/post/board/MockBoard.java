@@ -1,4 +1,4 @@
-package org.deco.gachicoding.common.factory.board;
+package org.deco.gachicoding.common.factory.post.board;
 
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;

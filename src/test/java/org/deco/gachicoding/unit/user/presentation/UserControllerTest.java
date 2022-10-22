@@ -192,7 +192,7 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("잘못된 비밀번호를 입력받아 올바른 사용자가 아님을 확인한다.")
+    @DisplayName("잘못된 비밀번호를 입력받았을 시 올바른 사용자가 아님을 확인한다.")
     @Test
     void confirmUser_Fail() throws Exception {
 

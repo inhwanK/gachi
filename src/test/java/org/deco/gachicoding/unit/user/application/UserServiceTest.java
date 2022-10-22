@@ -95,11 +95,11 @@ public class UserServiceTest {
     void confirmUser_Success_Return_True() {
 
         // given
-        given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
+//        given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
         given(passwordEncoder.matches(eq("1234"), anyString())).willReturn(true);
 
         // when
-        boolean expected = userService.confirmUser("1234@1234.com", "1234");
+        boolean expected = userService.confirmUser("1234", "1234");
 
         // then
         assertThat(expected).isTrue();
@@ -110,11 +110,10 @@ public class UserServiceTest {
     void confirmUser_Success_Return_False() {
 
         // given
-        given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
         given(passwordEncoder.matches(eq("12345"), anyString())).willReturn(false);
 
         // when
-        boolean expected = userService.confirmUser("1234@1234.com", "12345");
+        boolean expected = userService.confirmUser("12345", "12345");
 
         // then
         assertThat(expected).isFalse();

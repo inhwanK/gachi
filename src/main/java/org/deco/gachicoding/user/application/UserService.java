@@ -64,18 +64,19 @@ public class UserService {
     }
 
     @Transactional
-    public Long changeUserPassword(
+    public Long modifyUserPassword(
             String userEmail,
             PasswordUpdateRequestDto dto
     ) {
+
         User user = userRepository.findByUserEmail(userEmail).get();
 
         if (passwordEncoder.matches(dto.getConfirmPassword(), user.getUserPassword())) {
-            throw new InvalidPasswordUpdateException("비밀번호가 이전과 동일합니다.");
+            throw new InvalidPasswordUpdateException();
         }
 
         String encryptedPassword = passwordEncoder.encode(dto.getConfirmPassword());
-        user.changeNewPassword(encryptedPassword);
+        user.changePassword(encryptedPassword);
 
         return user.getUserIdx();
     }

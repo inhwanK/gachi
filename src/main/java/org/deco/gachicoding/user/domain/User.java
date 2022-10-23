@@ -71,7 +71,7 @@ public class User {
         this.userEnabled = true;
     }
 
-    public void changeNewPassword(String password) {
+    public void changePassword(String password) {
         this.userPassword = password;
     }
 }

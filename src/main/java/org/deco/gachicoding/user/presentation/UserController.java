@@ -63,7 +63,7 @@ public class UserController {
     }
 
     // 프론트로부터 암호화된 비밀번호가 와야할 것 같은데...
-    @ApiOperation(value = "유저 확인", notes = "유저 정보 수정 전에 확인하는 api")
+    @ApiOperation(value = "유저 정보 수정 전에 확인하는 api")
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/user/confirm")
     public ResponseEntity<String> confirmUser(
@@ -83,7 +83,7 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "유저 비밀번호 변경", notes = "테스트 전")
+    @ApiOperation(value = "유저 비밀번호 변경 api")
     @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/user/change-password")
@@ -94,14 +94,13 @@ public class UserController {
         // 여기서 dto 안의 두 필드가 같은지 다른지 체크된 상태여야함.
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.changeUserPassword(userEmail, dto);
+        userService.modifyUserPassword(userEmail, dto);
+        // 리다이렉션 필요?
     }
 
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
-    )
+    @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     @DeleteMapping("/user")
     public ResponseEntity<Void> deleteUser() {

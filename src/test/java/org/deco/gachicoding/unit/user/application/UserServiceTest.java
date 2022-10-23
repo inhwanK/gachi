@@ -134,7 +134,7 @@ public class UserServiceTest {
         given(passwordEncoder.encode("newPassword")).willReturn("changedPassword");
 
         // when
-        userService.changeUserPassword("1234@1234.com", dto);
+        userService.modifyUserPassword("1234@1234.com", dto);
 
         // then
         assertThat(user.getUserPassword()).isEqualTo("changedPassword");
@@ -156,7 +156,7 @@ public class UserServiceTest {
         // then
         assertThatThrownBy(
                 () -> userService
-                        .changeUserPassword("1234@1234.com", dto)
+                        .modifyUserPassword("1234@1234.com", dto)
         )
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이전과 동일");

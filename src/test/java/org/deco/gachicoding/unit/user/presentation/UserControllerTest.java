@@ -21,17 +21,16 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
-import static org.assertj.core.api.Assertions.fail;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 // 참고 자료 : https://brunch.co.kr/@springboot/418
 // 컨트롤러 테스트에서 데이터의 유효성, API의 반환값에 대한 검증 테스트를 진행한다.
@@ -184,12 +183,12 @@ public class UserControllerTest {
         PasswordUpdateRequestDto dto =
                 new PasswordUpdateRequestDto("12345", "12345");
 
-        given(userService.changeUserPassword(eq("1234@1234.com"), eq(dto)))
+        given(userService.modifyUserPassword(eq("1234@1234.com"), eq(dto)))
                 .willReturn(1L);
 
         // when
         ResultActions perform = mockMvc.perform(patch("/api/user/change-password")
-                .content(new ObjectMapper().writeValueAsBytes(dto))
+                .content(new ObjectMapper().writeValueAsString(dto))
                 .contentType(MediaType.APPLICATION_JSON));
 
         // then
@@ -198,7 +197,7 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("사용자 비밀번호 변경이 실패한다.")
+    @DisplayName("기존 비밀번호와 같은 비밀번호가 입력될 경우 비밀번호 변경이 실패한다.")
     @Test
     @WithMockUser(username = "1234@1234.com", password = "1234")
     void updateUserPassword_Fail() throws Exception {
@@ -206,8 +205,8 @@ public class UserControllerTest {
         PasswordUpdateRequestDto dto =
                 new PasswordUpdateRequestDto("1234", "1234");
 
-        given(userService.changeUserPassword(eq("1234@1234.com"), eq(dto)))
-                .willThrow(new InvalidPasswordUpdateException("비밀번호가 이전과 동일합니다."));
+        given(userService.modifyUserPassword(eq("1234@1234.com"), any(PasswordUpdateRequestDto.class)))
+                .willThrow(new InvalidPasswordUpdateException());
 
         // when
         ResultActions perform = mockMvc.perform(patch("/api/user/change-password")
@@ -216,15 +215,28 @@ public class UserControllerTest {
 
         perform
                 .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("errorMessage").value("비밀번호가 이전과 동일합니다. 새로운 비밀번호를 입력해주세요."))
                 .andDo(print());
 
-//        fail("미구현");
     }
 
     @DisplayName("사용자를 삭제한다.")
     @Test
-    void deleteUser_Success() {
-        fail("미구현");
+    @WithMockUser(username = "1234@1234.com", roles = "USER")
+    void deleteUser_Success() throws Exception {
+
+
+        // when
+        ResultActions perform = mockMvc.perform(delete("/api/user"));
+
+        //then
+        verify(userService, times(1))
+                .deleteUser("1234@1234.com");
+
+        perform
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
     }
 
 }

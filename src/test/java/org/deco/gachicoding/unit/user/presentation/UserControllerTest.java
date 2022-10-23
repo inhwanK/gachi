@@ -3,6 +3,7 @@ package org.deco.gachicoding.unit.user.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.config.SecurityConfig;
+import org.deco.gachicoding.exception.user.password.InvalidPasswordUpdateException;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
@@ -20,9 +21,11 @@ import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
 
 import static org.assertj.core.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.BDDMockito.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -204,18 +207,18 @@ public class UserControllerTest {
                 new PasswordUpdateRequestDto("1234", "1234");
 
         given(userService.changeUserPassword(eq("1234@1234.com"), eq(dto)))
-                .willThrow(new IllegalArgumentException("비밀번호가 이전과 동일합니다."));
+                .willThrow(new InvalidPasswordUpdateException("비밀번호가 이전과 동일합니다."));
 
         // when
         ResultActions perform = mockMvc.perform(patch("/api/user/change-password")
                 .content(new ObjectMapper().writeValueAsBytes(dto))
                 .contentType(MediaType.APPLICATION_JSON));
 
-        // then
         perform
-                .andExpect(status().isOk())
+                .andExpect(status().is4xxClientError())
                 .andDo(print());
-        fail("미구현");
+
+//        fail("미구현");
     }
 
     @DisplayName("사용자를 삭제한다.")

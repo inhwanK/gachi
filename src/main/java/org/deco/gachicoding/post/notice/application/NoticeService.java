@@ -30,8 +30,6 @@ public class NoticeService {
     private final FileService fileService;
     private final TagService tagService;
 
-    String NOTICE = "NOTICE";
-
     @Transactional(rollbackFor = Exception.class)
     public Long registerNotice(
             NoticeSaveRequestDto dto
@@ -59,7 +57,9 @@ public class NoticeService {
         // updateContent 부분을 extractImgSrc안으로 옮기자
         // 그러기 위해선 post 엔티티들을 계층타입으로 묶는
         // Post.interface가 있어야 할듯 => updateContent 메서드를 가지는 추상 클래스로 만들면 좋을듯
-        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
+
+        // 김인환 - 완전 동의함. 기존의 NOTICE 필드 삭제하고 일단 문자열로 넣음
+        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, "NOTICE"));
 
 //        try {
 //        } catch (Exception e) {

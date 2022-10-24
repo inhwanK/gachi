@@ -1,6 +1,7 @@
 package org.deco.gachicoding.unit.user.application;
 
 import org.deco.gachicoding.common.factory.user.MockUser;
+import org.deco.gachicoding.exception.user.password.InvalidPasswordUpdateException;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -145,10 +146,8 @@ public class UserServiceTest {
     void updateUserPassword_Exception() {
 
         // given
-        PasswordUpdateRequestDto dto = new PasswordUpdateRequestDto(
-                "1234",
-                "1234"
-        );
+        PasswordUpdateRequestDto dto =
+                new PasswordUpdateRequestDto("1234", "1234");
 
         given(userRepository.findByUserEmail("1234@1234.com")).willReturn(Optional.ofNullable(user));
         given(passwordEncoder.matches("1234", "1234")).willReturn(true);
@@ -158,7 +157,7 @@ public class UserServiceTest {
                 () -> userService
                         .modifyUserPassword("1234@1234.com", dto)
         )
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidPasswordUpdateException.class)
                 .hasMessageContaining("이전과 동일");
     }
 

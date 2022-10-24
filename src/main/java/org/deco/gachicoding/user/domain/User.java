@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.post.notice.domain.Notice;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
@@ -11,6 +12,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @DynamicInsert
@@ -49,6 +52,12 @@ public class User {
     @ColumnDefault("\'ROLE_USER\'")
     @Enumerated(EnumType.STRING)
     private RoleType userRole;
+
+    // Notice 엔터티와 연관관계 매핑
+    // 연관관계의 주인은 Notice의 author
+    @OneToMany(mappedBy = "author")
+    private List<Notice> notices = new ArrayList<>();
+
 
     @Builder
     public User(Long userIdx, String userName, String userNick, String userEmail, String userPassword, boolean userEnabled, LocalDateTime userCreatedAt, RoleType userRole) {

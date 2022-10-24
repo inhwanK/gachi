@@ -1,12 +1,10 @@
 package org.deco.gachicoding.post.notice.application.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @Getter
 public class NoticeSaveRequestDto {

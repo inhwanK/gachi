@@ -39,7 +39,7 @@ public class AnswerSaveRequestDto {
 
     public Answer toEntity(User writer, Question question){
         return Answer.builder()
-                .writer(writer)
+                .answerer(writer)
                 .question(question)
                 .ansContents(ansContent)
                 .build();

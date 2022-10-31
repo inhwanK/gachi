@@ -8,6 +8,7 @@ import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.domain.vo.BoardContents;
 import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
 import org.deco.gachicoding.user.domain.User;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -15,10 +16,11 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Entity
 @DynamicInsert
 @DynamicUpdate
+@Getter
+@Entity
+@Table(name = "board")
 public class Board extends BaseTimeEntity {
 
     @Id
@@ -36,10 +38,12 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_category", columnDefinition = "varchar(20)")
     private String boardCategory;
 
-    @Column(name = "board_views", columnDefinition = "bigint default '0'", nullable = false)
+    @Column(name = "board_views", nullable = false)
+    @ColumnDefault("0")
     private Long boardViews;
 
-    @Column(name = "board_locked", columnDefinition = "boolean default 'true'", nullable = false)
+    @Column(name = "board_locked", nullable = false)
+    @ColumnDefault("true")
     private Boolean boardLocked;
 
     @ManyToOne

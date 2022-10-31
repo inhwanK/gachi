@@ -28,7 +28,7 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
-    private User writer;
+    private User answerer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "qs_idx")
@@ -49,14 +49,14 @@ public class Answer {
 
     @Builder
     public Answer(
-            User writer,
+            User answerer,
             Question question,
             String ansContents,
             Boolean ansSelect,
             Boolean ansActivated,
             LocalDateTime ansRegdate
     ) {
-        this.writer = writer;
+        this.answerer = answerer;
         this.question = question;
         this.ansContents = ansContents;
         this.ansSelect = ansSelect;
@@ -65,7 +65,7 @@ public class Answer {
     }
 
     public void setUser(User writer) {
-        this.writer = writer;
+        this.answerer = writer;
     }
 
     public void setQuestion(Question question) {

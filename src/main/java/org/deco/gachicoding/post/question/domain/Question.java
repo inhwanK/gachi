@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @DynamicUpdate
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 @Table(name = "gachi_q")
 public class Question {
     @Id
@@ -32,7 +32,7 @@ public class Question {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_idx")
     @JsonManagedReference
-    private User writer;
+    private User questioner;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
@@ -62,7 +62,7 @@ public class Question {
 
     @Builder
     public Question(
-            User writer,
+            User questioner,
             Long queIdx,
             String queTitle,
             String queContents,
@@ -72,7 +72,7 @@ public class Question {
             Boolean queActivated,
             LocalDateTime queRegdate
     ) {
-        this.writer = writer;
+        this.questioner = questioner;
         this.queIdx = queIdx;
         this.queTitle = queTitle;
         this.queContents = queContents;
@@ -84,7 +84,7 @@ public class Question {
     }
 
     public void setUser(User user) {
-        this.writer = user;
+        this.questioner = user;
     }
 
     public void setAnswers(Answer answer) {

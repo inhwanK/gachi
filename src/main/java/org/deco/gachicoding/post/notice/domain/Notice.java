@@ -9,6 +9,7 @@ import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeContents;
 import org.deco.gachicoding.post.notice.domain.vo.NoticeTitle;
 import org.deco.gachicoding.user.domain.User;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,10 +18,11 @@ import javax.persistence.*;
 
 import java.time.LocalDateTime;
 
-@Getter
 @DynamicInsert
 @DynamicUpdate
+@Getter
 @Entity
+@Table(name = "notice")
 public class Notice extends BaseTimeEntity {
 
     @Id
@@ -35,13 +37,16 @@ public class Notice extends BaseTimeEntity {
     @Embedded
     private NoticeContents notContents;
 
-    @Column(name = "not_views", columnDefinition = "bigint default '0'", nullable = false)
+    @Column(name = "not_views", nullable = false)
+    @ColumnDefault("0") // ddl 수행시 적용되는 default 값, @Column의 columnDefinition 속성보다는 이걸 쓰는게 나을 듯
     private Long notViews;
 
-    @Column(name = "not_pin", columnDefinition = "boolean default 'false'", nullable = false)
+    @Column(name = "not_pin", nullable = false)
+    @ColumnDefault("false")
     private Boolean notPin;
 
-    @Column(name = "not_locked", columnDefinition = "boolean default 'true'", nullable = false)
+    @Column(name = "not_locked", nullable = false)
+    @ColumnDefault("true")
     private Boolean notLocked;
 
     // FetchType.EAGER 즉시 로딩

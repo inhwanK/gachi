@@ -1,5 +1,7 @@
 package org.deco.gachicoding.common.factory.file;
 
+import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
@@ -22,6 +24,17 @@ public class FileFactory {
 
     public static MockMultipartFile getTestSuccessImage1() {
         return createMockMultipartFile("testSuccessImage1.png");
+    }
+
+    public static MockMultipartFile getTestSuccessImage2() {
+        return createMockMultipartFile("testSuccessImage2.png");
+    }
+
+    public static FileResponseDto getTestSuccessImage1Dto(String filePath) {
+        return FileResponseDto.builder()
+                .filePath(filePath)
+                .originFileName("testSuccessImage1.png")
+                .build();
     }
 
     private static File createFile(String testImage) {

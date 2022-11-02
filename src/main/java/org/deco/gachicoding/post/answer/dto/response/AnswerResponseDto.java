@@ -25,8 +25,8 @@ public class AnswerResponseDto {
     @Builder
     public AnswerResponseDto(Answer answer) {
 //        setWriterInfo(answer);
-        this.userEmail = answer.getWriter().getUserEmail();
-        this.userNick = answer.getWriter().getUserNick();
+        this.userEmail = answer.getAnswerer().getUserEmail();
+        this.userNick = answer.getAnswerer().getUserNick();
         setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
         this.ansContent = answer.getAnsContents();

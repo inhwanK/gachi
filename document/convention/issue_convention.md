@@ -4,8 +4,6 @@
 
 Title에는 이슈 제목을, Body에는 개요, 체크 리스트, 참고 자료를 작성합니다.
 
----
-
 > ##Title
 > 
 > ---
@@ -48,8 +46,6 @@ ex) `깃 서브모듈을 통해 스프링 프로필을 관리하도록 변경한
  - ex) [Tecoble 단위 테스트 vs 통합 테스트 vs 인수 테스트 ](https://tecoble.techcourse.co.kr/post/2021-05-25-unit-test-vs-integration-test-vs-acceptance-test/)
 
 # 4. 이슈 예시
-
----
 > ### [board-save-unit-test] 게시판 저장 기능을 단위 테스트한다.
 > 
 > ---

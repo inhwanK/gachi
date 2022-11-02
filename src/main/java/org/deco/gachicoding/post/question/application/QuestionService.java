@@ -145,7 +145,7 @@ public class QuestionService {
     }
 
     private Boolean isSameWriter(Question question, User user) {
-        String writerEmail = question.getWriter().getUserEmail();
+        String writerEmail = question.getQuestioner().getUserEmail();
         String userEmail = user.getUserEmail();
 
         return (writerEmail.equals(userEmail)) ? true : false;

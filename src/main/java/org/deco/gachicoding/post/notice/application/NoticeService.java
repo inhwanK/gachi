@@ -14,6 +14,7 @@ import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseD
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +30,12 @@ public class NoticeService {
     private final FileService fileService;
     private final TagService tagService;
 
-    String NOTICE = "NOTICE";
-
     @Transactional(rollbackFor = Exception.class)
-    public Long registerNotice(NoticeSaveRequestDto dto) {
+    public Long registerNotice(
+            NoticeSaveRequestDto dto
+    ) {
         // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
-        // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
+        // getOne ()은 내부적으로 EntityManager.getReference() 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
 
         // 이부분은 우리가 정의한 키워드를 통해 쿼리를 날린다. 요구사항이 이메일 -> 닉네임 으로 변경될 경우 변경이 필요해진다.
         // findByUserEmail을 통해 유저 정보를 가져오는 코드는 Service내에 여럿 존재한다.(중복된다)
@@ -56,7 +57,9 @@ public class NoticeService {
         // updateContent 부분을 extractImgSrc안으로 옮기자
         // 그러기 위해선 post 엔티티들을 계층타입으로 묶는
         // Post.interface가 있어야 할듯 => updateContent 메서드를 가지는 추상 클래스로 만들면 좋을듯
-        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, NOTICE));
+
+        // 김인환 - 완전 동의함. 기존의 NOTICE 필드 삭제하고 일단 문자열로 넣음
+        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, "NOTICE"));
 
 //        try {
 //        } catch (Exception e) {

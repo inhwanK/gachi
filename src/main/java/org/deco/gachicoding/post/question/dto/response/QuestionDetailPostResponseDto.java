@@ -38,8 +38,8 @@ public class QuestionDetailPostResponseDto implements PostResponseDto {
     @Builder
     public QuestionDetailPostResponseDto(Question question) {
         this.queIdx = question.getQueIdx();
-        this.userEmail = question.getWriter().getUserEmail();
-        this.userNick = question.getWriter().getUserNick();
+        this.userEmail = question.getQuestioner().getUserEmail();
+        this.userNick = question.getQuestioner().getUserNick();
         setAnswerList(question);
 
         this.queTitle = question.getQueTitle();

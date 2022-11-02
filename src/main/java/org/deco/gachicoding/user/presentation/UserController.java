@@ -7,7 +7,6 @@ import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,9 +25,7 @@ public class UserController {
     private final UserService userService;
     private final UserRepository userRepository;
 
-
     @ApiOperation(value = "아이디 중복 체크", notes = "아이디로 사용할 이메일의 중복 체크")
-    @ApiImplicitParam(name = "email", value = "중복체크 이메일", required = true)
     @ApiResponse(code = 200, message = "이메일이 중복일 경우 false, 아닐 경우 true 반환")
     @GetMapping("/user/regist/check-email")
     public Boolean checkEmail(
@@ -40,9 +37,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원가입", notes = "회원가입 수행")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "회원가입 완료")
-    )
+    @ApiResponse(code = 200, message = "회원가입 완료")
     @PostMapping("/user/create")
     public Long registerUser(
             @ApiParam(name = "요청 DTO", value = "회원가입을 위한 요청 body 정보")
@@ -52,35 +47,43 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "유저 일괄적으로 수정", notes = "userIdx, UserUpdateRequestDto 를 받아서 유저 업데이트 수행")
-    @ApiResponse(code = 200, message = "사용자 수정 완료")
+    @ApiOperation(value = "유저 닉네임 수정")
+    @ApiResponse(code = 200, message = "수정 완료")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping("/user/update")
-    public Long updateUser(
-            @ApiParam(value = "사용자 정보 수정을 위한 요청 body 정보")
-            @RequestBody UserUpdateRequestDto dto
+    @PatchMapping("/user/update-nickname")
+    public ResponseEntity<String> updateUser(
+            @ApiParam(value = "변경할 닉네임")
+            @RequestParam("newNickname") @NotBlank String newNickname
     ) {
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        String modifiedNickname = userService.modifyNickname(userEmail, newNickname);
 
-        return userService.updateUser(userEmail, dto);
+        return ResponseEntity.ok(modifiedNickname);
     }
 
-    @ApiOperation(value = "유저 확인", notes = "유저 정보 수정 전에 확인하는 api")
+    // 프론트로부터 암호화된 비밀번호가 와야할 것 같은데...
+    @ApiOperation(value = "유저 정보 수정 전에 확인하는 api")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PatchMapping("/user/confirm")
-    public Boolean confirmUser(
+    @GetMapping("/user/confirm")
+    public ResponseEntity<String> confirmUser(
             @ApiParam(value = "비밀번호 변경 전 사용자 확인")
-            @RequestParam @NotBlank String password
+            @RequestParam @NotBlank String confirmPassword
     ) {
+        String userPassword =
+                (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
+        boolean confirm = userService.confirmUser(confirmPassword, userPassword);
 
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(confirm) {
+            return ResponseEntity.noContent().build();
+        }
 
-        return userService.confirmUser(userEmail, password);
+        return ResponseEntity.badRequest()
+                .body("잘못된 비밀번호 입니다. 다시 확인하세요.");
     }
 
 
-    @ApiOperation(value = "유저 비밀번호 변경", notes = "테스트 전")
+    @ApiOperation(value = "유저 비밀번호 변경 api")
     @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다.")
     @PreAuthorize("hasRole('ROLE_USER')")
     @PatchMapping("/user/change-password")
@@ -91,14 +94,13 @@ public class UserController {
         // 여기서 dto 안의 두 필드가 같은지 다른지 체크된 상태여야함.
 
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        userService.changeUserPassword(userEmail, dto);
+        userService.modifyUserPassword(userEmail, dto);
+        // 리다이렉션 필요?
     }
 
 
     @ApiOperation(value = "유저 삭제", notes = "userIdx 값을 받아 유저 삭제 수행, ")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
-    )
+    @ApiResponse(code = 200, message = "사용자 정보 삭제 완료")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER')")
     @DeleteMapping("/user")
     public ResponseEntity<Void> deleteUser() {

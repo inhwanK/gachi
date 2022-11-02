@@ -2,11 +2,11 @@ package org.deco.gachicoding.user.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.user.password.InvalidPasswordUpdateException;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
 import org.deco.gachicoding.user.dto.request.UserSaveRequestDto;
-import org.deco.gachicoding.user.dto.request.UserUpdateRequestDto;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -39,27 +39,24 @@ public class UserService {
     }
 
     @Transactional
-    public Long updateUser(
+    public String modifyNickname(
             String userEmail,
-            UserUpdateRequestDto dto
+            String newNickname
     ) {
         User user = userRepository.findByUserEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
 
-        user.update(dto.getUserNick(), dto.isUserEnabled());
+        user.updateNick(newNickname);
 
-        return user.getUserIdx();
+        return user.getUserNick();
     }
 
     @Transactional
     public boolean confirmUser(
-            String userEmail,
+            String confirmPassword,
             String userPassword
     ) {
-        User user = userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
-
-        if (!passwordEncoder.matches(userPassword, user.getUserPassword())) {
+        if (!passwordEncoder.matches(confirmPassword, userPassword)) {
             return false;
         }
 
@@ -67,18 +64,19 @@ public class UserService {
     }
 
     @Transactional
-    public Long changeUserPassword(
+    public Long modifyUserPassword(
             String userEmail,
             PasswordUpdateRequestDto dto
     ) {
+
         User user = userRepository.findByUserEmail(userEmail).get();
 
         if (passwordEncoder.matches(dto.getConfirmPassword(), user.getUserPassword())) {
-            throw new IllegalArgumentException("비밀번호가 이전과 동일합니다.");
+            throw new InvalidPasswordUpdateException();
         }
 
         String encryptedPassword = passwordEncoder.encode(dto.getConfirmPassword());
-        user.changeNewPassword(encryptedPassword);
+        user.changePassword(encryptedPassword);
 
         return user.getUserIdx();
     }

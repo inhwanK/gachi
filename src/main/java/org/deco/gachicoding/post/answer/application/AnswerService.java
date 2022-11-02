@@ -154,7 +154,7 @@ public class AnswerService {
     }
 
     private Boolean isSameWriter(Answer answer, User user) {
-        String writerEmail = answer.getWriter().getUserEmail();
+        String writerEmail = answer.getAnswerer().getUserEmail();
         String userEmail = user.getUserEmail();
 
         return (writerEmail.equals(userEmail)) ? true : false;
@@ -164,7 +164,7 @@ public class AnswerService {
     // 하지만 위의 메서드와 하는 일은 같으니 통합시킬 수 없을까?
     // 뒤는 부탁할게 인환몬!
     private Boolean selectAuthCheck(Question question, User user) {
-        String writerEmail = question.getWriter().getUserEmail();
+        String writerEmail = question.getQuestioner().getUserEmail();
         String userEmail = user.getUserEmail();
 
         return (writerEmail.equals(userEmail)) ? true : false;

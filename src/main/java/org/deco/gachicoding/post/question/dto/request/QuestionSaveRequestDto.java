@@ -53,7 +53,7 @@ public class QuestionSaveRequestDto {
 
     public Question toEntity(User writer) {
         return Question.builder()
-                .writer(writer)
+                .questioner(writer)
                 .queTitle(queTitle)
                 .queContents(queContent)
                 .queError(queError)

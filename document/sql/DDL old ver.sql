@@ -282,30 +282,6 @@ CREATE TABLE IF NOT EXISTS `gachicoding`.`notice`
 
 
 -- -----------------------------------------------------
--- Table `gachicoding`.`social`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `gachicoding`.`social`;
-
-CREATE TABLE IF NOT EXISTS `gachicoding`.`social`
-(
-    `social_idx`  BIGINT UNSIGNED NOT NULL COMMENT '소셜번호',
-    `user_idx`    BIGINT UNSIGNED NOT NULL COMMENT '유저번호',
-    `social_type` VARCHAR(20)     NOT NULL COMMENT '소셜유형',
-    `social_id`   VARCHAR(255)    NOT NULL COMMENT '소셜아이디',
-    `social_date` DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '인증일시',
-    PRIMARY KEY (`social_idx`),
-    INDEX `FK_user_TO_social` (`user_idx` ASC) VISIBLE,
-    CONSTRAINT `FK_user_TO_social`
-        FOREIGN KEY (`user_idx`)
-            REFERENCES `gachicoding`.`user` (`user_idx`)
-)
-    ENGINE = InnoDB
-    DEFAULT CHARACTER SET = utf8mb4
-    COLLATE = utf8mb4_0900_ai_ci
-    COMMENT = '소셜';
-
-
--- -----------------------------------------------------
 -- Table `gachicoding`.`tag`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `gachicoding`.`tag`;

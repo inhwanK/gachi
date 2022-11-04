@@ -29,14 +29,15 @@ public class BoardService {
     private final FileService fileService;
     private final TagService tagService;
 
-    String BOARD = "BOARD";
-
     @Transactional(rollbackFor = Exception.class)
     public Long registerBoard(BoardSaveRequestDto dto) {
+
         Board board = boardRepository.save(createBoard(dto));
 
         Long boardIdx = board.getBoardIdx();
         String boardContent = board.getBoardContents();
+
+        board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, "BOARD"));
 
 //        if (dto.getTags() != null)
 //            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);

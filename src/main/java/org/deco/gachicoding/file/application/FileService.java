@@ -1,5 +1,6 @@
 package org.deco.gachicoding.file.application;
 
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.file.domain.File;
@@ -21,7 +22,7 @@ public class FileService {
 
         private final S3Service s3Service;
 
-        @Value("${cloud.aws.s3.url.baseUrl}")
+        @Value("${cloud.aws.s3.url}")
         private String s3Url;
 
         @Transactional
@@ -72,15 +73,17 @@ public class FileService {
 
                 log.info("path : " + path);
 
-                String tamperingFileName = path.replace(s3Url, "");
+                String tamperingFilePath = path.replace(s3Url, "");
 
-                log.info("tamperingFileName : " + tamperingFileName);
+                log.info("tamperingFileName : " + tamperingFilePath);
 
-                File file = FileAssembler.file(idx, category, tamperingFileName);
+                ObjectMetadata objectMetadata = s3Service.getObjectMetadata(tamperingFilePath);
+
+                File file = FileAssembler.file(idx, category, objectMetadata);
 
                 registerFile(file);
 
-                String oldPath = tamperingFileName;
+                String oldPath = tamperingFilePath;
                 String newPath = file.getFilePath();
 
                 log.info("oldPath : " + oldPath);

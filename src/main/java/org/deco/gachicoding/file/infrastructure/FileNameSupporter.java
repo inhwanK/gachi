@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Component
-public class FileNameGenerator {
+public class FileNameSupporter {
 
     private static final Tika tika = new Tika();
 
@@ -44,6 +44,10 @@ public class FileNameGenerator {
         String uuid = UUID.randomUUID().toString();
 
         return uuid+"_"+fileName;
+    }
+
+    public static String ExtensionExtractor(String filename) {
+        return filename.substring(filename.lastIndexOf("."));
     }
 
     // 변조 확인으로 바꾸자

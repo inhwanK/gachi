@@ -4,11 +4,11 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.file.S3CopyException;
 import org.deco.gachicoding.exception.file.UploadFailureException;
 import org.deco.gachicoding.exception.file.UtfDecodingException;
 import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
-import org.deco.gachicoding.file.infrastructure.FileNameGenerator;
 import org.deco.gachicoding.file.presentation.dto.request.FileSaveRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class S3Service {
@@ -31,24 +31,22 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    @Value("${cloud.aws.s3.temp.dir}")
-    private String tempDir;
-
-    public List<FileResponseDto> uploadStorage(FileSaveRequest request) throws IOException {
+    public List<FileResponseDto> uploadStorage(FileSaveRequest request) {
         List<MultipartFile> multipartFiles = request.getFiles();
 
         return multipartFiles.stream()
                 .map(multipartFile -> upload(
                         multipartFile,
-                        FileNameGenerator.uuid(multipartFile)
+                        FileNameSupporter.uuid(multipartFile)
                 )).collect(toList());
     }
 
-    private FileResponseDto upload(MultipartFile multipartFile, String originFileName) {
+    private FileResponseDto upload(MultipartFile multipartFile, String saveFileName) {
         try {
-            ObjectMetadata objectMetadata = createObjectMetadata(multipartFile);
+            ObjectMetadata objectMetadata = createObjectMetadata(multipartFile, saveFileName);
 
-            String path = tempDir+originFileName;
+            String path = String.format("TEMP/%s", saveFileName);
+            log.info("s3Path : " + path);
             putS3(multipartFile, path, objectMetadata);
 
             return new FileResponseDto(multipartFile.getOriginalFilename(), getS3Url(path));
@@ -57,13 +55,23 @@ public class S3Service {
         }
     }
 
-    private ObjectMetadata createObjectMetadata(MultipartFile multipartFile) {
+    private ObjectMetadata createObjectMetadata(MultipartFile multipartFile, String saveFileName) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
 
+        log.info("size = {}", multipartFile.getSize());
+        log.info("contentType = {}", multipartFile.getContentType());
+        log.info("originalFileName = {}", multipartFile.getOriginalFilename());
+        log.info("saveFileName = {}", saveFileName);
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
+        objectMetadata.addUserMetadata("OriginalFileName", multipartFile.getOriginalFilename());
+        objectMetadata.addUserMetadata("SaveFileName", saveFileName);
 
         return objectMetadata;
+    }
+
+    public ObjectMetadata getObjectMetadata(String filePath) {
+        return s3Client.getObjectMetadata(bucket, filePath);
     }
 
     private void putS3(MultipartFile multipartFile, String originFileName, ObjectMetadata objectMetadata) throws IOException {
@@ -74,15 +82,6 @@ public class S3Service {
                 objectMetadata
         );
     }
-
-//        private String putS3(MultipartFile file, String saveFilePath) throws IOException {
-//                // try catch 걸까?
-//                // s3 저장
-//                s3Client.putObject(new PutObjectRequest(bucket, saveFilePath, file.getInputStream(), null)
-//                        .withCannedAcl(CannedAccessControlList.PublicRead));
-//
-//                return getS3Url(saveFilePath);
-//        }
 
     public String replaceS3(String oldPath, String newPath) {
         String result = copyS3(oldPath, newPath);
@@ -105,12 +104,11 @@ public class S3Service {
         try {
             return URLDecoder.decode(s3Client.getUrl(bucket, filePath).toString(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            //디코딩 실패 예외로 바꾸기
             throw new UtfDecodingException();
         }
     }
 
-    private void deleteS3(String source) {
-        s3Client.deleteObject(bucket, source);
+    private void deleteS3(String filePath) {
+        s3Client.deleteObject(bucket, filePath);
     }
 }

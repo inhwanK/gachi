@@ -34,10 +34,10 @@ public class FileSaveRequestDto {
         return File.builder()
                 .articleIdx(articleIdx)
                 .articleCategory(articleCategory)
-                .originFilename(originFilename)
-                .saveFilename(saveFilename)
-                .fileExt(fileExt)
-                .filePath(filePath)
+//                .originFilename(originFilename)
+//                .saveFilename(saveFilename)
+//                .fileExt(fileExt)
+//                .filePath(filePath)
                 .build();
     }
 }

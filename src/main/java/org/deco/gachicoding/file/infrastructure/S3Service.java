@@ -1,7 +1,6 @@
 package org.deco.gachicoding.file.infrastructure;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -71,6 +70,7 @@ public class S3Service {
     }
 
     public ObjectMetadata getObjectMetadata(String filePath) {
+        // not found 예외 추가
         return s3Client.getObjectMetadata(bucket, filePath);
     }
 

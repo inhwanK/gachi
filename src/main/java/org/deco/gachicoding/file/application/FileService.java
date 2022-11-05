@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,7 +46,10 @@ public class FileService {
 //        }
 
         @Transactional
-        public String extractImgSrc(Long idx, String content, String category) {
+        public Queue<String> imgProducer(String content) {
+
+                Queue<String> imgQueue = new LinkedList<>();
+
                 // 정규 표현식 공부하자
                 Pattern nonValidPattern = Pattern
                         .compile("(?i)< *[IMG][^\\>]*[src] *= *[\"\']{0,1}([^\"\'\\ >]*)");
@@ -52,12 +57,20 @@ public class FileService {
                 Matcher matcher = nonValidPattern.matcher(content);
 
                 while (matcher.find()) {
-                        String beforeImg = matcher.group(1);
+                        String img = matcher.group(1);
+                        log.info(img);
+                        imgQueue.add(img);
+                }
 
-                        // 구현 절차
-                        // 추출된 이미지 링크 s3업로드
-                        // File DB에 업로드
-                        // content 리플레이스
+                return imgQueue;
+        }
+
+        @Transactional
+        public String imgConsumer(Long idx, String content, String category, Queue<String> queue) {
+
+                while (!queue.isEmpty()) {
+                        String beforeImg = queue.poll();
+
                         String afterImg = uploadRealImg(idx, beforeImg, category);
 
                         log.info("beforeImg = " + beforeImg);

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Queue;
 
 @Slf4j
 @Service
@@ -37,21 +38,13 @@ public class BoardService {
         Long boardIdx = board.getBoardIdx();
         String boardContent = board.getBoardContents();
 
-        board.updateContent(fileService.extractImgSrc(boardIdx, boardContent, "BOARD"));
+        Queue<String> queue = fileService.imgProducer(boardContent);
 
+        board.updateContent(fileService.imgConsumer(boardIdx, boardContent, "BOARD", queue));
+
+        // tagify 라이브러리
 //        if (dto.getTags() != null)
 //            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
-
-//        try {
-//            fileService.extractImgSrc(boardIdx, boardContent, BOARD);
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Board Content");
-//            e.printStackTrace();
-////            removeBoard(boardIdx);
-//            tagService.removeBoardTags(boardIdx, BOARD);
-//            // throw해줘야 Advice에서 예외를 감지 함
-////            throw e;
-//        }
 
         return board.getBoardIdx();
     }
@@ -106,7 +99,18 @@ public class BoardService {
 
         board.updateContent(dto.getBoardContents());
 
-//        board.update(dto.getBoardTitle(), dto.getBoardContents());
+        // 임시로 작성
+        Queue<String> queue = fileService.imgProducer(board.getBoardContents());
+
+        // 해당 게시물에 있는 모든 메타 데이터를 찾는다.
+
+
+        // queue의 데이터와 비교 후, 하나 씩 제거
+
+
+        // queue의 내용물이 남아 있다면, 디비의 메타 데이터 비활성
+
+
 
         return BoardDtoAssembler.boardResponseDto(board);
     }

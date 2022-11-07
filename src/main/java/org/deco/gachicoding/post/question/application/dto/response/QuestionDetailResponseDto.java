@@ -4,18 +4,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.question.domain.Question;
+import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionListResponseDto {
+public class QuestionDetailResponseDto {
 
     private Long queIdx;
     private User questioner;
+    private List<AnswerResponseDto> answerList = new ArrayList<>();
     private String queTitle;
     private String queContents;
     private Boolean queSolved;
@@ -24,9 +29,12 @@ public class QuestionListResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public QuestionListResponseDto(Question question) {
-        this.questioner = question.getQuestioner();
+    public QuestionDetailResponseDto(Question question) {
         this.queIdx = question.getQueIdx();
+        this.questioner = question.getQuestioner();
+
+        setAnswerList(question);
+
         this.queTitle = question.getQueTitle();
         this.queContents = question.getQueContents();
         this.queSolved = question.getQueSolved();
@@ -35,13 +43,25 @@ public class QuestionListResponseDto {
         this.updatedAt = question.getUpdatedAt();
     }
 
+    public void setAnswerList(Question question) {
+        for(Answer ans : question.getAnswers()) {
+            System.out.println("ansId = "+ans.getAnsIdx());
+            System.out.println("ansContents = "+ans.getAnsContents());
+
+            answerList.add(
+                    AnswerResponseDto.builder()
+                    .answer(ans).build()
+            );
+        }
+    }
+
+//    @Override
+//    public void setFiles(List<FileResponseDto> files) {
+//        this.files = files;
+//    }
+//
 //    @Override
 //    public void setTags(List<TagResponseDto> tags) {
 //        this.tags = tags;
-//    }
-
-//    public void setWriterInfo(Question question) {
-//        User writer = question.getWriter().getUserIdx();
-//        this.userIdx = writer.getUserIdx();
 //    }
 }

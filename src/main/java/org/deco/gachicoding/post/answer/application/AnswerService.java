@@ -117,7 +117,7 @@ public class AnswerService {
         if(!selectAuthCheck(question, user))
 //            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
 
-        if(!question.getQueSolve()) {
+        if(!question.getQueSolved()) {
             answer.toSelect();
             question.toSolve();
 //            return ResponseState.toResponseEntity(SELECT_SUCCESS);

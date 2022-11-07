@@ -1,6 +1,7 @@
 package org.deco.gachicoding.post.question.application.dto;
 
 import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.user.domain.User;
@@ -26,6 +27,10 @@ public class QuestionDtoAssembler {
         return questions.stream()
                 .map(QuestionListResponseDto::new)
                 .collect(toList());
+    }
+
+    public static QuestionDetailResponseDto questionResponseDto(Question question) {
+        return new QuestionDetailResponseDto(question);
     }
 
 }

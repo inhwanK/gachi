@@ -3,10 +3,10 @@ package org.deco.gachicoding.post.question.presentation;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.post.question.dto.response.QuestionDetailPostResponseDto;
-import org.deco.gachicoding.post.question.dto.response.QuestionListResponseDto;
-import org.deco.gachicoding.post.question.dto.request.QuestionSaveRequestDto;
-import org.deco.gachicoding.post.question.dto.request.QuestionUpdateRequestDto;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailPostResponseDto;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.application.QuestionService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Api(tags = "가치질문 정보 처리 API")
@@ -41,7 +42,7 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "질문 목록 반환")
     )
     @GetMapping("/question/list")
-    public Page<QuestionListResponseDto> getQuestionList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
+    public List<QuestionListResponseDto> getQuestionList(@ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
                                                          @ApiIgnore @PageableDefault(size = 10) Pageable pageable) {
 
         return questionService.getQuestionList(keyword, pageable);

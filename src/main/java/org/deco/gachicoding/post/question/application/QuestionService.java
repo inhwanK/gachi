@@ -5,20 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
+import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionListRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.question.dto.response.QuestionDetailPostResponseDto;
-import org.deco.gachicoding.post.question.dto.response.QuestionListResponseDto;
-import org.deco.gachicoding.post.question.dto.request.QuestionSaveRequestDto;
-import org.deco.gachicoding.post.question.dto.request.QuestionUpdateRequestDto;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailPostResponseDto;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,52 +33,42 @@ public class QuestionService {
     private final UserRepository userRepository;
     private final FileService fileService;
     private final TagService tagService;
-    private final String BOARD_TYPE = "QUESTION";
 
-    @Transactional
-    public Long registerQuestion(QuestionSaveRequestDto dto) throws Exception {
-        User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(UserNotFoundException::new);
+    @Transactional(rollbackFor = Exception.class)
+    public Long registerQuestion(
+            QuestionSaveRequestDto dto
+    ) {
 
-        Question question = questionRepository.save(dto.toEntity(writer));
+        Question question = questionRepository.save(createQuestion(dto));
 
         Long queIdx = question.getQueIdx();
         String queContent = question.getQueContents();
-        String queError = question.getQueError();
 
-        if (dto.getTags() != null)
-            tagService.registerBoardTag(queIdx, dto.getTags(), BOARD_TYPE);
-
-        try {
-//            question.updateContent(fileService.extractImgSrc(queIdx, queContent, BOARD_TYPE));
-//            question.updateError(fileService.extractImgSrc(queIdx, queError, BOARD_TYPE));
-            log.info("Success Upload Question Idx : {}", queIdx);
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Question Content");
-            e.printStackTrace();
-//            removeQuestion(queIdx);
-            tagService.removeBoardTags(queIdx, BOARD_TYPE);
-            throw e;
-        }
+        question.updateContent(
+                fileService.extractPathAndS3Upload(queIdx, "QUESTION", queContent)
+        );
 
         return queIdx;
     }
 
-    // 리팩토링 - 검색 조건에 error도 추가
+    private Question createQuestion(QuestionSaveRequestDto dto) {
+        User user = findAuthor(dto.getUserEmail());
+
+        return QuestionDtoAssembler.question(user, dto);
+    }
+
     @Transactional(readOnly = true)
-    public Page<QuestionListResponseDto> getQuestionList(String keyword, Pageable pageable) {
-        Page<Question> questions = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(keyword, keyword, pageable);
+    public List<QuestionListResponseDto> getQuestionList(
+            String keyword,
+            Pageable pageable
+    ) {
 
-        Page<QuestionListResponseDto> questionList = questions.map(
-                result -> new QuestionListResponseDto(result)
+        return QuestionDtoAssembler.questionResponseDtos(
+                questionRepository.findAllQuestionByKeyword(
+                        keyword,
+                        pageable
+                )
         );
-
-        questionList.forEach(
-                questionListResponseDto ->
-                        tagService.getTags(questionListResponseDto.getQueIdx(), BOARD_TYPE, questionListResponseDto)
-        );
-
-        return questionList;
     }
 
 
@@ -149,5 +143,10 @@ public class QuestionService {
         String userEmail = user.getUserEmail();
 
         return (writerEmail.equals(userEmail)) ? true : false;
+    }
+
+    private User findAuthor(String userEmail) {
+        return userRepository.findByUserEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

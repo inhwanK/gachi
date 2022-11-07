@@ -52,6 +52,7 @@ public class Question extends BaseTimeEntity {
     private QuestionContents queContents;
 
     @Column(name = "qs_solved", nullable = false)
+    @ColumnDefault("false")
     private Boolean queSolved;
 
     @Column(name = "qs_locked", nullable = false)
@@ -105,6 +106,14 @@ public class Question extends BaseTimeEntity {
     public Question isEnable() {
         this.queLocked = true;
         return this;
+    }
+
+    public String getQueTitle() {
+        return queTitle.getQuestionTitle();
+    }
+
+    public String getQueContents() {
+        return queContents.getQuestionContents();
     }
 
     public void updateTitle(String queTitle) {

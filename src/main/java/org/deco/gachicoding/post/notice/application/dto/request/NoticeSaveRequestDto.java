@@ -19,7 +19,7 @@ public class NoticeSaveRequestDto {
     @NotNull
 //    @ApiModelProperty(value = "공지사항 내용", required = true, example = "안녕하세요 운영자A입니다.")
     private String notContents;
-    
+
     @Nullable
 //    @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
     private Boolean notPin;
@@ -29,7 +29,13 @@ public class NoticeSaveRequestDto {
 //    private List<String> tags;
 
     @Builder
-    public NoticeSaveRequestDto(String userEmail, String notTitle, String notContents, Boolean notPin/*, List<String> tags*/) {
+    public NoticeSaveRequestDto(
+            String userEmail,
+            String notTitle,
+            String notContents,
+            Boolean notPin
+            /*, List<String> tags*/
+    ) {
         this.userEmail = userEmail;
         this.notTitle = notTitle;
         this.notContents = notContents;

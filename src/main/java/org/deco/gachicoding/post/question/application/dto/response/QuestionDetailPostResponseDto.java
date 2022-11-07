@@ -1,24 +1,29 @@
-package org.deco.gachicoding.post.question.dto.response;
+package org.deco.gachicoding.post.question.application.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
+import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.question.domain.Question;
-import org.deco.gachicoding.tag.dto.TagResponse;
+import org.deco.gachicoding.post.PostResponseDto;
+import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.tag.dto.response.TagResponseDto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class QuestionListResponseDto implements TagResponse {
+public class QuestionDetailPostResponseDto implements PostResponseDto {
 
     private Long queIdx;
     private String userEmail;
     private String userNick;
+    private List<AnswerResponseDto> answerList = new ArrayList<>();
     private String queTitle;
     private String queContent;
     private String queError;
@@ -27,13 +32,16 @@ public class QuestionListResponseDto implements TagResponse {
     private Boolean queActivated;
     private LocalDateTime queRegdate;
 
+    private List<FileResponseDto> files;
     private List<TagResponseDto> tags;
 
     @Builder
-    public QuestionListResponseDto(Question question) {
+    public QuestionDetailPostResponseDto(Question question) {
+        this.queIdx = question.getQueIdx();
         this.userEmail = question.getQuestioner().getUserEmail();
         this.userNick = question.getQuestioner().getUserNick();
-        this.queIdx = question.getQueIdx();
+        setAnswerList(question);
+
         this.queTitle = question.getQueTitle();
         this.queContent = question.getQueContents();
         this.queError = question.getQueError();
@@ -43,13 +51,26 @@ public class QuestionListResponseDto implements TagResponse {
         this.queRegdate = question.getQueRegdate();
     }
 
+//    public void setWriterInfo(Question question) {
+//        User user = question.getUser();
+//        this.userIdx = user.getUserIdx();
+//    }
+
+    public void setAnswerList(Question question) {
+        for(Answer ans : question.getAnswers()) {
+            AnswerResponseDto answerResponseDto = AnswerResponseDto.builder()
+                    .answer(ans).build();
+            answerList.add(answerResponseDto);
+        }
+    }
+
+    @Override
+    public void setFiles(List<FileResponseDto> files) {
+        this.files = files;
+    }
+
     @Override
     public void setTags(List<TagResponseDto> tags) {
         this.tags = tags;
     }
-
-//    public void setWriterInfo(Question question) {
-//        User writer = question.getWriter().getUserIdx();
-//        this.userIdx = writer.getUserIdx();
-//    }
 }

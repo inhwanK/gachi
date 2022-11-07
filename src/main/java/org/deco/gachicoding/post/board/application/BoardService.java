@@ -40,7 +40,7 @@ public class BoardService {
         String boardContent = board.getBoardContents();
 
         board.updateContent(
-                fileService.extractPathAndS3Upload(boardIdx, boardContent, "BOARD")
+                fileService.extractPathAndS3Upload(boardIdx, "BOARD", boardContent)
         );
 
         // tagify 라이브러리
@@ -87,6 +87,13 @@ public class BoardService {
 
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
+        // 무조건 async
+        String updateContents = fileService.compareFilePathAndOptimization(
+                dto.getBoardIdx(),
+                "BOARD",
+                dto.getBoardContents()
+        );
+
         Board board = findBoard(dto.getBoardIdx());
 
         if (!board.getBoardLocked())
@@ -98,20 +105,8 @@ public class BoardService {
 
         board.updateTitle(dto.getBoardTitle());
 
-        board.updateContent(dto.getBoardContents());
-
-        // 게시물의 내용에서 이미지 경로만 추출
-        
-
-        // 해당 게시물에 있는 모든 메타 데이터를 찾는다.
-
-
-        // 내용안에 이미지 경로와 디비에 저장된 이미지 메타 데이터와 비교 후, 하나 씩 제거
-
-
-        // queue의 내용물이 남아 있다면, 디비의 메타 데이터 비활성
-
-
+        // blocking
+        board.updateContent(updateContents);
 
         return BoardDtoAssembler.boardResponseDto(board);
     }

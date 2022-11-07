@@ -78,4 +78,8 @@ public class File extends BaseTimeEntity {
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
     }
+
+    public boolean compareFilePath(String path) {
+        return filePath.isEquals(path);
+    }
 }

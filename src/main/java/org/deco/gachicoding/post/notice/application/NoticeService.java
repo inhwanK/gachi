@@ -61,7 +61,7 @@ public class NoticeService {
         // 김인환 - 완전 동의함. 기존의 NOTICE 필드 삭제하고 일단 문자열로 넣음
 
         notice.updateContent(
-                fileService.extractPathAndS3Upload(notIdx, notContent, "NOTICE")
+                fileService.extractPathAndS3Upload(notIdx, "NOTICE", notContent)
         );
 
         return notice.getNotIdx();

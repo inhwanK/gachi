@@ -6,9 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File, Long> {
 
-    @Query("SELECT f.filePath FROM File f WHERE f.articleCategory = :category AND f.articleIdx = :idx")
-    List<String> findFilePathByCategoryAndIdx(@Param("category") String category, @Param("idx") Long idx);
+    @Query("SELECT f FROM File f WHERE f.articleCategory = :category AND f.articleIdx = :idx")
+    List<File> findFileByCategoryAndIdx(@Param("category") String category, @Param("idx") Long idx);
+
+    @Query("SELECT f FROM File f WHERE f.filePath = :path")
+    Optional<File> findFileByFilePath(@Param("path") String path);
 }

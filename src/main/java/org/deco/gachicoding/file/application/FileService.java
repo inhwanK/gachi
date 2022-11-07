@@ -3,6 +3,7 @@ package org.deco.gachicoding.file.application;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.file.FileNotFoundException;
 import org.deco.gachicoding.file.domain.File;
 import org.deco.gachicoding.file.domain.repository.FileRepository;
 import org.deco.gachicoding.file.infrastructure.S3Service;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -35,45 +33,57 @@ public class FileService {
                 fileRepository.save(file);
         }
 
+        // async
         @Transactional
-        public void compareFilePathAndDelete(
+        public String compareFilePathAndOptimization(
                 Long idx,
                 String category,
-                List<String> pathInArticle
+                String content
         ) {
-                List<String> removePath = compareFilePath(
-                        pathInArticle,
-                        fileRepository.findFilePathByCategoryAndIdx(category, idx)
+
+                Queue<String> addedQueue = compareFilePath(
+                        imgProducer(content),
+                        findFilesByCategoryAndIdx(category, idx)
                 );
 
-                if (!removePath.isEmpty())
-                        removeAll(removePath);
-
+                return imgConsumer(idx, category, content, addedQueue);
         }
 
-        private List<String> getFilePath(Long idx, String category) {
-                return fileRepository.findFilePathByCategoryAndIdx(category, idx);
-        }
+        private Queue<String> compareFilePath(Queue<String> pathInArticle, List<File> pathInDB) {
 
-        private List<String> compareFilePath(List<String> pathInArticle, List<String> pathInDb) {
-                List<String> removeQueue = new LinkedList<>();
-                for (String path : pathInDb) {
-                        if (!pathInArticle.contains(path))
-                                removeQueue.add(path);
+                for (Iterator<String> pathIter = pathInArticle.iterator(); pathIter.hasNext();) {
+                        String path = pathIter.next();
+                        log.info("path : {}", path);
+                        for (Iterator<File> fileIter = pathInDB.iterator(); fileIter.hasNext();) {
+                                File file = fileIter.next();
+                                log.info("file : {}", file.getOriginFilename());
+
+                                if (file.compareFilePath(path)) {
+                                        log.info("같은 파일이 있네요");
+                                        pathIter.remove();
+                                        fileIter.remove();
+                                }
+                        }
                 }
 
-                return removeQueue;
+                // 추가해야 할 파일 pathInArticle
+                // 삭제해야 할 파일 pathInDB
+                if (!pathInDB.isEmpty())
+                        deleteAll(pathInDB);
+
+                return pathInArticle;
+
         }
 
         // removeAll? disableAll? -> 결정에 따라 달라 짐
-        private void removeAll(List<String> path) {
-
+        private void deleteAll(List<File> removedFiles) {
+                fileRepository.deleteAll(removedFiles);
         }
 
         // async?
         @Transactional
-        public String extractPathAndS3Upload(Long idx, String content, String category) {
-                return imgConsumer(idx, content, category, imgProducer(content));
+        public String extractPathAndS3Upload(Long idx, String category, String content) {
+                return imgConsumer(idx, category, content, imgProducer(content));
         }
 
         private Queue<String> imgProducer(String content) {
@@ -94,12 +104,12 @@ public class FileService {
                 return imgQueue;
         }
 
-        private String imgConsumer(Long idx, String content, String category, Queue<String> queue) {
+        private String imgConsumer(Long idx, String category, String content, Queue<String> queue) {
 
                 while (!queue.isEmpty()) {
                         String beforeImg = queue.poll();
 
-                        String afterImg = uploadRealImg(idx, beforeImg, category);
+                        String afterImg = uploadRealImg(idx, category, beforeImg);
 
                         log.info("beforeImg = " + beforeImg);
                         log.info("afterImg = " + afterImg);
@@ -110,7 +120,7 @@ public class FileService {
                 return content;
         }
 
-        private String uploadRealImg(Long idx, String path, String category) {
+        private String uploadRealImg(Long idx, String category, String path) {
 
                 log.info("oldPath : " + path);
 
@@ -126,5 +136,9 @@ public class FileService {
                 s3Service.replaceS3(path, newPath);
 
                 return newPath;
+        }
+
+        private List<File> findFilesByCategoryAndIdx(String category, Long idx) {
+                return fileRepository.findFileByCategoryAndIdx(category, idx);
         }
 }

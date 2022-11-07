@@ -50,6 +50,7 @@ public class S3Service {
 
             return new FileResponseDto(multipartFile.getOriginalFilename(), getS3Url(path));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new UploadFailureException();
         }
     }
@@ -75,6 +76,10 @@ public class S3Service {
     }
 
     private void putS3(MultipartFile multipartFile, String originFileName, ObjectMetadata objectMetadata) throws IOException {
+        log.info("bucket : {}", bucket);
+        log.info("originFileName : {}", originFileName);
+        log.info("multipartFile.getInputStream() : {}", multipartFile.getInputStream());
+        log.info("objectMetadata : {}", objectMetadata);
         s3Client.putObject(
                 bucket,
                 originFileName,

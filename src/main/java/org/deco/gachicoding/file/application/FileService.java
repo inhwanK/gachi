@@ -70,8 +70,13 @@ public class FileService {
 
         }
 
+        // async?
         @Transactional
-        public Queue<String> imgProducer(String content) {
+        public String extractPathAndS3Upload(Long idx, String content, String category) {
+                return imgConsumer(idx, content, category, imgProducer(content));
+        }
+
+        private Queue<String> imgProducer(String content) {
 
                 Queue<String> imgQueue = new LinkedList<>();
 
@@ -89,7 +94,7 @@ public class FileService {
                 return imgQueue;
         }
 
-        public String imgConsumer(Long idx, String content, String category, Queue<String> queue) {
+        private String imgConsumer(Long idx, String content, String category, Queue<String> queue) {
 
                 while (!queue.isEmpty()) {
                         String beforeImg = queue.poll();
@@ -118,6 +123,8 @@ public class FileService {
                 String newPath = file.getFilePath();
                 log.info("newPath : " + newPath);
 
-                return s3Service.replaceS3(path, newPath);
+                s3Service.replaceS3(path, newPath);
+
+                return newPath;
         }
 }

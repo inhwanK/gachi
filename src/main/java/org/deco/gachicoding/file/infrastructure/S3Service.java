@@ -83,17 +83,14 @@ public class S3Service {
         );
     }
 
-    public String replaceS3(String oldPath, String newPath) {
-        String result = copyS3(oldPath, newPath);
+    public void replaceS3(String oldPath, String newPath) {
+        copyS3(oldPath, newPath);
         deleteS3(oldPath);
-        return result;
     }
 
-    private String copyS3(String oldPath, String newPath) {
+    private void copyS3(String oldPath, String newPath) {
         try {
             s3Client.copyObject(bucket, oldPath, bucket, newPath);
-
-            return getS3Url(newPath);
         } catch (Exception/*AmazonS3Exception*/ e) {
             throw new S3CopyException();
         }

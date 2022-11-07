@@ -1,11 +1,9 @@
 package org.deco.gachicoding.file.domain.vo;
 
 import org.hibernate.annotations.Comment;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
 
 @Embeddable
 public class FilePath {
@@ -19,12 +17,12 @@ public class FilePath {
     private String filePath;
 
     // 유효성 검증을 어떤 걸 해야 할지 모르겠다...
-    public FilePath(String articleCategory, Long articleIdx, SaveFileInfo saveFileInfo) {
+    public FilePath(String articleCategory, Long articleIdx, SaveFileName saveFileName) {
         filePath = String.format(
                 PATH_FORMAT,
                 articleCategory,
                 articleIdx,
-                saveFileInfo.getSaveFilename()
+                saveFileName.getSaveFilename()
         );
     }
 
@@ -32,7 +30,7 @@ public class FilePath {
         return filePath;
     }
 
-    // 메서드 이름 컨벤션
+    // 메서드 이름 컨벤션 적용 하자
     public boolean isEquals(String path) {
         return filePath.equals(path);
     }

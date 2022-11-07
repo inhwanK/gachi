@@ -36,7 +36,7 @@ public class S3Service {
         return multipartFiles.stream()
                 .map(multipartFile -> upload(
                         multipartFile,
-                        FileNameSupporter.uuid(multipartFile)
+                        FileNameSupport.md5(multipartFile)
                 )).collect(toList());
     }
 

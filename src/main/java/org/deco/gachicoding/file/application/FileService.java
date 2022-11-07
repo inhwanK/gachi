@@ -56,7 +56,7 @@ public class FileService {
                         log.info("path : {}", path);
                         for (Iterator<File> fileIter = pathInDB.iterator(); fileIter.hasNext();) {
                                 File file = fileIter.next();
-                                log.info("file : {}", file.getOriginFilename());
+                                log.info("file : {}", file.getOriginFileName());
 
                                 if (file.compareFilePath(path)) {
                                         log.info("같은 파일이 있네요");

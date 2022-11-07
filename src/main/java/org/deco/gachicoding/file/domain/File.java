@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.file.domain.vo.FilePath;
-import org.deco.gachicoding.file.domain.vo.OriginFileName;
-import org.deco.gachicoding.file.domain.vo.SaveFileInfo;
+import org.deco.gachicoding.file.domain.vo.OriginFileInfo;
+import org.deco.gachicoding.file.domain.vo.SaveFileName;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -16,7 +16,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Getter
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class File extends BaseTimeEntity {
@@ -37,10 +36,10 @@ public class File extends BaseTimeEntity {
     private String articleCategory;
 
     @Embedded
-    private OriginFileName originFilename;
+    private OriginFileInfo originFileInfo;
 
     @Embedded
-    private SaveFileInfo saveFileInfo;
+    private SaveFileName saveFileName;
 
     @Embedded
     private FilePath filePath;
@@ -68,18 +67,26 @@ public class File extends BaseTimeEntity {
         this.articleIdx = articleIdx;
         this.articleCategory = articleCategory;
 
-        this.originFilename = new OriginFileName(
+        this.originFileInfo = new OriginFileInfo(
                 objectMetadata.getUserMetadata().get("OriginalFileName")
         );
-        this.saveFileInfo = new SaveFileInfo(
+        this.saveFileName = new SaveFileName(
                 objectMetadata.getUserMetadata().get("SaveFileName")
         );
-        this.filePath = new FilePath(articleCategory, articleIdx, saveFileInfo);
+        this.filePath = new FilePath(articleCategory, articleIdx, saveFileName);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
     }
 
     public boolean compareFilePath(String path) {
         return filePath.isEquals(path);
+    }
+
+    public String getOriginFileName() {
+        return originFileInfo.getOriginFilename();
+    }
+
+    public String getOriginFileExt() {
+        return originFileInfo.getOriginFileExt();
     }
 }

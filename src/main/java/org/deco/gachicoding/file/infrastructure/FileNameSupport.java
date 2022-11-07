@@ -15,10 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
-public class FileNameSupporter {
+public class FileNameSupport {
 
     private static final Tika tika = new Tika();
 
@@ -28,7 +27,8 @@ public class FileNameSupporter {
 //        return uuid(multipartFile) + extension(multipartFile);
 //    }
 
-    public static String md5(String fileName) {
+    public static String md5(MultipartFile multipartFile) {
+        String fileName = multipartFile.getOriginalFilename();
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.update((fileName + LocalDateTime.now())
@@ -37,13 +37,6 @@ public class FileNameSupporter {
         } catch (NoSuchAlgorithmException e) {
             throw new HashFailureException();
         }
-    }
-
-    public static String uuid(MultipartFile multipartFile) {
-        String fileName = multipartFile.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-
-        return uuid+"_"+fileName;
     }
 
     public static String ExtensionExtractor(String filename) {

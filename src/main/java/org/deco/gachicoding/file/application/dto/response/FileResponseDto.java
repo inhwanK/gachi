@@ -6,15 +6,15 @@ import lombok.Getter;
 @Getter
 public class FileResponseDto {
 
-    private final String originFileName;
+    private final String saveFileName;
     private final String filePath;
 
     @Builder
     public FileResponseDto(
-            String originFileName,
+            String saveFileName,
             String filePath
     ) {
-        this.originFileName = originFileName;
+        this.saveFileName = saveFileName;
         this.filePath = filePath;
     }
 }

@@ -15,6 +15,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Queue;
 
 @DynamicInsert
 @DynamicUpdate
@@ -117,6 +118,12 @@ public class Board extends BaseTimeEntity {
 
     public void updateContent(String boardContent) {
         this.boardContents = new BoardContents(boardContent);
+    }
+
+    public void replaceImgPathInContents(Queue<String> queue) {
+        while (!queue.isEmpty()) {
+            queue.poll();
+        }
     }
 
     protected Board() {}

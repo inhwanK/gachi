@@ -59,14 +59,10 @@ public class NoticeService {
         // Post.interface가 있어야 할듯 => updateContent 메서드를 가지는 추상 클래스로 만들면 좋을듯
 
         // 김인환 - 완전 동의함. 기존의 NOTICE 필드 삭제하고 일단 문자열로 넣음
-        notice.updateContent(fileService.extractImgSrc(notIdx, notContent, "NOTICE"));
 
-//        try {
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Notice Content");
-//            e.printStackTrace();
-//            // throw해줘야 Advice에서 예외를 감지 함
-//        }
+        notice.updateContent(
+                fileService.extractPathAndS3Upload(notIdx, "NOTICE", notContent)
+        );
 
         return notice.getNotIdx();
     }

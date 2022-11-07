@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Queue;
 
 @Slf4j
 @Service
@@ -29,28 +30,22 @@ public class BoardService {
     private final FileService fileService;
     private final TagService tagService;
 
-    String BOARD = "BOARD";
-
     @Transactional(rollbackFor = Exception.class)
     public Long registerBoard(BoardSaveRequestDto dto) {
+
         Board board = boardRepository.save(createBoard(dto));
 
+        // 경로에서 idx 빼버릴까
         Long boardIdx = board.getBoardIdx();
         String boardContent = board.getBoardContents();
 
+        board.updateContent(
+                fileService.extractPathAndS3Upload(boardIdx, "BOARD", boardContent)
+        );
+
+        // tagify 라이브러리
 //        if (dto.getTags() != null)
 //            tagService.registerBoardTag(boardIdx, dto.getTags(), BOARD);
-
-//        try {
-//            fileService.extractImgSrc(boardIdx, boardContent, BOARD);
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Board Content");
-//            e.printStackTrace();
-////            removeBoard(boardIdx);
-//            tagService.removeBoardTags(boardIdx, BOARD);
-//            // throw해줘야 Advice에서 예외를 감지 함
-////            throw e;
-//        }
 
         return board.getBoardIdx();
     }
@@ -92,6 +87,13 @@ public class BoardService {
 
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
+        // 무조건 async
+        String updateContents = fileService.compareFilePathAndOptimization(
+                dto.getBoardIdx(),
+                "BOARD",
+                dto.getBoardContents()
+        );
+
         Board board = findBoard(dto.getBoardIdx());
 
         if (!board.getBoardLocked())
@@ -103,9 +105,8 @@ public class BoardService {
 
         board.updateTitle(dto.getBoardTitle());
 
-        board.updateContent(dto.getBoardContents());
-
-//        board.update(dto.getBoardTitle(), dto.getBoardContents());
+        // blocking
+        board.updateContent(updateContents);
 
         return BoardDtoAssembler.boardResponseDto(board);
     }

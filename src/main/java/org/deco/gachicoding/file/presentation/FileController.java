@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class FileController {
-    private final FileService fileService;
 
     private final S3Service s3Service;
 

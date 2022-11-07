@@ -15,10 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Component
-public class FileNameGenerator {
+public class FileNameSupport {
 
     private static final Tika tika = new Tika();
 
@@ -28,7 +27,8 @@ public class FileNameGenerator {
 //        return uuid(multipartFile) + extension(multipartFile);
 //    }
 
-    public static String md5(String fileName) {
+    public static String md5(MultipartFile multipartFile) {
+        String fileName = multipartFile.getOriginalFilename();
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("MD5");
             messageDigest.update((fileName + LocalDateTime.now())
@@ -39,11 +39,8 @@ public class FileNameGenerator {
         }
     }
 
-    public static String uuid(MultipartFile multipartFile) {
-        String fileName = multipartFile.getOriginalFilename();
-        String uuid = UUID.randomUUID().toString();
-
-        return uuid+"_"+fileName;
+    public static String ExtensionExtractor(String filename) {
+        return filename.substring(filename.lastIndexOf("."));
     }
 
     // 변조 확인으로 바꾸자
@@ -57,5 +54,37 @@ public class FileNameGenerator {
         } catch (MimeTypeException | IOException e) {
             throw new FileExtensionException();
         }
+    }
+
+    public static String korToUni(String kor) {
+        StringBuffer result = new StringBuffer();
+
+        for (int i = 0;i < kor.length(); i++) {
+            int cd = kor.codePointAt(i);
+
+            if (cd < 128) {
+                result.append(String.format("%c", cd));
+            } else {
+                result.append(String.format("\\u%04x", cd));
+            }
+        }
+
+        return result.toString();
+    }
+
+    public static String uniToKor(String uni) {
+        StringBuffer result = new StringBuffer();
+
+        for (int i = 0;i < uni.length(); i++) {
+            if (uni.charAt(i) == '\\' && uni.charAt(i+1) == 'u') {
+                Character c = (char)Integer.parseInt(uni.substring(i+2, i+6), 16);
+                result.append(c);
+                i+=5;
+            } else {
+                result.append(uni.charAt(i));
+            }
+        }
+
+        return result.toString();
     }
 }

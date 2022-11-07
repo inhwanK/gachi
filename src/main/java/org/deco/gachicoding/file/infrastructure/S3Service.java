@@ -64,7 +64,11 @@ public class S3Service {
         log.info("saveFileName = {}", saveFileName);
         objectMetadata.setContentLength(multipartFile.getSize());
         objectMetadata.setContentType(multipartFile.getContentType());
-        objectMetadata.addUserMetadata("OriginalFileName", multipartFile.getOriginalFilename());
+        try {
+            objectMetadata.addUserMetadata("OriginalFileName", FileNameSupport.korToUni(multipartFile.getOriginalFilename()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         objectMetadata.addUserMetadata("SaveFileName", saveFileName);
 
         return objectMetadata;
@@ -80,6 +84,7 @@ public class S3Service {
         log.info("originFileName : {}", originFileName);
         log.info("multipartFile.getInputStream() : {}", multipartFile.getInputStream());
         log.info("objectMetadata : {}", objectMetadata);
+
         s3Client.putObject(
                 bucket,
                 originFileName,

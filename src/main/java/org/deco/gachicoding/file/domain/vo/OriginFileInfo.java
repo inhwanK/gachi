@@ -22,7 +22,7 @@ public class OriginFileInfo {
     // 유효성 검증을 어떤 걸 해야 할지 모르겠다...
     public OriginFileInfo(String originFilename) {
         this.originFileExt = FileNameSupport.ExtensionExtractor(originFilename);
-        this.originFilename = originFilename;
+        this.originFilename = FileNameSupport.uniToKor(originFilename);
     }
 
     public String getOriginFilename() {

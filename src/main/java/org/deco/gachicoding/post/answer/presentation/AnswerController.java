@@ -75,6 +75,8 @@ public class AnswerController {
         return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
+    // ansIdx를 파라미터로 받기 때문에 AnswerController 에 포함 시켰다.
+    // 하지만 채택을 하는 주체는 Question 작성자, QuestionController에 있는 편이 좋을 까?
     @ApiOperation(value = "답변 채택")
     @ApiResponses({
             @ApiResponse(code = 200, message = "채택 성공"),

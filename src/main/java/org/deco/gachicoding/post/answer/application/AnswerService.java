@@ -62,6 +62,10 @@ public class AnswerService {
 
         Answer answer = findAnswer(dto.getAnsIdx());
 
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
         if (!answer.getAnsLocked())
             throw new AnswerInactiveException();
 
@@ -69,28 +73,17 @@ public class AnswerService {
         if (answer.getAnsSelected())
             throw new CheckedAnswerModifyFailedException();
 
-        User user = findAuthor(dto.getUserEmail());
-
-        answer.hasSameAuthor(user);
-
         answer.update(updateContents);
 
         return answer.getQueIdx();
     }
 
     // 이부분 다시 한번 봐 주셈 (2022.11.09)
-    // 예외 처리가 너무 많은가?
     @Transactional
     public Long selectAnswer(AnswerBasicRequestDto dto) {
         Answer answer = findAnswer(dto.getAnsIdx());
 
-        if (!answer.getAnsLocked())
-            throw new AnswerInactiveException();
-
         Question question = answer.getQuestion();
-
-        if (!question.getQueLocked())
-            throw new QuestionInactiveException();
 
         User requester = findAuthor(dto.getUserEmail());
 
@@ -99,12 +92,14 @@ public class AnswerService {
         // hasSameAuthor -> unAuthorizedCheck 같은 걸로 바꾸는게 나은 듯
         question.hasSameAuthor(requester);
 
-        // 채택 검사
-        // 이미 해결 된 질문은 채택을 진행 할 수 없다.
-        if(question.getQueSolved())
-            throw new QuestionAlreadySolvedException();
+        if (!answer.getAnsLocked())
+            throw new AnswerInactiveException();
+
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
 
         answer.toSelect();
+
         question.toSolve();
 
         return question.getQueIdx();
@@ -114,13 +109,13 @@ public class AnswerService {
     public void disableAnswer(AnswerBasicRequestDto dto) {
         Answer answer = findAnswer(dto.getAnsIdx());
 
-        // 채택 된 답변 비 활성 불가
-        if (answer.getAnsSelected())
-            throw new CheckedAnswerDisableFailedException();
-
         User user = findAuthor(dto.getUserEmail());
 
         answer.hasSameAuthor(user);
+
+        // 채택 된 답변 비 활성 불가
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerDisableFailedException();
 
         answer.disableAnswer();
     }
@@ -140,13 +135,13 @@ public class AnswerService {
     public void removeAnswer(AnswerBasicRequestDto dto) {
         Answer answer = findAnswer(dto.getAnsIdx());
 
-        // 답변 채택 시 삭제 불가 -> 이건 생각을 좀 해봐야 할 듯?(2022-11-09)
-        if (answer.getAnsSelected())
-            throw new CheckedAnswerDeleteFailedException();
-
         User user = findAuthor(dto.getUserEmail());
 
         answer.hasSameAuthor(user);
+
+        // 답변 채택 시 삭제 불가 -> 이건 생각을 좀 해봐야 할 듯?(2022-11-09)
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerDeleteFailedException();
 
         answerRepository.delete(answer);
     }

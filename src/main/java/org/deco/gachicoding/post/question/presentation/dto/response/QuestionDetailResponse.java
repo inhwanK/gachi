@@ -3,7 +3,7 @@ package org.deco.gachicoding.post.question.presentation.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
+import org.deco.gachicoding.post.answer.application.dto.response.AnswerResponseDto;
 
 import java.time.LocalDateTime;
 import java.util.List;

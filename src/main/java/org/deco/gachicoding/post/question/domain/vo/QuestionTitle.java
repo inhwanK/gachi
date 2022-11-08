@@ -1,7 +1,7 @@
 package org.deco.gachicoding.post.question.domain.vo;
 
 import org.deco.gachicoding.exception.post.question.QuestionTitleEmptyException;
-import org.deco.gachicoding.exception.post.question.QuestionTitleFormatException;
+import org.deco.gachicoding.exception.post.question.QuestionTitleOverMaximumLengthException;
 import org.deco.gachicoding.exception.post.question.QuestionTitleNullException;
 
 import javax.persistence.Column;
@@ -46,6 +46,6 @@ public class QuestionTitle {
 
     private void validateMaximumLength(String queTitle) {
         if (queTitle.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new QuestionTitleFormatException();
+            throw new QuestionTitleOverMaximumLengthException();
     }
 }

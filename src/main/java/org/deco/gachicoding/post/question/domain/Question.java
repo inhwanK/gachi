@@ -24,28 +24,28 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Entity
 @DynamicInsert
 @DynamicUpdate
-@Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
 @Table(name = "gachi_q")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
     @Id
+    @Comment("PK")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "qs_idx", columnDefinition = "bigint", nullable = false)
-    @Comment("PK")
     private Long queIdx;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
     @JsonManagedReference
+    @JoinColumn(name = "user_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User questioner;
 
+    @JsonBackReference
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
-    @JsonBackReference
     private List<Answer> answers = new ArrayList<>();
 
     @Embedded
@@ -54,12 +54,12 @@ public class Question extends BaseTimeEntity {
     @Embedded
     private QuestionContents queContents;
 
-    @Column(name = "qs_solved", nullable = false)
     @ColumnDefault("false")
+    @Column(name = "qs_solved", nullable = false)
     private Boolean queSolved;
 
-    @Column(name = "qs_locked", nullable = false)
     @ColumnDefault("true")
+    @Column(name = "qs_locked", nullable = false)
     private Boolean queLocked;
 
     @Builder

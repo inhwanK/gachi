@@ -5,8 +5,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.post.answer.domain.vo.AnswerContents;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.user.domain.User;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -15,37 +18,37 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @DynamicUpdate
 @Table(name = "gachi_a")
-public class Answer {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Answer extends BaseTimeEntity {
+
     @Id
     @Column(name = "as_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ansIdx;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_idx")
     @JsonManagedReference
+    @JoinColumn(name = "user_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User answerer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qs_idx")
     @JsonManagedReference
+    @JoinColumn(name = "qs_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Question question;
 
-    @Column(name = "as_contents")
-    private String ansContents;
+    @Embedded
+    private AnswerContents ansContents;
 
-    @Column(name = "as_select")
+    @ColumnDefault("false")
+    @Column(name = "as_select", columnDefinition = "boolean", nullable = false)
     private Boolean ansSelect;
 
-    @Column(name = "as_activated")
-    private Boolean ansActivated;
-
-    @Column(name = "as_regdate")
-    private LocalDateTime ansRegdate;
+    @ColumnDefault("true")
+    @Column(name = "as_activated", columnDefinition = "boolean", nullable = false)
+    private Boolean ansLocked;
 
     @Builder
     public Answer(
@@ -53,15 +56,17 @@ public class Answer {
             Question question,
             String ansContents,
             Boolean ansSelect,
-            Boolean ansActivated,
-            LocalDateTime ansRegdate
+            Boolean ansLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
     ) {
         this.answerer = answerer;
         this.question = question;
-        this.ansContents = ansContents;
+        this.ansContents = new AnswerContents(ansContents);
         this.ansSelect = ansSelect;
-        this.ansActivated = ansActivated;
-        this.ansRegdate = ansRegdate;
+        this.ansLocked = ansLocked;
+        setCreatedAt(createdAt);
+        setUpdatedAt(updatedAt);
     }
 
     public void setUser(User writer) {
@@ -72,23 +77,16 @@ public class Answer {
         this.question = question;
     }
 
-    public Answer update(String ansContent) {
-        this.ansContents = ansContent;
-        return this;
+    public void update(String updateContent) {
+        ansContents = ansContents.update(updateContent);
+    }
+
+    public String getAnsContents() {
+        return ansContents.getAnswerContents();
     }
 
     public Answer toSelect() {
         this.ansSelect = true;
-        return this;
-    }
-
-    public Answer disableAnswer() {
-        this.ansActivated = false;
-        return this;
-    }
-
-    public Answer enableAnswer() {
-        this.ansActivated = true;
         return this;
     }
 }

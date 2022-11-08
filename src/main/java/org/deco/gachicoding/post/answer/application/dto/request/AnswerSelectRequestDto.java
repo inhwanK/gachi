@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.answer.dto.request;
+package org.deco.gachicoding.post.answer.application.dto.request;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

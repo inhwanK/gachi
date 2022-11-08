@@ -1,7 +1,7 @@
 package org.deco.gachicoding.post.question.domain.vo;
 
 import org.deco.gachicoding.exception.post.question.QuestionContentsEmptyException;
-import org.deco.gachicoding.exception.post.question.QuestionContentsFormatException;
+import org.deco.gachicoding.exception.post.question.QuestionContentsOverMaximumLengthException;
 import org.deco.gachicoding.exception.post.question.QuestionContentsNullException;
 
 import javax.persistence.Column;
@@ -47,6 +47,6 @@ public class QuestionContents {
     private void validateMaximumLength(String queContents) {
         // 개발
         if (queContents.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new QuestionContentsFormatException();
+            throw new QuestionContentsOverMaximumLengthException();
     }
 }

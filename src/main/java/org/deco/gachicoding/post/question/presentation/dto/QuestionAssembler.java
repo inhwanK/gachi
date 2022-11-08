@@ -1,5 +1,6 @@
 package org.deco.gachicoding.post.question.presentation.dto;
 
+import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
@@ -66,6 +67,13 @@ public class QuestionAssembler {
                 .queIdx(request.getQueIdx())
                 .queTitle(request.getQueTitle())
                 .queContents(request.getQueContents())
+                .build();
+    }
+
+    public static QuestionBasicRequestDto questionBasicRequestDto(Long queIdx, String userEmail) {
+        return QuestionBasicRequestDto.builder()
+                .queIdx(queIdx)
+                .userEmail(userEmail)
                 .build();
     }
 }

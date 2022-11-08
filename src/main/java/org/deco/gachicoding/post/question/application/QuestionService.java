@@ -6,6 +6,7 @@ import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
@@ -106,38 +107,38 @@ public class QuestionService {
         return QuestionDtoAssembler.questionResponseDto(question);
     }
 
-//    @Transactional
-//    public void disableQuestion(Long queIdx) {
-//        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-//                .orElseThrow(QuestionNotFoundException::new);
-//
-//        question.isDisable();
-////        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
-//    }
-//
-//    @Transactional
-//    public void enableQuestion(Long queIdx) {
-//        Question question = questionRepository.findById(queIdx)
-//                .orElseThrow(QuestionNotFoundException::new);
-//
-//        question.isEnable();
-////        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-//    }
-//
-//    @Transactional
-//    public void removeQuestion(Long queIdx) {
-//        Question question = questionRepository.findById(queIdx)
-//                .orElseThrow(QuestionNotFoundException::new);
-//
-//        questionRepository.delete(question);
-////        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
-//    }
+    // 활성 -> 비활성
+    @Transactional
+    public void disableQuestion(QuestionBasicRequestDto dto) {
+        Question question = findQuestion(dto.getQueIdx());
 
-    private Boolean isSameWriter(Question question, User user) {
-        String writerEmail = question.getQuestioner().getUserEmail();
-        String userEmail = user.getUserEmail();
+        User user = findAuthor(dto.getUserEmail());
 
-        return (writerEmail.equals(userEmail)) ? true : false;
+        question.hasSameAuthor(user);
+
+        question.disableQuestion();
+    }
+
+    @Transactional
+    public void enableQuestion(QuestionBasicRequestDto dto) {
+        Question question = findQuestion(dto.getQueIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        question.hasSameAuthor(user);
+
+        question.enableQuestion();
+    }
+
+    @Transactional
+    public void removeQuestion(QuestionBasicRequestDto dto) {
+        Question question = findQuestion(dto.getQueIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        question.hasSameAuthor(user);
+
+        questionRepository.delete(question);
     }
 
     private Question findQuestion(Long queIdx) {

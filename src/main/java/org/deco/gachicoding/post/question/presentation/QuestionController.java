@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.post.question.application.QuestionService;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.presentation.dto.QuestionAssembler;
 import org.deco.gachicoding.post.question.presentation.dto.request.QuestionSaveRequest;
@@ -24,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class RestQuestionController {
+public class QuestionController {
     private final QuestionService questionService;
 
     @ApiOperation(value = "질문 등록", notes = "하나의 질문 데이터를 등록.")
@@ -95,33 +96,56 @@ public class RestQuestionController {
         );
     }
 
-//    @ApiOperation(value = "질문 비활성화", notes = "사용자 입장에서 질문 데이터를 삭제")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "비활성화 성공")
-//    )
-//    @PutMapping("/question/disable/{queIdx}")
-//    public ResponseEntity<Void> disableQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
-////        return questionService.disableQuestion(queIdx);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @ApiOperation(value = "질문 활성화", notes = "사용자 입장에서 삭제된 질문 데이터 복구")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "활성화 성공")
-//    )
-//    @PutMapping("/question/enable/{queIdx}")
-//    public ResponseEntity<Void> enableQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
-////        return questionService.enableQuestion(queIdx);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @ApiOperation(value = "질문 삭제", notes = "질문 데이터를 DB에서 완전히 삭제")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "삭제 성공")
-//    )
-//    @DeleteMapping("/question/{queIdx}")
-//    public ResponseEntity<Void> removeQuestion(@ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx) {
-////        return questionService.removeQuestion(queIdx);
-//        return ResponseEntity.noContent().build();
-//    }
+    @ApiOperation(value = "질문 비활성화", notes = "사용자 입장에서 질문 데이터를 삭제")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "비활성화 성공")
+    )
+    @PutMapping("/question/disable")
+    public ResponseEntity<Void> disableQuestion(
+            @ApiParam(value = "질문 번호", example = "1") @RequestParam Long queIdx,
+            @ApiParam(value = "userEmail")
+            @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+    ) {
+
+        QuestionBasicRequestDto dto = QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);
+
+        questionService.disableQuestion(dto);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "질문 활성화", notes = "사용자 입장에서 삭제된 질문 데이터 복구")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "활성화 성공")
+    )
+    @PutMapping("/question/enable")
+    public ResponseEntity<Void> enableQuestion(
+            @ApiParam(value = "질문 번호", example = "1") @RequestParam Long queIdx,
+            @ApiParam(value = "userEmail")
+            @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+    ) {
+
+        QuestionBasicRequestDto dto = QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);
+
+        questionService.enableQuestion(dto);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @ApiOperation(value = "질문 삭제", notes = "질문 데이터를 DB에서 완전히 삭제")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "삭제 성공")
+    )
+    @DeleteMapping("/question")
+    public ResponseEntity<Void> removeQuestion(
+            @ApiParam(value = "질문 번호", example = "1") @RequestParam Long queIdx,
+            @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+    ) {
+
+        QuestionBasicRequestDto dto = QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);
+
+        questionService.removeQuestion(dto);
+
+        return ResponseEntity.noContent().build();
+    }
 }

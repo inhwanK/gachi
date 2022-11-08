@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadyInactiveException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
@@ -105,14 +107,16 @@ public class Question extends BaseTimeEntity {
         }
     }
 
-    public Question isDisable() {
-        this.queLocked = false;
-        return this;
+    public void enableQuestion() {
+        if (this.queLocked)
+            throw new QuestionAlreadyActiveException();
+        this.queLocked = true;
     }
 
-    public Question isEnable() {
-        this.queLocked = true;
-        return this;
+    public void disableQuestion() {
+        if (!this.queLocked)
+            throw new QuestionAlreadyInactiveException();
+        this.queLocked = false;
     }
 
     public String getQueTitle() {

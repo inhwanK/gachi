@@ -3,7 +3,7 @@ package org.deco.gachicoding.post.question.presentation.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.deco.gachicoding.post.answer.application.dto.response.AnswerResponseDto;
+import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,7 +16,7 @@ public class QuestionDetailResponse {
     private String userEmail;
     private String userNick;
 
-    private List<AnswerResponseDto> answerList;
+    private List<AnswerResponse> answerList;
 
     private String queTitle;
     private String queContents;
@@ -29,7 +29,7 @@ public class QuestionDetailResponse {
             Long queIdx,
             String userEmail,
             String userNick,
-            List<AnswerResponseDto> answerList,
+            List<AnswerResponse> answerList,
             String queTitle,
             String queContents,
             boolean queSolved,

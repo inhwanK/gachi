@@ -1,5 +1,8 @@
 package org.deco.gachicoding.post.question.application.dto;
 
+import org.deco.gachicoding.post.answer.domain.Answer;
+import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
+import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
@@ -45,7 +48,7 @@ public class QuestionDtoAssembler {
         return QuestionDetailResponseDto.builder()
                 .queIdx(question.getQueIdx())
                 .questioner(question.getQuestioner())
-                .answers(question.getAnswers())
+                .answers(answerResponses(question))
                 .queTitle(question.getQueTitle())
                 .queContents(question.getQueContents())
                 .queSolved(question.getQueSolved())
@@ -53,6 +56,14 @@ public class QuestionDtoAssembler {
                 .createdAt(question.getCreatedAt())
                 .updatedAt(question.getUpdatedAt())
                 .build();
+    }
+
+    private static List<AnswerResponse> answerResponses(Question question) {
+        List<Answer> answers = question.getAnswers();
+
+        return answers.stream()
+                .map(AnswerAssembler::answerResponse)
+                .collect(toList());
     }
 
 }

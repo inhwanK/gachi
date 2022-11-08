@@ -1,14 +1,19 @@
 package org.deco.gachicoding.post.question.presentation.dto;
 
+import org.deco.gachicoding.post.answer.domain.Answer;
+import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
+import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
+import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.presentation.dto.request.QuestionSaveRequest;
 import org.deco.gachicoding.post.question.presentation.dto.request.QuestionUpdateRequest;
 import org.deco.gachicoding.post.question.presentation.dto.response.QuestionDetailResponse;
 import org.deco.gachicoding.post.question.presentation.dto.response.QuestionListResponse;
+import org.deco.gachicoding.user.domain.User;
 
 import java.util.List;
 
@@ -27,11 +32,13 @@ public class QuestionAssembler {
     }
 
     public static QuestionDetailResponse questionDetailResponse(QuestionDetailResponseDto dto) {
+        User questioner = dto.getQuestioner();
+
         return QuestionDetailResponse.builder()
                 .queIdx(dto.getQueIdx())
-                .userEmail(dto.getQuestioner().getUserEmail())
-                .userNick(dto.getQuestioner().getUserNick())
-                .answerList(dto.getAnswerList())
+                .userEmail(questioner.getUserEmail())
+                .userNick(questioner.getUserNick())
+                .answerList(dto.getAnswers())
                 .queTitle(dto.getQueTitle())
                 .queContents(dto.getQueContents())
                 .queSolved(dto.isQueSolved())

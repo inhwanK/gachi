@@ -2,8 +2,6 @@ package org.deco.gachicoding.post.question.application.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.user.domain.User;
@@ -13,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class QuestionDetailResponseDto {
 
     private Long queIdx;

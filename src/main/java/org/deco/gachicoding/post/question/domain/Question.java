@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.post.question.domain.vo.QuestionTitle;
@@ -98,6 +99,12 @@ public class Question extends BaseTimeEntity {
         return this;
     }
 
+    public void hasSameAuthor(User user) {
+        if (questioner != user) {
+            throw new UserUnAuthorizedException();
+        }
+    }
+
     public Question isDisable() {
         this.queLocked = false;
         return this;
@@ -116,12 +123,12 @@ public class Question extends BaseTimeEntity {
         return queContents.getQuestionContents();
     }
 
-    public void updateTitle(String queTitle) {
-        this.queTitle = new QuestionTitle(queTitle);
+    public void updateTitle(String updateTitle) {
+        queTitle = queTitle.update(updateTitle);
     }
 
-    public void updateContent(String queContents) {
-        this.queContents = new QuestionContents(queContents);
+    public void updateContent(String updateContents) {
+        queContents = queContents.update(updateContents);
     }
 
 }

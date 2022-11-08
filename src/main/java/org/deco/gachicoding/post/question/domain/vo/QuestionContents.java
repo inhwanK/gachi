@@ -28,6 +28,12 @@ public class QuestionContents {
         return queContents;
     }
 
+    public QuestionContents update(String updateContents) {
+        if (queContents.equals(updateContents))
+            return this;
+        return new QuestionContents(updateContents);
+    }
+
     private void validateNullContents(String queContents) {
         if (queContents == null)
             throw new QuestionContentsNullException();

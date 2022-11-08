@@ -3,9 +3,11 @@ package org.deco.gachicoding.post.question.presentation;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.application.QuestionService;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.presentation.dto.QuestionAssembler;
+import org.deco.gachicoding.post.question.presentation.dto.request.QuestionSaveRequest;
+import org.deco.gachicoding.post.question.presentation.dto.request.QuestionUpdateRequest;
 import org.deco.gachicoding.post.question.presentation.dto.response.QuestionDetailResponse;
 import org.deco.gachicoding.post.question.presentation.dto.response.QuestionListResponse;
 import org.springframework.data.domain.Pageable;
@@ -30,10 +32,15 @@ public class RestQuestionController {
             @ApiResponse(code = 200, message = "등록된 질문 번호 반환")
     )
     @PostMapping("/question")
-    public Long registerQuestion(@ApiParam(value = "질문 요청 body 정보") @Valid @RequestBody QuestionSaveRequestDto dto) {
+    public Long registerQuestion(
+            @ApiParam(value = "질문 요청 body 정보")
+            @RequestBody @Valid QuestionSaveRequest request
+    ) {
         log.info("{} Register Controller", "Question");
 
-        return questionService.registerQuestion(dto);
+        return questionService.registerQuestion(
+                QuestionAssembler.questionSaveRequestDto(request)
+        );
     }
 
     @ApiOperation(value = "질문 리스트", notes = "여러 개의 질문 데이터 응답. 이 때, 질문별 답변 데이터는 포함하지 않음.")
@@ -59,7 +66,8 @@ public class RestQuestionController {
     )
     @GetMapping("/question/{queIdx}")
     public ResponseEntity<QuestionDetailResponse> getQuestionDetail(
-            @ApiParam(value = "질문 번호", example = "1") @PathVariable Long queIdx
+            @ApiParam(value = "질문 번호", example = "1")
+            @PathVariable Long queIdx
     ) {
 
         return ResponseEntity.ok(
@@ -69,15 +77,24 @@ public class RestQuestionController {
         );
     }
 
-//    @ApiOperation(value = "질문 수정", notes = "질문 데이터를 수정 (리팩토링 필요함)")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
-//    )
-//    @PutMapping("/question/modify")
-//    public QuestionDetailResponseDto modifyQuestion(@ApiParam(value = "질문 수정 요청 body 정보") @RequestBody QuestionUpdateRequestDto dto) {
-//        return questionService.modifyQuestion(dto);
-//    }
-//
+    @ApiOperation(value = "질문 수정", notes = "질문 데이터를 수정 (리팩토링 필요함)")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
+    )
+    @PutMapping("/question/modify")
+    public ResponseEntity<QuestionDetailResponse> modifyQuestion(
+            @ApiParam(value = "질문 수정 요청 body 정보")
+            @RequestBody @Valid QuestionUpdateRequest request) {
+
+        QuestionUpdateRequestDto dto = QuestionAssembler.questionUpdateRequestDto(request);
+
+        return ResponseEntity.ok(
+                QuestionAssembler.questionDetailResponse(
+                        questionService.modifyQuestion(dto)
+                )
+        );
+    }
+
 //    @ApiOperation(value = "질문 비활성화", notes = "사용자 입장에서 질문 데이터를 삭제")
 //    @ApiResponses(
 //            @ApiResponse(code = 200, message = "비활성화 성공")

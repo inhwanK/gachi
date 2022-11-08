@@ -6,9 +6,11 @@ import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
+import org.deco.gachicoding.post.question.presentation.dto.response.QuestionDetailResponse;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -79,30 +81,31 @@ public class QuestionService {
         return QuestionDtoAssembler.questionResponseDto(question);
     }
 
-//    @Transactional
-//    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
-//        Question question = questionRepository.findById(dto.getQueIdx())
-//                .orElseThrow(QuestionNotFoundException::new);
-//
-//        // 작성자와 수정 시도하는 유저가 같은지 판별
-//        // 아마 제공되는 인증 로직이 있지 않을까 싶음.
-//        User user = userRepository.findByUserEmail(dto.getUserEmail())
-//                .orElseThrow(UserNotFoundException::new);
-//
-//        if (!isSameWriter(question, user)) {
-//            throw new UserUnAuthorizedException();
-//        }
-//
-//        // null 문제 해결 못함
-//        question = question.update(dto);
-//
-//        QuestionDetailResponseDto questionDetail = QuestionDetailResponseDto.builder()
-//                .question(question)
-//                .build();
-//
-//        return questionDetail;
-//    }
-//
+    @Transactional
+    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
+        String updateContents = fileService.compareFilePathAndOptimization(
+                dto.getQueIdx(),
+                "QUESTION",
+                dto.getQueContents()
+        );
+
+        Question question = findQuestion(dto.getQueIdx());
+
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
+
+        User user = findAuthor(dto.getUserEmail());
+
+        question.hasSameAuthor(user);
+
+        question.update(
+                dto.getQueTitle(),
+                dto.getQueContents()
+        );
+
+        return QuestionDtoAssembler.questionResponseDto(question);
+    }
+
 //    @Transactional
 //    public void disableQuestion(Long queIdx) {
 //        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)

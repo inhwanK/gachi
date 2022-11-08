@@ -28,6 +28,12 @@ public class QuestionTitle {
         return queTitle;
     }
 
+    public QuestionTitle update(String updateTitle) {
+        if (queTitle.equals(updateTitle))
+            return this;
+        return new QuestionTitle(updateTitle);
+    }
+
     private void validateNullTitle(String queTitle) {
         if (queTitle == null)
             throw new QuestionTitleNullException();

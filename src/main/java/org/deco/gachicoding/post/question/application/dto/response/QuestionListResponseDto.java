@@ -10,8 +10,6 @@ import org.deco.gachicoding.user.domain.User;
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
-@NoArgsConstructor
 public class QuestionListResponseDto {
 
     private Long queIdx;

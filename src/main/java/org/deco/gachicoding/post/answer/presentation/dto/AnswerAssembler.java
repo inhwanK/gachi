@@ -1,7 +1,7 @@
 package org.deco.gachicoding.post.answer.presentation.dto;
 
 import org.deco.gachicoding.post.answer.application.dto.request.AnswerSaveRequestDto;
-import org.deco.gachicoding.post.answer.application.dto.request.AnswerSelectRequestDto;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerBasicRequestDto;
 import org.deco.gachicoding.post.answer.application.dto.request.AnswerUpdateRequestDto;
 import org.deco.gachicoding.post.answer.presentation.dto.request.AnswerSaveRequest;
 import org.deco.gachicoding.post.answer.presentation.dto.request.AnswerUpdateRequest;
@@ -30,11 +30,11 @@ public class AnswerAssembler {
                 .build();
     }
 
-    public static AnswerSelectRequestDto answerSelectRequestDto(
+    public static AnswerBasicRequestDto answerBasicRequestDto(
             Long ansIdx,
             String userEmail
     ) {
-        return AnswerSelectRequestDto.builder()
+        return AnswerBasicRequestDto.builder()
                 .ansIdx(ansIdx)
                 .userEmail(userEmail)
                 .build();

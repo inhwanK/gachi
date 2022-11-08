@@ -6,6 +6,9 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.post.answer.AnswerAlreadyActiveException;
+import org.deco.gachicoding.exception.post.answer.AnswerAlreadyInactiveException;
+import org.deco.gachicoding.exception.post.answer.AnswerAlreadySelectedException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.vo.AnswerContents;
 import org.deco.gachicoding.post.question.domain.Question;
@@ -96,8 +99,22 @@ public class Answer extends BaseTimeEntity {
         return ansContents.getAnswerContents();
     }
 
-    public Answer toSelect() {
+    public void toSelect() {
+        // 이미 채택 되어있으면
+        if (this.ansSelected)
+            throw new AnswerAlreadySelectedException();
         this.ansSelected = true;
-        return this;
+    }
+
+    public void enableAnswer() {
+        if (this.ansLocked)
+            throw new AnswerAlreadyActiveException();
+        this.ansLocked = true;
+    }
+
+    public void disableAnswer() {
+        if (!this.ansLocked)
+            throw new AnswerAlreadyInactiveException();
+        this.ansLocked = false;
     }
 }

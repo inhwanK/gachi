@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyInactiveException;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadySolvedException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
@@ -96,15 +97,16 @@ public class Question extends BaseTimeEntity {
         updateContent(queContents);
     }
 
-    public Question toSolve() {
+    public void toSolve() {
+        // 이미 해결 상태의 질문은 채택 불가능
+        if(this.queSolved)
+            throw new QuestionAlreadySolvedException();
         this.queSolved = true;
-        return this;
     }
 
     public void hasSameAuthor(User user) {
-        if (questioner != user) {
+        if (questioner != user)
             throw new UserUnAuthorizedException();
-        }
     }
 
     public void enableQuestion() {

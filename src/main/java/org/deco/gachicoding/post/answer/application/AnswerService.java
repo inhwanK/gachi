@@ -2,14 +2,12 @@ package org.deco.gachicoding.post.answer.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.post.answer.AnswerAlreadySelectedException;
-import org.deco.gachicoding.exception.post.answer.AnswerInactiveException;
-import org.deco.gachicoding.exception.post.answer.AnswerNotFoundException;
+import org.deco.gachicoding.exception.post.answer.*;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadySolvedException;
 import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
-import org.deco.gachicoding.post.answer.application.dto.request.AnswerSelectRequestDto;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerBasicRequestDto;
 import org.deco.gachicoding.post.answer.application.dto.request.AnswerUpdateRequestDto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
@@ -54,26 +52,6 @@ public class AnswerService {
         return dto.toEntity(user, question);
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<AnswerResponseDto> getAnswerList(String keyword, Pageable pageable) {
-//        Page<Answer> answers = answerRepository.findByAnsContentsContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, pageable);
-//        Page<AnswerResponseDto> answersList = answers.map(
-//                result -> new AnswerResponseDto(result)
-//        );
-//        return answersList;
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public AnswerResponseDto getAnswerDetail(Long ansIdx) {
-//        Answer answer = answerRepository.findById(ansIdx)
-//                .orElseThrow(AnswerNotFoundException::new);
-//
-//        AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-//                .answer(answer)
-//                .build();
-//        return answerDetail;
-//    }
-
     @Transactional
     public Long modifyAnswer(AnswerUpdateRequestDto dto) {
         String updateContents = fileService.compareFilePathAndOptimization(
@@ -87,6 +65,10 @@ public class AnswerService {
         if (!answer.getAnsLocked())
             throw new AnswerInactiveException();
 
+        // 이미 채택 된 답변을 수정 할 수 없다.
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerModifyFailedException();
+
         User user = findAuthor(dto.getUserEmail());
 
         answer.hasSameAuthor(user);
@@ -99,7 +81,7 @@ public class AnswerService {
     // 이부분 다시 한번 봐 주셈 (2022.11.09)
     // 예외 처리가 너무 많은가?
     @Transactional
-    public Long selectAnswer(AnswerSelectRequestDto dto) {
+    public Long selectAnswer(AnswerBasicRequestDto dto) {
         Answer answer = findAnswer(dto.getAnsIdx());
 
         if (!answer.getAnsLocked())
@@ -122,57 +104,51 @@ public class AnswerService {
         if(question.getQueSolved())
             throw new QuestionAlreadySolvedException();
 
-        // 이미 채택 된 답변을 다시 채택 할 수 없다.
-        if (answer.getAnsSelected())
-            throw new AnswerAlreadySelectedException();
-
         answer.toSelect();
         question.toSolve();
 
         return question.getQueIdx();
     }
 
-//    @Transactional
-//    public void disableAnswer(Long ansIdx) {
-//        Answer answer = answerRepository.findById(ansIdx)
-//                .orElseThrow(AnswerNotFoundException::new);
-//
-//        answer.disableAnswer();
-////        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
-//    }
-//
-//    @Transactional
-//    public void enableAnswer(Long ansIdx) {
-//        Answer answer = answerRepository.findById(ansIdx)
-//                .orElseThrow(AnswerNotFoundException::new);
-//
-//        answer.enableAnswer();
-////        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-//    }
-//
-//    @Transactional
-//    public void removeAnswer(Long ansIdx) {
-//        Answer answer = answerRepository.findById(ansIdx)
-//                .orElseThrow(AnswerNotFoundException::new);
-//
-//        answerRepository.delete(answer);
-////        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
-//    }
-//
-//    private Boolean isSameWriter(Answer answer, User user) {
-//        String writerEmail = answer.getAnswerer().getUserEmail();
-//        String userEmail = user.getUserEmail();
-//
-//        return (writerEmail.equals(userEmail)) ? true : false;
-//    }
+    @Transactional
+    public void disableAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
 
-    // answer의 작성자가 아니라 question의 작성자가 맞는지 검사해야한다.
-    // 하지만 위의 메서드와 하는 일은 같으니 통합시킬 수 없을까?
-    private Boolean selectAuthCheck(Question question, User user) {
-        String writerEmail = question.getQuestioner().getUserEmail();
-        String userEmail = user.getUserEmail();
+        // 채택 된 답변 비 활성 불가
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerDisableFailedException();
 
-        return (writerEmail.equals(userEmail)) ? true : false;
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
+        answer.disableAnswer();
+    }
+
+    @Transactional
+    public void enableAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
+        answer.enableAnswer();
+    }
+
+    @Transactional
+    public void removeAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        // 답변 채택 시 삭제 불가 -> 이건 생각을 좀 해봐야 할 듯?(2022-11-09)
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerDeleteFailedException();
+
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
+        answerRepository.delete(answer);
     }
 
     private Question findQuestion(Long queIdx) {

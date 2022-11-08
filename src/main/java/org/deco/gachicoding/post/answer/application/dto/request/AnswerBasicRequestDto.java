@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Getter
-public class AnswerSelectRequestDto {
+public class AnswerBasicRequestDto {
 
     @NotNull
     @ApiModelProperty(value = "답변 번호", required = true, example = "1")
@@ -20,7 +20,7 @@ public class AnswerSelectRequestDto {
     private String userEmail;
 
     @Builder
-    public AnswerSelectRequestDto(
+    public AnswerBasicRequestDto(
             Long ansIdx,
             String userEmail
     ) {

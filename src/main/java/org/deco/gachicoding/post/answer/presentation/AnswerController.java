@@ -76,18 +76,27 @@ public class AnswerController {
         return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
-//    @ApiOperation(value = "답변 채택")
-//    @ApiResponses({
-//            @ApiResponse(code = 200, message = "채택 성공"),
-//            @ApiResponse(code = 409, message = "해결이 완료된 질문입니다"),
-//            @ApiResponse(code = 500, message = "권한이 없는 유저입니다")
-//    })
-//    @PutMapping("/answer/select")
-//    public ResponseEntity<Void> selectAnswer(@ApiParam(value = "답변 채택 요청 body 정보") @RequestBody AnswerSelectRequestDto dto) {
-////        return answerService.selectAnswer(dto);
-//        return ResponseEntity.noContent().build();
-//    }
-//
+    @ApiOperation(value = "답변 채택")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "채택 성공"),
+            @ApiResponse(code = 409, message = "해결이 완료된 질문입니다"),
+            @ApiResponse(code = 500, message = "권한이 없는 유저입니다")
+    })
+    @PutMapping("/answer/select")
+    public ResponseEntity<Void> selectAnswer(
+            @ApiParam(value = "질문 번호", example = "1") @RequestParam Long ansIdx,
+            @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+    ) {
+
+        Long queIdx = answerService.selectAnswer(
+                AnswerAssembler.answerSelectRequestDto(ansIdx, userEmail)
+        );
+
+        String redirectUrl = String.format(REDIRECT_URL, queIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
+    }
+
 //    @ApiOperation(value = "답변 비활성화")
 //    @ApiResponses(
 //            @ApiResponse(code = 200, message = "비활성화 성공")

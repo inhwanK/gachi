@@ -16,8 +16,8 @@ public class AnswerResponseDto {
     private String userNick;
     private Long queIdx;
     private String ansContent;
-    private Boolean ansSelect;
-    private Boolean ansLocked;
+    private boolean ansSelected;
+    private boolean ansLocked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -29,7 +29,7 @@ public class AnswerResponseDto {
         setQuestionInfo(answer);
         this.ansIdx = answer.getAnsIdx();
         this.ansContent = answer.getAnsContents();
-        this.ansSelect = answer.getAnsSelect();
+        this.ansSelected = answer.getAnsSelected();
         this.ansLocked = answer.getAnsLocked();
         this.createdAt = answer.getCreatedAt();
         this.updatedAt = answer.getUpdatedAt();

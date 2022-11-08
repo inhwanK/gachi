@@ -1,19 +1,19 @@
-package org.deco.gachicoding.exception.post.question;
+package org.deco.gachicoding.exception.post.answer;
 
 import org.deco.gachicoding.exception.post.PostException;
 import org.springframework.http.HttpStatus;
 
-public class QuestionAlreadyInactiveException extends PostException {
+public class AnswerAlreadySelectedException extends PostException {
 
-    private static final String ERROR_CODE = "Q0003";
+    private static final String ERROR_CODE = "A0005";
     private static final HttpStatus HTTP_STATUS = HttpStatus.CONFLICT;
-    private static final String MESSAGE = "이미 비활성화 된 질문입니다.";
+    private static final String MESSAGE = "이미 채택 된 답변입니다.";
 
-    public QuestionAlreadyInactiveException() {
+    public AnswerAlreadySelectedException() {
         this(ERROR_CODE, HTTP_STATUS, MESSAGE);
     }
 
-    private QuestionAlreadyInactiveException(
+    private AnswerAlreadySelectedException(
             String errorCode,
             HttpStatus httpStatus,
             String message

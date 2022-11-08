@@ -2,13 +2,14 @@ package org.deco.gachicoding.post.answer.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.answer.AnswerAlreadySelectedException;
 import org.deco.gachicoding.exception.post.answer.AnswerInactiveException;
 import org.deco.gachicoding.exception.post.answer.AnswerNotFoundException;
-import org.deco.gachicoding.exception.post.notice.NoticeInactiveException;
-import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadySolvedException;
+import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
-import org.deco.gachicoding.post.answer.application.dto.AnswerDtoAssembler;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerSelectRequestDto;
 import org.deco.gachicoding.post.answer.application.dto.request.AnswerUpdateRequestDto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
@@ -95,30 +96,42 @@ public class AnswerService {
         return answer.getQueIdx();
     }
 
-//    // 질문 작성자 확인 로직 추가
-//    @Transactional
-//    public void selectAnswer(AnswerSelectRequestDto dto) {
-//        Answer answer = answerRepository.findById(dto.getAnsIdx())
-//                .orElseThrow(AnswerNotFoundException::new);
-//
-//        Question question = answer.getQuestion();
-//
-//        User user = userRepository.findByUserEmail(dto.getUserEmail())
-//                .orElseThrow(UserNotFoundException::new);
-//
-//        // 좀 헷갈리지만 같을때 true가 나오기 때문에 !를 붙여야함
-//        if(!selectAuthCheck(question, user))
-////            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
-//
-//        if(!question.getQueSolved()) {
-//            answer.toSelect();
-//            question.toSolve();
-////            return ResponseState.toResponseEntity(SELECT_SUCCESS);
-//        } else {
-////            return ResponseState.toResponseEntity(ALREADY_SOLVE);
-//        }
-//    }
-//
+    // 이부분 다시 한번 봐 주셈 (2022.11.09)
+    // 예외 처리가 너무 많은가?
+    @Transactional
+    public Long selectAnswer(AnswerSelectRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        if (!answer.getAnsLocked())
+            throw new AnswerInactiveException();
+
+        Question question = answer.getQuestion();
+
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
+
+        User requester = findAuthor(dto.getUserEmail());
+
+        // 답변을 채택하는 사람은 질문을 작성한 작성자이기 때문에
+        // 요청을 보낸 요청자와 질문의 작성자가 같아야 채택 가능
+        // hasSameAuthor -> unAuthorizedCheck 같은 걸로 바꾸는게 나은 듯
+        question.hasSameAuthor(requester);
+
+        // 채택 검사
+        // 이미 해결 된 질문은 채택을 진행 할 수 없다.
+        if(question.getQueSolved())
+            throw new QuestionAlreadySolvedException();
+
+        // 이미 채택 된 답변을 다시 채택 할 수 없다.
+        if (answer.getAnsSelected())
+            throw new AnswerAlreadySelectedException();
+
+        answer.toSelect();
+        question.toSolve();
+
+        return question.getQueIdx();
+    }
+
 //    @Transactional
 //    public void disableAnswer(Long ansIdx) {
 //        Answer answer = answerRepository.findById(ansIdx)
@@ -152,16 +165,15 @@ public class AnswerService {
 //
 //        return (writerEmail.equals(userEmail)) ? true : false;
 //    }
-//
-//    // answer의 작성자가 아니라 question의 작성자가 맞는지 검사해야한다.
-//    // 하지만 위의 메서드와 하는 일은 같으니 통합시킬 수 없을까?
-//    // 뒤는 부탁할게 인환몬!
-//    private Boolean selectAuthCheck(Question question, User user) {
-//        String writerEmail = question.getQuestioner().getUserEmail();
-//        String userEmail = user.getUserEmail();
-//
-//        return (writerEmail.equals(userEmail)) ? true : false;
-//    }
+
+    // answer의 작성자가 아니라 question의 작성자가 맞는지 검사해야한다.
+    // 하지만 위의 메서드와 하는 일은 같으니 통합시킬 수 없을까?
+    private Boolean selectAuthCheck(Question question, User user) {
+        String writerEmail = question.getQuestioner().getUserEmail();
+        String userEmail = user.getUserEmail();
+
+        return (writerEmail.equals(userEmail)) ? true : false;
+    }
 
     private Question findQuestion(Long queIdx) {
         return questionRepository.findQuestionByIdx(queIdx)

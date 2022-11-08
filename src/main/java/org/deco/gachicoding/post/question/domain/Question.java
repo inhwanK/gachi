@@ -6,9 +6,16 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadyInactiveException;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.Answer;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
+import org.deco.gachicoding.post.question.domain.vo.QuestionTitle;
 import org.deco.gachicoding.user.domain.User;
-import org.deco.gachicoding.post.question.dto.request.QuestionUpdateRequestDto;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -23,10 +30,12 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "gachi_q")
-public class Question {
+public class Question extends BaseTimeEntity {
+
     @Id
-    @Column(name = "qs_idx")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "qs_idx", columnDefinition = "bigint", nullable = false)
+    @Comment("PK")
     private Long queIdx;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,26 +48,19 @@ public class Question {
     @JsonBackReference
     private List<Answer> answers = new ArrayList<>();
 
-    @Column(name = "qs_title")
-    private String queTitle;
+    @Embedded
+    private QuestionTitle queTitle;
 
-    @Column(name = "qs_contents")
-    private String queContents;
+    @Embedded
+    private QuestionContents queContents;
 
-    @Column(name = "qs_error")
-    private String queError;
+    @Column(name = "qs_solved", nullable = false)
+    @ColumnDefault("false")
+    private Boolean queSolved;
 
-    @Column(name = "qs_category")
-    private String queCategory;
-
-    @Column(name = "qs_solve")
-    private Boolean queSolve;
-
-    @Column(name = "qs_activated")
-    private Boolean queActivated;
-
-    @Column(name = "qs_regdate")
-    private LocalDateTime queRegdate;
+    @Column(name = "qs_locked", nullable = false)
+    @ColumnDefault("true")
+    private Boolean queLocked;
 
     @Builder
     public Question(
@@ -66,21 +68,19 @@ public class Question {
             Long queIdx,
             String queTitle,
             String queContents,
-            String queError,
-            String queCategory,
-            Boolean queSolve,
-            Boolean queActivated,
-            LocalDateTime queRegdate
+            Boolean queSolved,
+            Boolean queLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
     ) {
         this.questioner = questioner;
         this.queIdx = queIdx;
-        this.queTitle = queTitle;
-        this.queContents = queContents;
-        this.queError = queError;
-        this.queCategory = queCategory;
-        this.queSolve = queSolve;
-        this.queActivated = queActivated;
-        this.queRegdate = queRegdate;
+        this.queTitle = new QuestionTitle(queTitle);
+        this.queContents = new QuestionContents(queContents);
+        this.queSolved = queSolved;
+        this.queLocked = queLocked;
+        setCreatedAt(createdAt);
+        setUpdatedAt(updatedAt);
     }
 
     public void setUser(User user) {
@@ -91,37 +91,48 @@ public class Question {
         this.answers.add(answer);
     }
 
-    public Question update(QuestionUpdateRequestDto dto) {
-        this.queTitle = dto.getQueTitle();
-        this.queContents = dto.getQueContent();
-        this.queError = dto.getQueError();
-        this.queCategory = dto.getQueCategory();
-        return this;
+    public void update(String queTitle, String queContents) {
+        updateTitle(queTitle);
+        updateContent(queContents);
     }
 
     public Question toSolve() {
-        this.queSolve = true;
+        this.queSolved = true;
         return this;
     }
 
-    public Question isDisable() {
-        this.queActivated = false;
-        return this;
+    public void hasSameAuthor(User user) {
+        if (questioner != user) {
+            throw new UserUnAuthorizedException();
+        }
     }
 
-    public Question isEnable() {
-        this.queActivated = true;
-        return this;
+    public void enableQuestion() {
+        if (this.queLocked)
+            throw new QuestionAlreadyActiveException();
+        this.queLocked = true;
     }
 
-    public Question updateContent(String queContent) {
-        this.queContents = queContent;
-        return this;
+    public void disableQuestion() {
+        if (!this.queLocked)
+            throw new QuestionAlreadyInactiveException();
+        this.queLocked = false;
     }
 
-    public Question updateError(String queError) {
-        this.queError = queError;
-        return this;
+    public String getQueTitle() {
+        return queTitle.getQuestionTitle();
+    }
+
+    public String getQueContents() {
+        return queContents.getQuestionContents();
+    }
+
+    public void updateTitle(String updateTitle) {
+        queTitle = queTitle.update(updateTitle);
+    }
+
+    public void updateContent(String updateContents) {
+        queContents = queContents.update(updateContents);
     }
 
 }

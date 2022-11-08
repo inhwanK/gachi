@@ -2,23 +2,27 @@ package org.deco.gachicoding.post.question.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
-import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
+import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
+import org.deco.gachicoding.post.question.presentation.dto.response.QuestionDetailResponse;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.question.dto.response.QuestionDetailPostResponseDto;
-import org.deco.gachicoding.post.question.dto.response.QuestionListResponseDto;
-import org.deco.gachicoding.post.question.dto.request.QuestionSaveRequestDto;
-import org.deco.gachicoding.post.question.dto.request.QuestionUpdateRequestDto;
-import org.springframework.data.domain.Page;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
+import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
+import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Slf4j
 @Service
@@ -29,125 +33,121 @@ public class QuestionService {
     private final UserRepository userRepository;
     private final FileService fileService;
     private final TagService tagService;
-    private final String BOARD_TYPE = "QUESTION";
 
-    @Transactional
-    public Long registerQuestion(QuestionSaveRequestDto dto) throws Exception {
-        User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(UserNotFoundException::new);
+    @Transactional(rollbackFor = Exception.class)
+    public Long registerQuestion(
+            QuestionSaveRequestDto dto
+    ) {
 
-        Question question = questionRepository.save(dto.toEntity(writer));
+        Question question = questionRepository.save(createQuestion(dto));
 
         Long queIdx = question.getQueIdx();
         String queContent = question.getQueContents();
-        String queError = question.getQueError();
 
-        if (dto.getTags() != null)
-            tagService.registerBoardTag(queIdx, dto.getTags(), BOARD_TYPE);
-
-        try {
-//            question.updateContent(fileService.extractImgSrc(queIdx, queContent, BOARD_TYPE));
-//            question.updateError(fileService.extractImgSrc(queIdx, queError, BOARD_TYPE));
-            log.info("Success Upload Question Idx : {}", queIdx);
-        } catch (Exception e) {
-            log.error("Failed To Extract {} File", "Question Content");
-            e.printStackTrace();
-//            removeQuestion(queIdx);
-            tagService.removeBoardTags(queIdx, BOARD_TYPE);
-            throw e;
-        }
+        question.updateContent(
+                fileService.extractPathAndS3Upload(queIdx, "QUESTION", queContent)
+        );
 
         return queIdx;
     }
 
-    // 리팩토링 - 검색 조건에 error도 추가
-    @Transactional(readOnly = true)
-    public Page<QuestionListResponseDto> getQuestionList(String keyword, Pageable pageable) {
-        Page<Question> questions = questionRepository.findByQueContentsContainingIgnoreCaseAndQueActivatedTrueOrQueTitleContainingIgnoreCaseAndQueActivatedTrueOrderByQueIdxDesc(keyword, keyword, pageable);
+    private Question createQuestion(QuestionSaveRequestDto dto) {
+        User user = findAuthor(dto.getUserEmail());
 
-        Page<QuestionListResponseDto> questionList = questions.map(
-                result -> new QuestionListResponseDto(result)
-        );
-
-        questionList.forEach(
-                questionListResponseDto ->
-                        tagService.getTags(questionListResponseDto.getQueIdx(), BOARD_TYPE, questionListResponseDto)
-        );
-
-        return questionList;
+        return QuestionDtoAssembler.question(user, dto);
     }
-
 
     @Transactional(readOnly = true)
-    public QuestionDetailPostResponseDto getQuestionDetail(Long queIdx) {
-        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(QuestionNotFoundException::new);
+    public List<QuestionListResponseDto> getQuestionList(
+            String keyword,
+            Pageable pageable
+    ) {
 
-        QuestionDetailPostResponseDto questionDetail = QuestionDetailPostResponseDto.builder()
-                .question(question)
-                .build();
+        return QuestionDtoAssembler.questionResponseDtos(
+                questionRepository.findAllQuestionByKeyword(
+                        keyword,
+                        pageable
+                )
+        );
+    }
 
-//        fileService.getFiles(queIdx, BOARD_TYPE, questionDetail);
-        tagService.getTags(queIdx, BOARD_TYPE, questionDetail);
 
-        return questionDetail;
+    @Transactional(readOnly = true)
+    public QuestionDetailResponseDto getQuestionDetail(Long queIdx) {
+        Question question = findQuestion(queIdx);
+
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
+
+        return QuestionDtoAssembler.questionResponseDto(question);
     }
 
     @Transactional
-    public QuestionDetailPostResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
-        Question question = questionRepository.findById(dto.getQueIdx())
-                .orElseThrow(QuestionNotFoundException::new);
+    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
+        String updateContents = fileService.compareFilePathAndOptimization(
+                dto.getQueIdx(),
+                "QUESTION",
+                dto.getQueContents()
+        );
 
-        // 작성자와 수정 시도하는 유저가 같은지 판별
-        // 아마 제공되는 인증 로직이 있지 않을까 싶음.
-        User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(UserNotFoundException::new);
+        Question question = findQuestion(dto.getQueIdx());
 
-        if (!isSameWriter(question, user)) {
-            throw new UserUnAuthorizedException();
-        }
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
 
-        // null 문제 해결 못함
-        question = question.update(dto);
+        User user = findAuthor(dto.getUserEmail());
 
-        QuestionDetailPostResponseDto questionDetail = QuestionDetailPostResponseDto.builder()
-                .question(question)
-                .build();
+        question.hasSameAuthor(user);
 
-        return questionDetail;
+        question.update(
+                dto.getQueTitle(),
+                dto.getQueContents()
+        );
+
+        return QuestionDtoAssembler.questionResponseDto(question);
+    }
+
+    // 활성 -> 비활성
+    @Transactional
+    public void disableQuestion(QuestionBasicRequestDto dto) {
+        Question question = findQuestion(dto.getQueIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        question.hasSameAuthor(user);
+
+        question.disableQuestion();
     }
 
     @Transactional
-    public void disableQuestion(Long queIdx) {
-        Question question = questionRepository.findByQueIdxAndQueActivatedTrue(queIdx)
-                .orElseThrow(QuestionNotFoundException::new);
+    public void enableQuestion(QuestionBasicRequestDto dto) {
+        Question question = findQuestion(dto.getQueIdx());
 
-        question.isDisable();
-//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
+        User user = findAuthor(dto.getUserEmail());
+
+        question.hasSameAuthor(user);
+
+        question.enableQuestion();
     }
 
     @Transactional
-    public void enableQuestion(Long queIdx) {
-        Question question = questionRepository.findById(queIdx)
-                .orElseThrow(QuestionNotFoundException::new);
+    public void removeQuestion(QuestionBasicRequestDto dto) {
+        Question question = findQuestion(dto.getQueIdx());
 
-        question.isEnable();
-//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
-    }
+        User user = findAuthor(dto.getUserEmail());
 
-    @Transactional
-    public void removeQuestion(Long queIdx) {
-        Question question = questionRepository.findById(queIdx)
-                .orElseThrow(QuestionNotFoundException::new);
+        question.hasSameAuthor(user);
 
         questionRepository.delete(question);
-//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
-    private Boolean isSameWriter(Question question, User user) {
-        String writerEmail = question.getQuestioner().getUserEmail();
-        String userEmail = user.getUserEmail();
+    private Question findQuestion(Long queIdx) {
+        return questionRepository.findQuestionByIdx(queIdx)
+                .orElseThrow(QuestionNotFoundException::new);
+    }
 
-        return (writerEmail.equals(userEmail)) ? true : false;
+    private User findAuthor(String userEmail) {
+        return userRepository.findByUserEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

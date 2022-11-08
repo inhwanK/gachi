@@ -2,11 +2,14 @@ package org.deco.gachicoding.post.answer.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.answer.AnswerInactiveException;
 import org.deco.gachicoding.exception.post.answer.AnswerNotFoundException;
+import org.deco.gachicoding.exception.post.notice.NoticeInactiveException;
 import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.answer.application.dto.AnswerDtoAssembler;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerUpdateRequestDto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
 import org.deco.gachicoding.post.question.domain.Question;
@@ -40,7 +43,7 @@ public class AnswerService {
                 fileService.extractPathAndS3Upload(ansIdx, "ANSWER", ansContent)
         );
 
-        return ansIdx;
+        return answer.getQueIdx();
     }
 
     private Answer createAnswer(AnswerSaveRequestDto dto) {
@@ -69,28 +72,29 @@ public class AnswerService {
 //                .build();
 //        return answerDetail;
 //    }
-//
-//    @Transactional
-//    public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) throws RuntimeException {
-//        Answer answer = answerRepository.findById(dto.getAnsIdx())
-//                .orElseThrow(AnswerNotFoundException::new);
-//
-//        User user = userRepository.findByUserEmail(dto.getUserEmail())
-//                .orElseThrow(UserNotFoundException::new);
-//
-//        if (!isSameWriter(answer, user)) {
-//            throw new UserUnAuthorizedException();
-//        }
-//
-//        answer = answer.update(dto.getAnsContent());
-//
-//        AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-//                .answer(answer)
-//                .build();
-//
-//        return answerDetail;
-//    }
-//
+
+    @Transactional
+    public Long modifyAnswer(AnswerUpdateRequestDto dto) {
+        String updateContents = fileService.compareFilePathAndOptimization(
+                dto.getAnsIdx(),
+                "ANSWER",
+                dto.getAnsContents()
+        );
+
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        if (!answer.getAnsLocked())
+            throw new AnswerInactiveException();
+
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
+        answer.update(updateContents);
+
+        return answer.getQueIdx();
+    }
+
 //    // 질문 작성자 확인 로직 추가
 //    @Transactional
 //    public void selectAnswer(AnswerSelectRequestDto dto) {

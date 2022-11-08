@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
+import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.answer.domain.vo.AnswerContents;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.user.domain.User;
@@ -43,11 +44,11 @@ public class Answer extends BaseTimeEntity {
     private AnswerContents ansContents;
 
     @ColumnDefault("false")
-    @Column(name = "as_select", columnDefinition = "boolean", nullable = false)
-    private Boolean ansSelect;
+    @Column(name = "as_selected", columnDefinition = "boolean", nullable = false)
+    private Boolean ansSelected;
 
     @ColumnDefault("true")
-    @Column(name = "as_activated", columnDefinition = "boolean", nullable = false)
+    @Column(name = "as_locked", columnDefinition = "boolean", nullable = false)
     private Boolean ansLocked;
 
     @Builder
@@ -55,7 +56,7 @@ public class Answer extends BaseTimeEntity {
             User answerer,
             Question question,
             String ansContents,
-            Boolean ansSelect,
+            Boolean ansSelected,
             Boolean ansLocked,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
@@ -63,10 +64,20 @@ public class Answer extends BaseTimeEntity {
         this.answerer = answerer;
         this.question = question;
         this.ansContents = new AnswerContents(ansContents);
-        this.ansSelect = ansSelect;
+        this.ansSelected = ansSelected;
         this.ansLocked = ansLocked;
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
+    }
+
+    public Long getQueIdx() {
+        return question.getQueIdx();
+    }
+
+    public void hasSameAuthor(User user) {
+        if (answerer != user) {
+            throw new UserUnAuthorizedException();
+        }
     }
 
     public void setUser(User writer) {
@@ -86,7 +97,7 @@ public class Answer extends BaseTimeEntity {
     }
 
     public Answer toSelect() {
-        this.ansSelect = true;
+        this.ansSelected = true;
         return this;
     }
 }

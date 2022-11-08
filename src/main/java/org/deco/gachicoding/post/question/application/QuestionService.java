@@ -101,7 +101,7 @@ public class QuestionService {
 
         question.update(
                 dto.getQueTitle(),
-                dto.getQueContents()
+                updateContents
         );
 
         return QuestionDtoAssembler.questionResponseDto(question);

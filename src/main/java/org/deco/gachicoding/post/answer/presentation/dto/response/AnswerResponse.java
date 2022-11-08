@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.answer.application.dto.response;
+package org.deco.gachicoding.post.answer.presentation.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,9 @@ import org.deco.gachicoding.post.question.domain.Question;
 import java.time.LocalDateTime;
 
 @Getter
-public class AnswerResponseDto {
+@Setter
+@NoArgsConstructor
+public class AnswerResponse {
     private Long ansIdx;
     private String userEmail;
     private String userNick;
@@ -22,7 +24,7 @@ public class AnswerResponseDto {
     private LocalDateTime updatedAt;
 
     @Builder
-    public AnswerResponseDto(Answer answer) {
+    public AnswerResponse(Answer answer) {
 //        setWriterInfo(answer);
         this.userEmail = answer.getAnswerer().getUserEmail();
         this.userNick = answer.getAnswerer().getUserNick();
@@ -39,10 +41,4 @@ public class AnswerResponseDto {
         Question question = answer.getQuestion();
         this.queIdx = question.getQueIdx();
     }
-
-//    private void setWriterInfo(Answer answer) {
-//        User user = answer.getWriter();
-//        this.writerIdx = user.getUserIdx();
-//    }
-
 }

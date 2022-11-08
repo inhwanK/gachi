@@ -5,13 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.deco.gachicoding.post.answer.application.AnswerService;
 import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
 import org.deco.gachicoding.post.answer.presentation.dto.request.AnswerSaveRequest;
+import org.deco.gachicoding.post.answer.presentation.dto.request.AnswerUpdateRequest;
+import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @Api(tags = "가치답변 정보 처리 API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class AnswerController {
+
+    private static final String REDIRECT_URL = "/api/question/%d";
 
     private final AnswerService answerService;
 
@@ -20,14 +27,19 @@ public class AnswerController {
             @ApiResponse(code = 200, message = "등록된 답변 번호 반환")
     )
     @PostMapping("/answer")
-    public Long registerAnswer(
+    public ResponseEntity<Void> registerAnswer(
             @ApiParam(value = "질문 요청 body 정보")
             @RequestBody AnswerSaveRequest request
     ) {
 
-        return answerService.registerAnswer(
+        // 답변이 소속된 queIdx를 받아 redirect
+        Long queIdx = answerService.registerAnswer(
                 AnswerAssembler.answerSaveRequestDto(request)
         );
+
+        String redirectUrl = String.format(REDIRECT_URL, queIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
 //    @ApiOperation(value = "답변 리스트")
@@ -44,16 +56,26 @@ public class AnswerController {
 //    public AnswerResponseDto getAnswerDetail(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
 //        return answerService.getAnswerDetail(ansIdx);
 //    }
-//
-//    @ApiOperation(value = "답변 수정")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "수정 후 답변 상세 정보 봔한")
-//    )
-//    @PutMapping("/answer/modify")
-//    public AnswerResponseDto modifyAnswer(@ApiParam(value = "답변 수정 요청 body 정보") @RequestBody AnswerUpdateRequestDto dto) {
-//        return answerService.modifyAnswer(dto);
-//    }
-//
+
+    @ApiOperation(value = "답변 수정")
+    @ApiResponses(
+            @ApiResponse(code = 200, message = "수정 후 답변 상세 정보 봔한")
+    )
+    @PutMapping("/answer/modify")
+    public ResponseEntity<Void> modifyAnswer(
+            @ApiParam(value = "답변 수정 요청 body 정보")
+            @RequestBody AnswerUpdateRequest request
+    ) {
+
+        Long queIdx = answerService.modifyAnswer(
+                AnswerAssembler.answerUpdateRequestDto(request)
+        );
+
+        String redirectUrl = String.format(REDIRECT_URL, queIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
+    }
+
 //    @ApiOperation(value = "답변 채택")
 //    @ApiResponses({
 //            @ApiResponse(code = 200, message = "채택 성공"),

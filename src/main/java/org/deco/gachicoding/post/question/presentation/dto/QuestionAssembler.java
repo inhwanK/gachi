@@ -16,7 +16,7 @@ public class QuestionAssembler {
 
     public static List<QuestionListResponse> questionListResponse(List<QuestionListResponseDto> dtos) {
         return dtos.stream()
-                .map(questionListResponse())
+                .map(QuestionAssembler::questionListResponse)
                 .collect(toList());
     }
 
@@ -28,22 +28,22 @@ public class QuestionAssembler {
                 .answerList(dto.getAnswerList())
                 .queTitle(dto.getQueTitle())
                 .queContents(dto.getQueContents())
-                .queSolved(dto.getQueSolved())
+                .queSolved(dto.isQueSolved())
                 .createdAt(dto.getCreatedAt())
                 .updatedAt(dto.getUpdatedAt())
                 .build();
     }
 
-    private static Function<QuestionListResponseDto, QuestionListResponse> questionListResponse() {
-        return questionListResponseDto -> QuestionListResponse.builder()
-                .queIdx(questionListResponseDto.getQueIdx())
-                .userEmail(questionListResponseDto.getQuestioner().getUserEmail())
-                .userNick(questionListResponseDto.getQuestioner().getUserNick())
-                .queTitle(questionListResponseDto.getQueTitle())
-                .queContents(questionListResponseDto.getQueContents())
-                .queSolved(questionListResponseDto.getQueSolved())
-                .createdAt(questionListResponseDto.getCreatedAt())
-                .updatedAt(questionListResponseDto.getUpdatedAt())
+    private static QuestionListResponse questionListResponse(QuestionListResponseDto dto) {
+        return QuestionListResponse.builder()
+                .queIdx(dto.getQueIdx())
+                .userEmail(dto.getQuestioner().getUserEmail())
+                .userNick(dto.getQuestioner().getUserNick())
+                .queTitle(dto.getQueTitle())
+                .queContents(dto.getQueContents())
+                .queSolved(dto.isQueSolved())
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
                 .build();
     }
 }

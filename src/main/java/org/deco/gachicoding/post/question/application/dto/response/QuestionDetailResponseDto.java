@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.post.answer.domain.Answer;
-import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
 import org.deco.gachicoding.user.domain.User;
 
@@ -23,28 +22,38 @@ public class QuestionDetailResponseDto {
     private List<AnswerResponseDto> answerList = new ArrayList<>();
     private String queTitle;
     private String queContents;
-    private Boolean queSolved;
-    private Boolean queLocked;
+    private boolean queSolved;
+    private boolean queLocked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
-    public QuestionDetailResponseDto(Question question) {
-        this.queIdx = question.getQueIdx();
-        this.questioner = question.getQuestioner();
+    public QuestionDetailResponseDto(
+            Long queIdx,
+            User questioner,
+            List<Answer> answers,
+            String queTitle,
+            String queContents,
+            boolean queSolved,
+            boolean queLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.queIdx = queIdx;
+        this.questioner = questioner;
 
-        setAnswerList(question);
+        setAnswerList(answers);
 
-        this.queTitle = question.getQueTitle();
-        this.queContents = question.getQueContents();
-        this.queSolved = question.getQueSolved();
-        this.queLocked = question.getQueLocked();
-        this.createdAt = question.getCreatedAt();
-        this.updatedAt = question.getUpdatedAt();
+        this.queTitle = queTitle;
+        this.queContents = queContents;
+        this.queSolved = queSolved;
+        this.queLocked = queLocked;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
-    public void setAnswerList(Question question) {
-        for(Answer ans : question.getAnswers()) {
+    public void setAnswerList(List<Answer> answers) {
+        for(Answer ans : answers) {
             System.out.println("ansId = "+ans.getAnsIdx());
             System.out.println("ansContents = "+ans.getAnsContents());
 

@@ -18,21 +18,30 @@ public class QuestionListResponseDto {
     private User questioner;
     private String queTitle;
     private String queContents;
-    private Boolean queSolved;
-    private Boolean queLocked;
+    private boolean queSolved;
+    private boolean queLocked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
-    public QuestionListResponseDto(Question question) {
-        this.questioner = question.getQuestioner();
-        this.queIdx = question.getQueIdx();
-        this.queTitle = question.getQueTitle();
-        this.queContents = question.getQueContents();
-        this.queSolved = question.getQueSolved();
-        this.queLocked = question.getQueLocked();
-        this.createdAt = question.getCreatedAt();
-        this.updatedAt = question.getUpdatedAt();
+    public QuestionListResponseDto(
+            Long queIdx,
+            User questioner,
+            String queTitle,
+            String queContents,
+            boolean queSolved,
+            boolean queLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.queIdx = queIdx;
+        this.questioner = questioner;
+        this.queTitle = queTitle;
+        this.queContents = queContents;
+        this.queSolved = queSolved;
+        this.queLocked = queLocked;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
 //    @Override

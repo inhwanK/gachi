@@ -7,7 +7,6 @@ import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.user.domain.User;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -25,12 +24,35 @@ public class QuestionDtoAssembler {
 
     public static List<QuestionListResponseDto> questionResponseDtos(List<Question> questions) {
         return questions.stream()
-                .map(QuestionListResponseDto::new)
+                .map(QuestionDtoAssembler::convertForm)
                 .collect(toList());
     }
 
+    private static QuestionListResponseDto convertForm(Question question) {
+        return QuestionListResponseDto.builder()
+                .queIdx(question.getQueIdx())
+                .questioner(question.getQuestioner())
+                .queTitle(question.getQueTitle())
+                .queContents(question.getQueContents())
+                .queSolved(question.getQueSolved())
+                .queLocked(question.getQueLocked())
+                .createdAt(question.getCreatedAt())
+                .updatedAt(question.getUpdatedAt())
+                .build();
+    }
+
     public static QuestionDetailResponseDto questionResponseDto(Question question) {
-        return new QuestionDetailResponseDto(question);
+        return QuestionDetailResponseDto.builder()
+                .queIdx(question.getQueIdx())
+                .questioner(question.getQuestioner())
+                .answers(question.getAnswers())
+                .queTitle(question.getQueTitle())
+                .queContents(question.getQueContents())
+                .queSolved(question.getQueSolved())
+                .queLocked(question.getQueLocked())
+                .createdAt(question.getCreatedAt())
+                .updatedAt(question.getUpdatedAt())
+                .build();
     }
 
 }

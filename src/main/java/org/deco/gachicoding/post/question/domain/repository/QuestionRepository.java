@@ -13,14 +13,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q " +
             "FROM Question q JOIN FETCH q.questioner " +
-            "LEFT JOIN FETCH q.answers " +
             "WHERE q.queIdx = :queIdx " +
             "AND q.queLocked = true")
     Optional<Question> findQuestionByIdx(@Param("queIdx") Long queIdx);
 
     @Query("SELECT DISTINCT q " +
             "FROM Question q JOIN FETCH q.questioner " +
-            "LEFT JOIN FETCH q.answers " +
             "WHERE q.queLocked = true " +
             "AND (q.queTitle.queTitle LIKE %:keyword% " +
             "OR q.queContents.queContents LIKE %:keyword%) ")

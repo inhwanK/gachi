@@ -5,11 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 public class QuestionListResponse {
 
+    // 이러한 형태도 한번 생각해 보자
+//    private List<QuestionDetailResponse> questionDetailResponses;
+    
     private Long queIdx;
 
     private String userEmail;
@@ -17,7 +21,7 @@ public class QuestionListResponse {
 
     private String queTitle;
     private String queContents;
-    private Boolean queSolved;
+    private boolean queSolved;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -28,7 +32,7 @@ public class QuestionListResponse {
             String userNick,
             String queTitle,
             String queContents,
-            Boolean queSolved,
+            boolean queSolved,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {

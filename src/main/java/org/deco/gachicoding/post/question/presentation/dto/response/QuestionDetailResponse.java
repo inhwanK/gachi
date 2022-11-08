@@ -20,7 +20,7 @@ public class QuestionDetailResponse {
 
     private String queTitle;
     private String queContents;
-    private Boolean queSolved;
+    private boolean queSolved;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -32,7 +32,7 @@ public class QuestionDetailResponse {
             List<AnswerResponseDto> answerList,
             String queTitle,
             String queContents,
-            Boolean queSolved,
+            boolean queSolved,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {

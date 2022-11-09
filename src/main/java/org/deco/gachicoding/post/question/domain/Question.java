@@ -41,7 +41,7 @@ public class Question extends BaseTimeEntity {
 
     @JsonManagedReference
     @JoinColumn(name = "user_idx")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User questioner;
 
     @JsonBackReference

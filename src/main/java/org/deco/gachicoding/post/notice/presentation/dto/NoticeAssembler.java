@@ -20,7 +20,6 @@ public class NoticeAssembler {
                 .userEmail(request.getUserEmail())
                 .notTitle(request.getNotTitle())
                 .notContents(request.getNotContent())
-//                .notContents(request.getNotContents())
                 .notPin(request.getNotPin())
 //                .tags(request.getTags())
                 .build();

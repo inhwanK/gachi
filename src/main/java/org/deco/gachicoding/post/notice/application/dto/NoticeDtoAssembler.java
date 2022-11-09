@@ -24,7 +24,7 @@ public class NoticeDtoAssembler {
 
     public static List<NoticeResponseDto> noticeResponseDtos(List<Notice> notices) {
         return notices.stream()
-                .map(notice -> convertForm(notice))
+                .map(NoticeDtoAssembler::convertForm)
                 .collect(toList());
     }
 

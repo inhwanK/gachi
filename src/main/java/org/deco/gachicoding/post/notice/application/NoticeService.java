@@ -14,7 +14,6 @@ import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseD
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,7 +63,7 @@ public class NoticeService {
                 fileService.extractPathAndS3Upload(notIdx, "NOTICE", notContent)
         );
 
-        return notice.getNotIdx();
+        return notIdx;
     }
 
     private Notice createNotice(NoticeSaveRequestDto dto) {
@@ -73,7 +72,7 @@ public class NoticeService {
         return NoticeDtoAssembler.notice(user, dto);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<NoticeResponseDto> getNoticeList(NoticeListRequestDto dto) {
 //        List<NoticeResponseDto> noticeList =
 //                NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(keyword, pageable));
@@ -83,7 +82,12 @@ public class NoticeService {
 //                        tagService.getTags(noticeResponseDto.getNotIdx(), NOTICE, noticeResponseDto)
 //        );
 
-        return NoticeDtoAssembler.noticeResponseDtos(noticeRepository.findAllNoticeByKeyword(dto.getKeyword(), dto.getPageable()));
+        return NoticeDtoAssembler.noticeResponseDtos(
+                noticeRepository.findAllNoticeByKeyword(
+                        dto.getKeyword(),
+                        dto.getPageable()
+                )
+        );
     }
 
     @Transactional

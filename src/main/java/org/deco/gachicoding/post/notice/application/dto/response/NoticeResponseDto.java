@@ -23,7 +23,17 @@ public class NoticeResponseDto {
 //    private List<TagResponseDto> tags;
 
     @Builder
-    public NoticeResponseDto(Long notIdx, User author, String notTitle, String notContents, Long notViews, Boolean notPin, Boolean notLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public NoticeResponseDto(
+            Long notIdx,
+            User author,
+            String notTitle,
+            String notContents,
+            Long notViews,
+            Boolean notPin,
+            Boolean notLocked,
+            LocalDateTime createdAt, 
+            LocalDateTime updatedAt
+    ) {
         this.notIdx = notIdx;
 
         this.author = author;

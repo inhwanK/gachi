@@ -1,5 +1,6 @@
 package org.deco.gachicoding.post.board.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyActiveException;
@@ -47,8 +48,9 @@ public class Board extends BaseTimeEntity {
     @ColumnDefault("true")
     private Boolean boardLocked;
 
-    @ManyToOne
+    @JsonManagedReference
     @JoinColumn(name = "user_idx")
+    @ManyToOne(fetch = FetchType.LAZY)
     private User author;
 
     public Board(

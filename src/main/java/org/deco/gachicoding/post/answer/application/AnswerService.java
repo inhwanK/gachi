@@ -2,10 +2,13 @@ package org.deco.gachicoding.post.answer.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.post.answer.AnswerNotFoundException;
+import org.deco.gachicoding.exception.post.answer.*;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadySolvedException;
+import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
-import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerBasicRequestDto;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerUpdateRequestDto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
 import org.deco.gachicoding.post.question.domain.Question;
@@ -13,12 +16,7 @@ import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.answer.dto.response.AnswerResponseDto;
-import org.deco.gachicoding.post.answer.dto.request.AnswerSaveRequestDto;
-import org.deco.gachicoding.post.answer.dto.request.AnswerSelectRequestDto;
-import org.deco.gachicoding.post.answer.dto.request.AnswerUpdateRequestDto;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerSaveRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,141 +30,134 @@ public class AnswerService {
     private final UserRepository userRepository;
     private final FileService fileService;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Long registerAnswer(AnswerSaveRequestDto dto) {
-        User writer = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(UserNotFoundException::new);
 
-        Question question = questionRepository.findById(dto.getQueIdx())
-                .orElseThrow(QuestionNotFoundException::new);
-
-        // findById() -> 실제로 데이터베이스에 도달하고 실제 오브젝트 맵핑을 데이터베이스의 행에 리턴한다. 데이터베이스에 레코드가없는 경우 널을 리턴하는 것은 EAGER로드 한것이다.
-        // getOne ()은 내부적으로 EntityManager.getReference () 메소드를 호출한다. 데이터베이스에 충돌하지 않는 Lazy 조작이다. 요청된 엔티티가 db에 없으면 EntityNotFoundException을 발생시킨다.
-//        entity.setQuestion(questionRepository.getOne(dto.getQueIdx()));
-
-        Answer answer = answerRepository.save(dto.toEntity(writer, question));
+        Answer answer = answerRepository.save(createAnswer(dto));
 
         Long ansIdx = answer.getAnsIdx();
         String ansContent = answer.getAnsContents();
 
-//        try {
-//            answer.update(fileService.extractImgSrc(ansIdx, ansContent, "answer"));
-//            log.info("Success Upload Question Idx : {}", ansIdx);
-//        } catch (Exception e) {
-//            log.error("Failed To Extract {} File", "Answer Content");
-//            e.printStackTrace();
-//            removeAnswer(ansIdx);
-//        }
-
-        return ansIdx;
-    }
-
-    @Transactional(readOnly = true)
-    public Page<AnswerResponseDto> getAnswerList(String keyword, Pageable pageable) {
-        Page<Answer> answers = answerRepository.findByAnsContentsContainingIgnoreCaseAndAnsActivatedTrueOrderByAnsIdxDesc(keyword, pageable);
-        Page<AnswerResponseDto> answersList = answers.map(
-                result -> new AnswerResponseDto(result)
+        answer.update(
+                fileService.extractPathAndS3Upload(ansIdx, "ANSWER", ansContent)
         );
-        return answersList;
+
+        return answer.getQueIdx();
     }
 
-    @Transactional(readOnly = true)
-    public AnswerResponseDto getAnswerDetail(Long ansIdx) {
-        Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(AnswerNotFoundException::new);
+    private Answer createAnswer(AnswerSaveRequestDto dto) {
+        User user = findAuthor(dto.getUserEmail());
+        Question question = findQuestion(dto.getQueIdx());
 
-        AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-                .answer(answer)
-                .build();
-        return answerDetail;
+        return dto.toEntity(user, question);
     }
 
     @Transactional
-    public AnswerResponseDto modifyAnswer(AnswerUpdateRequestDto dto) throws RuntimeException {
-        Answer answer = answerRepository.findById(dto.getAnsIdx())
-                .orElseThrow(AnswerNotFoundException::new);
+    public Long modifyAnswer(AnswerUpdateRequestDto dto) {
+        String updateContents = fileService.compareFilePathAndOptimization(
+                dto.getAnsIdx(),
+                "ANSWER",
+                dto.getAnsContents()
+        );
 
-        User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(UserNotFoundException::new);
+        Answer answer = findAnswer(dto.getAnsIdx());
 
-        if (!isSameWriter(answer, user)) {
-            throw new UserUnAuthorizedException();
-        }
+        User user = findAuthor(dto.getUserEmail());
 
-        answer = answer.update(dto.getAnsContent());
+        answer.hasSameAuthor(user);
 
-        AnswerResponseDto answerDetail = AnswerResponseDto.builder()
-                .answer(answer)
-                .build();
+        if (!answer.getAnsLocked())
+            throw new AnswerInactiveException();
 
-        return answerDetail;
+        // 이미 채택 된 답변을 수정 할 수 없다.
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerModifyFailedException();
+
+        answer.update(updateContents);
+
+        return answer.getQueIdx();
     }
 
-    // 질문 작성자 확인 로직 추가
+    // 이부분 다시 한번 봐 주셈 (2022.11.09)
     @Transactional
-    public void selectAnswer(AnswerSelectRequestDto dto) {
-        Answer answer = answerRepository.findById(dto.getAnsIdx())
-                .orElseThrow(AnswerNotFoundException::new);
+    public Long selectAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
 
         Question question = answer.getQuestion();
 
-        User user = userRepository.findByUserEmail(dto.getUserEmail())
-                .orElseThrow(UserNotFoundException::new);
+        User requester = findAuthor(dto.getUserEmail());
 
-        // 좀 헷갈리지만 같을때 true가 나오기 때문에 !를 붙여야함
-        if(!selectAuthCheck(question, user))
-//            return ResponseState.toResponseEntity(INVALID_AUTH_USER);;
+        // 답변을 채택하는 사람은 질문을 작성한 작성자이기 때문에
+        // 요청을 보낸 요청자와 질문의 작성자가 같아야 채택 가능
+        // hasSameAuthor -> unAuthorizedCheck 같은 걸로 바꾸는게 나은 듯
+        question.hasSameAuthor(requester);
 
-        if(!question.getQueSolve()) {
-            answer.toSelect();
-            question.toSolve();
-//            return ResponseState.toResponseEntity(SELECT_SUCCESS);
-        } else {
-//            return ResponseState.toResponseEntity(ALREADY_SOLVE);
-        }
+        if (!answer.getAnsLocked())
+            throw new AnswerInactiveException();
+
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
+
+        answer.toSelect();
+
+        question.toSolve();
+
+        return question.getQueIdx();
     }
 
     @Transactional
-    public void disableAnswer(Long ansIdx) {
-        Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(AnswerNotFoundException::new);
+    public void disableAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
+        // 채택 된 답변 비 활성 불가
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerDisableFailedException();
 
         answer.disableAnswer();
-//        return ResponseState.toResponseEntity(DISABLE_SUCCESS);
     }
 
     @Transactional
-    public void enableAnswer(Long ansIdx) {
-        Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(AnswerNotFoundException::new);
+    public void enableAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
 
         answer.enableAnswer();
-//        return ResponseState.toResponseEntity(ENABLE_SUCCESS);
     }
 
     @Transactional
-    public void removeAnswer(Long ansIdx) {
-        Answer answer = answerRepository.findById(ansIdx)
-                .orElseThrow(AnswerNotFoundException::new);
+    public void removeAnswer(AnswerBasicRequestDto dto) {
+        Answer answer = findAnswer(dto.getAnsIdx());
+
+        User user = findAuthor(dto.getUserEmail());
+
+        answer.hasSameAuthor(user);
+
+        // 답변 채택 시 삭제 불가 -> 이건 생각을 좀 해봐야 할 듯?(2022-11-09)
+        if (answer.getAnsSelected())
+            throw new CheckedAnswerDeleteFailedException();
 
         answerRepository.delete(answer);
-//        return ResponseState.toResponseEntity(REMOVE_SUCCESS);
     }
 
-    private Boolean isSameWriter(Answer answer, User user) {
-        String writerEmail = answer.getAnswerer().getUserEmail();
-        String userEmail = user.getUserEmail();
-
-        return (writerEmail.equals(userEmail)) ? true : false;
+    private Question findQuestion(Long queIdx) {
+        return questionRepository.findQuestionByIdx(queIdx)
+                .orElseThrow(QuestionNotFoundException::new);
     }
 
-    // answer의 작성자가 아니라 question의 작성자가 맞는지 검사해야한다.
-    // 하지만 위의 메서드와 하는 일은 같으니 통합시킬 수 없을까?
-    // 뒤는 부탁할게 인환몬!
-    private Boolean selectAuthCheck(Question question, User user) {
-        String writerEmail = question.getQuestioner().getUserEmail();
-        String userEmail = user.getUserEmail();
+    private Answer findAnswer(Long ansIdx) {
+        return answerRepository.findAnswerByIdx(ansIdx)
+                .orElseThrow(AnswerNotFoundException::new);
+    }
 
-        return (writerEmail.equals(userEmail)) ? true : false;
+    private User findAuthor(String userEmail) {
+        return userRepository.findByUserEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
     }
 }

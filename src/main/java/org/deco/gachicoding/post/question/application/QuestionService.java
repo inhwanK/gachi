@@ -2,8 +2,7 @@ package org.deco.gachicoding.post.question.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
-import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
+import org.deco.gachicoding.exception.post.question.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
@@ -11,7 +10,6 @@ import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdate
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
-import org.deco.gachicoding.post.question.presentation.dto.response.QuestionDetailResponse;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -83,7 +81,7 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionDetailResponseDto modifyQuestion(QuestionUpdateRequestDto dto) throws RuntimeException {
+    public Long modifyQuestion(QuestionUpdateRequestDto dto) {
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getQueIdx(),
                 "QUESTION",
@@ -92,19 +90,23 @@ public class QuestionService {
 
         Question question = findQuestion(dto.getQueIdx());
 
-        if (!question.getQueLocked())
-            throw new QuestionInactiveException();
-
         User user = findAuthor(dto.getUserEmail());
 
         question.hasSameAuthor(user);
+
+        if (!question.getQueLocked())
+            throw new QuestionInactiveException();
+
+        // 이미 해결 된 질문을 수정 할 수 없다.
+        if (question.getQueSolved())
+            throw new SolvedQuestionModifyFailedException();
 
         question.update(
                 dto.getQueTitle(),
                 updateContents
         );
 
-        return QuestionDtoAssembler.questionResponseDto(question);
+        return question.getQueIdx();
     }
 
     // 활성 -> 비활성
@@ -115,6 +117,9 @@ public class QuestionService {
         User user = findAuthor(dto.getUserEmail());
 
         question.hasSameAuthor(user);
+
+        if (question.getQueSolved())
+            throw new SolvedQuestionDisableFailedException();
 
         question.disableQuestion();
     }
@@ -137,6 +142,9 @@ public class QuestionService {
         User user = findAuthor(dto.getUserEmail());
 
         question.hasSameAuthor(user);
+
+        if (question.getQueSolved())
+            throw new SolvedQuestionDeleteFailedException();
 
         questionRepository.delete(question);
     }

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +27,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class QuestionController {
+
+    private static final String REDIRECT_URL = "/api/question/%d";
+
     private final QuestionService questionService;
 
     @ApiOperation(value = "질문 등록", notes = "하나의 질문 데이터를 등록.")
@@ -33,15 +37,19 @@ public class QuestionController {
             @ApiResponse(code = 200, message = "등록된 질문 번호 반환")
     )
     @PostMapping("/question")
-    public Long registerQuestion(
+    public ResponseEntity<Void> registerQuestion(
             @ApiParam(value = "질문 요청 body 정보")
             @RequestBody @Valid QuestionSaveRequest request
     ) {
         log.info("{} Register Controller", "Question");
 
-        return questionService.registerQuestion(
+        Long queIdx =  questionService.registerQuestion(
                 QuestionAssembler.questionSaveRequestDto(request)
         );
+
+        String redirectUrl = String.format(REDIRECT_URL, queIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
     @ApiOperation(value = "질문 리스트", notes = "여러 개의 질문 데이터 응답. 이 때, 질문별 답변 데이터는 포함하지 않음.")
@@ -83,17 +91,17 @@ public class QuestionController {
             @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
     )
     @PutMapping("/question/modify")
-    public ResponseEntity<QuestionDetailResponse> modifyQuestion(
+    public ResponseEntity<Void> modifyQuestion(
             @ApiParam(value = "질문 수정 요청 body 정보")
             @RequestBody @Valid QuestionUpdateRequest request) {
 
         QuestionUpdateRequestDto dto = QuestionAssembler.questionUpdateRequestDto(request);
 
-        return ResponseEntity.ok(
-                QuestionAssembler.questionDetailResponse(
-                        questionService.modifyQuestion(dto)
-                )
-        );
+        Long queIdx = questionService.modifyQuestion(dto);
+
+        String redirectUrl = String.format(REDIRECT_URL, queIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
     @ApiOperation(value = "질문 비활성화", notes = "사용자 입장에서 질문 데이터를 삭제")

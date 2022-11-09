@@ -7,7 +7,7 @@ public class QuestionAlreadyActiveException extends PostException {
 
     private static final String ERROR_CODE = "Q0004";
     private static final HttpStatus HTTP_STATUS = HttpStatus.CONFLICT;
-    private static final String MESSAGE = "이미 활성화 된 공지사항 입니다.";
+    private static final String MESSAGE = "이미 활성화 된 질문입니다.";
 
     public QuestionAlreadyActiveException() {
         this(ERROR_CODE, HTTP_STATUS, MESSAGE);

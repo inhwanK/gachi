@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.deco.gachicoding.post.answer.domain.Answer;
-import org.deco.gachicoding.post.question.domain.Question;
 
 import java.time.LocalDateTime;
 
@@ -14,31 +12,36 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AnswerResponse {
     private Long ansIdx;
+
     private String userEmail;
     private String userNick;
-    private Long queIdx;
-    private String ansContent;
-    private Boolean ansSelect;
-    private Boolean ansLocked;
+
+    private String ansContents;
+    private boolean ansSelected;
+    private boolean ansLocked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Builder
-    public AnswerResponse(Answer answer) {
-//        setWriterInfo(answer);
-        this.userEmail = answer.getAnswerer().getUserEmail();
-        this.userNick = answer.getAnswerer().getUserNick();
-        setQuestionInfo(answer);
-        this.ansIdx = answer.getAnsIdx();
-        this.ansContent = answer.getAnsContents();
-        this.ansSelect = answer.getAnsSelect();
-        this.ansLocked = answer.getAnsLocked();
-        this.createdAt = answer.getCreatedAt();
-        this.updatedAt = answer.getUpdatedAt();
-    }
+    public AnswerResponse(
+            Long ansIdx,
+            String userEmail,
+            String userNick,
+            String ansContents,
+            boolean ansSelected,
+            boolean ansLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
+        this.ansIdx = ansIdx;
 
-    private void setQuestionInfo(Answer answer) {
-        Question question = answer.getQuestion();
-        this.queIdx = question.getQueIdx();
+        this.userEmail = userEmail;
+        this.userNick = userNick;
+
+        this.ansContents = ansContents;
+        this.ansSelected = ansSelected;
+        this.ansLocked = ansLocked;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 }

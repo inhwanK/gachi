@@ -238,8 +238,6 @@ public class BoardControllerTest {
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willReturn(boardResponseDto);
 
-        BoardResponse boardResponse = BoardFactory.mockBoardResponse(boardResponseDto);
-
         // when
         ResultActions perform = mockMvc.perform(put("/api/board/modify")
                 .content(objectMapper.writeValueAsString(request))
@@ -247,8 +245,7 @@ public class BoardControllerTest {
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(boardResponse)));
+        perform.andExpect(status().isCreated());
 
         verify(boardService, times(1))
                 .modifyBoard(any(BoardUpdateRequestDto.class));

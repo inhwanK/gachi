@@ -1,6 +1,7 @@
 package org.deco.gachicoding.post.board.domain.vo;
 
 import org.deco.gachicoding.exception.post.board.*;
+import org.deco.gachicoding.post.question.domain.vo.QuestionTitle;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -22,6 +23,12 @@ public class BoardTitle {
         this.boardTitle = boardTitle;
     }
 
+    public BoardTitle update(String updateTitle) {
+        if (boardTitle.equals(updateTitle))
+            return this;
+        return new BoardTitle(updateTitle);
+    }
+
     public String getBoardTitle() {
         return boardTitle;
     }
@@ -39,6 +46,6 @@ public class BoardTitle {
     private void validateMaximumLength(String boardTitle) {
         // 개발
         if (boardTitle.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new BoardTitleFormatException();
+            throw new BoardTitleOverMaximumLengthException();
     }
 }

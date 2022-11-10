@@ -26,15 +26,15 @@ public class FileFactory {
         return createMockMultipartFile("testSuccessImage1.png");
     }
 
-    public static MockMultipartFile getTestSuccessImage2() {
-        return createMockMultipartFile("testSuccessImage2.png");
-    }
-
     public static FileResponseDto getTestSuccessImage1Dto(String filePath) {
         return FileResponseDto.builder()
                 .filePath(filePath)
-                .originFileName("testSuccessImage1.png")
+                .saveFileName("testSuccessImage1.png")
                 .build();
+    }
+
+    public static MockMultipartFile getTestSuccessImage2() {
+        return createMockMultipartFile("testSuccessImage2.png");
     }
 
     private static File createFile(String testImage) {

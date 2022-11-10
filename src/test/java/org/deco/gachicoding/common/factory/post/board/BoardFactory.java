@@ -124,7 +124,7 @@ public class BoardFactory {
         return BoardSaveRequest.builder()
                 .userEmail(userEmail)
                 .boardTitle(boardTitle)
-                .boardContent(boardContents)
+                .boardContents(boardContents)
                 .boardCategory(boardCategory)
                 .build();
     }
@@ -140,8 +140,8 @@ public class BoardFactory {
                 .boardContents(dto.getBoardContents())
                 .boardCategory(dto.getBoardCategory())
                 .boardViews(dto.getBoardViews())
-                .createAt(dto.getCreatedAt())
-                .updateAt(dto.getUpdatedAt())
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
                 .build();
     }
 

@@ -1,7 +1,7 @@
 package org.deco.gachicoding.post.notice.domain.vo;
 
 import org.deco.gachicoding.exception.post.notice.NoticeContentsEmptyException;
-import org.deco.gachicoding.exception.post.notice.NoticeContentsFormatException;
+import org.deco.gachicoding.exception.post.notice.NoticeContentsOverMaximumLengthException;
 import org.deco.gachicoding.exception.post.notice.NoticeContentsNullException;
 
 import javax.persistence.Column;
@@ -24,6 +24,12 @@ public class NoticeContents {
         this.notContents = notContents;
     }
 
+    public NoticeContents update(String updateContents) {
+        if (notContents.equals(updateContents))
+            return this;
+        return new NoticeContents(updateContents);
+    }
+
     public String getNoticeContents() {
         return notContents;
     }
@@ -41,6 +47,6 @@ public class NoticeContents {
     private void validateMaximumLength(String notContents) {
         // 개발
         if (notContents.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new NoticeContentsFormatException();
+            throw new NoticeContentsOverMaximumLengthException();
     }
 }

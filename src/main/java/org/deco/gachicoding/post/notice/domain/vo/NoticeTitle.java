@@ -1,8 +1,9 @@
 package org.deco.gachicoding.post.notice.domain.vo;
 
 import org.deco.gachicoding.exception.post.notice.NoticeTitleEmptyException;
-import org.deco.gachicoding.exception.post.notice.NoticeTitleFormatException;
 import org.deco.gachicoding.exception.post.notice.NoticeTitleNullException;
+import org.deco.gachicoding.exception.post.notice.NoticeTitleOverMaximumLengthException;
+import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -24,6 +25,12 @@ public class NoticeTitle {
         this.notTitle = notTitle;
     }
 
+    public NoticeTitle update(String updateTitle) {
+        if (notTitle.equals(updateTitle))
+            return this;
+        return new NoticeTitle(updateTitle);
+    }
+
     public String getNoticeTitle() {
         return notTitle;
     }
@@ -40,6 +47,6 @@ public class NoticeTitle {
 
     private void validateMaximumLength(String notTitle) {
         if (notTitle.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new NoticeTitleFormatException();
+            throw new NoticeTitleOverMaximumLengthException();
     }
 }

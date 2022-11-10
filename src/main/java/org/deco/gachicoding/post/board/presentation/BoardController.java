@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @Api(tags = "자유게시판 정보 처리 API")
@@ -25,6 +26,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class BoardController {
+
+    private static final String REDIRECT_URL = "/api/board/%d";
+
     private final BoardService boardService;
 
     @ApiOperation(value = "게시물 쓰기")
@@ -32,15 +36,17 @@ public class BoardController {
             @ApiResponse(code = 200, message = "등록된 게시글 번호 반환")
     )
     @PostMapping("/board")
-    public ResponseEntity<Long> registerBoard(
+    public ResponseEntity<Void> registerBoard(
             @ApiParam(value = "게시판 요청 body 정보")
             @Valid @RequestBody BoardSaveRequest request
-    ) throws Exception {
+    ) {
         log.info("{} Register Controller", "Board");
 
         Long boardIdx = boardService.registerBoard(BoardAssembler.boardSaveRequestDto(request));
 
-        return ResponseEntity.ok(boardIdx);
+        String redirectUrl = String.format(REDIRECT_URL, boardIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
     @ApiOperation(value = "게시물 목록")
@@ -82,31 +88,18 @@ public class BoardController {
             @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     )
     @PutMapping("/board/modify")
-    public ResponseEntity<BoardResponse> modifyBoard(
+    public ResponseEntity<Void> modifyBoard(
             @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request
     ) {
 
         BoardUpdateRequestDto dto = BoardAssembler.boardUpdateRequestDto(request);
 
-        BoardResponse response = BoardAssembler.boardResponse(boardService.modifyBoard(dto));
+        Long boardIdx = boardService.modifyBoard(dto).getBoardIdx();
 
-        return ResponseEntity.ok(response);
+        String redirectUrl = String.format(REDIRECT_URL, boardIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
-
-//    @ApiOperation(value = "자유게시판 게시글 수정")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
-//    )
-//    @PutMapping("/board/modify/{boardIdx}")
-//    public ResponseEntity<BoardResponse> modifyBoard(@ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
-//                                                     @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request) {
-//
-//        BoardUpdateRequestDto dto = BoardAssembler.boardUpdateRequestDto(boardIdx, request);
-//
-//        BoardResponse response = BoardAssembler.boardResponse(boardService.modifyBoard(dto));
-//
-//        return ResponseEntity.ok(response);
-//    }
 
     @ApiOperation(value = "게시물 비활성화")
     @ApiResponses(

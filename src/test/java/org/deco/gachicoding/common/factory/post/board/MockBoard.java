@@ -19,8 +19,8 @@ public class MockBoard {
         private Long boardIdx;
         private User author;
 
-        private BoardTitle boardTitle = new BoardTitle("Test Board Title");
-        private BoardContents boardContents = new BoardContents("Test Board Contents");
+        private String boardTitle = "Test Board Title";
+        private String boardContents = "Test Board Contents";
         private String boardCategory = "자유";
         private Long boardViews = 0L;
         private Boolean boardLocked = true;;
@@ -38,12 +38,12 @@ public class MockBoard {
         }
 
         public Builder boardTitle(String boardTitle) {
-            this.boardTitle = new BoardTitle(boardTitle);
+            this.boardTitle = boardTitle;
             return this;
         }
 
         public Builder boardContents(String boardContents) {
-            this.boardContents = new BoardContents(boardContents);
+            this.boardContents = boardContents;
             return this;
         }
 

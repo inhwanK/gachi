@@ -75,6 +75,7 @@ public class S3Service {
     }
 
     public ObjectMetadata getObjectMetadata(String filePath) {
+
         // not found 예외 추가
         return s3Client.getObjectMetadata(bucket, filePath);
     }

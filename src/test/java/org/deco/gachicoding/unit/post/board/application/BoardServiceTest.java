@@ -5,6 +5,7 @@ import org.deco.gachicoding.common.factory.user.UserFactory;
 import org.deco.gachicoding.exception.post.board.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
+import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.board.application.BoardService;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
@@ -45,6 +46,9 @@ public class BoardServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private FileService fileService;
+
     @Test
     @DisplayName("사용자는 게시물을 작성할 수 있다.")
     void write_writeBoardWithUser_Success() {
@@ -63,6 +67,8 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(user));
         given(boardRepository.save(any(Board.class)))
                 .willReturn(board);
+        given(fileService.extractPathAndS3Upload(anyLong(), anyString(), anyString()))
+                .willReturn(boardContents);
 
         // when
         Long boardIdx = boardService.registerBoard(requestDto);
@@ -75,6 +81,8 @@ public class BoardServiceTest {
                 .findByUserEmail(requestDto.getUserEmail());
         verify(boardRepository, times(1))
                 .save(any(Board.class));
+        verify(fileService, times(1))
+                .extractPathAndS3Upload(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -123,7 +131,7 @@ public class BoardServiceTest {
         // when
         // then
         assertThatCode(() -> boardService.registerBoard(requestDto))
-                .isInstanceOf(BoardTitleFormatException.class)
+                .isInstanceOf(BoardTitleOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("게시물 제목이 길이 제한을 초과하였습니다.");
     }
@@ -147,7 +155,7 @@ public class BoardServiceTest {
         // when
         // then
         assertThatCode(() -> boardService.registerBoard(requestDto))
-                .isInstanceOf(BoardContentsFormatException.class)
+                .isInstanceOf(BoardContentsOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("게시물 내용이 길이 제한을 초과하였습니다.");
     }
@@ -401,6 +409,8 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when
         BoardResponseDto responseDto = boardService.modifyBoard(updateRequestDto);
@@ -414,6 +424,8 @@ public class BoardServiceTest {
                 .findBoardByIdx(anyLong());
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -462,6 +474,8 @@ public class BoardServiceTest {
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(beforeBoard));
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when, then
         assertThatThrownBy(() -> boardService.modifyBoard(updateRequestDto))
@@ -471,6 +485,8 @@ public class BoardServiceTest {
 
         verify(boardRepository, times(1))
                 .findBoardByIdx(anyLong());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -496,6 +512,8 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.empty());
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when, then
         assertThatThrownBy(() -> boardService.modifyBoard(updateRequestDto))
@@ -507,6 +525,8 @@ public class BoardServiceTest {
                 .findBoardByIdx(anyLong());
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -533,6 +553,8 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when, then
         assertThatThrownBy(() -> boardService.modifyBoard(updateRequestDto))
@@ -544,6 +566,8 @@ public class BoardServiceTest {
                 .findBoardByIdx(anyLong());
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -568,6 +592,8 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when, then
         assertThatThrownBy(() -> boardService.modifyBoard(updateRequestDto))
@@ -579,6 +605,8 @@ public class BoardServiceTest {
                 .findBoardByIdx(anyLong());
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -603,6 +631,8 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when, then
         assertThatThrownBy(() -> boardService.modifyBoard(updateRequestDto))
@@ -614,6 +644,8 @@ public class BoardServiceTest {
                 .findBoardByIdx(anyLong());
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test
@@ -666,13 +698,16 @@ public class BoardServiceTest {
         Board beforeBoard = BoardFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, true);
 
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
+        String afterBoardContents = "";
 
-        BoardUpdateRequestDto updateRequestDto = BoardFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, "");
+        BoardUpdateRequestDto updateRequestDto = BoardFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
+        given(fileService.compareFilePathAndOptimization(anyLong(), anyString(), anyString()))
+                .willReturn(afterBoardContents);
 
         // when, then
         assertThatThrownBy(() -> boardService.modifyBoard(updateRequestDto))
@@ -684,6 +719,8 @@ public class BoardServiceTest {
                 .findBoardByIdx(anyLong());
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
+        verify(fileService, times(1))
+                .compareFilePathAndOptimization(anyLong(), anyString(), anyString());
     }
 
     @Test

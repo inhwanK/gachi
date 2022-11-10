@@ -17,7 +17,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "WHERE q.queIdx = :queIdx ")
     Optional<Question> findQuestionByIdx(@Param("queIdx") Long queIdx);
 
-    @Query("SELECT DISTINCT q.queIdx, q.questioner, q.queTitle, q.queContents, q.queSolved, q.queLocked, q.createdAt, q.updatedAt " +
+    @Query("SELECT DISTINCT q " +
             "FROM Question q JOIN FETCH q.questioner " +
             "WHERE q.queLocked = true " +
             "AND (q.queTitle.queTitle LIKE %:keyword% " +

@@ -97,27 +97,12 @@ public class NoticeController {
 
         NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(request);
 
-        NoticeResponse response = NoticeAssembler.noticeResponse(noticeService.modifyNotice(dto));
+        Long notIdx = noticeService.modifyNotice(dto).getNotIdx();
 
-        return ResponseEntity.ok(response);
+        String redirectUrl = String.format(REDIRECT_URL, notIdx);
+
+        return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
-
-//    @ApiOperation(value = "공지사항 수정")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
-//    )
-//    @PutMapping("/notice/modify/{notIdx}")
-//    public ResponseEntity<NoticeUpdateResponseDto> modifyNotice(@ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
-//                                                                @ApiParam(value = "공지사항 수정 요청 body 정보") @RequestBody NoticeUpdateRequest request) {
-//
-//        NoticeUpdateRequestDto dto = NoticeAssembler.noticeUpdateRequestDto(notIdx, request);
-//
-//        noticeService.modifyNotice(dto);
-//
-//        String redirectUrl = String.format(REDIRECT_URL, notIdx);
-//
-//        return ResponseEntity.created(URI.create(redirectUrl)).build();
-//    }
 
     @ApiOperation(value = "공지사항 비활성화")
     @ApiResponse(code = 200, message = "비활성화 성공")
@@ -131,8 +116,6 @@ public class NoticeController {
 
         noticeService.disableNotice(dto);
 
-        // 활성 비활성 삭제도 리다이렉트..?
-//        return ResponseState.toResponseEntity(NOTICE_DISABLE_SUCCESS);
         return ResponseEntity.noContent().build();
     }
 
@@ -148,8 +131,6 @@ public class NoticeController {
 
         noticeService.enableNotice(dto);
 
-        // 활성 비활성 삭제도 리다이렉트..?
-//        return ResponseState.toResponseEntity(NOTICE_ENABLE_SUCCESS);
         return ResponseEntity.noContent().build();
     }
 
@@ -165,8 +146,6 @@ public class NoticeController {
 
         noticeService.removeNotice(dto);
 
-        // 활성 비활성 삭제도 리다이렉트..?
-//        return ResponseState.toResponseEntity(NOTICE_REMOVE_SUCCESS);
         return ResponseEntity.noContent().build();
     }
 

@@ -126,12 +126,12 @@ public class Notice extends BaseTimeEntity {
         updateContent(notContents);
     }
 
-    public void updateTitle(String notTitle) {
-        this.notTitle = new NoticeTitle(notTitle);
+    public void updateTitle(String updateTitle) {
+        this.notTitle = notTitle.update(updateTitle);
     }
 
-    public void updateContent(String notContents) {
-        this.notContents = new NoticeContents(notContents);
+    public void updateContent(String updateContents) {
+        this.notContents = notContents.update(updateContents);
     }
 
     public static class Builder {

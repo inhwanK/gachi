@@ -24,11 +24,20 @@ public class BoardResponseDto implements PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-//    private List<FileResponseDto> files;
 //    private List<TagResponseDto> tags;
 
     @Builder
-    public BoardResponseDto(Long boardIdx, User author, String boardTitle, String boardContents, String boardCategory, Long boardViews, Boolean boardLocked, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public BoardResponseDto(
+            Long boardIdx,
+            User author,
+            String boardTitle,
+            String boardContents,
+            String boardCategory,
+            Long boardViews,
+            Boolean boardLocked,
+            LocalDateTime createdAt,
+            LocalDateTime updatedAt
+    ) {
         this.boardIdx = boardIdx;
 
         this.author = author;

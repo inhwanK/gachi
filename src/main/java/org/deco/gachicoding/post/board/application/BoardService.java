@@ -58,29 +58,23 @@ public class BoardService {
 
     @Transactional
     public List<BoardResponseDto> getBoardList(BoardListRequestDto dto) {
-//        Page<BoardResponseDto> boardList =
-//                boardRepository.findAllBoardByKeyword(keyword, pageable).map(entity -> new BoardPostResponseDto(entity));
 
-//        boardList.forEach(
-//                boardResponseDto ->
-//                        tagService.getTags(boardResponseDto.getBoardIdx(), BOARD, boardResponseDto)
-//        );
-
-        return BoardDtoAssembler.boardResponseDtos(boardRepository.findAllBoardByKeyword(dto.getKeyword(), dto.getPageable()));
+        return BoardDtoAssembler.boardResponseDtos(
+                boardRepository.findAllBoardByKeyword(
+                        dto.getKeyword(), dto.getPageable()
+                )
+        );
     }
 
     @Transactional
     public BoardResponseDto getBoardDetail(BoardDetailRequestDto dto) {
-//        Board board = boardRepository.findById(boardIdx)
-//                .orElseThrow(() -> new ApplicationException(DATA_NOT_EXIST));
-
-//        fileService.getFiles(boardIdx, boardCategory, boardDetail);
-//        tagService.getTags(boardIdx, BOARD, boardDetail);
 
         Board board = findBoard(dto.getBoardIdx());
 
         if (!board.getBoardLocked())
             throw new BoardInactiveException();
+
+//        tagService.getTags(boardIdx, BOARD, boardDetail);
 
         return BoardDtoAssembler.boardResponseDto(board);
     }

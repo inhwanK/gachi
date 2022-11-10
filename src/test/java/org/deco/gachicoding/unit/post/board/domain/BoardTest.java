@@ -39,7 +39,7 @@ public class BoardTest {
 
         // when, then
         assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
-                .isInstanceOf(BoardTitleFormatException.class)
+                .isInstanceOf(BoardTitleOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("게시물 제목이 길이 제한을 초과하였습니다.");
     }
@@ -99,7 +99,7 @@ public class BoardTest {
 
         // when, then
         assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
-                .isInstanceOf(BoardContentsFormatException.class)
+                .isInstanceOf(BoardContentsOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("게시물 내용이 길이 제한을 초과하였습니다.");
     }

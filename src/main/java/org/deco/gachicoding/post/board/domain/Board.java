@@ -1,7 +1,9 @@
 package org.deco.gachicoding.post.board.domain;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyActiveException;
 import org.deco.gachicoding.exception.post.board.BoardAlreadyInactiveException;
@@ -18,10 +20,11 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Queue;
 
-@DynamicInsert
-@DynamicUpdate
 @Getter
 @Entity
+@DynamicInsert
+@DynamicUpdate
+@NoArgsConstructor
 @Table(name = "board")
 public class Board extends BaseTimeEntity {
 
@@ -53,11 +56,12 @@ public class Board extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User author;
 
+    @Builder
     public Board(
             Long boardIdx,
             User author,
-            BoardTitle boardTitle,
-            BoardContents boardContents,
+            String boardTitle,
+            String boardContents,
             String boardCategory,
             Long boardViews,
             Boolean boardLocked,
@@ -66,8 +70,8 @@ public class Board extends BaseTimeEntity {
     ) {
         this.boardIdx = boardIdx;
         this.author = author;
-        this.boardTitle = boardTitle;
-        this.boardContents = boardContents;
+        this.boardTitle = new BoardTitle(boardTitle);
+        this.boardContents = new BoardContents(boardContents);
         this.boardCategory = boardCategory;
         this.boardViews = boardViews;
         this.boardLocked = boardLocked;
@@ -81,14 +85,6 @@ public class Board extends BaseTimeEntity {
 
     public String getBoardContents() {
         return boardContents.getBoardContents();
-    }
-
-    public String getAuthorEmail() {
-        return author.getUserEmail();
-    }
-
-    public String getAuthorNick() {
-        return author.getUserNick();
     }
 
     public void hasSameAuthor(User user) {
@@ -114,95 +110,11 @@ public class Board extends BaseTimeEntity {
         updateContent(boardContent);
     }
 
-    public void updateTitle(String boardTitle) {
-        this.boardTitle = new BoardTitle(boardTitle);
+    public void updateTitle(String updateTitle) {
+        this.boardTitle = boardTitle.update(updateTitle);
     }
 
-    public void updateContent(String boardContent) {
-        this.boardContents = new BoardContents(boardContent);
-    }
-
-    public void replaceImgPathInContents(Queue<String> queue) {
-        while (!queue.isEmpty()) {
-            queue.poll();
-        }
-    }
-
-    protected Board() {}
-
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    public static class Builder {
-
-        private Long boardIdx;
-        private User writer;
-        private BoardTitle boardTitle;
-        private BoardContents boardContents;
-        private String boardCategory;
-        private Long boardViews;
-        private Boolean boardLocked;
-        private LocalDateTime createdAt;
-        private LocalDateTime updatedAt;
-
-        public Builder boardIdx(Long boardIdx) {
-            this.boardIdx = boardIdx;
-            return this;
-        }
-
-        public Builder author(User user) {
-            this.writer = user;
-            return this;
-        }
-
-        public Builder boardTitle(String boardTitle) {
-            this.boardTitle = new BoardTitle(boardTitle);
-            return this;
-        }
-
-        public Builder boardContents(String boardContents) {
-            this.boardContents = new BoardContents(boardContents);
-            return this;
-        }
-
-        public Builder boardCategory(String boardCategory) {
-            this.boardCategory = boardCategory;
-            return this;
-        }
-
-        public Builder boardViews(Long boardViews) {
-            this.boardViews = boardViews;
-            return this;
-        }
-
-        public Builder boardLocked(Boolean boardLocked) {
-            this.boardLocked = boardLocked;
-            return this;
-        }
-
-        public Builder createdAt(LocalDateTime createdAt) {
-            this.createdAt = createdAt;
-            return this;
-        }
-
-        public Builder updatedAt(LocalDateTime updatedAt) {
-            this.updatedAt = updatedAt;
-            return this;
-        }
-
-        public Board build() {
-            return new Board(
-                    boardIdx,
-                    writer,
-                    boardTitle,
-                    boardContents,
-                    boardCategory,
-                    boardViews,
-                    boardLocked,
-                    createdAt,
-                    updatedAt
-            );
-        }
+    public void updateContent(String updateContents) {
+        this.boardContents = boardContents.update(updateContents);
     }
 }

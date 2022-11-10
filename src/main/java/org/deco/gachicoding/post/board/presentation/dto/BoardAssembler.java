@@ -26,9 +26,8 @@ public class BoardAssembler {
         return BoardSaveRequestDto.builder()
                 .userEmail(request.getUserEmail())
                 .boardTitle(request.getBoardTitle())
-                .boardContents(request.getBoardContent())
+                .boardContents(request.getBoardContents())
                 .boardCategory(request.getBoardCategory())
-//                .boardContents(request.getBoardContents())
                 .build();
     }
 
@@ -53,8 +52,8 @@ public class BoardAssembler {
                 .boardTitle(dto.getBoardTitle())
                 .boardContents(dto.getBoardContents())
                 .boardViews(dto.getBoardViews())
-                .createAt(dto.getCreatedAt())
-                .updateAt(dto.getUpdatedAt())
+                .createdAt(dto.getCreatedAt())
+                .updatedAt(dto.getUpdatedAt())
                 .build();
     }
 
@@ -90,8 +89,8 @@ public class BoardAssembler {
                 .boardTitle(boardResponseDto.getBoardTitle())
                 .boardContents(boardResponseDto.getBoardContents())
                 .boardViews(boardResponseDto.getBoardViews())
-                .createAt(boardResponseDto.getCreatedAt())
-                .updateAt(boardResponseDto.getUpdatedAt())
+                .createdAt(boardResponseDto.getCreatedAt())
+                .updatedAt(boardResponseDto.getUpdatedAt())
                 .build();
     }
 

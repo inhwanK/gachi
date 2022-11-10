@@ -122,7 +122,7 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(NoticeTitleFormatException.class)
+                .isInstanceOf(NoticeTitleOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 제목이 길이 제한을 초과하였습니다.");
     }
@@ -143,7 +143,7 @@ public class NoticeServiceTest {
         // when
         // then
         assertThatCode(() -> noticeService.registerNotice(requestDto))
-                .isInstanceOf(NoticeContentsFormatException.class)
+                .isInstanceOf(NoticeContentsOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 내용이 길이 제한을 초과하였습니다.");
     }

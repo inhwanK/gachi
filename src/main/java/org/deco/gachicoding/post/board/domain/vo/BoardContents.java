@@ -1,9 +1,9 @@
 package org.deco.gachicoding.post.board.domain.vo;
 
 import org.deco.gachicoding.exception.post.board.BoardContentsEmptyException;
-import org.deco.gachicoding.exception.post.board.BoardContentsFormatException;
+import org.deco.gachicoding.exception.post.board.BoardContentsOverMaximumLengthException;
 import org.deco.gachicoding.exception.post.board.BoardContentsNullException;
-import org.deco.gachicoding.exception.post.board.BoardTitleFormatException;
+import org.deco.gachicoding.post.question.domain.vo.QuestionTitle;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -25,6 +25,12 @@ public class BoardContents {
         this.boardContents = boardContents;
     }
 
+    public BoardContents update(String updateContents) {
+        if (boardContents.equals(updateContents))
+            return this;
+        return new BoardContents(updateContents);
+    }
+
     public String getBoardContents() {
         return boardContents;
     }
@@ -42,6 +48,6 @@ public class BoardContents {
     private void validateMaximumLength(String boardContents) {
         // 개발
         if (boardContents.length() > MAXIMUM_CONTENT_LENGTH)
-            throw new BoardContentsFormatException();
+            throw new BoardContentsOverMaximumLengthException();
     }
 }

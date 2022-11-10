@@ -37,7 +37,7 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
-                .isInstanceOf(NoticeTitleFormatException.class)
+                .isInstanceOf(NoticeTitleOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 제목이 길이 제한을 초과하였습니다.");
     }
@@ -93,7 +93,7 @@ public class NoticeTest {
 
         // when, then
         assertThatCode(() -> NoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
-                .isInstanceOf(NoticeContentsFormatException.class)
+                .isInstanceOf(NoticeContentsOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 내용이 길이 제한을 초과하였습니다.");
     }

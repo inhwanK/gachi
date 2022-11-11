@@ -20,9 +20,9 @@ public class MockUser {
         private String userEmail = "test@gachicoding.com";
         private String userPassword = "Test User Password";
         private boolean userEnabled = true;
-        private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
         private RoleType userRole = RoleType.ROLE_USER;
-
+        private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
+        private LocalDateTime userUpdatedAt = LocalDateTime.of(2022, 2, 2, 2, 3);
 
         public Builder userIdx(Long userIdx) {
             this.userIdx = userIdx;
@@ -54,13 +54,18 @@ public class MockUser {
             return this;
         }
 
+        public Builder userRole(RoleType userRole) {
+            this.userRole = userRole;
+            return this;
+        }
+
         public Builder userCreatedAt(LocalDateTime userCreatedAt) {
             this.userCreatedAt = userCreatedAt;
             return this;
         }
 
-        public Builder userRole(RoleType userRole) {
-            this.userRole = userRole;
+        public Builder userUpdatedAt(LocalDateTime userUpdatedAt) {
+            this.userUpdatedAt = userUpdatedAt;
             return this;
         }
 
@@ -72,8 +77,9 @@ public class MockUser {
                     userEmail,
                     userPassword,
                     userEnabled,
+                    userRole,
                     userCreatedAt,
-                    userRole
+                    userUpdatedAt
             );
         }
     }

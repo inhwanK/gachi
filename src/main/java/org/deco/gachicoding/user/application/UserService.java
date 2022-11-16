@@ -2,7 +2,7 @@ package org.deco.gachicoding.user.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.user.password.InvalidPasswordUpdateException;
+import org.deco.gachicoding.exception.user.password.PasswordAlreadyUsedException;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
@@ -72,7 +72,7 @@ public class UserService {
         User user = userRepository.findByUserEmail(userEmail).get();
 
         if (passwordEncoder.matches(dto.getConfirmPassword(), user.getUserPassword())) {
-            throw new InvalidPasswordUpdateException();
+            throw new PasswordAlreadyUsedException();
         }
 
         String encryptedPassword = passwordEncoder.encode(dto.getConfirmPassword());

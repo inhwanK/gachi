@@ -17,8 +17,9 @@ public class UserResponseDto {
     private String userNick;
     private String userEmail;
     private String userPassword;
-    private LocalDateTime userCreatedAt;
     private boolean userEnabled;
+    private LocalDateTime userCreatedAt;
+    private LocalDateTime userUpdatedAt;
 
     public UserResponseDto(User user) {
         this.userIdx = user.getUserIdx();
@@ -26,7 +27,8 @@ public class UserResponseDto {
         this.userNick = user.getUserNick();
         this.userEmail = user.getUserEmail();
         this.userPassword = user.getUserPassword();
-        this.userCreatedAt = user.getUserCreatedAt();
+        this.userCreatedAt = user.getCreatedAt();
+        this.userUpdatedAt = user.getUpdatedAt();
         this.userEnabled = user.isUserEnabled();
     }
 

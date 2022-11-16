@@ -3,16 +3,19 @@ package org.deco.gachicoding.exception.user.password;
 import org.springframework.http.HttpStatus;
 
 public class InvalidPasswordUpdateException extends PasswordException{
-
-    private static final String ERROR_CODE = "P0001";
+    private static final String ERROR_CODE = "P0002";
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST;
-    private static final String MESSAGE = "비밀번호가 이전과 동일합니다. 새로운 비밀번호를 입력해주세요.";
+    private static final String MESSAGE = "비밀번호 확인란에 비밀번호와 동일한 값을 입력해주세요.";
 
     public InvalidPasswordUpdateException() {
         this(ERROR_CODE, HTTP_STATUS, MESSAGE);
     }
 
-    protected InvalidPasswordUpdateException(String errorCode, HttpStatus httpStatus, String message) {
+    public InvalidPasswordUpdateException(
+            String errorCode,
+            HttpStatus httpStatus,
+            String message
+    ) {
         super(errorCode, httpStatus, message);
     }
 }

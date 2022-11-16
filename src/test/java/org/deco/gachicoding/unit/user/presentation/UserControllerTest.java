@@ -3,7 +3,7 @@ package org.deco.gachicoding.unit.user.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.deco.gachicoding.config.SecurityConfig;
-import org.deco.gachicoding.exception.user.password.InvalidPasswordUpdateException;
+import org.deco.gachicoding.exception.user.password.PasswordAlreadyUsedException;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
@@ -206,7 +206,7 @@ public class UserControllerTest {
                 new PasswordUpdateRequestDto("1234", "1234");
 
         given(userService.modifyUserPassword(eq("1234@1234.com"), any(PasswordUpdateRequestDto.class)))
-                .willThrow(new InvalidPasswordUpdateException());
+                .willThrow(new PasswordAlreadyUsedException());
 
         // when
         ResultActions perform = mockMvc.perform(patch("/api/user/change-password")

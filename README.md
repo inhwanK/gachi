@@ -7,10 +7,6 @@
 * [김인환](https://github.com/inhwanK) - BE
 * [서영준](https://github.com/95Seo) - BE
 
-[//]: # (* [김인표]&#40;https://github.com/kiminpyo&#41;)
-[//]: # (* [배지왕]&#40;https://github.com/BAE-JI-WANG&#41;)
-[//]: # (* [김세현]&#40;https://github.com/saehyen&#41;)
-
 <br>
 
 ## 사용 기술
@@ -22,12 +18,12 @@
 * swagger2
 
 ## 컨벤션
-- [Commit Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/commit_convention.md)
-- [Issue Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/issue_convention.md)
-- [PR Convention](https://github.com/95Seo/gachicoding/blob/develop/document/convention/pull_request_convention.md)
+- [Commit Convention](document/convention/commit_convention.md)
+- [Issue Convention](document/convention/issue_convention.md)
+- [PR Convention](document/convention/pull_request_convention.md)
 
 ## ERD
-![](document/erd.png)
+<img src="document/erd.png" width="800">
 
 ## 저장소
 * [백엔드 저장소 (현재 저장소)](https://github.com/inhwanK/gachicoding)

@@ -2,14 +2,15 @@ package org.deco.gachicoding.config;
 
 import org.deco.gachicoding.config.security.RestAuthenticationProvider;
 import org.deco.gachicoding.config.security.RestLoginAuthenticationEntryPoint;
-import org.deco.gachicoding.config.security.RestLoginProcessingFilter;
-import org.deco.gachicoding.config.security.handler.RestAccessDeniedHandler;
-import org.deco.gachicoding.config.security.handler.RestAuthenticationFailureHandler;
-import org.deco.gachicoding.config.security.handler.RestAuthenticationSuccessHandler;
+import org.deco.gachicoding.config.security.CustomLoginProcessingFilter;
+import org.deco.gachicoding.config.security.handler.CustomAccessDeniedHandler;
+import org.deco.gachicoding.config.security.handler.CustomAuthenticationFailureHandler;
+import org.deco.gachicoding.config.security.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -34,8 +35,9 @@ import java.util.Arrays;
 // 인가 정보 반환 기능 https://offbyone.tistory.com/217
 // 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@Order(2)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -44,6 +46,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
@@ -64,12 +72,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .cors().configurationSource(corsConfigurationSource())
-        .and()
+                .and()
                 .csrf().disable()
-                .headers().frameOptions().disable();
-
-        http
-                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+                .headers().frameOptions().disable()
+                .and()
+                .addFilter(customLoginProcessingFilter());
 
         http
                 .exceptionHandling()
@@ -89,27 +96,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public RestLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
-        RestLoginProcessingFilter restLoginProcessingFilter = new RestLoginProcessingFilter();
-        restLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        restLoginProcessingFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
-        restLoginProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
-        return restLoginProcessingFilter;
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new RestAuthenticationSuccessHandler();
-    }
-
-    @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new RestAuthenticationFailureHandler();
+    public CustomLoginProcessingFilter customLoginProcessingFilter() throws Exception {
+        CustomLoginProcessingFilter customLoginProcessingFilter = new CustomLoginProcessingFilter();
+        customLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
+        customLoginProcessingFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
+        customLoginProcessingFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
+        return customLoginProcessingFilter;
     }
 
     @Bean
     public AccessDeniedHandler restAccessDeniedHandler() {
-        return new RestAccessDeniedHandler();
+        return new CustomAccessDeniedHandler();
     }
 
     @Bean

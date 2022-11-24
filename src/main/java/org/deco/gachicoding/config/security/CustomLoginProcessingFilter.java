@@ -2,7 +2,10 @@ package org.deco.gachicoding.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.config.security.handler.CustomAuthenticationFailureHandler;
+import org.deco.gachicoding.config.security.handler.CustomAuthenticationSuccessHandler;
 import org.deco.gachicoding.user.dto.request.authentication.LoginRequestDto;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -15,11 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class CustomLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public RestLoginProcessingFilter() {
+    public CustomLoginProcessingFilter() {
         super(new AntPathRequestMatcher("/api/login"));
     }
 

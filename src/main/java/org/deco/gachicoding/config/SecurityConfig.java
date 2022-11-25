@@ -1,29 +1,22 @@
 package org.deco.gachicoding.config;
 
-import org.deco.gachicoding.config.security.RestAuthenticationProvider;
-import org.deco.gachicoding.config.security.RestLoginAuthenticationEntryPoint;
-import org.deco.gachicoding.config.security.RestLoginProcessingFilter;
-import org.deco.gachicoding.config.security.handler.RestAccessDeniedHandler;
-import org.deco.gachicoding.config.security.handler.RestAuthenticationFailureHandler;
-import org.deco.gachicoding.config.security.handler.RestAuthenticationSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.deco.gachicoding.config.filter.CustomAuthenticationProvider;
+import org.deco.gachicoding.config.filter.handler.CustomLoginAuthenticationEntryPoint;
+import org.deco.gachicoding.config.filter.CustomLoginConfigurer;
+import org.deco.gachicoding.config.filter.handler.CustomAccessDeniedHandler;
+import org.deco.gachicoding.config.filter.handler.CustomAuthenticationFailureHandler;
+import org.deco.gachicoding.config.filter.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -34,25 +27,50 @@ import java.util.Arrays;
 // 인가 정보 반환 기능 https://offbyone.tistory.com/217
 // 시큐리티 설정 관련 자료 : https://velog.io/@seongwon97/Spring-Security-Filter%EB%9E%80
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${key.value}")
-    private String webServerAddress;
+//    @Value("${key.value}")
+//    private String webServerAddress;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        http
+                .authorizeRequests()
+                .anyRequest().permitAll();
+
+        http
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
+                .csrf().disable()
+                .headers().frameOptions().disable();
+
+        http
+                .apply(new CustomLoginConfigurer())
+                .successHandlerCustom(customAuthenticationSuccessHandler())
+                .failureHandlerCustom(customAuthenticationFailureHandler())
+                .setAuthenticationManager(authenticationManagerBean())
+                .loginProcessingUrl("/api/login");
+
+        http
+                .logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessUrl("http://localhost:3000")
+                .addLogoutHandler(new SecurityContextLogoutHandler());
+
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(customAccessDeniedHandler());
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(restAuthenticationProvider());
-    }
-
-    @Bean
-    public AuthenticationProvider restAuthenticationProvider() {
-        return new RestAuthenticationProvider(passwordEncoder(), userDetailsService);
+        auth.authenticationProvider(customAuthenticationProvider());
     }
 
     @Bean
@@ -60,56 +78,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    protected void configure(HttpSecurity http) throws Exception {
-
-        http
-                .cors().configurationSource(corsConfigurationSource())
-        .and()
-                .csrf().disable()
-                .headers().frameOptions().disable();
-
-        http
-                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-
-        http
-                .exceptionHandling()
-                .authenticationEntryPoint(new RestLoginAuthenticationEntryPoint())
-                .accessDeniedHandler(restAccessDeniedHandler());
-
-        http
-                .logout()
-                .logoutUrl("/api/logout")
-                .logoutSuccessUrl("http://localhost:3000")
-                .addLogoutHandler(new SecurityContextLogoutHandler());
-    }
-
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    @Bean
+    public AuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider();
     }
 
     @Bean
-    public RestLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
-        RestLoginProcessingFilter restLoginProcessingFilter = new RestLoginProcessingFilter();
-        restLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        restLoginProcessingFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
-        restLoginProcessingFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
-        return restLoginProcessingFilter;
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new RestAuthenticationSuccessHandler();
+    public CustomAuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new RestAuthenticationFailureHandler();
-    }
-
-    @Bean
-    public AccessDeniedHandler restAccessDeniedHandler() {
-        return new RestAccessDeniedHandler();
+    public AccessDeniedHandler customAccessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
 
     @Bean
@@ -117,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", webServerAddress));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-Requested-With", "remember-me", "accesss-token", "Set-Cookie"));
         configuration.setAllowedMethods(Arrays.asList("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"));
         configuration.setAllowCredentials(true);

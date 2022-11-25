@@ -1,4 +1,4 @@
-package org.deco.gachicoding.config.security;
+package org.deco.gachicoding.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -15,11 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Slf4j
-public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class CustomLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public RestLoginProcessingFilter() {
+    public CustomLoginProcessingFilter() {
         super(new AntPathRequestMatcher("/api/login"));
     }
 
@@ -29,14 +29,12 @@ public class RestLoginProcessingFilter extends AbstractAuthenticationProcessingF
         // 역직렬화 할 때는 유효성 검사 로직이 작동을 안하는 듯... 사이클을 찾아봐야함.
         LoginRequestDto requestDto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);
 
-        log.info("이메일 유효성 검사 로직 필요");
-
         if (!StringUtils.hasText(requestDto.getUserEmail()) || !StringUtils.hasText(requestDto.getPassword())) {
             throw new IllegalArgumentException("Username or Password is empty");
         }
 
-        RestAuthenticationToken restAuthenticationToken = new RestAuthenticationToken(requestDto.getUserEmail(), requestDto.getPassword());
+        CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(requestDto.getUserEmail(), requestDto.getPassword());
 
-        return getAuthenticationManager().authenticate(restAuthenticationToken);
+        return getAuthenticationManager().authenticate(customAuthenticationToken);
     }
 }

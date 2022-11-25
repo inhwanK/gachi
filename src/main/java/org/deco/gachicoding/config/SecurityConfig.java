@@ -1,30 +1,22 @@
 package org.deco.gachicoding.config;
 
-import org.deco.gachicoding.config.security.RestAuthenticationProvider;
-import org.deco.gachicoding.config.security.RestLoginAuthenticationEntryPoint;
-import org.deco.gachicoding.config.security.CustomLoginProcessingFilter;
-import org.deco.gachicoding.config.security.handler.CustomAccessDeniedHandler;
-import org.deco.gachicoding.config.security.handler.CustomAuthenticationFailureHandler;
-import org.deco.gachicoding.config.security.handler.CustomAuthenticationSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.deco.gachicoding.config.filter.CustomAuthenticationProvider;
+import org.deco.gachicoding.config.filter.handler.CustomLoginAuthenticationEntryPoint;
+import org.deco.gachicoding.config.filter.CustomLoginConfigurer;
+import org.deco.gachicoding.config.filter.handler.CustomAccessDeniedHandler;
+import org.deco.gachicoding.config.filter.handler.CustomAuthenticationFailureHandler;
+import org.deco.gachicoding.config.filter.handler.CustomAuthenticationSuccessHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -37,30 +29,48 @@ import java.util.Arrays;
 // 백기선 시큐리티 강의 : https://youtu.be/fG21HKnYt6g
 @EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
-@Order(2)
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${key.value}")
-    private String webServerAddress;
+//    @Value("${key.value}")
+//    private String webServerAddress;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
 
-    @Autowired
-    private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
 
-    @Autowired
-    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+        http
+                .authorizeRequests()
+                .anyRequest().permitAll();
+
+        http
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
+                .csrf().disable()
+                .headers().frameOptions().disable();
+
+        http
+                .apply(new CustomLoginConfigurer())
+                .successHandlerCustom(customAuthenticationSuccessHandler())
+                .failureHandlerCustom(customAuthenticationFailureHandler())
+                .setAuthenticationManager(authenticationManagerBean())
+                .loginProcessingUrl("/api/login");
+
+        http
+                .logout()
+                .logoutUrl("/api/logout")
+                .logoutSuccessUrl("http://localhost:3000")
+                .addLogoutHandler(new SecurityContextLogoutHandler());
+
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(customAccessDeniedHandler());
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(restAuthenticationProvider());
-    }
-
-    @Bean
-    public AuthenticationProvider restAuthenticationProvider() {
-        return new RestAuthenticationProvider(passwordEncoder(), userDetailsService);
+        auth.authenticationProvider(customAuthenticationProvider());
     }
 
     @Bean
@@ -68,44 +78,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    protected void configure(HttpSecurity http) throws Exception {
-
-        http
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
-                .csrf().disable()
-                .headers().frameOptions().disable()
-                .and()
-                .addFilter(customLoginProcessingFilter());
-
-        http
-                .exceptionHandling()
-                .authenticationEntryPoint(new RestLoginAuthenticationEntryPoint())
-                .accessDeniedHandler(restAccessDeniedHandler());
-
-        http
-                .logout()
-                .logoutUrl("/api/logout")
-                .logoutSuccessUrl("http://localhost:3000")
-                .addLogoutHandler(new SecurityContextLogoutHandler());
-    }
-
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    @Bean
+    public AuthenticationProvider customAuthenticationProvider() {
+        return new CustomAuthenticationProvider();
     }
 
     @Bean
-    public CustomLoginProcessingFilter customLoginProcessingFilter() throws Exception {
-        CustomLoginProcessingFilter customLoginProcessingFilter = new CustomLoginProcessingFilter();
-        customLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        customLoginProcessingFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
-        customLoginProcessingFilter.setAuthenticationFailureHandler(customAuthenticationFailureHandler);
-        return customLoginProcessingFilter;
+    public CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 
     @Bean
-    public AccessDeniedHandler restAccessDeniedHandler() {
+    public CustomAuthenticationFailureHandler customAuthenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public AccessDeniedHandler customAccessDeniedHandler() {
         return new CustomAccessDeniedHandler();
     }
 
@@ -114,7 +103,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001", webServerAddress));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:3001"));
         configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Accept", "X-Requested-With", "remember-me", "accesss-token", "Set-Cookie"));
         configuration.setAllowedMethods(Arrays.asList("DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"));
         configuration.setAllowCredentials(true);

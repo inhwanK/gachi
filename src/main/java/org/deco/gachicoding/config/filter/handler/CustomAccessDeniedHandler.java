@@ -1,4 +1,4 @@
-package org.deco.gachicoding.config.security.handler;
+package org.deco.gachicoding.config.filter.handler;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

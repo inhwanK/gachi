@@ -22,9 +22,7 @@ public class AnswerController {
     private final AnswerService answerService;
 
     @ApiOperation(value = "답변 등록", notes = "답변 등록 수행")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "등록된 답변 번호 반환")
-    )
+    @ApiResponse(code = 200, message = "등록된 답변 번호 반환")
     @PostMapping("/answer")
     public ResponseEntity<Void> registerAnswer(
             @ApiParam(value = "질문 요청 body 정보")
@@ -41,25 +39,8 @@ public class AnswerController {
         return ResponseEntity.created(URI.create(redirectUrl)).build();
     }
 
-//    @ApiOperation(value = "답변 리스트")
-//    @GetMapping("/answer/list")
-//    public Page<AnswerResponseDto> getAnswerList(@RequestParam(value = "keyword", defaultValue = "") String keyword, @PageableDefault(size = 10) Pageable pageable) {
-//        return answerService.getAnswerList(keyword, pageable);
-//    }
-//
-//    @ApiOperation(value = "답변 디테일")
-//    @ApiResponses(
-//            @ApiResponse(code = 200, message = "답변 상세 정보 봔한")
-//    )
-//    @GetMapping("/answer/{ansIdx}")
-//    public AnswerResponseDto getAnswerDetail(@ApiParam(value = "답변 번호", example = "1") @PathVariable Long ansIdx) {
-//        return answerService.getAnswerDetail(ansIdx);
-//    }
-
     @ApiOperation(value = "답변 수정")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "수정 후 답변 상세 정보 봔한")
-    )
+    @ApiResponse(code = 200, message = "수정 후 답변 상세 정보 봔한")
     @PutMapping("/answer/modify")
     public ResponseEntity<Void> modifyAnswer(
             @ApiParam(value = "답변 수정 요청 body 정보")
@@ -99,9 +80,7 @@ public class AnswerController {
     }
 
     @ApiOperation(value = "답변 비활성화")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "비활성화 성공")
-    )
+    @ApiResponse(code = 200, message = "비활성화 성공")
     @PutMapping("/answer/disable")
     public ResponseEntity<Void> disableAnswer(
             @ApiParam(value = "답변 번호", example = "1") @RequestParam Long ansIdx,
@@ -118,9 +97,7 @@ public class AnswerController {
     }
 
     @ApiOperation(value = "답변 활성화")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "활성화 성공")
-    )
+    @ApiResponse(code = 200, message = "활성화 성공")
     @PutMapping("/answer/enable")
     public ResponseEntity<Void> enableAnswer(
             @ApiParam(value = "답변 번호", example = "1") @RequestParam Long ansIdx,
@@ -137,9 +114,7 @@ public class AnswerController {
     }
 
     @ApiOperation(value = "답변 삭제")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "삭제 성공")
-    )
+    @ApiResponse(code = 200, message = "삭제 성공")
     @DeleteMapping("/answer")
     public ResponseEntity<Void> removeAnswer(
             @ApiParam(value = "답변 번호", example = "1") @RequestParam Long ansIdx,

@@ -33,9 +33,7 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @ApiOperation(value = "질문 등록", notes = "하나의 질문 데이터를 등록.")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "등록된 질문 번호 반환")
-    )
+    @ApiResponse(code = 200, message = "등록된 질문 번호 반환")
     @PostMapping("/question")
     public ResponseEntity<Void> registerQuestion(
             @ApiParam(value = "질문 요청 body 정보")
@@ -43,7 +41,7 @@ public class QuestionController {
     ) {
         log.info("{} Register Controller", "Question");
 
-        Long queIdx =  questionService.registerQuestion(
+        Long queIdx = questionService.registerQuestion(
                 QuestionAssembler.questionSaveRequestDto(request)
         );
 
@@ -53,9 +51,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 리스트", notes = "여러 개의 질문 데이터 응답. 이 때, 질문별 답변 데이터는 포함하지 않음.")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "질문 목록 반환")
-    )
+    @ApiResponse(code = 200, message = "질문 목록 반환")
     @GetMapping("/question/list")
     public ResponseEntity<List<QuestionListResponse>> getQuestionList(
             @ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -70,9 +66,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 디테일", notes = "하나의 질문 데이터와 해당 질문의 답변들을 응답")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "질문 상세 정보 반환")
-    )
+    @ApiResponse(code = 200, message = "질문 상세 정보 반환")
     @GetMapping("/question/{queIdx}")
     public ResponseEntity<QuestionDetailResponse> getQuestionDetail(
             @ApiParam(value = "질문 번호", example = "1")
@@ -87,9 +81,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 수정", notes = "질문 데이터를 수정 (리팩토링 필요함)")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
-    )
+    @ApiResponse(code = 200, message = "수정 후 질문 상세 정보 반환")
     @PutMapping("/question/modify")
     public ResponseEntity<Void> modifyQuestion(
             @ApiParam(value = "질문 수정 요청 body 정보")
@@ -105,9 +97,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 비활성화", notes = "사용자 입장에서 질문 데이터를 삭제")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "비활성화 성공")
-    )
+    @ApiResponse(code = 200, message = "비활성화 성공")
     @PutMapping("/question/disable")
     public ResponseEntity<Void> disableQuestion(
             @ApiParam(value = "질문 번호", example = "1") @RequestParam Long queIdx,
@@ -123,12 +113,11 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 활성화", notes = "사용자 입장에서 삭제된 질문 데이터 복구")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "활성화 성공")
-    )
+    @ApiResponse(code = 200, message = "활성화 성공")
     @PutMapping("/question/enable")
     public ResponseEntity<Void> enableQuestion(
-            @ApiParam(value = "질문 번호", example = "1") @RequestParam Long queIdx,
+            @ApiParam(value = "질문 번호", example = "1")
+            @RequestParam Long queIdx,
             @ApiParam(value = "userEmail")
             @RequestParam(value = "userEmail", defaultValue = "") String userEmail
     ) {
@@ -141,13 +130,13 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 삭제", notes = "질문 데이터를 DB에서 완전히 삭제")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "삭제 성공")
-    )
+    @ApiResponse(code = 200, message = "삭제 성공")
     @DeleteMapping("/question")
     public ResponseEntity<Void> removeQuestion(
-            @ApiParam(value = "질문 번호", example = "1") @RequestParam Long queIdx,
-            @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+            @ApiParam(value = "질문 번호", example = "1")
+            @RequestParam Long queIdx,
+            @ApiParam(value = "userEmail")
+            @RequestParam(value = "userEmail", defaultValue = "") String userEmail
     ) {
 
         QuestionBasicRequestDto dto = QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);

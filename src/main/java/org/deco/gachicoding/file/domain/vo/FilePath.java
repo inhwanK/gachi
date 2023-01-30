@@ -1,5 +1,6 @@
 package org.deco.gachicoding.file.domain.vo;
 
+import org.deco.gachicoding.file.domain.ArticleType;
 import org.hibernate.annotations.Comment;
 
 import javax.persistence.Column;
@@ -17,10 +18,15 @@ public class FilePath {
     private String filePath;
 
     // 유효성 검증을 어떤 걸 해야 할지 모르겠다...
-    public FilePath(String articleCategory, Long articleIdx, SaveFileName saveFileName) {
+    public FilePath(
+            ArticleType articleType,
+            Long articleIdx,
+            SaveFileName saveFileName
+    ) {
+
         filePath = String.format(
                 PATH_FORMAT,
-                articleCategory,
+                articleType,
                 articleIdx,
                 saveFileName.getSaveFilename()
         );

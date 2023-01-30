@@ -9,8 +9,8 @@ import org.deco.gachicoding.post.board.presentation.dto.response.BoardResponse;
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.data.domain.Pageable;
 
-public class BoardFactory {
-    private BoardFactory() {}
+public class MockBoardFactory {
+    private MockBoardFactory() {}
 
     /* Board Object Start */
     public static Board mockBoard(

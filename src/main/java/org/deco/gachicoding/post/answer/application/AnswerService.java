@@ -3,20 +3,20 @@ package org.deco.gachicoding.post.answer.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.answer.*;
-import org.deco.gachicoding.exception.post.question.QuestionAlreadySolvedException;
 import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.file.application.FileService;
+import org.deco.gachicoding.file.domain.ArticleType;
 import org.deco.gachicoding.post.answer.application.dto.request.AnswerBasicRequestDto;
+import org.deco.gachicoding.post.answer.application.dto.request.AnswerSaveRequestDto;
 import org.deco.gachicoding.post.answer.application.dto.request.AnswerUpdateRequestDto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.domain.repository.AnswerRepository;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
-import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.answer.application.dto.request.AnswerSaveRequestDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +39,7 @@ public class AnswerService {
         String ansContent = answer.getAnsContents();
 
         answer.update(
-                fileService.extractPathAndS3Upload(ansIdx, "ANSWER", ansContent)
+                fileService.extractPathAndS3Upload(ansIdx, ArticleType.Answer, ansContent)
         );
 
         return answer.getQueIdx();
@@ -56,7 +56,7 @@ public class AnswerService {
     public Long modifyAnswer(AnswerUpdateRequestDto dto) {
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getAnsIdx(),
-                "ANSWER",
+                ArticleType.Answer,
                 dto.getAnsContents()
         );
 

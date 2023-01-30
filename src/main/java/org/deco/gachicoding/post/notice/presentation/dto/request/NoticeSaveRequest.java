@@ -28,17 +28,9 @@ public class NoticeSaveRequest {
     @ApiModelProperty(value = "공지사항 내용", required = true, example = "안녕하세요 운영자A입니다.")
     private String notContent;
 
-//    @NotNull
-//    @ApiModelProperty(value = "공지사항 내용", required = true, example = "안녕하세요 운영자A입니다.")
-//    private String notContents;
-
     @Nullable
     @ApiModelProperty(value = "상단 고정 여부", required = false, example = "true")
     private Boolean notPin;
-
-//    @Nullable
-//    @ApiModelProperty(value = "태그 목록", required = false, example = "운영")
-//    private List<String> tags;
 
     private NoticeSaveRequest() {}
 

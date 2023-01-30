@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.post.board.domain;
 
-import org.deco.gachicoding.common.factory.post.board.BoardFactory;
-import org.deco.gachicoding.common.factory.user.UserFactory;
+import org.deco.gachicoding.common.factory.post.board.MockBoardFactory;
+import org.deco.gachicoding.common.factory.user.MockUserFactory;
 import org.deco.gachicoding.exception.post.board.*;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.board.domain.Board;
@@ -21,10 +21,10 @@ public class BoardTest {
         String boardTitle = "a".repeat(100);
         String boardContents = "테스트 게시물 내용";
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
                 .doesNotThrowAnyException();
     }
 
@@ -35,10 +35,10 @@ public class BoardTest {
         String boardTitle = "a".repeat(101);
         String boardContents = "테스트 게시물 내용";
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
                 .isInstanceOf(BoardTitleOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("게시물 제목이 길이 제한을 초과하였습니다.");
@@ -50,10 +50,10 @@ public class BoardTest {
         // given
         String boardContents = "테스트 게시물 내용";
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, null, boardContents, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, null, boardContents, boardCategory, true))
                 .isInstanceOf(BoardTitleNullException.class)
                 .extracting("message")
                 .isEqualTo("게시물의 제목이 널이어서는 안됩니다.");
@@ -65,10 +65,10 @@ public class BoardTest {
         // given
         String boardContents = "테스트 게시물 내용";
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, "", boardContents, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, "", boardContents, boardCategory, true))
                 .isInstanceOf(BoardTitleEmptyException.class)
                 .extracting("message")
                 .isEqualTo("게시물의 제목이 공백이어서는 안됩니다.");
@@ -81,10 +81,10 @@ public class BoardTest {
         String boardTitle = "테스트 게시물 제목";
         String boardContents = "a".repeat(10000);
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
                 .doesNotThrowAnyException();
     }
 
@@ -95,10 +95,10 @@ public class BoardTest {
         String boardTitle = "테스트 게시물 제목";
         String boardContents = "a".repeat(10001);
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, boardTitle, boardContents, boardCategory, true))
                 .isInstanceOf(BoardContentsOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("게시물 내용이 길이 제한을 초과하였습니다.");
@@ -110,10 +110,10 @@ public class BoardTest {
         // given
         String boardTitle = "테스트 게시물 제목";
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, null, boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, boardTitle, null, boardCategory, true))
                 .isInstanceOf(BoardContentsNullException.class)
                 .extracting("message")
                 .isEqualTo("게시물의 내용이 널이어서는 안됩니다.");
@@ -125,10 +125,10 @@ public class BoardTest {
         // given
         String boardTitle = "테스트 게시물 제목";
         String boardCategory = "자유";
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
         // when, then
-        assertThatCode(() -> BoardFactory.mockBoard(1L, author, boardTitle, "", boardCategory, true))
+        assertThatCode(() -> MockBoardFactory.mockBoard(1L, author, boardTitle, "", boardCategory, true))
                 .isInstanceOf(BoardContentsEmptyException.class)
                 .extracting("message")
                 .isEqualTo("게시물의 내용이 공백이어서는 안됩니다.");
@@ -138,9 +138,9 @@ public class BoardTest {
     @DisplayName("자신이 작성한 게시물인지 확인한다.")
     void create_BoardAuthorMe_Success() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
-        Board board = BoardFactory.mockBoard(1L, author, null);
+        Board board = MockBoardFactory.mockBoard(1L, author, null);
 
         // when, then
         assertThatCode(() -> board.hasSameAuthor(author))
@@ -151,10 +151,10 @@ public class BoardTest {
     @DisplayName("자신이 작성한 게시물인지 확인한다. 아니라면 예외가 발생한다.")
     void create_BoardAuthorMe_Exception() {
         // given
-        User author = UserFactory.user();
-        User user = UserFactory.user();
+        User author = MockUserFactory.createUser();
+        User user = MockUserFactory.createUser();
 
-        Board board = BoardFactory.mockBoard(1L, author, null);
+        Board board = MockBoardFactory.mockBoard(1L, author, null);
 
         // when, then
         assertThatCode(() -> board.hasSameAuthor(user))
@@ -167,9 +167,9 @@ public class BoardTest {
     @DisplayName("게시물을 비활성 상태로 변경한다.")
     void create_BoardDisableState_Success() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
-        Board board = BoardFactory.mockBoard(1L, author, true);
+        Board board = MockBoardFactory.mockBoard(1L, author, true);
 
         // when, then
         assertThatCode(() -> board.disableBoard())
@@ -180,9 +180,9 @@ public class BoardTest {
     @DisplayName("게시물을 비활성 상태로 변경한다, 이미 비활성 상태라면 예외가 발생한다.")
     void create_BoardDisableState_Exception() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
-        Board board = BoardFactory.mockBoard(1L, author, false);
+        Board board = MockBoardFactory.mockBoard(1L, author, false);
 
         // when, then
         assertThatCode(() -> board.disableBoard())
@@ -195,9 +195,9 @@ public class BoardTest {
     @DisplayName("게시물을 활성 상태로 변경한다.")
     void create_BoardEnableState_Success() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
 
-        Board board = BoardFactory.mockBoard(1L, author, false);
+        Board board = MockBoardFactory.mockBoard(1L, author, false);
 
         // when, then
         assertThatCode(() -> board.enableBoard())
@@ -208,10 +208,10 @@ public class BoardTest {
     @DisplayName("게시물을 활성 상태로 변경한다, 이미 활성 상태라면 예외가 발생한다.")
     void create_BoardEnableState_Exception() {
         // given
-        User author = UserFactory.user();
-        User user = UserFactory.user();
+        User author = MockUserFactory.createUser();
+        User user = MockUserFactory.createUser();
 
-        Board board = BoardFactory.mockBoard(1L, author, true);
+        Board board = MockBoardFactory.mockBoard(1L, author, true);
 
         // when, then
         assertThatCode(() -> board.enableBoard())
@@ -224,7 +224,7 @@ public class BoardTest {
     @DisplayName("게시물의 제목과 내용을 변경한다.")
     void create_BoardUpdate_Success() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
 
@@ -233,7 +233,7 @@ public class BoardTest {
 
         String boardCategory = "자유";
 
-        Board board = BoardFactory.mockBoard(1L, author, beforeBoardTitle, beforeBoardContents, boardCategory, true);
+        Board board = MockBoardFactory.mockBoard(1L, author, beforeBoardTitle, beforeBoardContents, boardCategory, true);
 
         // when
         board.update(afterBoardTitle, afterBoardContents);
@@ -247,13 +247,13 @@ public class BoardTest {
     @DisplayName("게시물의 제목을 변경한다.")
     void create_BoardUpdateTitle_Success() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String boardContents = "테스트 게시물 내용";
 
         String boardCategory = "자유";
 
-        Board board = BoardFactory.mockBoard(1L, author, beforeBoardTitle, boardContents, boardCategory, true);
+        Board board = MockBoardFactory.mockBoard(1L, author, beforeBoardTitle, boardContents, boardCategory, true);
 
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
 
@@ -268,13 +268,13 @@ public class BoardTest {
     @DisplayName("게시물의 내용을 변경한다.")
     void create_BoardUpdateContents_Success() {
         // given
-        User author = UserFactory.user();
+        User author = MockUserFactory.createUser();
         String boardTitle = "테스트 게시물 제목";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
 
         String boardCategory = "자유";
 
-        Board board = BoardFactory.mockBoard(1L, author, boardTitle, beforeBoardContents, boardCategory, true);
+        Board board = MockBoardFactory.mockBoard(1L, author, boardTitle, beforeBoardContents, boardCategory, true);
 
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 

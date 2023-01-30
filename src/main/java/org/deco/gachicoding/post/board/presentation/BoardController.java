@@ -32,9 +32,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @ApiOperation(value = "게시물 쓰기")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "등록된 게시글 번호 반환")
-    )
+    @ApiResponse(code = 200, message = "등록된 게시글 번호 반환")
     @PostMapping("/board")
     public ResponseEntity<Void> registerBoard(
             @ApiParam(value = "게시판 요청 body 정보")
@@ -50,9 +48,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 목록")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "게시글 목록 반환")
-    )
+    @ApiResponse(code = 200, message = "게시글 목록 반환")
     @GetMapping("/board/list")
     public ResponseEntity<List<BoardResponse>> getBoardList(
             @ApiParam(value = "검색어") @RequestParam(value = "keyword", defaultValue = "") String keyword,
@@ -68,9 +64,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 상세 보기")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
-    )
+    @ApiResponse(code = 200, message = "게시글 상세 정보 반환")
     @GetMapping("/board/{boardIdx}")
     public ResponseEntity<BoardResponse> getBoardDetail(
             @ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx
@@ -84,9 +78,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 수정")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
-    )
+    @ApiResponse(code = 200, message = "수정후 게시글 상세 정보 반환")
     @PutMapping("/board/modify")
     public ResponseEntity<Void> modifyBoard(
             @ApiParam(value = "게시판 수정 요청 body 정보") @RequestBody BoardUpdateRequest request
@@ -102,9 +94,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 비활성화")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "비활성화 성공")
-    )
+    @ApiResponse(code = 200, message = "비활성화 성공")
     @PutMapping("/board/disable/{boardIdx}")
     public ResponseEntity<Void> disableBoard(
             @ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
@@ -119,9 +109,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 활성화")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "활성화 성공")
-    )
+    @ApiResponse(code = 200, message = "활성화 성공")
     @PutMapping("/board/enable/{boardIdx}")
     public ResponseEntity<Void> enableBoard(
             @ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,
@@ -135,9 +123,7 @@ public class BoardController {
     }
 
     @ApiOperation(value = "게시물 삭제")
-    @ApiResponses(
-            @ApiResponse(code = 200, message = "삭제 성공")
-    )
+    @ApiResponse(code = 200, message = "삭제 성공")
     @DeleteMapping("/board/{boardIdx}")
     public ResponseEntity<Void> removeBoard(
             @ApiParam(value = "게시판 번호", example = "1") @PathVariable Long boardIdx,

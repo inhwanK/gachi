@@ -1,7 +1,6 @@
 package org.deco.gachicoding.common.factory.file;
 
 import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.io.File;
@@ -10,7 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
-public class FileFactory {
+public class MockFileFactory {
 
     /**
      * getClass().getResource() vs getClass().getClassLoader().getResource()
@@ -20,7 +19,7 @@ public class FileFactory {
      * <br><br>
      * 참고 : http://okminseok.blogspot.com/2019/08/getresource-vs-getclassloadergetresource.html
      */
-    private static final ClassLoader classLoader = FileFactory.class.getClassLoader();
+    private static final ClassLoader classLoader = MockFileFactory.class.getClassLoader();
 
     public static MockMultipartFile getTestSuccessImage1() {
         return createMockMultipartFile("testSuccessImage1.png");

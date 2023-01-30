@@ -9,8 +9,8 @@ import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.data.domain.Pageable;
 
-public class NoticeFactory {
-    private NoticeFactory() {}
+public class MockNoticeFactory {
+    private MockNoticeFactory() {}
 
     /* Notice Object start */
     public static Notice mockNotice(User author) {

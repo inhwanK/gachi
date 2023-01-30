@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.question.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.file.domain.ArticleType;
 import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
@@ -43,7 +44,7 @@ public class QuestionService {
         String queContent = question.getQueContents();
 
         question.updateContent(
-                fileService.extractPathAndS3Upload(queIdx, "QUESTION", queContent)
+                fileService.extractPathAndS3Upload(queIdx, ArticleType.Question, queContent)
         );
 
         return queIdx;
@@ -84,7 +85,7 @@ public class QuestionService {
     public Long modifyQuestion(QuestionUpdateRequestDto dto) {
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getQueIdx(),
-                "QUESTION",
+                ArticleType.Question,
                 dto.getQueContents()
         );
 

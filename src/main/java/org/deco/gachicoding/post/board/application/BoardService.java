@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.board.BoardInactiveException;
 import org.deco.gachicoding.exception.post.board.BoardNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.file.domain.ArticleType;
 import org.deco.gachicoding.post.board.application.dto.BoardDtoAssembler;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
@@ -40,7 +41,7 @@ public class BoardService {
         String boardContent = board.getBoardContents();
 
         board.updateContent(
-                fileService.extractPathAndS3Upload(boardIdx, "BOARD", boardContent)
+                fileService.extractPathAndS3Upload(boardIdx, ArticleType.Board, boardContent)
         );
 
         // tagify 라이브러리
@@ -84,7 +85,7 @@ public class BoardService {
         // 무조건 async
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getBoardIdx(),
-                "BOARD",
+                ArticleType.Board,
                 dto.getBoardContents()
         );
 

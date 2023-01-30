@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.deco.gachicoding.file.domain.ArticleType;
 import org.deco.gachicoding.file.domain.File;
 
 @Getter
@@ -12,7 +13,7 @@ import org.deco.gachicoding.file.domain.File;
 public class FileSaveRequestDto {
 
     private Long articleIdx;
-    private String articleCategory;
+    private ArticleType articleType;
     private String originFilename;
     private String saveFilename;
     private String fileExt;
@@ -20,9 +21,9 @@ public class FileSaveRequestDto {
     private String filePath;
 
     @Builder
-    public FileSaveRequestDto(Long articleIdx, String articleCategory, String originFilename, String saveFilename, String fileExt, Long fileSize, String filePath) {
+    public FileSaveRequestDto(Long articleIdx, ArticleType articleType, String originFilename, String saveFilename, String fileExt, Long fileSize, String filePath) {
         this.articleIdx = articleIdx;
-        this.articleCategory = articleCategory;
+        this.articleType = articleType;
         this.originFilename = originFilename;
         this.saveFilename = saveFilename;
         this.fileExt = fileExt;
@@ -33,7 +34,7 @@ public class FileSaveRequestDto {
     public File toEntity() {
         return File.builder()
                 .articleIdx(articleIdx)
-                .articleCategory(articleCategory)
+                .articleType(articleType)
 //                .originFilename(originFilename)
 //                .saveFilename(saveFilename)
 //                .fileExt(fileExt)

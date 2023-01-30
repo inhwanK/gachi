@@ -3,7 +3,6 @@ package org.deco.gachicoding.file.domain;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.file.domain.vo.FilePath;
@@ -32,8 +31,7 @@ public class File extends BaseTimeEntity {
 
     @Column(name = "article_category", columnDefinition = "varchar(255)", nullable = false)
     @Comment("게시물 카테고리(Board, Notice, Question, Answer)")
-    // enum?
-    private String articleCategory;
+    private ArticleType articleType;
 
     @Embedded
     private OriginFileInfo originFileInfo;
@@ -58,14 +56,14 @@ public class File extends BaseTimeEntity {
     public File(
             Long fileIdx,
             Long articleIdx,
-            String articleCategory,
+            ArticleType articleType,
             ObjectMetadata objectMetadata,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
         this.fileIdx = fileIdx;
         this.articleIdx = articleIdx;
-        this.articleCategory = articleCategory;
+        this.articleType = articleType;
 
         this.originFileInfo = new OriginFileInfo(
                 objectMetadata.getUserMetadata().get("OriginalFileName")
@@ -73,7 +71,7 @@ public class File extends BaseTimeEntity {
         this.saveFileName = new SaveFileName(
                 objectMetadata.getUserMetadata().get("SaveFileName")
         );
-        this.filePath = new FilePath(articleCategory, articleIdx, saveFileName);
+        this.filePath = new FilePath(articleType, articleIdx, saveFileName);
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
     }

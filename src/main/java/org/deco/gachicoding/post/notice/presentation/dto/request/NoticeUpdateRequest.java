@@ -17,18 +17,18 @@ public class NoticeUpdateRequest implements PostRequestDto {
     @ApiModelProperty(value = "요청자 이메일", notes = "고유한 아이디로 쓰임", required = true, example = "Swagger@swagger.com")
     private String userEmail;
 
+    @Email(message = "F0002")
+    private String authorEmail;
+
     @NotNull(message = "F0001")
-    @ApiModelProperty(value = "공지사항 번호", required = true, example = "1")
     private Long notIdx;
 
     @NotNull(message = "F0001")
     @Size(max = 100, message = "F0004")
-    @ApiModelProperty(value = "공지사항 제목", required = false, example = "수정된 제목")
     private String notTitle;
 
     @NotNull(message = "F0001")
     @Size(max = 10000, message = "F0004")
-    @ApiModelProperty(value = "공지사항 내용", required = false, example = "수정된 내용")
     private String notContents;
 
     private NoticeUpdateRequest() {}

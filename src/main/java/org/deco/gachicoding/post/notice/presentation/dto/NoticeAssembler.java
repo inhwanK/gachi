@@ -13,15 +13,15 @@ import java.util.stream.Collectors;
 
 public class NoticeAssembler {
 
-    private NoticeAssembler() {}
+    private NoticeAssembler() {
+    }
 
-    public static NoticeSaveRequestDto noticeSaveRequestDto(NoticeSaveRequest request) {
+    public static NoticeSaveRequestDto noticeSaveRequestDto(String userEmail, NoticeSaveRequest request) {
         return NoticeSaveRequestDto.builder()
-                .userEmail(request.getUserEmail())
+                .userEmail(userEmail)
                 .notTitle(request.getNotTitle())
                 .notContents(request.getNotContent())
                 .notPin(request.getNotPin())
-//                .tags(request.getTags())
                 .build();
     }
 
@@ -52,15 +52,6 @@ public class NoticeAssembler {
                 .notContents(request.getNotContents())
                 .build();
     }
-
-//    public static NoticeUpdateRequestDto noticeUpdateRequestDto(Long notIdx, NoticeUpdateRequest request) {
-//        return NoticeUpdateRequestDto.builder()
-//                .userEmail(request.getUserEmail())
-//                .notIdx(notIdx)
-//                .notTitle(request.getNotTitle())
-//                .notContents(request.getNotContents())
-//                .build();
-//    }
 
     public static NoticeBasicRequestDto noticeBasicRequestDto(Long notIdx, String userEmail) {
         return NoticeBasicRequestDto.builder()

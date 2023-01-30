@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.notice.NoticeInactiveException;
 import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.file.domain.ArticleType;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
@@ -31,27 +32,26 @@ public class NoticeService {
 
     @Transactional(rollbackFor = Exception.class)
     public Long registerNotice(
+            String userEmail,
             NoticeSaveRequestDto dto
     ) {
 
-        Notice notice = noticeRepository.save(createNotice(dto));
+        User user = userRepository.findByUserEmail(userEmail)
+                .orElseThrow(UserNotFoundException::new);
+
+        Notice notice = noticeRepository.save(createNotice(user, dto));
 
         Long notIdx = notice.getNotIdx();
         String notContent = notice.getNotContents();
 
-//        if (!dto.isNullTags())
-//            tagService.registerBoardTag(notIdx, dto.getTags(), NOTICE);
-
         notice.updateContent(
-                fileService.extractPathAndS3Upload(notIdx, "NOTICE", notContent)
+                fileService.extractPathAndS3Upload(notIdx, ArticleType.Notice, notContent)
         );
 
         return notIdx;
     }
 
-    private Notice createNotice(NoticeSaveRequestDto dto) {
-        User user = findAuthor(dto.getUserEmail());
-
+    private Notice createNotice(User user, NoticeSaveRequestDto dto) {
         return NoticeDtoAssembler.notice(user, dto);
     }
 
@@ -84,7 +84,7 @@ public class NoticeService {
         // 무조건 async
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getNotIdx(),
-                "NOTICE",
+                ArticleType.Notice,
                 dto.getNotContents()
         );
 

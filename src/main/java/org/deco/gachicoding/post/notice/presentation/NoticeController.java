@@ -1,10 +1,16 @@
 package org.deco.gachicoding.post.notice.presentation;
 
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.post.notice.application.dto.request.*;
 import org.deco.gachicoding.post.notice.application.NoticeService;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeBasicRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeDetailRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeListRequestDto;
+import org.deco.gachicoding.post.notice.application.dto.request.NoticeUpdateRequestDto;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.presentation.dto.NoticeAssembler;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
@@ -43,17 +49,19 @@ public class NoticeController {
     ) {
         log.info("{} Register Controller", "Notice");
 
-        /*
-        무작정 인가 처리 설정하려다보니 파급효과가 너무 커져서
-        User 엔터티 연관관계 매핑을 먼저 빈틈없이 맞추고 하려함
-        */
         String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Long notIdx = noticeService.registerNotice(NoticeAssembler.noticeSaveRequestDto(request));
+        Long notIdx = noticeService.registerNotice(
+                userEmail,
+                NoticeAssembler.noticeSaveRequestDto(userEmail, request)
+        );
+
         String redirectUrl = String.format(REDIRECT_URL, notIdx);
 
         // 이 부분 더 알아보자 리다이렉트 부분
-        return ResponseEntity.created(URI.create(redirectUrl)).build();
+        return ResponseEntity
+                .created(URI.create(redirectUrl))
+                .build();
     }
 
     @ApiOperation(value = "공지사항 리스트 보기", notes = "공지사항 목록을 응답")
@@ -90,6 +98,7 @@ public class NoticeController {
     @ApiOperation(value = "공지사항 수정")
     @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
     @PutMapping("/notice/modify")
+    @PreAuthorize("authentication.name.equals(request.authorEmail) and hasRole('ROLE_MANAGER')")
     public ResponseEntity<NoticeResponse> modifyNotice(
             @ApiParam(value = "공지사항 수정 요청 body 정보")
             @RequestBody @Valid NoticeUpdateRequest request

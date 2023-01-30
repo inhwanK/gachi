@@ -1,6 +1,6 @@
 package org.deco.gachicoding.unit.post.notice.domain;
 
-import org.deco.gachicoding.common.factory.user.UserFactory;
+import org.deco.gachicoding.common.factory.user.MockUserFactory;
 import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
@@ -40,7 +40,7 @@ public class NoticeRepositoryTest {
     void save_saveNotice_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         Notice notice = Notice.builder()
@@ -64,7 +64,7 @@ public class NoticeRepositoryTest {
     void save_saveNoticeWithCreatedDate_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         Notice notice = Notice.builder()
@@ -86,7 +86,7 @@ public class NoticeRepositoryTest {
     public void find_findAllNoticeByLatestOrder_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         for (int i = 0; i < 3; i++) {
@@ -112,7 +112,7 @@ public class NoticeRepositoryTest {
     public void find_findAllNoticeByKeyword_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         for (int i = 0; i < 3; i++) {
@@ -146,7 +146,7 @@ public class NoticeRepositoryTest {
     public void find_findNoticeByOnlyEnabled_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         Notice notice = Notice.builder()
@@ -172,7 +172,7 @@ public class NoticeRepositoryTest {
     public void find_findNoticeByOnlyEnabled_Exception() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         Notice notice = Notice.builder()
@@ -197,7 +197,7 @@ public class NoticeRepositoryTest {
     public void find_findNoticeByDisabledAndEnable_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         Notice notice = Notice.builder()
@@ -223,7 +223,7 @@ public class NoticeRepositoryTest {
     public void delete_deleteNoticeByNoticeIndex_Success() {
         // given
         User savedTestUser = userRepository.save(
-                UserFactory.user()
+                MockUserFactory.createUser()
         );
 
         Notice notice = Notice.builder()

@@ -1,14 +1,12 @@
 package org.deco.gachicoding.common.factory.post.board;
 
 import org.deco.gachicoding.post.board.domain.Board;
-import org.deco.gachicoding.post.board.domain.vo.BoardContents;
-import org.deco.gachicoding.post.board.domain.vo.BoardTitle;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
 
-public class MockBoard {
-    private MockBoard() {}
+public class BoardMock {
+    private BoardMock() {}
 
     public static Builder builder() {
         return new Builder();

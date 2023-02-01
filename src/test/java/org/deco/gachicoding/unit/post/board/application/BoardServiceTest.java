@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.post.board.application;
 
-import org.deco.gachicoding.common.factory.post.board.MockBoardFactory;
-import org.deco.gachicoding.common.factory.user.MockUserFactory;
+import org.deco.gachicoding.common.factory.post.board.BoardMockFactory;
+import org.deco.gachicoding.common.factory.user.UserMockFactory;
 import org.deco.gachicoding.exception.post.board.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
@@ -54,15 +54,15 @@ public class BoardServiceTest {
     @DisplayName("사용자는 게시물을 작성할 수 있다.")
     void write_writeBoardWithUser_Success() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String boardTitle = "테스트 게시물 제목 수정 전";
         String boardContents = "테스트 게시물 내용 수정 전";
         String boardCategory = "자유";
 
-        BoardSaveRequestDto requestDto = MockBoardFactory.mockBoardSaveRequestDto(user.getUserEmail(), boardTitle, boardContents, boardCategory);
+        BoardSaveRequestDto requestDto = BoardMockFactory.mockBoardSaveRequestDto(user.getUserEmail(), boardTitle, boardContents, boardCategory);
 
-        Board board = MockBoardFactory.mockBoard(1L, user, null);
+        Board board = BoardMockFactory.mockBoard(1L, user, null);
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -95,7 +95,7 @@ public class BoardServiceTest {
         String boardContents = "테스트 게시물 내용 수정 전";
         String boardCategory = "자유";
 
-        BoardSaveRequestDto requestDto = MockBoardFactory.mockBoardSaveRequestDto(null, boardTitle, boardContents, boardCategory);
+        BoardSaveRequestDto requestDto = BoardMockFactory.mockBoardSaveRequestDto(null, boardTitle, boardContents, boardCategory);
 
         given(userRepository.findByUserEmail(null))
                 .willReturn(Optional.empty());
@@ -117,7 +117,7 @@ public class BoardServiceTest {
     @DisplayName("제목의 길이가 100보다 크면 게시물을 등록할 수 없다.")
     public void write_writeMaximumLengthOverTitle_Exception() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -141,7 +141,7 @@ public class BoardServiceTest {
     @DisplayName("내용의 길이가 10000보다 크면 게시물을 등록할 수 없다.")
     public void write_writeMaximumLengthOverContents_Exception() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -165,7 +165,7 @@ public class BoardServiceTest {
     @DisplayName("제목이 널이면 게시물을 등록할 수 없다.")
     public void write_writeNullTitle_Exception() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -188,7 +188,7 @@ public class BoardServiceTest {
     @DisplayName("제목이 공백이면 게시물을 등록할 수 없다.")
     public void write_writeEmptyTitle_Exception() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -212,7 +212,7 @@ public class BoardServiceTest {
     @DisplayName("내용이 널이면 게시물을 등록할 수 없다.")
     public void write_writeNullContents_Exception() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -235,7 +235,7 @@ public class BoardServiceTest {
     @DisplayName("내용이 공백이면 게시물을 등록할 수 없다.")
     public void write_writeEmptyContents_Exception() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
@@ -259,16 +259,16 @@ public class BoardServiceTest {
     @DisplayName("활성화 된 게시물이 존재하는 경우 게시물의 목록을 가져온다.")
     public void read_readAllEnableList_Success() {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
         String keyword = "";
         Pageable pageable = PageRequest.of(0, 10);
 
-        BoardListRequestDto requestDto = MockBoardFactory.mockBoardListRequestDto(keyword, pageable);
+        BoardListRequestDto requestDto = BoardMockFactory.mockBoardListRequestDto(keyword, pageable);
 
         List<Board> boards = List.of(
-                MockBoardFactory.mockBoard(1L, user, true),
-                MockBoardFactory.mockBoard(2L, user, true),
-                MockBoardFactory.mockBoard(3L, user, true)
+                BoardMockFactory.mockBoard(1L, user, true),
+                BoardMockFactory.mockBoard(2L, user, true),
+                BoardMockFactory.mockBoard(3L, user, true)
         );
 
         given(boardRepository.findAllBoardByKeyword(keyword, pageable))
@@ -295,7 +295,7 @@ public class BoardServiceTest {
         String keyword = "";
         Pageable pageable = PageRequest.of(0, 10);
 
-        BoardListRequestDto requestDto = MockBoardFactory.mockBoardListRequestDto(keyword, pageable);
+        BoardListRequestDto requestDto = BoardMockFactory.mockBoardListRequestDto(keyword, pageable);
 
         List<Board> boards = new ArrayList<>();
 
@@ -323,10 +323,10 @@ public class BoardServiceTest {
     public void read_readEnableDetail_Success() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
-        BoardDetailRequestDto requestDto = MockBoardFactory.mockBoardDetailRequestDto(boardIdx);
+        User user = UserMockFactory.createUser();
+        BoardDetailRequestDto requestDto = BoardMockFactory.mockBoardDetailRequestDto(boardIdx);
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, true);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, true);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -348,7 +348,7 @@ public class BoardServiceTest {
     public void read_readNotExistDetail_Exception() {
         // given
         Long boardIdx = 1L;
-        BoardDetailRequestDto requestDto = MockBoardFactory.mockBoardDetailRequestDto(boardIdx);
+        BoardDetailRequestDto requestDto = BoardMockFactory.mockBoardDetailRequestDto(boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -368,10 +368,10 @@ public class BoardServiceTest {
     public void read_readDisableDetail_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
-        BoardDetailRequestDto requestDto = MockBoardFactory.mockBoardDetailRequestDto(boardIdx);
+        User user = UserMockFactory.createUser();
+        BoardDetailRequestDto requestDto = BoardMockFactory.mockBoardDetailRequestDto(boardIdx);
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, false);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, false);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -391,20 +391,20 @@ public class BoardServiceTest {
     public void modify_modifyBoard_Success() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
 
         String boardCategory = "자유";
 
-        Board beforeBoard = MockBoardFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, true);
+        Board beforeBoard = BoardMockFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, true);
 
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
-        BoardUpdateRequestDto updateRequestDto = MockBoardFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
-        Board afterBoard = MockBoardFactory.mockBoard(boardIdx, user, afterBoardTitle, afterBoardContents, boardCategory, true);
+        BoardUpdateRequestDto updateRequestDto = BoardMockFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
+        Board afterBoard = BoardMockFactory.mockBoard(boardIdx, user, afterBoardTitle, afterBoardContents, boardCategory, true);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(beforeBoard));
@@ -434,13 +434,13 @@ public class BoardServiceTest {
     public void modify_modifyNotExistBoard_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String boardTitle = "테스트 게시물 제목";
         String boardContents = "테스트 게시물 내용";
 
         BoardUpdateRequestDto updateRequestDto =
-                MockBoardFactory.mockBoardUpdateRequestDto(
+                BoardMockFactory.mockBoardUpdateRequestDto(
                         user.getUserEmail(),
                         boardIdx,
                         boardTitle,
@@ -465,19 +465,19 @@ public class BoardServiceTest {
     public void modify_modifyDisableBoard_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
 
         String boardCategory = "자유";
 
-        Board beforeBoard = MockBoardFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, false);
+        Board beforeBoard = BoardMockFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, false);
 
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
-        BoardUpdateRequestDto updateRequestDto = MockBoardFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
+        BoardUpdateRequestDto updateRequestDto = BoardMockFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(beforeBoard));
@@ -501,19 +501,19 @@ public class BoardServiceTest {
     public void modify_modifyNotExistUser_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
 
         String boardCategory = "자유";
 
-        Board beforeBoard = MockBoardFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, true);
+        Board beforeBoard = BoardMockFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, true);
 
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
-        BoardUpdateRequestDto updateRequestDto = MockBoardFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
+        BoardUpdateRequestDto updateRequestDto = BoardMockFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(beforeBoard));
@@ -541,15 +541,15 @@ public class BoardServiceTest {
     public void modify_modifyDifferentAuthor_Exception() {
         // given
         Long boardIdx = 1L;
-        User author = MockUserFactory.createUser(1L, "gachicoding@test.com", "1234");
-        User user = MockUserFactory.createUser(2L, "okky@test.com", "1234");
+        User author = UserMockFactory.createUser(1L, "gachicoding@test.com", "1234");
+        User user = UserMockFactory.createUser(2L, "okky@test.com", "1234");
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
 
         String boardCategory = "자유";
 
-        Board beforeBoard = MockBoardFactory
+        Board beforeBoard = BoardMockFactory
                 .mockBoard(
                         boardIdx,
                         author,
@@ -563,7 +563,7 @@ public class BoardServiceTest {
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
         BoardUpdateRequestDto updateRequestDto =
-                MockBoardFactory.mockBoardUpdateRequestDto(
+                BoardMockFactory.mockBoardUpdateRequestDto(
                         user.getUserEmail(),
                         boardIdx,
                         afterBoardTitle,
@@ -596,7 +596,7 @@ public class BoardServiceTest {
     public void modify_modifyNotExistTitle_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
@@ -604,7 +604,7 @@ public class BoardServiceTest {
         String boardCategory = "자유";
 
         Board beforeBoard =
-                MockBoardFactory.mockBoard(
+                BoardMockFactory.mockBoard(
                         boardIdx,
                         user,
                         beforeBoardTitle,
@@ -616,7 +616,7 @@ public class BoardServiceTest {
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
         BoardUpdateRequestDto updateRequestDto =
-                MockBoardFactory.mockBoardUpdateRequestDto(
+                BoardMockFactory.mockBoardUpdateRequestDto(
                         user.getUserEmail(),
                         boardIdx,
                         null,
@@ -649,7 +649,7 @@ public class BoardServiceTest {
     public void modify_modifyEmptyTitle_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
@@ -657,7 +657,7 @@ public class BoardServiceTest {
         String boardCategory = "자유";
 
         Board beforeBoard =
-                MockBoardFactory.mockBoard(
+                BoardMockFactory.mockBoard(
                         boardIdx,
                         user,
                         beforeBoardTitle,
@@ -669,7 +669,7 @@ public class BoardServiceTest {
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
         BoardUpdateRequestDto updateRequestDto =
-                MockBoardFactory.mockBoardUpdateRequestDto(
+                BoardMockFactory.mockBoardUpdateRequestDto(
                         user.getUserEmail(),
                         boardIdx,
                         "",
@@ -702,7 +702,7 @@ public class BoardServiceTest {
     public void modify_modifyNotExistContents_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
@@ -710,7 +710,7 @@ public class BoardServiceTest {
         String boardCategory = "자유";
 
         Board beforeBoard =
-                MockBoardFactory.mockBoard(
+                BoardMockFactory.mockBoard(
                         boardIdx,
                         user,
                         beforeBoardTitle,
@@ -722,7 +722,7 @@ public class BoardServiceTest {
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
 
         BoardUpdateRequestDto updateRequestDto =
-                MockBoardFactory.mockBoardUpdateRequestDto(
+                BoardMockFactory.mockBoardUpdateRequestDto(
                         user.getUserEmail(),
                         boardIdx,
                         afterBoardTitle,
@@ -751,7 +751,7 @@ public class BoardServiceTest {
     public void modify_modifyEmptyContents_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         String beforeBoardTitle = "테스트 게시물 제목 수정 전";
         String beforeBoardContents = "테스트 게시물 내용 수정 전";
@@ -759,7 +759,7 @@ public class BoardServiceTest {
         String boardCategory = "자유";
 
         Board beforeBoard =
-                MockBoardFactory.mockBoard(
+                BoardMockFactory.mockBoard(
                         boardIdx,
                         user,
                         beforeBoardTitle,
@@ -772,7 +772,7 @@ public class BoardServiceTest {
         String afterBoardContents = "";
 
         BoardUpdateRequestDto updateRequestDto =
-                MockBoardFactory.mockBoardUpdateRequestDto(
+                BoardMockFactory.mockBoardUpdateRequestDto(
                         user.getUserEmail(),
                         boardIdx,
                         afterBoardTitle,
@@ -805,10 +805,10 @@ public class BoardServiceTest {
     public void disable_disableAuthorMe_Success() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -832,9 +832,9 @@ public class BoardServiceTest {
     public void disable_disableNotExistBoard_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -854,10 +854,10 @@ public class BoardServiceTest {
     public void disable_disableNotExistUser_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto("okky@test.com", boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto("okky@test.com", boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -881,11 +881,11 @@ public class BoardServiceTest {
     public void disable_disableDifferentAuthor_Exception() {
         // given
         Long boardIdx = 1L;
-        User author = MockUserFactory.createUser(1L, "gachicoding@test.com", "1234");
-        User user = MockUserFactory.createUser(2L, "okky@test.com", "1234");
+        User author = UserMockFactory.createUser(1L, "gachicoding@test.com", "1234");
+        User user = UserMockFactory.createUser(2L, "okky@test.com", "1234");
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, author, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, author, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -909,10 +909,10 @@ public class BoardServiceTest {
     public void disable_disableAlreadyDisabled_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, false);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, false);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -936,10 +936,10 @@ public class BoardServiceTest {
     public void enable_enableAuthorMe_Success() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, false);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, false);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -963,9 +963,9 @@ public class BoardServiceTest {
     public void enable_enableNotExistBoard_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -985,10 +985,10 @@ public class BoardServiceTest {
     public void enable_enableNotExistUser_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, false);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto("okky@test.com", boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, false);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto("okky@test.com", boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -1012,11 +1012,11 @@ public class BoardServiceTest {
     public void enable_enableDifferentAuthor_Exception() {
         // given
         Long boardIdx = 1L;
-        User author = MockUserFactory.createUser(1L, "gachicoding@test.com", "1234");
-        User user = MockUserFactory.createUser(2L, "okky@test.com", "1234");
+        User author = UserMockFactory.createUser(1L, "gachicoding@test.com", "1234");
+        User user = UserMockFactory.createUser(2L, "okky@test.com", "1234");
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, author, false);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, author, false);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -1040,10 +1040,10 @@ public class BoardServiceTest {
     public void enable_enableAlreadyEnabled_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -1067,10 +1067,10 @@ public class BoardServiceTest {
     public void delete_deleteAuthorMe_Success() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -1098,9 +1098,9 @@ public class BoardServiceTest {
     public void delete_deleteNotExistBoard_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.empty());
@@ -1120,10 +1120,10 @@ public class BoardServiceTest {
     public void delete_deleteNotExistUser_Exception() {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, user, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto("okky@test.com", boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, user, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto("okky@test.com", boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));
@@ -1147,11 +1147,11 @@ public class BoardServiceTest {
     public void delete_deleteDifferentAuthor_Exception() {
         // given
         Long boardIdx = 1L;
-        User author = MockUserFactory.createUser(1L, "gachicoding@test.com", "1234");
-        User user = MockUserFactory.createUser(2L, "okky@test.com", "1234");
+        User author = UserMockFactory.createUser(1L, "gachicoding@test.com", "1234");
+        User user = UserMockFactory.createUser(2L, "okky@test.com", "1234");
 
-        Board board = MockBoardFactory.mockBoard(boardIdx, author, true);
-        BoardBasicRequestDto requestDto = MockBoardFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
+        Board board = BoardMockFactory.mockBoard(boardIdx, author, true);
+        BoardBasicRequestDto requestDto = BoardMockFactory.mockBoardBasicRequestDto(user.getUserEmail(), boardIdx);
 
         given(boardRepository.findBoardByIdx(anyLong()))
                 .willReturn(Optional.of(board));

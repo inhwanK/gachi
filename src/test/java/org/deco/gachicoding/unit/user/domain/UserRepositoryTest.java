@@ -1,6 +1,6 @@
 package org.deco.gachicoding.unit.user.domain;
 
-import org.deco.gachicoding.common.factory.user.MockUser;
+import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ public class UserRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        user = MockUser.builder()
+        user = UserMock.builder()
                 .userEmail("test@test.com")
                 .build();
 
@@ -60,7 +60,7 @@ public class UserRepositoryTest {
     @DisplayName("유저를 저장한다.")
     @Test
     public void save_Success() {
-        User saveUser = MockUser.builder()
+        User saveUser = UserMock.builder()
                 .userEmail("saveTestEmail@test.com")
                 .userNick("saveTestNick")
                 .build();
@@ -88,7 +88,7 @@ public class UserRepositoryTest {
     @Test
     public void save_DuplicateEmail_Failed() {
 
-        User duplicateEmailUser = MockUser.builder()
+        User duplicateEmailUser = UserMock.builder()
                 .userEmail("test@test.com")
                 .userNick("saveTestNick")
                 .build();

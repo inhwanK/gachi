@@ -1,8 +1,8 @@
 package org.deco.gachicoding.unit.post.board.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.deco.gachicoding.common.factory.post.board.MockBoardFactory;
-import org.deco.gachicoding.common.factory.user.MockUserFactory;
+import org.deco.gachicoding.common.factory.post.board.BoardMockFactory;
+import org.deco.gachicoding.common.factory.user.UserMockFactory;
 import org.deco.gachicoding.config.SecurityConfig;
 import org.deco.gachicoding.exception.post.board.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
@@ -66,7 +66,7 @@ public class BoardControllerTest {
         String boardContents = "테스트 게시물 내용";
         String boardCategory = "자유";
 
-        BoardSaveRequest request = MockBoardFactory.mockBoardSaveRequest(userEmail, boardTitle, boardContents, boardCategory);
+        BoardSaveRequest request = BoardMockFactory.mockBoardSaveRequest(userEmail, boardTitle, boardContents, boardCategory);
 
         given(boardService.registerBoard(any(BoardSaveRequestDto.class)))
                 .willReturn(1L);
@@ -88,11 +88,11 @@ public class BoardControllerTest {
     @DisplayName("활성화 된 게시물이 존재하는 경우 게시물의 목록을 가져온다.")
     void read_readAllEnableList_Success() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        BoardResponseDto boardResponseDto1 = MockBoardFactory.mockBoardResponseDto(1L, user, true);
-        BoardResponseDto boardResponseDto2 = MockBoardFactory.mockBoardResponseDto(2L, user, true);
-        BoardResponseDto boardResponseDto3 = MockBoardFactory.mockBoardResponseDto(3L, user, true);
+        BoardResponseDto boardResponseDto1 = BoardMockFactory.mockBoardResponseDto(1L, user, true);
+        BoardResponseDto boardResponseDto2 = BoardMockFactory.mockBoardResponseDto(2L, user, true);
+        BoardResponseDto boardResponseDto3 = BoardMockFactory.mockBoardResponseDto(3L, user, true);
 
         List<BoardResponseDto> boardResponseDtos = List.of(
                 boardResponseDto1,
@@ -101,9 +101,9 @@ public class BoardControllerTest {
         );
 
         List<BoardResponse> boardResponses = List.of(
-                MockBoardFactory.mockBoardResponse(boardResponseDto1),
-                MockBoardFactory.mockBoardResponse(boardResponseDto2),
-                MockBoardFactory.mockBoardResponse(boardResponseDto3)
+                BoardMockFactory.mockBoardResponse(boardResponseDto1),
+                BoardMockFactory.mockBoardResponse(boardResponseDto2),
+                BoardMockFactory.mockBoardResponse(boardResponseDto3)
         );
 
         given(boardService.getBoardList(any(BoardListRequestDto.class)))
@@ -155,14 +155,14 @@ public class BoardControllerTest {
     void read_readEnableDetail_Success() throws Exception {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        BoardResponseDto boardResponseDto = MockBoardFactory.mockBoardResponseDto(boardIdx, user, true);
+        BoardResponseDto boardResponseDto = BoardMockFactory.mockBoardResponseDto(boardIdx, user, true);
 
         given(boardService.getBoardDetail(any(BoardDetailRequestDto.class)))
                 .willReturn(boardResponseDto);
 
-        BoardResponse boardResponse = MockBoardFactory.mockBoardResponse(boardResponseDto);
+        BoardResponse boardResponse = BoardMockFactory.mockBoardResponse(boardResponseDto);
 
         // when
         ResultActions perform = mockMvc.perform(get("/api/board/{boardIdx}", boardIdx)
@@ -225,15 +225,15 @@ public class BoardControllerTest {
     @DisplayName("게시물의 작성자는 게시물을 수정할 수 있다.")
     void modify_modifyBoard_Success() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
 
-        BoardResponseDto boardResponseDto = MockBoardFactory.mockBoardResponseDto(boardIdx, user, true);
+        BoardResponseDto boardResponseDto = BoardMockFactory.mockBoardResponseDto(boardIdx, user, true);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willReturn(boardResponseDto);
@@ -255,13 +255,13 @@ public class BoardControllerTest {
     @DisplayName("존재하지 않는 게시물에 수정 요청할 경우 예외가 발생한다.")
     public void modify_modifyNotExistBoard_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new BoardNotFoundException());
@@ -284,13 +284,13 @@ public class BoardControllerTest {
     @DisplayName("비 활성화 된 게시물을 수정할 경우 예외가 발생한다.")
     public void modify_modifyDisableBoard_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new BoardInactiveException());
@@ -313,13 +313,13 @@ public class BoardControllerTest {
     @DisplayName("존재하지 않는 사용자가 게시물 수정 요청할 경우 예외가 발생한다.")
     public void modify_modifyNotExistUser_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new UserNotFoundException());
@@ -342,13 +342,13 @@ public class BoardControllerTest {
     @DisplayName("게시물 수정 시 요청자와 작정자가 다를 경우 예외가 발생한다.")
     public void modify_modifyDifferentAuthor_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, boardContents);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new UserUnAuthorizedException());
@@ -371,12 +371,12 @@ public class BoardControllerTest {
     @DisplayName("게시물 수정 시 제목이 널이면 예외가 발생한다.")
     public void modify_modifyNotExistTitle_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, null, boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, null, boardContents);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new BoardTitleNullException());
@@ -399,12 +399,12 @@ public class BoardControllerTest {
     @DisplayName("게시물 수정 시 제목이 공백이면 예외가 발생한다.")
     public void modify_modifyEmptyTitle_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardContents = "Test Board Modified Contents";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, "", boardContents);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, "", boardContents);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new BoardTitleEmptyException());
@@ -427,12 +427,12 @@ public class BoardControllerTest {
     @DisplayName("게시물 수정 시 내용이 널이면 예외가 발생한다.")
     public void modify_modifyNotExistContents_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, null);
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, null);
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new BoardContentsNullException());
@@ -455,12 +455,12 @@ public class BoardControllerTest {
     @DisplayName("게시물 수정 시 내용이 공백이면 예외가 발생한다.")
     public void modify_modifyEmptyContents_Exception() throws Exception {
         // given
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         Long boardIdx = 1L;
         String boardTitle = "Test Board Modified Title";
 
-        BoardUpdateRequest request = MockBoardFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, "");
+        BoardUpdateRequest request = BoardMockFactory.mockBoardUpdateRequest(user.getUserEmail(), boardIdx, boardTitle, "");
 
         given(boardService.modifyBoard(any(BoardUpdateRequestDto.class)))
                 .willThrow(new BoardContentsEmptyException());
@@ -484,7 +484,7 @@ public class BoardControllerTest {
     public void disable_disableAuthorMe_Success() throws Exception {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         willDoNothing()
                 .given(boardService)
@@ -508,7 +508,7 @@ public class BoardControllerTest {
     public void enable_enableAuthorMe_Success() throws Exception {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         willDoNothing()
                 .given(boardService)
@@ -532,7 +532,7 @@ public class BoardControllerTest {
     public void delete_deleteAuthorMe_Success() throws Exception {
         // given
         Long boardIdx = 1L;
-        User user = MockUserFactory.createUser();
+        User user = UserMockFactory.createUser();
 
         willDoNothing()
                 .given(boardService)

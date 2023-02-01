@@ -1,6 +1,6 @@
 package org.deco.gachicoding.unit.user.application;
 
-import org.deco.gachicoding.common.factory.user.MockUser;
+import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.exception.user.password.PasswordAlreadyUsedException;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.User;
@@ -39,7 +39,7 @@ public class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        user = MockUser.builder()
+        user = UserMock.builder()
                 .userEmail("1234@1234.com")
                 .userName("InHwan")
                 .userNick("nani_inaning")
@@ -166,7 +166,7 @@ public class UserServiceTest {
     void updateUserNickname_Success() {
 
         // given
-        User expectedUser = MockUser.builder()
+        User expectedUser = UserMock.builder()
                 .userEmail("1234@1234.com")
                 .userName("InHwan")
                 .userNick("nani_inaning")

@@ -9,8 +9,8 @@ import org.deco.gachicoding.post.board.presentation.dto.response.BoardResponse;
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.data.domain.Pageable;
 
-public class MockBoardFactory {
-    private MockBoardFactory() {}
+public class BoardMockFactory {
+    private BoardMockFactory() {}
 
     /* Board Object Start */
     public static Board mockBoard(
@@ -18,7 +18,7 @@ public class MockBoardFactory {
             User author,
             Boolean boardLocked
     ) {
-        return MockBoard.builder()
+        return BoardMock.builder()
                 .boardIdx(boardIdx)
                 .author(author)
                 .boardLocked(boardLocked)
@@ -33,7 +33,7 @@ public class MockBoardFactory {
             String boardCategory,
             Boolean boardLocked
     ) {
-        return MockBoard.builder()
+        return BoardMock.builder()
                 .boardIdx(boardIdx)
                 .author(author)
                 .boardTitle(boardTitle)

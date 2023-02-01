@@ -7,8 +7,9 @@ import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
 
-public class MockNotice {
-    private MockNotice() {}
+public class NoticeMock {
+    private NoticeMock() {
+    }
 
     public static Builder builder() {
         return new Builder();
@@ -19,13 +20,17 @@ public class MockNotice {
         private Long notIdx;
         private User author;
 
-        private NoticeTitle notTitle = new NoticeTitle("Test Notice Title");
-        private NoticeContents notContents = new NoticeContents("Test Notice Contents");
+        private NoticeTitle notTitle =
+                new NoticeTitle("Test Notice Title");
+        private NoticeContents notContents =
+                new NoticeContents("Test Notice Contents");
         private Long notViews = 0L;
         private Boolean notPin = false;
-        private Boolean notLocked = true;
-        private LocalDateTime createdAt = LocalDateTime.of(2022, 2, 2, 2, 2);
-        private LocalDateTime updatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
+        private Boolean notEnabled = true;
+        private LocalDateTime createdAt =
+                LocalDateTime.of(2022, 2, 2, 2, 2);
+        private LocalDateTime updatedAt =
+                LocalDateTime.of(2022, 2, 2, 2, 2);
 
         public Builder notIdx(Long notIdx) {
             this.notIdx = notIdx;
@@ -37,7 +42,7 @@ public class MockNotice {
             return this;
         }
 
-        public  Builder notTitle(String notTitle) {
+        public Builder notTitle(String notTitle) {
             this.notTitle = new NoticeTitle(notTitle);
             return this;
         }
@@ -57,8 +62,8 @@ public class MockNotice {
             return this;
         }
 
-        public Builder notLocked(Boolean notLocked) {
-            this.notLocked = notLocked;
+        public Builder notEnable(Boolean notEnable) {
+            this.notEnabled = notEnable;
             return this;
         }
 
@@ -80,7 +85,7 @@ public class MockNotice {
                     notContents,
                     notViews,
                     notPin,
-                    notLocked,
+                    notEnabled,
                     createdAt,
                     updatedAt
             );

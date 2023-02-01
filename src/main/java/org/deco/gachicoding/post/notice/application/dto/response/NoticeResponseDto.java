@@ -1,11 +1,13 @@
 package org.deco.gachicoding.post.notice.application.dto.response;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(of = "notIdx")
 @Getter
 public class NoticeResponseDto {
 
@@ -16,11 +18,9 @@ public class NoticeResponseDto {
     private String notContents;
     private Long notViews;
     private Boolean notPin;
-    private Boolean notLocked;
+    private Boolean notEnabled;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-//    private List<TagResponseDto> tags;
 
     @Builder
     public NoticeResponseDto(
@@ -30,25 +30,18 @@ public class NoticeResponseDto {
             String notContents,
             Long notViews,
             Boolean notPin,
-            Boolean notLocked,
+            Boolean notEnabled,
             LocalDateTime createdAt, 
             LocalDateTime updatedAt
     ) {
         this.notIdx = notIdx;
-
         this.author = author;
-
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notViews = notViews;
         this.notPin = notPin;
-        this.notLocked = notLocked;
+        this.notEnabled = notEnabled;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-//    @Override
-//    public void setTags(List<TagResponseDto> tags) {
-//        this.tags = tags;
-//    }
 }

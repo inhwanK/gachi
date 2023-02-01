@@ -39,8 +39,8 @@ public class NoticeDtoAssembler {
                 .notTitle(notice.getNotTitle())
                 .notContents(notice.getNotContents())
                 .notViews(notice.getNotViews())
-                .notPin(notice.getNotPin())
-                .notLocked(notice.getNotLocked())
+                .notPin(notice.getPin())
+                .notEnabled(notice.getEnabled())
                 .createdAt(notice.getCreatedAt())
                 .updatedAt(notice.getUpdatedAt())
                 .build();

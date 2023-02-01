@@ -1,7 +1,7 @@
 package org.deco.gachicoding.unit.post.notice.domain;
 
-import org.deco.gachicoding.common.factory.post.notice.MockNoticeFactory;
-import org.deco.gachicoding.common.factory.user.MockUserFactory;
+import org.deco.gachicoding.common.factory.post.notice.NoticeMockFactory;
+import org.deco.gachicoding.common.factory.user.UserMockFactory;
 import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserUnAuthorizedException;
 import org.deco.gachicoding.post.notice.domain.Notice;
@@ -20,10 +20,10 @@ public class NoticeTest {
         // given
         String notTitle = "a".repeat(100);
         String notContents = "테스트 공지사항 내용";
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, notTitle, notContents, true))
                 .doesNotThrowAnyException();
     }
 
@@ -33,10 +33,10 @@ public class NoticeTest {
         // given
         String notTitle = "a".repeat(101);
         String notContents = "테스트 공지사항 내용";
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, notTitle, notContents, true))
                 .isInstanceOf(NoticeTitleOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 제목이 길이 제한을 초과하였습니다.");
@@ -47,10 +47,10 @@ public class NoticeTest {
     void create_NoticeNullTitle_Exception() {
         // given
         String notContents = "테스트 공지사항 내용";
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, null, notContents, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, null, notContents, true))
                 .isInstanceOf(NoticeTitleNullException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 제목이 널이어서는 안됩니다.");
@@ -61,10 +61,10 @@ public class NoticeTest {
     void create_NoticeEmptyTitle_Exception() {
         // given
         String notContents = "테스트 공지사항 내용";
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, "", notContents, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, "", notContents, true))
                 .isInstanceOf(NoticeTitleEmptyException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 제목이 공백이어서는 안됩니다.");
@@ -76,10 +76,10 @@ public class NoticeTest {
         // given
         String notTitle = "테스트 공지사항 제목";
         String notContents = "a".repeat(10000);
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, notTitle, notContents, true))
                 .doesNotThrowAnyException();
     }
 
@@ -89,10 +89,10 @@ public class NoticeTest {
         // given
         String notTitle = "테스트 공지사항 제목";
         String notContents = "a".repeat(10001);
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, notTitle, notContents, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, notTitle, notContents, true))
                 .isInstanceOf(NoticeContentsOverMaximumLengthException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 내용이 길이 제한을 초과하였습니다.");
@@ -103,10 +103,10 @@ public class NoticeTest {
     void create_NoticeNullContents_Exception() {
         // given
         String notTitle = "테스트 공지사항 제목";
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, notTitle, null, true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, notTitle, null, true))
                 .isInstanceOf(NoticeContentsNullException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 내용이 널이어서는 안됩니다.");
@@ -117,10 +117,10 @@ public class NoticeTest {
     void create_NoticeEmptyContents_Exception() {
         // given
         String notTitle = "테스트 공지사항 제목";
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
         // when, then
-        assertThatCode(() -> MockNoticeFactory.mockNotice(1L, author, notTitle, "", true))
+        assertThatCode(() -> NoticeMockFactory.createNotice(1L, author, notTitle, "", true))
                 .isInstanceOf(NoticeContentsEmptyException.class)
                 .extracting("message")
                 .isEqualTo("공지사항의 내용이 공백이어서는 안됩니다.");
@@ -130,9 +130,9 @@ public class NoticeTest {
     @DisplayName("자신이 작성한 공지사항인지 확인한다.")
     void create_NoticeAuthorMe_Success() {
         // given
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, null);
+        Notice notice = NoticeMockFactory.createNotice(1L, author);
 
         // when, then
         assertThatCode(() -> notice.hasSameAuthor(author))
@@ -143,10 +143,10 @@ public class NoticeTest {
     @DisplayName("자신이 작성한 공지사항인지 확인한다. 아니라면 예외가 발생한다.")
     void create_NoticeAuthorMe_Exception() {
         // given
-        User author = MockUserFactory.createUser();
-        User user = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, null);
+        Notice notice = NoticeMockFactory.createNotice(1L, author);
 
         // when, then
         assertThatCode(() -> notice.hasSameAuthor(user))
@@ -159,9 +159,10 @@ public class NoticeTest {
     @DisplayName("공지사항을 비활성 상태로 변경한다.")
     void create_NoticeDisableState_Success() {
         // given
-        User author = MockUserFactory.createUser();
-
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, true);
+        User author =
+                UserMockFactory.createUser();
+        Notice notice =
+                NoticeMockFactory.createDefaultStateNoticeMock(author);
 
         // when, then
         assertThatCode(() -> notice.disableNotice())
@@ -169,12 +170,13 @@ public class NoticeTest {
     }
 
     @Test
-    @DisplayName("공지사항을 비활성 상태로 변경한다, 이미 비활성 상태라면 예외가 발생한다.")
+    @DisplayName("이미 비활성된 공지사항을 또 비활성화로 변경하려 할 경우 예외가 발생한다.")
     void create_NoticeDisableState_Exception() {
         // given
-        User author = MockUserFactory.createUser();
-
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, false);
+        User author =
+                UserMockFactory.createUser();
+        Notice notice =
+                NoticeMockFactory.createNotice(1L, author, false);
 
         // when, then
         assertThatCode(() -> notice.disableNotice())
@@ -184,12 +186,14 @@ public class NoticeTest {
     }
 
     @Test
-    @DisplayName("공지사항을 활성 상태로 변경한다.")
+    @DisplayName("비활성화된 공지사항을 활성 상태로 변경한다.")
     void create_NoticeEnableState_Success() {
-        // given
-        User author = MockUserFactory.createUser();
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, false);
+        // given
+        User author =
+                UserMockFactory.createUser();
+        Notice notice =
+                NoticeMockFactory.createNotice(1L, author, false);
 
         // when, then
         assertThatCode(() -> notice.enableNotice())
@@ -200,10 +204,10 @@ public class NoticeTest {
     @DisplayName("공지사항을 활성 상태로 변경한다, 이미 활성 상태라면 예외가 발생한다.")
     void create_NoticeEnableState_Exception() {
         // given
-        User author = MockUserFactory.createUser();
-        User user = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
+        User user = UserMockFactory.createUser();
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, true);
+        Notice notice = NoticeMockFactory.createNotice(1L, author);
 
         // when, then
         assertThatCode(() -> notice.enableNotice())
@@ -216,14 +220,14 @@ public class NoticeTest {
     @DisplayName("공지사항의 제목과 내용을 변경한다.")
     void create_NoticeUpdate_Success() {
         // given
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
         String beforeNotTitle = "테스트 공지사항 제목 수정 전";
         String afterNotTitle = "테스트 공지사항 제목 수정 후";
 
         String beforeNotContents = "테스트 공지사항 내용 수정 전";
         String afterNotContents = "테스트 공지사항 내용 수정 후";
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, beforeNotTitle, beforeNotContents, true);
+        Notice notice = NoticeMockFactory.createNotice(1L, author, beforeNotTitle, beforeNotContents, true);
 
         // when
         notice.update(afterNotTitle, afterNotContents);
@@ -237,11 +241,11 @@ public class NoticeTest {
     @DisplayName("공지사항의 제목을 변경한다.")
     void create_NoticeUpdateTitle_Success() {
         // given
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
         String beforeNotTitle = "테스트 공지사항 제목 수정 전";
         String afterNotTitle = "테스트 공지사항 제목 수정 후";
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, beforeNotTitle, "테스트 공지사항 내용", true);
+        Notice notice = NoticeMockFactory.createNotice(1L, author, beforeNotTitle, "테스트 공지사항 내용", true);
 
         // when
         notice.updateTitle(afterNotTitle);
@@ -254,11 +258,11 @@ public class NoticeTest {
     @DisplayName("공지사항의 내용을 변경한다.")
     void create_NoticeUpdateContents_Success() {
         // given
-        User author = MockUserFactory.createUser();
+        User author = UserMockFactory.createUser();
         String beforeNotContents = "테스트 공지사항 내용 수정 전";
         String afterNotContents = "테스트 공지사항 내용 수정 후";
 
-        Notice notice = MockNoticeFactory.mockNotice(1L, author, "테스트 공지사항 제목", beforeNotContents, true);
+        Notice notice = NoticeMockFactory.createNotice(1L, author, "테스트 공지사항 제목", beforeNotContents, true);
 
         // when, then
         notice.updateContent(afterNotContents);

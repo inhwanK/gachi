@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File, Long> {
 
-    @Query("SELECT f FROM File f WHERE f.articleCategory = :category AND f.articleIdx = :idx")
-    List<File> findFileByCategoryAndIdx(@Param("category") String category, @Param("idx") Long idx);
+    @Query("SELECT f FROM File f WHERE f.articleType = :articleType AND f.articleIdx = :idx")
+    List<File> findFileByCategoryAndIdx(@Param("articleType") String articleType, @Param("idx") Long idx);
 
     @Query("SELECT f FROM File f WHERE f.filePath = :path")
     Optional<File> findFileByFilePath(@Param("path") String path);

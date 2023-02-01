@@ -3,21 +3,21 @@ package org.deco.gachicoding.common.factory.user;
 import org.deco.gachicoding.user.domain.RoleType;
 import org.deco.gachicoding.user.domain.User;
 
-public class MockUserFactory {
-    private MockUserFactory() {}
+public class UserMockFactory {
+    private UserMockFactory() {}
 
     public static User createUser() {
-        return MockUser.builder().build();
+        return UserMock.builder().build();
     }
 
     public static User createUser(Long userIdx) {
-        return MockUser.builder()
+        return UserMock.builder()
                 .userIdx(userIdx)
                 .build();
     }
 
     public static User createUser(Long userIdx, String userEmail, String userPassword) {
-        return MockUser.builder()
+        return UserMock.builder()
                 .userIdx(userIdx)
                 .userEmail(userEmail)
                 .userPassword(userPassword)
@@ -25,7 +25,7 @@ public class MockUserFactory {
     }
 
     public static User createManager(Long userIdx, String userEmail, String userPassword) {
-        return MockUser.builder()
+        return UserMock.builder()
                 .userIdx(userIdx)
                 .userEmail(userEmail)
                 .userPassword(userPassword)

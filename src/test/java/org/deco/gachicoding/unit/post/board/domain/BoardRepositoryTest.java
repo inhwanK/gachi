@@ -1,6 +1,6 @@
 package org.deco.gachicoding.unit.post.board.domain;
 
-import org.deco.gachicoding.common.factory.user.MockUserFactory;
+import org.deco.gachicoding.common.factory.user.UserMockFactory;
 import org.deco.gachicoding.exception.post.board.BoardNotFoundException;
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.repository.BoardRepository;
@@ -41,7 +41,7 @@ public class BoardRepositoryTest {
     void save_saveBoard_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         Board board = Board.builder()
@@ -66,7 +66,7 @@ public class BoardRepositoryTest {
     void save_saveBoardWithCreatedDate_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         Board board = Board.builder()
@@ -89,7 +89,7 @@ public class BoardRepositoryTest {
     public void find_findAllBoardByLatestOrder_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         for (int i = 0; i < 3; i++) {
@@ -116,7 +116,7 @@ public class BoardRepositoryTest {
     public void find_findAllBoardByKeyword_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         for (int i = 0; i < 3; i++) {
@@ -152,7 +152,7 @@ public class BoardRepositoryTest {
     public void find_findBoardByOnlyEnabled_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         Board board = Board.builder()
@@ -179,7 +179,7 @@ public class BoardRepositoryTest {
     public void find_findBoardByOnlyEnabled_Exception() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         Board board = Board.builder()
@@ -205,7 +205,7 @@ public class BoardRepositoryTest {
     public void find_findBoardByDisabledAndEnable_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         Board board = Board.builder()
@@ -232,7 +232,7 @@ public class BoardRepositoryTest {
     public void delete_deleteBoardByBoardIndex_Success() {
         // given
         User savedTestUser = userRepository.save(
-                MockUserFactory.createUser()
+                UserMockFactory.createUser()
         );
 
         Board board = Board.builder()

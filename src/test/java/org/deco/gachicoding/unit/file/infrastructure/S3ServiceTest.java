@@ -2,7 +2,7 @@ package org.deco.gachicoding.unit.file.infrastructure;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import org.deco.gachicoding.common.factory.file.MockFileFactory;
+import org.deco.gachicoding.common.factory.file.FileMockFactory;
 import org.deco.gachicoding.exception.file.UploadFailureException;
 import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
 import org.deco.gachicoding.file.infrastructure.S3Service;
@@ -45,7 +45,7 @@ public class S3ServiceTest {
 
         // given
         List<MultipartFile> files = List.of(
-                MockFileFactory.getTestSuccessImage1()
+                FileMockFactory.getTestSuccessImage1()
         );
 
         given(amazonS3.putObject(any(), any(), any(), any()))
@@ -55,7 +55,7 @@ public class S3ServiceTest {
                 .willReturn(new URL(filePath));
 
         List<FileResponseDto> responseDtos = List.of(
-                MockFileFactory.getTestSuccessImage1Dto(filePath)
+                FileMockFactory.getTestSuccessImage1Dto(filePath)
         );
 
         // when
@@ -79,8 +79,8 @@ public class S3ServiceTest {
 
         // given
         List<MultipartFile> files = List.of(
-                MockFileFactory.getTestSuccessImage1(),
-                MockFileFactory.getTestSuccessImage2()
+                FileMockFactory.getTestSuccessImage1(),
+                FileMockFactory.getTestSuccessImage2()
         );
 
         given(amazonS3.putObject(any(), any(), any(), any()))

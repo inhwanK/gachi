@@ -53,7 +53,7 @@ public class NoticeController {
 
         Long notIdx = noticeService.registerNotice(
                 userEmail,
-                NoticeAssembler.noticeSaveRequestDto(userEmail, request)
+                NoticeAssembler.noticeSaveRequestDto(request)
         );
 
         String redirectUrl = String.format(REDIRECT_URL, notIdx);
@@ -97,7 +97,7 @@ public class NoticeController {
 
     @ApiOperation(value = "공지사항 수정")
     @ApiResponse(code = 200, message = "수정 후 공지사항 상세 정보 반환")
-    @PutMapping("/notice/modify")
+    @PatchMapping("/notice/modify")
     @PreAuthorize("authentication.name.equals(request.authorEmail) and hasRole('ROLE_MANAGER')")
     public ResponseEntity<NoticeResponse> modifyNotice(
             @ApiParam(value = "공지사항 수정 요청 body 정보")
@@ -115,7 +115,7 @@ public class NoticeController {
 
     @ApiOperation(value = "공지사항 비활성화")
     @ApiResponse(code = 200, message = "비활성화 성공")
-    @PutMapping("/notice/disable/{notIdx}")
+    @PatchMapping("/notice/disable/{notIdx}")
     public ResponseEntity<Void> disableNotice(
             @ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
             @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail
@@ -130,7 +130,7 @@ public class NoticeController {
 
     @ApiOperation(value = "공지사항 활성화")
     @ApiResponse(code = 200, message = "활성화 성공")
-    @PutMapping("/notice/enable/{notIdx}")
+    @PatchMapping("/notice/enable/{notIdx}")
     public ResponseEntity<Void> enableNotice(
             @ApiParam(value = "공지사항 번호", example = "1") @PathVariable Long notIdx,
             @ApiParam(value = "userEmail") @RequestParam(value = "userEmail", defaultValue = "") String userEmail

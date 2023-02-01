@@ -16,9 +16,9 @@ public class NoticeAssembler {
     private NoticeAssembler() {
     }
 
-    public static NoticeSaveRequestDto noticeSaveRequestDto(String userEmail, NoticeSaveRequest request) {
+    public static NoticeSaveRequestDto noticeSaveRequestDto(NoticeSaveRequest request) {
         return NoticeSaveRequestDto.builder()
-                .userEmail(userEmail)
+                .userEmail(request.getUserEmail())
                 .notTitle(request.getNotTitle())
                 .notContents(request.getNotContent())
                 .notPin(request.getNotPin())

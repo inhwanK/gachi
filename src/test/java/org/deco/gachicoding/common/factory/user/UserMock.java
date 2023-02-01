@@ -5,8 +5,8 @@ import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
 
-public class MockUser {
-    private MockUser() {}
+public class UserMock {
+    private UserMock() {}
 
     public static Builder builder() {
         return new Builder();

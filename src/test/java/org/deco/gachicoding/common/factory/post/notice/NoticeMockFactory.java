@@ -9,40 +9,93 @@ import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.data.domain.Pageable;
 
-public class MockNoticeFactory {
-    private MockNoticeFactory() {}
+public class NoticeMockFactory {
+
+    private static final Long DEFAULT_NOTICE_IDX = 1L;
+    private static final String DEFAULT_NOTICE_TITLE = "Test Notice Title";
+    private static final String DEFAULT_NOTICE_CONTENTS = "Test Notice Contents";
+    private static final Long DEFAULT_NOTICE_VIEWS = 0L;
+    private static final Boolean DEFAULT_NOTICE_ENABLED = Boolean.TRUE;
+
+    private static final String UPDATE_NOTICE_TITLE = "Update Test Notice Title";
+    private static final String UPDATE_NOTICE_CONTENTS = "Update Test Notice Contents";
+
+    private NoticeMockFactory() {}
 
     /* Notice Object start */
-    public static Notice mockNotice(User author) {
-        return MockNotice.builder()
+    public static Notice createDefaultStateNoticeMock(User author) {
+        return NoticeMock.builder()
                 .author(author)
-                .build();
-    }
-    public static Notice mockNotice(
-            Long notIdx,
-            User author,
-            Boolean notLocked
-    ) {
-        return MockNotice.builder()
-                .notIdx(notIdx)
-                .author(author)
-                .notLocked(notLocked)
+                .notIdx(DEFAULT_NOTICE_IDX)
+                .notTitle(DEFAULT_NOTICE_TITLE)
+                .notContents(DEFAULT_NOTICE_CONTENTS)
+                .notViews(DEFAULT_NOTICE_VIEWS)
+                .notEnable(DEFAULT_NOTICE_ENABLED)
                 .build();
     }
 
-    public static Notice mockNotice(
+    public static Notice createNotice(User author) {
+        return NoticeMock.builder()
+                .author(author)
+                .build();
+    }
+
+    public static Notice createNotice(
+            Long notIdx,
+            User author
+    ) {
+        return NoticeMock.builder()
+                .notIdx(notIdx)
+                .author(author)
+                .build();
+    }
+
+    public static Notice createNotice(
+            Long notIdx,
+            User author,
+            Boolean notEnabled
+    ) {
+        return NoticeMock.builder()
+                .notIdx(notIdx)
+                .author(author)
+                .notEnable(notEnabled)
+                .build();
+    }
+
+    public static Notice createNotice(
+            User author,
+            Boolean notEnabled
+    ) {
+        return NoticeMock.builder()
+                .author(author)
+                .notEnable(notEnabled)
+                .build();
+    }
+
+    public static Notice createNotice(
             Long notIdx,
             User author,
             String notTitle,
             String notContents,
-            Boolean notLocked
+            Boolean notEnabled
     ) {
-        return MockNotice.builder()
+        return NoticeMock.builder()
                 .notIdx(notIdx)
                 .author(author)
                 .notTitle(notTitle)
                 .notContents(notContents)
-                .notLocked(notLocked)
+                .notEnable(notEnabled)
+                .build();
+    }
+
+    public static Notice createNotice() {
+        return NoticeMock.builder()
+                .notIdx(DEFAULT_NOTICE_IDX)
+//                .author(author)
+                .notTitle(DEFAULT_NOTICE_TITLE)
+                .notContents(DEFAULT_NOTICE_CONTENTS)
+                .notViews(DEFAULT_NOTICE_VIEWS)
+                .notEnable(DEFAULT_NOTICE_ENABLED)
                 .build();
     }
     /* Notice Object end */
@@ -112,8 +165,8 @@ public class MockNoticeFactory {
                 .notTitle(notice.getNotTitle())
                 .notContents(notice.getNotContents())
                 .notViews(notice.getNotViews())
-                .notPin(notice.getNotPin())
-                .notLocked(notice.getNotLocked())
+                .notPin(notice.getPin())
+                .notEnabled(notice.getEnabled())
                 .createdAt(notice.getCreatedAt())
                 .updatedAt(notice.getUpdatedAt())
                 .build();

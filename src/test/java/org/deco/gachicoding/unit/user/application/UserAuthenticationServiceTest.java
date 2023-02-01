@@ -1,6 +1,6 @@
 package org.deco.gachicoding.unit.user.application;
 
-import org.deco.gachicoding.common.factory.user.MockUser;
+import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.user.application.UserAuthenticationService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -45,7 +45,7 @@ public class UserAuthenticationServiceTest {
     @Test
     public void loadUserByUsername_Success() {
         // given
-        user = MockUser.builder()
+        user = UserMock.builder()
                 .userEmail("1234@1234.com")
                 .userName("InHwan")
                 .userNick("nani_inaning")
@@ -70,7 +70,7 @@ public class UserAuthenticationServiceTest {
     @Test
     public void loadUserByUsername_UsernameNotFoundException() {
         // given
-        user = MockUser.builder()
+        user = UserMock.builder()
                 .userEmail("1234@1234.com")
                 .userName("InHwan")
                 .userNick("nani_inaning")

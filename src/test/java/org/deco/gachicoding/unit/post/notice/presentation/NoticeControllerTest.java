@@ -1,8 +1,8 @@
 package org.deco.gachicoding.unit.post.notice.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.deco.gachicoding.common.factory.post.notice.MockNoticeFactory;
-import org.deco.gachicoding.common.factory.user.MockUserFactory;
+import org.deco.gachicoding.common.factory.post.notice.NoticeMockFactory;
+import org.deco.gachicoding.common.factory.user.UserMockFactory;
 import org.deco.gachicoding.config.SecurityConfig;
 import org.deco.gachicoding.exception.post.notice.*;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
@@ -48,7 +48,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-/** 이슈 정리
+/**
+ * 이슈 정리
  * <br> 1. SecurityConfig 빈 생성 불가 문제
  * <br> 해결 : excludeFilters 를 통해 객체 주입 제외
  * <br> 참고 : https://velog.io/@cieroyou/WebMvcTest%EC%99%80-Spring-Security-%ED%95%A8%EA%BB%98-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
@@ -70,13 +71,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * <br><br> 5. 잘못된 요청 에러 - 400
  * <br> 해결 : param이 아닌 content에 objectMapper로 dto 클래스를 파라미터로 주입, objectMapper에 대한 추가적인 이해 필요
  * <br> 참고 : 없음
-**/
+ **/
 
 // 특정 컨트롤러 클래스만 지정하여 스캔
 @WebMvcTest(controllers = NoticeController.class,
-            excludeFilters = {
+        excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
-            })
+        })
 @MockBean(JpaMetamodelMappingContext.class)     // jpaAuditingHandler
 @WithMockUser
 @AutoConfigureRestDocs
@@ -92,7 +93,7 @@ public class NoticeControllerTest {
     private NoticeService noticeService;
 
     private static final User author =
-            MockUserFactory.createUser(1L, "gachicoding@test.com", "1234");
+            UserMockFactory.createUser(1L, "gachicoding@test.com", "1234");
 
     private static final Long notIdx = 1L;
     private static final String notTitle = "Test Notice Title";
@@ -102,21 +103,21 @@ public class NoticeControllerTest {
     @DisplayName("사용자는 공지사항을 작성할 수 있다.")
     void write_writeNoticeWithUser_Success() throws Exception {
 
-        User author = MockUserFactory
+        User author = UserMockFactory
                 .createManager(1L, "gachicoding@test.com", "1234");
 
         // given
         NoticeSaveRequest request =
-                MockNoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents);
+                NoticeMockFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents);
 
         given(noticeService.registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class)))
                 .willReturn(notIdx);
 
         // when
         ResultActions perform = mockMvc.perform(post("/api/notice")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(request))
-                                .with(SecurityMockMvcRequestPostProcessors.csrf()));
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+                .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
         perform.andExpect(status().isCreated());
@@ -145,12 +146,12 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 작성 시 제목이 제한을 초과하면 예외가 발생한다.")
     void write_writeMaximumLengthOverTitle_Exception() throws Exception {
 
-        User author = MockUserFactory
+        User author = UserMockFactory
                 .createManager(1L, "gachicoding@test.com", "1234");
 
         // given
         NoticeSaveRequest request =
-                MockNoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle.repeat(10), notContents);
+                NoticeMockFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle.repeat(10), notContents);
 
         // when
         ResultActions perform = mockMvc.perform(post("/api/notice")
@@ -170,11 +171,11 @@ public class NoticeControllerTest {
     @Test
     @DisplayName("공지사항 작성 시 제목이 널이면 예외가 발생한다.")
     void write_writeNotExistTitle_Exception() throws Exception {
-        User author = MockUserFactory
+        User author = UserMockFactory
                 .createManager(1L, "gachicoding@test.com", "1234");
 
         // given
-        NoticeSaveRequest request = MockNoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), null, notContents);
+        NoticeSaveRequest request = NoticeMockFactory.mockNoticeSaveRequest(author.getUserEmail(), null, notContents);
 
         // when
         ResultActions perform = mockMvc.perform(post("/api/notice")
@@ -190,18 +191,18 @@ public class NoticeControllerTest {
         verify(noticeService, never())
                 .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
     }
-    
+
     // 제목 공백 예외도 테스트 할것인지 결정
 
     @Test
     @DisplayName("공지사항 작성 시 내용이 제한을 초과하면 예외가 발생한다.")
     void write_writeMaximumLengthOverContents_Exception() throws Exception {
-        User author = MockUserFactory
+        User author = UserMockFactory
                 .createManager(1L, "gachicoding@test.com", "1234");
 
         // given
         NoticeSaveRequest request =
-                MockNoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents.repeat(1000));
+                NoticeMockFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents.repeat(1000));
 
         // when
         ResultActions perform = mockMvc.perform(post("/api/notice")
@@ -222,11 +223,11 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 작성 시 내용이 널이면 예외가 발생한다.")
     void write_writeNotExistContents_Exception() throws Exception {
 
-        User author = MockUserFactory
+        User author = UserMockFactory
                 .createManager(1L, "gachicoding@test.com", "1234");
 
         // given
-        NoticeSaveRequest request = MockNoticeFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, null);
+        NoticeSaveRequest request = NoticeMockFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, null);
 
         // when
         ResultActions perform = mockMvc.perform(post("/api/notice")
@@ -242,7 +243,7 @@ public class NoticeControllerTest {
         verify(noticeService, never())
                 .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
     }
-    
+
     // 내용 공백 예외도 테스트 할것인지 결정
 
     // 인가 로직 개발 완료 후 추가 개발
@@ -276,9 +277,9 @@ public class NoticeControllerTest {
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항의 목록을 가져온다.")
     void read_readAllEnableList_Success() throws Exception {
         // given
-        NoticeResponseDto noticeResponseDto1 = MockNoticeFactory.mockNoticeResponseDto(MockNoticeFactory.mockNotice(1L, author, true));
-        NoticeResponseDto noticeResponseDto2 = MockNoticeFactory.mockNoticeResponseDto(MockNoticeFactory.mockNotice(2L, author, true));
-        NoticeResponseDto noticeResponseDto3 = MockNoticeFactory.mockNoticeResponseDto(MockNoticeFactory.mockNotice(3L, author, true));
+        NoticeResponseDto noticeResponseDto1 = NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(1L, author));
+        NoticeResponseDto noticeResponseDto2 = NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(2L, author));
+        NoticeResponseDto noticeResponseDto3 = NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(3L, author));
 
         List<NoticeResponseDto> noticeResponseDtos = List.of(
                 noticeResponseDto1,
@@ -287,9 +288,9 @@ public class NoticeControllerTest {
         );
 
         List<NoticeResponse> noticeResponses = List.of(
-                MockNoticeFactory.mockNoticeResponse(noticeResponseDto1),
-                MockNoticeFactory.mockNoticeResponse(noticeResponseDto2),
-                MockNoticeFactory.mockNoticeResponse(noticeResponseDto3)
+                NoticeMockFactory.mockNoticeResponse(noticeResponseDto1),
+                NoticeMockFactory.mockNoticeResponse(noticeResponseDto2),
+                NoticeMockFactory.mockNoticeResponse(noticeResponseDto3)
         );
 
         given(noticeService.getNoticeList(any(NoticeListRequestDto.class)))
@@ -338,12 +339,12 @@ public class NoticeControllerTest {
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항 내용을 가져온다.")
     void read_readEnableDetail_Success() throws Exception {
         // given
-        NoticeResponseDto noticeResponseDto = MockNoticeFactory.mockNoticeResponseDto(MockNoticeFactory.mockNotice(notIdx, author, true));
+        NoticeResponseDto noticeResponseDto = NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(notIdx, author));
 
         given(noticeService.getNoticeDetail(any(NoticeDetailRequestDto.class)))
                 .willReturn(noticeResponseDto);
 
-        NoticeResponse noticeResponse = MockNoticeFactory.mockNoticeResponse(noticeResponseDto);
+        NoticeResponse noticeResponse = NoticeMockFactory.mockNoticeResponse(noticeResponseDto);
 
         // when
         ResultActions perform = mockMvc.perform(get("/api/notice/{notIdx}", notIdx)
@@ -404,14 +405,14 @@ public class NoticeControllerTest {
     @DisplayName("공지사항의 작성자는 공지사항을 수정할 수 있다.")
     void modify_modifyNotice_Success() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
-        NoticeResponseDto noticeResponseDto = MockNoticeFactory.mockNoticeResponseDto(MockNoticeFactory.mockNotice(notIdx, author, notTitle, notContents, true));
+        NoticeResponseDto noticeResponseDto = NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(notIdx, author, notTitle, notContents, true));
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willReturn(noticeResponseDto);
 
-        NoticeResponse noticeResponse = MockNoticeFactory.mockNoticeResponse(noticeResponseDto);
+        NoticeResponse noticeResponse = NoticeMockFactory.mockNoticeResponse(noticeResponseDto);
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -431,7 +432,7 @@ public class NoticeControllerTest {
     @DisplayName("존재하지 않는 공지사항에 수정 요청할 경우 예외가 발생한다.")
     void modify_modifyNotExistNotice_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new NoticeNotFoundException());
@@ -455,7 +456,7 @@ public class NoticeControllerTest {
     @DisplayName("비 활성화 된 공지사항을 수정할 경우 예외가 발생한다.")
     void modify_modifyDisableNotice_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new NoticeInactiveException());
@@ -479,7 +480,7 @@ public class NoticeControllerTest {
     @DisplayName("존재하지 않는 사용자가 공지사항 수정 요청할 경우 예외가 발생한다.")
     void modify_modifyNotExistUser_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new UserNotFoundException());
@@ -503,7 +504,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 요청자와 작정자가 다를 경우 예외가 발생한다.")
     void modify_modifyDifferentAuthor_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new UserUnAuthorizedException());
@@ -527,7 +528,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 제목이 제한을 초과하면 예외가 발생한다.")
     void modify_modifyMaximumLengthOverTitle_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle.repeat(10), notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle.repeat(10), notContents);
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -548,7 +549,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 제목이 널이면 예외가 발생한다.")
     void modify_modifyNotExistTitle_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, null, notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, null, notContents);
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -569,7 +570,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 제목이 공백이면 예외가 발생한다.")
     void modify_modifyEmptyTitle_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, "", notContents);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, "", notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new NoticeTitleEmptyException());
@@ -593,7 +594,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 내용이 제한을 초과하면 예외가 발생한다.")
     void modify_modifyMaximumLengthOverContents_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents.repeat(1000));
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents.repeat(1000));
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -614,7 +615,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 내용이 널이면 예외가 발생한다.")
     void modify_modifyNotExistContents_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, null);
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, null);
 
         // when
         ResultActions perform = mockMvc.perform(put("/api/notice/modify")
@@ -635,7 +636,7 @@ public class NoticeControllerTest {
     @DisplayName("공지사항 수정 시 내용이 공백이면 예외가 발생한다.")
     void modify_modifyEmptyContents_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = MockNoticeFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, "");
+        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, "");
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new NoticeContentsEmptyException());

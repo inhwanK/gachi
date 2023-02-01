@@ -43,11 +43,11 @@ public class Notice extends BaseTimeEntity {
 
     @Column(name = "not_pin", nullable = false)
     @ColumnDefault("false")
-    private Boolean notPin;
+    private Boolean pin;
 
-    @Column(name = "not_locked", nullable = false)
+    @Column(name = "not_enabled", nullable = false)
     @ColumnDefault("true")
-    private Boolean notLocked;
+    private Boolean enabled;
 
     // FetchType.EAGER 즉시 로딩
     // 1. 대부분의 JPA 구현체는 가능하면 조인을 사용해서 SQL 한번에 함께 조회하려고 한다.
@@ -71,8 +71,8 @@ public class Notice extends BaseTimeEntity {
             User author,
             NoticeTitle notTitle,
             NoticeContents notContents,
-            Long notViews, Boolean notPin,
-            Boolean notLocked,
+            Long notViews, Boolean pin,
+            Boolean enabled,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -81,18 +81,10 @@ public class Notice extends BaseTimeEntity {
         this.notTitle = notTitle;
         this.notContents = notContents;
         this.notViews = notViews;
-        this.notPin = notPin;
-        this.notLocked = notLocked;
+        this.pin = pin;
+        this.enabled = enabled;
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
-    }
-
-    public String getAuthorNick() {
-        return author.getUserNick();
-    }
-
-    public String getAuthorEmail() {
-        return author.getUserEmail();
     }
 
     public String getNotContents() {
@@ -110,15 +102,15 @@ public class Notice extends BaseTimeEntity {
     }
 
     public void enableNotice() {
-        if (this.notLocked)
+        if (this.enabled)
             throw new NoticeAlreadyActiveException();
-        this.notLocked = true;
+        this.enabled = true;
     }
 
     public void disableNotice() {
-        if (!this.notLocked)
+        if (!this.enabled)
             throw new NoticeAlreadyInactiveException();
-        this.notLocked = false;
+        this.enabled = false;
     }
 
     public void update(String notTitle, String notContents) {

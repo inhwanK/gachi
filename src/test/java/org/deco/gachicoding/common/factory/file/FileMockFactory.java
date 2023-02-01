@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 
-public class MockFileFactory {
+public class FileMockFactory {
 
     /**
      * getClass().getResource() vs getClass().getClassLoader().getResource()
@@ -19,7 +19,7 @@ public class MockFileFactory {
      * <br><br>
      * 참고 : http://okminseok.blogspot.com/2019/08/getresource-vs-getclassloadergetresource.html
      */
-    private static final ClassLoader classLoader = MockFileFactory.class.getClassLoader();
+    private static final ClassLoader classLoader = FileMockFactory.class.getClassLoader();
 
     public static MockMultipartFile getTestSuccessImage1() {
         return createMockMultipartFile("testSuccessImage1.png");

@@ -71,7 +71,7 @@ public class NoticeService {
 
         Notice notice = findNotice(dto.getNotIdx());
 
-        if (!notice.getNotLocked())
+        if (!notice.getEnabled())
             throw new NoticeInactiveException();
 
 //        tagService.getTags(notIdx, NOTICE, noticeDetail);
@@ -90,7 +90,7 @@ public class NoticeService {
 
         Notice notice = findNotice(dto.getNotIdx());
 
-        if (!notice.getNotLocked())
+        if (!notice.getEnabled())
             throw new NoticeInactiveException();
 
         User user = findAuthor(dto.getUserEmail());

@@ -27,13 +27,13 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         log.info("인증 시도 유저 이메일 - {}, 인증 시도 유저 비밀번호 - {}", loginEmail, password);
 
-        UserDetails userDto = userDetailsService.loadUserByUsername(loginEmail);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(loginEmail);
 
-        if (!passwordEncoder.matches(password, userDto.getPassword())) {
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Invalid password");
         }
 
-        return new CustomAuthenticationToken(userDto, null, userDto.getAuthorities());
+        return new CustomAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
     @Override

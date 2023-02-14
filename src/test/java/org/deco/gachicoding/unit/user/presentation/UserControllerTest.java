@@ -19,6 +19,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -33,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 // 참고 자료 : https://brunch.co.kr/@springboot/418
-// 컨트롤러 테스트에서 데이터의 유효성, API의 반환값에 대한 검증 테스트를 진행한다.
 //@ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = UserController.class,
         excludeAutoConfiguration = SecurityAutoConfiguration.class,
@@ -52,7 +52,7 @@ public class UserControllerTest {
     @MockBean
     private UserService userService;
 
-    @DisplayName("존재하지 않는 이메일의 경우 true를 반환한다.")
+    @DisplayName("이메일 중복 체크 시, 사용가능한 이메일의 경우 true를 반환한다.")
     @Test
     void checkEmail_Return_True() throws Exception {
 
@@ -71,7 +71,7 @@ public class UserControllerTest {
                 .andDo(print());
     }
 
-    @DisplayName("존재하는 이메일의 경우 false를 반환한다.")
+    @DisplayName("이메일 중복 체크 시, 사용할 수 없는 이메일의 경우 false를 반환한다.")
     @Test
     void checkEmail_Return_False() throws Exception {
 
@@ -151,7 +151,7 @@ public class UserControllerTest {
 
         // then
         perform
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 

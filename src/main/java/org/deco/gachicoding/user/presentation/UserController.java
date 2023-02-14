@@ -3,6 +3,7 @@ package org.deco.gachicoding.user.presentation;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.user.password.IncorrectPasswordConfirmException;
 import org.deco.gachicoding.user.application.UserService;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.user.dto.request.PasswordUpdateRequestDto;
@@ -49,7 +50,7 @@ public class UserController {
 
     @ApiOperation(value = "유저 닉네임 수정")
     @ApiResponse(code = 200, message = "수정 완료")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/update-nickname")
     public ResponseEntity<String> updateUser(
             @ApiParam(value = "변경할 닉네임")
@@ -64,28 +65,25 @@ public class UserController {
 
     // 프론트로부터 암호화된 비밀번호가 와야할 것 같은데...
     @ApiOperation(value = "유저 정보 수정 전에 확인하는 api")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/user/confirm")
-    public ResponseEntity<String> confirmUser(
+    public void confirmUser(
             @ApiParam(value = "비밀번호 변경 전 사용자 확인")
             @RequestParam @NotBlank String confirmPassword
     ) {
         String userPassword =
                 (String) SecurityContextHolder.getContext().getAuthentication().getCredentials();
-        boolean confirm = userService.confirmUser(confirmPassword, userPassword);
-
-        if(confirm) {
-            return ResponseEntity.noContent().build();
+        boolean correct = userService.confirmUser(confirmPassword, userPassword);
+        if(!correct) {
+            throw new IncorrectPasswordConfirmException();
         }
 
-        return ResponseEntity.badRequest()
-                .body("잘못된 비밀번호 입니다. 다시 확인하세요.");
     }
 
 
     @ApiOperation(value = "유저 비밀번호 변경 api")
     @ApiResponse(code = 200, message = "비밀번호가 변경되었습니다.")
-    @PreAuthorize("hasRole('ROLE_USER')")
+    @PreAuthorize("isAuthenticated()")
     @PatchMapping("/user/change-password")
     public void updateUserPassword(
             @ApiParam(value = "변경할 비밀번호 요청 body")

@@ -14,6 +14,7 @@ import org.deco.gachicoding.post.notice.presentation.NoticeController;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeUpdateRequest;
 import org.deco.gachicoding.post.notice.presentation.dto.response.NoticeResponse;
+import org.deco.gachicoding.user.domain.RoleType;
 import org.deco.gachicoding.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +48,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.responseH
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
@@ -79,7 +82,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityConfig.class)
         })
 @MockBean(JpaMetamodelMappingContext.class)     // jpaAuditingHandler
-@WithMockUser
+@WithMockUser(username = "gachicoding@test.com")
 @AutoConfigureRestDocs
 public class NoticeControllerTest {
 
@@ -100,7 +103,7 @@ public class NoticeControllerTest {
     private static final String notContents = "Test Notice Contents";
 
     @Test
-    @DisplayName("사용자는 공지사항을 작성할 수 있다.")
+    @DisplayName("관리자는 공지사항을 작성할 수 있다.")
     void write_writeNoticeWithUser_Success() throws Exception {
 
         User author = UserMockFactory
@@ -110,7 +113,7 @@ public class NoticeControllerTest {
         NoticeSaveRequest request =
                 NoticeMockFactory.mockNoticeSaveRequest(author.getUserEmail(), notTitle, notContents);
 
-        given(noticeService.registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class)))
+        given(noticeService.registerNotice(eq(author.getUserEmail()), any(NoticeSaveRequestDto.class)))
                 .willReturn(notIdx);
 
         // when
@@ -124,7 +127,7 @@ public class NoticeControllerTest {
 
         // userRepository의 findByUserEmail이 1번 실행되었는지 검사한다.
         verify(noticeService, times(1))
-                .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
+                .registerNotice(eq(author.getUserEmail()), any(NoticeSaveRequestDto.class));
 
         // documentation
         perform.andDo(document("post/notice/save-success",
@@ -165,7 +168,7 @@ public class NoticeControllerTest {
                 .andExpect(jsonPath("errorMessage").value("notTitle - 제한길이를 초과하였습니다."));
 
         verify(noticeService, never())
-                .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
+                .registerNotice(eq(author.getUserEmail()), any(NoticeSaveRequestDto.class));
     }
 
     @Test
@@ -189,7 +192,7 @@ public class NoticeControllerTest {
                 .andExpect(jsonPath("errorMessage").value("notTitle - 널이어서는 안됩니다."));
 
         verify(noticeService, never())
-                .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
+                .registerNotice(eq(author.getUserEmail()), any(NoticeSaveRequestDto.class));
     }
 
     // 제목 공백 예외도 테스트 할것인지 결정
@@ -216,7 +219,7 @@ public class NoticeControllerTest {
                 .andExpect(jsonPath("errorMessage").value("notContent - 제한길이를 초과하였습니다."));
 
         verify(noticeService, never())
-                .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
+                .registerNotice(eq(author.getUserEmail()), any(NoticeSaveRequestDto.class));
     }
 
     @Test
@@ -241,37 +244,8 @@ public class NoticeControllerTest {
                 .andExpect(jsonPath("errorMessage").value("notContent - 널이어서는 안됩니다."));
 
         verify(noticeService, never())
-                .registerNotice(author.getUserEmail(), any(NoticeSaveRequestDto.class));
+                .registerNotice(eq(author.getUserEmail()), any(NoticeSaveRequestDto.class));
     }
-
-    // 내용 공백 예외도 테스트 할것인지 결정
-
-    // 인가 로직 개발 완료 후 추가 개발
-//    @Test
-//    @DisplayName("사용자가 아니면 공지사항을 작성할 수 없다.")
-//    void write_writeNoticeWithGuest_Exception() throws Exception {
-//        // given
-//        String notTitle = "테스트 공지사항 제목 수정 전";
-//        String notContents = "테스트 공지사항 내용 수정 전";
-//
-//        NoticeSaveRequest request = NoticeFactory.mockNoticeSaveRequest(null, notTitle, notContents);
-//
-//        given(noticeService.registerNotice(any(NoticeSaveRequestDto.class)))
-//                .willThrow(ApplicationException.class);
-//
-//        // when
-//        ResultActions perform = mockMvc.perform(post("/api/notice")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(objectMapper.writeValueAsString(request))
-//                .with(SecurityMockMvcRequestPostProcessors.csrf()));
-//
-//        // then
-//        perform.andExpect(status().isCreated());
-//
-//        // userRepository의 findByUserEmail이 1번 실행되었는지 검사한다.
-//        verify(noticeService, times(1))
-//                .registerNotice(any(NoticeSaveRequestDto.class));
-//    }
 
     @Test
     @DisplayName("활성화 된 공지사항이 존재하는 경우 공지사항의 목록을 가져온다.")
@@ -405,9 +379,11 @@ public class NoticeControllerTest {
     @DisplayName("공지사항의 작성자는 공지사항을 수정할 수 있다.")
     void modify_modifyNotice_Success() throws Exception {
         // given
-        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request =
+                NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
-        NoticeResponseDto noticeResponseDto = NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(notIdx, author, notTitle, notContents, true));
+        NoticeResponseDto noticeResponseDto =
+                NoticeMockFactory.mockNoticeResponseDto(NoticeMockFactory.createNotice(notIdx, author, notTitle, notContents, true));
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willReturn(noticeResponseDto);
@@ -415,14 +391,14 @@ public class NoticeControllerTest {
         NoticeResponse noticeResponse = NoticeMockFactory.mockNoticeResponse(noticeResponseDto);
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
 
         // then
-        perform.andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(noticeResponse)));
+        perform.andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/api/notice/" + notIdx));
 
         verify(noticeService, times(1))
                 .modifyNotice(any(NoticeUpdateRequestDto.class));
@@ -438,7 +414,7 @@ public class NoticeControllerTest {
                 .willThrow(new NoticeNotFoundException());
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -462,7 +438,7 @@ public class NoticeControllerTest {
                 .willThrow(new NoticeInactiveException());
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -480,13 +456,14 @@ public class NoticeControllerTest {
     @DisplayName("존재하지 않는 사용자가 공지사항 수정 요청할 경우 예외가 발생한다.")
     void modify_modifyNotExistUser_Exception() throws Exception {
         // given
-        NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
+        NoticeUpdateRequest request =
+                NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents);
 
         given(noticeService.modifyNotice(any(NoticeUpdateRequestDto.class)))
                 .willThrow(new UserNotFoundException());
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -510,7 +487,7 @@ public class NoticeControllerTest {
                 .willThrow(new UserUnAuthorizedException());
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -531,7 +508,7 @@ public class NoticeControllerTest {
         NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle.repeat(10), notContents);
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -552,7 +529,7 @@ public class NoticeControllerTest {
         NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, null, notContents);
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -576,7 +553,7 @@ public class NoticeControllerTest {
                 .willThrow(new NoticeTitleEmptyException());
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -597,7 +574,7 @@ public class NoticeControllerTest {
         NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, notContents.repeat(1000));
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -618,7 +595,7 @@ public class NoticeControllerTest {
         NoticeUpdateRequest request = NoticeMockFactory.mockNoticeUpdateRequest(author.getUserEmail(), notIdx, notTitle, null);
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -642,7 +619,7 @@ public class NoticeControllerTest {
                 .willThrow(new NoticeContentsEmptyException());
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/modify")
+        ResultActions perform = mockMvc.perform(patch("/api/notice/modify")
                 .content(objectMapper.writeValueAsString(request))
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -665,7 +642,7 @@ public class NoticeControllerTest {
                 .disableNotice(any(NoticeBasicRequestDto.class));
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/disable/{notIdx}", notIdx)
+        ResultActions perform = mockMvc.perform(patch("/api/notice/disable/{notIdx}", notIdx)
                 .param("userEmail", author.getUserEmail())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));
@@ -686,7 +663,7 @@ public class NoticeControllerTest {
                 .enableNotice(any(NoticeBasicRequestDto.class));
 
         // when
-        ResultActions perform = mockMvc.perform(put("/api/notice/enable/{notIdx}", notIdx)
+        ResultActions perform = mockMvc.perform(patch("/api/notice/enable/{notIdx}", notIdx)
                 .param("userEmail", author.getUserEmail())
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(SecurityMockMvcRequestPostProcessors.csrf()));

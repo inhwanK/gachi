@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.user.dto.request.authentication.UserAuthenticationDto;
+import org.deco.gachicoding.user.dto.request.authentication.CustomUserDetails;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +32,7 @@ public class UserAuthenticationService implements UserDetailsService {
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(new SimpleGrantedAuthority(userRole));
 
-        UserDetails userDetails = new UserAuthenticationDto(user, roles);
+        UserDetails userDetails = new CustomUserDetails(user, roles);
 
         return userDetails;
     }

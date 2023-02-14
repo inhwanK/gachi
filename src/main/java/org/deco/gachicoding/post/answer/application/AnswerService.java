@@ -39,7 +39,7 @@ public class AnswerService {
         String ansContent = answer.getAnsContents();
 
         answer.update(
-                fileService.extractPathAndS3Upload(ansIdx, ArticleType.Answer, ansContent)
+                fileService.extractPathAndS3Upload(ansIdx, ArticleType.ANSWER, ansContent)
         );
 
         return answer.getQueIdx();
@@ -56,7 +56,7 @@ public class AnswerService {
     public Long modifyAnswer(AnswerUpdateRequestDto dto) {
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getAnsIdx(),
-                ArticleType.Answer,
+                ArticleType.ANSWER,
                 dto.getAnsContents()
         );
 

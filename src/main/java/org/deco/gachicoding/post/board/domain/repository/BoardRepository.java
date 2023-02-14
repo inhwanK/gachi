@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Long> {
-//    Page<Board> findByBoardCategoryAndBoardContentContainingIgnoreCaseAndBoardActivatedTrueOrBoardCategoryAndBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(String boardType1, String boardContent,String boardType2,  String boardTitle, Pageable pageable);
-//    Page<Board> findByBoardContentsContainingIgnoreCaseAndBoardActivatedTrueOrBoardTitleContainingIgnoreCaseAndBoardActivatedTrue(String boardContent, String boardTitle, Pageable pageable);
 
     @Query("SELECT b FROM Board b LEFT JOIN FETCH b.author WHERE b.boardIdx = :boardIdx")
     Optional<Board> findBoardByIdx(@Param("boardIdx") Long boardIdx);

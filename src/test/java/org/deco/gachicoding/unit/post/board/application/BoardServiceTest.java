@@ -68,7 +68,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(user));
         given(boardRepository.save(any(Board.class)))
                 .willReturn(board);
-        given(fileService.extractPathAndS3Upload(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.extractPathAndS3Upload(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(boardContents);
 
         // when
@@ -83,7 +83,7 @@ public class BoardServiceTest {
         verify(boardRepository, times(1))
                 .save(any(Board.class));
         verify(fileService, times(1))
-                .extractPathAndS3Upload(anyLong(), ArticleType.Board, anyString());
+                .extractPathAndS3Upload(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -410,7 +410,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(afterBoardContents);
 
         // when
@@ -426,7 +426,7 @@ public class BoardServiceTest {
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -472,16 +472,18 @@ public class BoardServiceTest {
 
         String boardCategory = "자유";
 
-        Board beforeBoard = BoardMockFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, false);
+        Board beforeBoard =
+                BoardMockFactory.mockBoard(boardIdx, user, beforeBoardTitle, beforeBoardContents, boardCategory, false);
 
         String afterBoardTitle = "테스트 게시물 제목 수정 후";
         String afterBoardContents = "테스트 게시물 내용 수정 후";
 
-        BoardUpdateRequestDto updateRequestDto = BoardMockFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
+        BoardUpdateRequestDto updateRequestDto =
+                BoardMockFactory.mockBoardUpdateRequestDto(user.getUserEmail(), boardIdx, afterBoardTitle, afterBoardContents);
 
-        given(boardRepository.findBoardByIdx(anyLong()))
-                .willReturn(Optional.of(beforeBoard));
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+//        given(boardRepository.findBoardByIdx(anyLong()))
+//                .willReturn(Optional.of(beforeBoard));
+        given(fileService.compareFilePathAndOptimization(anyLong(), any(ArticleType.class), anyString()))
                 .willReturn(afterBoardContents);
 
         // when, then
@@ -493,7 +495,7 @@ public class BoardServiceTest {
         verify(boardRepository, times(1))
                 .findBoardByIdx(anyLong());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -519,7 +521,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.empty());
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(afterBoardContents);
 
         // when, then
@@ -533,7 +535,7 @@ public class BoardServiceTest {
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -574,7 +576,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(afterBoardContents);
 
         // when, then
@@ -588,7 +590,7 @@ public class BoardServiceTest {
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -627,7 +629,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(afterBoardContents);
 
         // when, then
@@ -641,7 +643,7 @@ public class BoardServiceTest {
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -680,7 +682,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(afterBoardContents);
 
         // when, then
@@ -694,7 +696,7 @@ public class BoardServiceTest {
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test
@@ -783,7 +785,7 @@ public class BoardServiceTest {
                 .willReturn(Optional.of(beforeBoard));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(user));
-        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString()))
+        given(fileService.compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString()))
                 .willReturn(afterBoardContents);
 
         // when, then
@@ -797,7 +799,7 @@ public class BoardServiceTest {
         verify(userRepository, times(1))
                 .findByUserEmail(anyString());
         verify(fileService, times(1))
-                .compareFilePathAndOptimization(anyLong(), ArticleType.Board, anyString());
+                .compareFilePathAndOptimization(anyLong(), ArticleType.BOARD, anyString());
     }
 
     @Test

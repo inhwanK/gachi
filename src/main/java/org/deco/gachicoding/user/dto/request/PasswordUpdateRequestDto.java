@@ -1,7 +1,7 @@
 package org.deco.gachicoding.user.dto.request;
 
 import lombok.Getter;
-import org.deco.gachicoding.exception.user.password.InvalidPasswordUpdateException;
+import org.deco.gachicoding.exception.user.password.IncorrectPasswordConfirmException;
 
 import javax.validation.constraints.NotBlank;
 
@@ -23,7 +23,7 @@ public class PasswordUpdateRequestDto {
 
     private void validate(String updatePassword, String confirmPassword) {
         if (!updatePassword.equals(confirmPassword)) {
-            throw new InvalidPasswordUpdateException();
+            throw new IncorrectPasswordConfirmException();
         }
     }
 }

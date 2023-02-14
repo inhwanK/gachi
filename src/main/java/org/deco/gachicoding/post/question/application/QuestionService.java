@@ -44,7 +44,7 @@ public class QuestionService {
         String queContent = question.getQueContents();
 
         question.updateContent(
-                fileService.extractPathAndS3Upload(queIdx, ArticleType.Question, queContent)
+                fileService.extractPathAndS3Upload(queIdx, ArticleType.QUESTION, queContent)
         );
 
         return queIdx;
@@ -85,7 +85,7 @@ public class QuestionService {
     public Long modifyQuestion(QuestionUpdateRequestDto dto) {
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getQueIdx(),
-                ArticleType.Question,
+                ArticleType.QUESTION,
                 dto.getQueContents()
         );
 

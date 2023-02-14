@@ -110,7 +110,9 @@ public class NoticeController {
 
         String redirectUrl = String.format(REDIRECT_URL, notIdx);
 
-        return ResponseEntity.created(URI.create(redirectUrl)).build();
+        return ResponseEntity
+                .created(URI.create(redirectUrl))
+                .build();
     }
 
     @ApiOperation(value = "공지사항 비활성화")

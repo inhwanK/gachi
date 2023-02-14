@@ -4,7 +4,7 @@ import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.user.dto.request.authentication.LoginRequestDto;
-import org.deco.gachicoding.user.dto.request.authentication.UserAuthenticationDto;
+import org.deco.gachicoding.user.dto.request.authentication.CustomUserDetails;
 import org.deco.gachicoding.user.dto.response.UserResponseDto;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,7 +24,7 @@ public class UserSessionController {
     @GetMapping("/user/info")
     public UserResponseDto getUserInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserAuthenticationDto dto = (UserAuthenticationDto) authentication.getPrincipal();
+        CustomUserDetails dto = (CustomUserDetails) authentication.getPrincipal();
         UserResponseDto responseDto = new UserResponseDto(dto.getUsername(), dto.getUserNick());
         return responseDto;
     }

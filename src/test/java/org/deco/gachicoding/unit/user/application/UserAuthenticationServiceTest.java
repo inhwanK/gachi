@@ -4,7 +4,7 @@ import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.user.application.UserAuthenticationService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.user.dto.request.authentication.UserAuthenticationDto;
+import org.deco.gachicoding.user.dto.request.authentication.CustomUserDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -54,7 +54,7 @@ public class UserAuthenticationServiceTest {
 
         List<GrantedAuthority> roles = new ArrayList<>();
         roles.add(new SimpleGrantedAuthority(user.getUserRole().toString()));
-        UserDetails expectedUserDetails = new UserAuthenticationDto(user, roles);
+        UserDetails expectedUserDetails = new CustomUserDetails(user, roles);
 
         String userEmail = user.getUserEmail();
         given(userRepository.findByUserEmail(userEmail))

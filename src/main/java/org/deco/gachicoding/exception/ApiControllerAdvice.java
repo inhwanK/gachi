@@ -17,7 +17,6 @@ public class ApiControllerAdvice {
 
     private static final String LOG_FORMAT = "Class : {}, Code : {}, Message : {}";
 
-    // 이게 맞나 인환이랑 이야기 해보자
     // 익셉션 메세지를 response에 넣을때 좀더 디테일 하게 넣을 수 있도록 공부해 봅시다.
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> handleValidationExceptions(
@@ -46,29 +45,6 @@ public class ApiControllerAdvice {
         );
     }
 
-//    /**
-//     * UncheckedException
-//     * Amazon S3에서 요청된 객체가 버킷에 없는 경우 오류를 반환합니다.
-//     * @return {@link ResponseEntity}를 반환
-//     */
-//    @ExceptionHandler(AmazonS3Exception.class)
-//    protected ResponseEntity<ResponseState> handleAmazonS3Exception() {
-//        log.error("handleAmazonS3Exception throw Exception : {}", AMAZONS_S3_EXCEPTION);
-//        return ResponseState.toResponseEntity(AMAZONS_S3_EXCEPTION);
-//    }
-
-//    @ExceptionHandler(IOException.class)
-//    protected ResponseEntity<ResponseState> handleIOException() {
-//        log.error("handleIOException throw Exception : {}", INPUT_OUTPUT_EXCEPTION);
-//        return ResponseState.toResponseEntity(INPUT_OUTPUT_EXCEPTION);
-//    }
-
-//    @ExceptionHandler(value = { ConstraintViolationException.class, DataIntegrityViolationException.class})
-//    protected ResponseEntity<ResponseState> handleDataException() {
-//        log.error("handleDataException throw Exception : {}", DATA_VIOLATION_EXCEPTION);
-//        return ResponseState.toResponseEntity(DATA_VIOLATION_EXCEPTION);
-//    }
-
     @ExceptionHandler(ApplicationException.class)
     protected ResponseEntity<ExceptionResponse> handleCustomException(ApplicationException e) {
 
@@ -82,9 +58,5 @@ public class ApiControllerAdvice {
         );
 
         return ExceptionResponse.toResponseEntity(e);
-
-//        return ResponseEntity
-//                .status(e.getHttpStatus())
-//                .body(new ApiErrorResponse(errorCode, message));
     }
 }

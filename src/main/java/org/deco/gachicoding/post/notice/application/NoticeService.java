@@ -12,6 +12,7 @@ import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
 import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.post.notice.application.dto.NoticeDtoAssembler;
 import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
+import org.deco.gachicoding.post.notice.presentation.dto.request.NoticeSaveRequest;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -45,7 +46,7 @@ public class NoticeService {
         String notContent = notice.getNotContents();
 
         notice.updateContent(
-                fileService.extractPathAndS3Upload(notIdx, ArticleType.Notice, notContent)
+                fileService.extractPathAndS3Upload(notIdx, ArticleType.NOTICE, notContent)
         );
 
         return notIdx;
@@ -84,7 +85,7 @@ public class NoticeService {
         // 무조건 async
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getNotIdx(),
-                ArticleType.Notice,
+                ArticleType.NOTICE,
                 dto.getNotContents()
         );
 

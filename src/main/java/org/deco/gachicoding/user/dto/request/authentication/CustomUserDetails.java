@@ -1,7 +1,6 @@
 package org.deco.gachicoding.user.dto.request.authentication;
 
 
-import lombok.NoArgsConstructor;
 import org.deco.gachicoding.user.domain.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.SpringSecurityCoreVersion;
@@ -10,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-public class UserAuthenticationDto implements UserDetails {
+public class CustomUserDetails implements UserDetails {
 
     private static final long serialVersionUID = SpringSecurityCoreVersion.SERIAL_VERSION_UID;
 
@@ -19,7 +18,7 @@ public class UserAuthenticationDto implements UserDetails {
     private String userNick;
     private List<GrantedAuthority> roles;
 
-    public UserAuthenticationDto(User user, List<GrantedAuthority> roles) {
+    public CustomUserDetails(User user, List<GrantedAuthority> roles) {
         this.userEmail = user.getUserEmail();
         this.password = user.getUserPassword();
         this.userNick = user.getUserNick();

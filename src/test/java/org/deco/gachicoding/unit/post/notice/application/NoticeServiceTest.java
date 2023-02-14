@@ -59,7 +59,6 @@ public class NoticeServiceTest {
     private static final Long notIdx = 1L;
     private static final String notTitle = "Test Notice Title";
     private static final String notContents = "Test Notice Contents";
-
     private static final String updateNotTitle = "Update Test Notice Title";
     private static final String updateNotContents = "Update Test Notice Contents";
 
@@ -80,7 +79,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(author));
         given(noticeRepository.save(any(Notice.class)))
                 .willReturn(notice);
-        given(fileService.extractPathAndS3Upload(notIdx, ArticleType.Notice, notContents))
+        given(fileService.extractPathAndS3Upload(notIdx, ArticleType.NOTICE, notContents))
                 .willReturn("img");
 
         // when
@@ -400,7 +399,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(author));
-        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.Notice, updateNotContents))
+        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.NOTICE, updateNotContents))
                 .willReturn("Update Test Notice Contents");
         // when
         NoticeResponseDto responseDto =
@@ -520,7 +519,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(author));
-        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.Notice, updateNotContents))
+        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.NOTICE, updateNotContents))
                 .willReturn("img");
 
         // when, then
@@ -548,7 +547,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(author));
-        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.Notice, updateNotContents))
+        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.NOTICE, updateNotContents))
                 .willReturn("Update Test Notice Contents");
 
         // when, then
@@ -576,7 +575,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(author));
-        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.Notice, null))
+        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.NOTICE, null))
                 .willReturn(null);
 
         // when, then
@@ -604,7 +603,7 @@ public class NoticeServiceTest {
                 .willReturn(Optional.of(notice));
         given(userRepository.findByUserEmail(anyString()))
                 .willReturn(Optional.of(author));
-        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.Notice, ""))
+        given(fileService.compareFilePathAndOptimization(notIdx, ArticleType.NOTICE, ""))
                 .willReturn("");
         // when, then
         assertThatThrownBy(() -> noticeService.modifyNotice(updateRequestDto))

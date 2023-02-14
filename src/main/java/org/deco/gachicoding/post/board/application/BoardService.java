@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Queue;
 
 @Slf4j
 @Service
@@ -41,7 +40,7 @@ public class BoardService {
         String boardContent = board.getBoardContents();
 
         board.updateContent(
-                fileService.extractPathAndS3Upload(boardIdx, ArticleType.Board, boardContent)
+                fileService.extractPathAndS3Upload(boardIdx, ArticleType.BOARD, boardContent)
         );
 
         // tagify 라이브러리
@@ -82,10 +81,11 @@ public class BoardService {
 
     @Transactional
     public BoardResponseDto modifyBoard(BoardUpdateRequestDto dto) {
+
         // 무조건 async
         String updateContents = fileService.compareFilePathAndOptimization(
                 dto.getBoardIdx(),
-                ArticleType.Board,
+                ArticleType.BOARD,
                 dto.getBoardContents()
         );
 

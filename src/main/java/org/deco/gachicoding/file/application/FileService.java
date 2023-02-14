@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 public class FileService {
 
     private final FileRepository fileRepository;
-
     private final S3Service s3Service;
 
     @Value("${cloud.aws.s3.url}")

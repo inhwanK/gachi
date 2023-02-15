@@ -19,7 +19,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT DISTINCT q " +
             "FROM Question q JOIN FETCH q.questioner " +
-            "WHERE q.queLocked = true " +
+            "WHERE q.queEnabled = true " +
             "AND (q.queTitle.queTitle LIKE %:keyword% " +
             "OR q.queContents.queContents LIKE %:keyword%) ")
     List<Question> findAllQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);

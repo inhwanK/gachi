@@ -60,17 +60,17 @@ public class Question extends BaseTimeEntity {
     private Boolean queSolved;
 
     @ColumnDefault("true")
-    @Column(name = "qs_locked", nullable = false)
-    private Boolean queLocked;
+    @Column(name = "qs_enabled", nullable = false)
+    private Boolean queEnabled;
 
     @Builder
     public Question(
-            User questioner,
             Long queIdx,
+            User questioner,
             String queTitle,
             String queContents,
             Boolean queSolved,
-            Boolean queLocked,
+            Boolean queEnabled,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -79,7 +79,7 @@ public class Question extends BaseTimeEntity {
         this.queTitle = new QuestionTitle(queTitle);
         this.queContents = new QuestionContents(queContents);
         this.queSolved = queSolved;
-        this.queLocked = queLocked;
+        this.queEnabled = queEnabled;
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
     }
@@ -110,15 +110,15 @@ public class Question extends BaseTimeEntity {
     }
 
     public void enableQuestion() {
-        if (this.queLocked)
+        if (this.queEnabled)
             throw new QuestionAlreadyActiveException();
-        this.queLocked = true;
+        this.queEnabled = true;
     }
 
     public void disableQuestion() {
-        if (!this.queLocked)
+        if (!this.queEnabled)
             throw new QuestionAlreadyInactiveException();
-        this.queLocked = false;
+        this.queEnabled = false;
     }
 
     public String getQueTitle() {

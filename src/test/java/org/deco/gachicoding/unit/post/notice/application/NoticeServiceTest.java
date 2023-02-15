@@ -633,7 +633,7 @@ public class NoticeServiceTest {
         noticeService.disableNotice(requestDto);
 
         // then
-        assertThat(notice.getEnabled()).isFalse();
+        assertThat(notice.getNotEnabled()).isFalse();
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());
@@ -756,7 +756,7 @@ public class NoticeServiceTest {
         noticeService.enableNotice(requestDto);
 
         // then
-        assertThat(notice.getEnabled()).isTrue();
+        assertThat(notice.getNotEnabled()).isTrue();
 
         verify(noticeRepository, times(1))
                 .findNoticeByIdx(anyLong());

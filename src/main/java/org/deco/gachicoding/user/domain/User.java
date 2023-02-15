@@ -10,10 +10,8 @@ import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -40,7 +38,6 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_nick", nullable = false, unique = true)
     private String userNick;
 
-//    @Embedded
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
 

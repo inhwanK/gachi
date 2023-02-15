@@ -95,7 +95,7 @@ public class AnswerService {
         if (!answer.getAnsLocked())
             throw new AnswerInactiveException();
 
-        if (!question.getQueLocked())
+        if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
         answer.toSelect();

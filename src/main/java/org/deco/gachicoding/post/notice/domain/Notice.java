@@ -47,7 +47,7 @@ public class Notice extends BaseTimeEntity {
 
     @Column(name = "not_enabled", nullable = false)
     @ColumnDefault("true")
-    private Boolean enabled;
+    private Boolean notEnabled;
 
     // FetchType.EAGER 즉시 로딩
     // 1. 대부분의 JPA 구현체는 가능하면 조인을 사용해서 SQL 한번에 함께 조회하려고 한다.
@@ -72,7 +72,7 @@ public class Notice extends BaseTimeEntity {
             NoticeTitle notTitle,
             NoticeContents notContents,
             Long notViews, Boolean pin,
-            Boolean enabled,
+            Boolean notEnabled,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -82,7 +82,7 @@ public class Notice extends BaseTimeEntity {
         this.notContents = notContents;
         this.notViews = notViews;
         this.pin = pin;
-        this.enabled = enabled;
+        this.notEnabled = notEnabled;
         setCreatedAt(createdAt);
         setUpdatedAt(updatedAt);
     }
@@ -102,15 +102,15 @@ public class Notice extends BaseTimeEntity {
     }
 
     public void enableNotice() {
-        if (this.enabled)
+        if (this.notEnabled)
             throw new NoticeAlreadyActiveException();
-        this.enabled = true;
+        this.notEnabled = true;
     }
 
     public void disableNotice() {
-        if (!this.enabled)
+        if (!this.notEnabled)
             throw new NoticeAlreadyInactiveException();
-        this.enabled = false;
+        this.notEnabled = false;
     }
 
     public void update(String notTitle, String notContents) {

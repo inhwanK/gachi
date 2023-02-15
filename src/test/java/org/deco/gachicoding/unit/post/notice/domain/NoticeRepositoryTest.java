@@ -164,7 +164,7 @@ public class NoticeRepositoryTest {
 
         // then
         assertThat(savedTestNotice).isNotNull();
-        assertThat(savedTestNotice.getEnabled()).isTrue();
+        assertThat(savedTestNotice.getNotEnabled()).isTrue();
     }
 
     @Test
@@ -215,7 +215,7 @@ public class NoticeRepositoryTest {
 
         // then
         assertThat(savedTestNotice).isNotNull();
-        assertThat(savedTestNotice.getEnabled()).isFalse();
+        assertThat(savedTestNotice.getNotEnabled()).isFalse();
     }
 
     @Test

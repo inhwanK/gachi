@@ -75,7 +75,7 @@ public class QuestionService {
     public QuestionDetailResponseDto getQuestionDetail(Long queIdx) {
         Question question = findQuestion(queIdx);
 
-        if (!question.getQueLocked())
+        if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
         return QuestionDtoAssembler.questionResponseDto(question);
@@ -95,7 +95,7 @@ public class QuestionService {
 
         question.hasSameAuthor(user);
 
-        if (!question.getQueLocked())
+        if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
         // 이미 해결 된 질문을 수정 할 수 없다.

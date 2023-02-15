@@ -38,7 +38,7 @@ public class QuestionDtoAssembler {
                 .queTitle(question.getQueTitle())
                 .queContents(question.getQueContents())
                 .queSolved(question.getQueSolved())
-                .queLocked(question.getQueLocked())
+                .queLocked(question.getQueEnabled())
                 .createdAt(question.getCreatedAt())
                 .updatedAt(question.getUpdatedAt())
                 .build();
@@ -52,7 +52,7 @@ public class QuestionDtoAssembler {
                 .queTitle(question.getQueTitle())
                 .queContents(question.getQueContents())
                 .queSolved(question.getQueSolved())
-                .queLocked(question.getQueLocked())
+                .queLocked(question.getQueEnabled())
                 .createdAt(question.getCreatedAt())
                 .updatedAt(question.getUpdatedAt())
                 .build();

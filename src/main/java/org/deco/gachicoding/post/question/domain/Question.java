@@ -36,16 +36,16 @@ public class Question extends BaseTimeEntity {
     @Id
     @Comment("PK")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "qs_idx", columnDefinition = "bigint", nullable = false)
+    @Column(name = "qs_idx")
     private Long queIdx;
 
     @JsonManagedReference
     @JoinColumn(name = "user_idx")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // 자주 사용될 가능성이 많으므로 EAGER 설정 고려
     private User questioner;
 
     @JsonBackReference
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question",fetch = FetchType.LAZY) // 자주 사용될 가능성이 많으므로 EAGER 설정 고려
     @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
     private List<Answer> answers = new ArrayList<>();
 

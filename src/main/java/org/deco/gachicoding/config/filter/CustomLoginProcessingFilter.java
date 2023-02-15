@@ -26,14 +26,14 @@ public class CustomLoginProcessingFilter extends AbstractAuthenticationProcessin
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        // 역직렬화 할 때는 유효성 검사 로직이 작동을 안하는 듯... 사이클을 찾아봐야함.
         LoginRequestDto requestDto = objectMapper.readValue(request.getReader(), LoginRequestDto.class);
 
         if (!StringUtils.hasText(requestDto.getUserEmail()) || !StringUtils.hasText(requestDto.getPassword())) {
             throw new IllegalArgumentException("Username or Password is empty");
         }
 
-        CustomAuthenticationToken customAuthenticationToken = new CustomAuthenticationToken(requestDto.getUserEmail(), requestDto.getPassword());
+        CustomAuthenticationToken customAuthenticationToken =
+                new CustomAuthenticationToken(requestDto.getUserEmail(), requestDto.getPassword());
 
         return getAuthenticationManager().authenticate(customAuthenticationToken);
     }

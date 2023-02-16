@@ -46,7 +46,6 @@ public class Question extends BaseTimeEntity {
 
     @JsonBackReference
     @OneToMany(mappedBy = "question",fetch = FetchType.LAZY) // 자주 사용될 가능성이 많으므로 EAGER 설정 고려
-    @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
     private List<Answer> answers = new ArrayList<>();
 
     @Embedded
@@ -71,17 +70,17 @@ public class Question extends BaseTimeEntity {
             String queContents,
             Boolean queSolved,
             Boolean queEnabled,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime queCreatedAt,
+            LocalDateTime queUpdatedAt
     ) {
-        this.questioner = questioner;
         this.queIdx = queIdx;
+        this.questioner = questioner;
         this.queTitle = new QuestionTitle(queTitle);
         this.queContents = new QuestionContents(queContents);
         this.queSolved = queSolved;
         this.queEnabled = queEnabled;
-        setCreatedAt(createdAt);
-        setUpdatedAt(updatedAt);
+        setCreatedAt(queCreatedAt);
+        setUpdatedAt(queUpdatedAt);
     }
 
     public void setUser(User user) {

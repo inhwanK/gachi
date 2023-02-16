@@ -53,8 +53,6 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoleType userRole;
 
-    // Notice 엔터티와 연관관계 매핑
-    // 연관관계의 주인은 Notice의 author
     @OneToMany(mappedBy = "author")
     private List<Notice> notices = new ArrayList<>();
 

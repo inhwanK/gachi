@@ -21,8 +21,10 @@ public class UserMock {
         private String userPassword = "Test User Password";
         private boolean userEnabled = true;
         private RoleType userRole = RoleType.ROLE_USER;
-        private LocalDateTime userCreatedAt = LocalDateTime.of(2022, 2, 2, 2, 2);
-        private LocalDateTime userUpdatedAt = LocalDateTime.of(2022, 2, 2, 2, 3);
+        private LocalDateTime userCreatedAt =
+                LocalDateTime.of(2022, 2, 2, 2, 2);
+        private LocalDateTime userUpdatedAt =
+                LocalDateTime.of(2022, 2, 2, 2, 3);
 
         public Builder userIdx(Long userIdx) {
             this.userIdx = userIdx;

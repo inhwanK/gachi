@@ -2,10 +2,7 @@ package org.deco.gachicoding.post.question.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyInactiveException;
@@ -16,7 +13,6 @@ import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.post.question.domain.vo.QuestionTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -26,15 +22,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Entity
+@EqualsAndHashCode(of = "queIdx", callSuper = false)
 @DynamicInsert
 @DynamicUpdate
+@Entity
 @Table(name = "gachi_q")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
     @Id
-    @Comment("PK")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "qs_idx")
     private Long queIdx;
@@ -45,7 +41,7 @@ public class Question extends BaseTimeEntity {
     private User questioner;
 
     @JsonBackReference
-    @OneToMany(mappedBy = "question",fetch = FetchType.LAZY) // 자주 사용될 가능성이 많으므로 EAGER 설정 고려
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY) // 자주 사용될 가능성이 많으므로 EAGER 설정 고려
     private List<Answer> answers = new ArrayList<>();
 
     @Embedded
@@ -98,7 +94,7 @@ public class Question extends BaseTimeEntity {
 
     public void toSolve() {
         // 이미 해결 상태의 질문은 채택 불가능
-        if(this.queSolved)
+        if (this.queSolved)
             throw new QuestionAlreadySolvedException();
         this.queSolved = true;
     }

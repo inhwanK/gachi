@@ -31,7 +31,6 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
-    private final TagService tagService;
 
     @Transactional(rollbackFor = Exception.class)
     public Long registerQuestion(
@@ -43,9 +42,9 @@ public class QuestionService {
         Long queIdx = question.getQueIdx();
         String queContent = question.getQueContents();
 
-        question.updateContent(
-                fileService.extractPathAndS3Upload(queIdx, ArticleType.QUESTION, queContent)
-        );
+//        question.updateContent(
+//                fileService.extractPathAndS3Upload(queIdx, ArticleType.QUESTION, queContent)
+//        );
 
         return queIdx;
     }

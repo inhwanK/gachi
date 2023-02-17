@@ -20,11 +20,14 @@ public class QuestionAssembler {
 
     private QuestionAssembler() {}
 
-    public static QuestionSaveRequestDto questionSaveRequestDto(QuestionSaveRequest request) {
+    public static QuestionSaveRequestDto questionSaveRequestDto(
+            String userEmail,
+            QuestionSaveRequest request
+    ) {
         return QuestionSaveRequestDto.builder()
-                .userEmail(request.getUserEmail())
                 .queTitle(request.getQueTitle())
                 .queContents(request.getQueContents())
+                .userEmail(userEmail)
                 .build();
     }
 

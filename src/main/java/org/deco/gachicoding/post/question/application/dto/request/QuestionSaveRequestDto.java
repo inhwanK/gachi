@@ -7,9 +7,7 @@ import lombok.Getter;
 public class QuestionSaveRequestDto {
 
     private String userEmail;
-
     private String queTitle;
-
     private String queContents;
 
     @Builder

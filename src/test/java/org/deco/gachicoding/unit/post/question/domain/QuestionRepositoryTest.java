@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @DataJpaTest
@@ -63,5 +64,17 @@ public class QuestionRepositoryTest {
 
         assertThat(question)
                 .isEqualTo(actualQuestion);
+    }
+
+    @Test
+    @DisplayName("질문을 수정한다.")
+    public void update_Question_Success() {
+        fail("미구현");
+    }
+
+    @Test
+    @DisplayName("질문을 삭제한다.")
+    public void delete_Question_Success() {
+        fail("미구현");
     }
 }

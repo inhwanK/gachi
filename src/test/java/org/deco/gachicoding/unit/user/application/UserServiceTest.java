@@ -67,7 +67,8 @@ public class UserServiceTest {
         Long userIdx = userService.createUser(dto);
 
         // then
-        assertThat(userIdx).isEqualTo(user.getUserIdx());
+        assertThat(userIdx)
+                .isEqualTo(user.getUserIdx());
     }
 
     @DisplayName("중복된 이메일을 가진 사용자는 회원가입을 할 수 없다.")

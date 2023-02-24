@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @DataJpaTest
@@ -88,6 +87,16 @@ public class QuestionRepositoryTest {
     @Test
     @DisplayName("질문을 삭제한다.")
     public void delete_Question_Success() {
-        fail("안해도 될 것 같은데... 흠");
+        questions = questionRepository.findAll();
+
+        Question target = questions.get(0);
+        Long idx = target.getQueIdx();
+        questionRepository.deleteById(idx);
+
+        questions = questionRepository.findAll();
+
+        assertThat(questions).hasSize(3);
+        assertThat(questions)
+                .isNotIn(target);
     }
 }

@@ -19,7 +19,9 @@ public class QuestionDetailResponse {
     private List<AnswerResponse> answerList;
 
     private String queTitle;
-    private String queContents;
+    private String queGeneralContent;
+    private String queCodeContent;
+    private String queErrorContents;
     private boolean queSolved;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -31,7 +33,9 @@ public class QuestionDetailResponse {
             String userNick,
             List<AnswerResponse> answerList,
             String queTitle,
-            String queContents,
+            String queGeneralContent,
+            String queCodeContent,
+            String queErrorContents,
             boolean queSolved,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
@@ -40,11 +44,11 @@ public class QuestionDetailResponse {
 
         this.userEmail = userEmail;
         this.userNick = userNick;
-
         this.answerList = answerList;
-
         this.queTitle = queTitle;
-        this.queContents = queContents;
+        this.queGeneralContent = queGeneralContent;
+        this.queCodeContent = queCodeContent;
+        this.queErrorContents = queErrorContents;
         this.queSolved = queSolved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

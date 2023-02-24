@@ -10,9 +10,6 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class QuestionListResponse {
-
-    // 이러한 형태도 한번 생각해 보자
-//    private List<QuestionDetailResponse> questionDetailResponses;
     
     private Long queIdx;
 
@@ -20,7 +17,9 @@ public class QuestionListResponse {
     private String userNick;
 
     private String queTitle;
-    private String queContents;
+    private String queGeneralContent;
+    private String queCodeContent;
+    private String queErrorContents;
     private boolean queSolved;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -31,7 +30,9 @@ public class QuestionListResponse {
             String userEmail,
             String userNick,
             String queTitle,
-            String queContents,
+            String queGeneralContent,
+            String queCodeContent,
+            String queErrorContents,
             boolean queSolved,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
@@ -42,7 +43,9 @@ public class QuestionListResponse {
         this.userNick = userNick;
 
         this.queTitle = queTitle;
-        this.queContents = queContents;
+        this.queGeneralContent = queGeneralContent;
+        this.queCodeContent = queCodeContent;
+        this.queErrorContents = queErrorContents;
         this.queSolved = queSolved;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;

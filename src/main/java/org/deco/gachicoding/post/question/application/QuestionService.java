@@ -11,6 +11,7 @@ import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdate
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.file.application.FileService;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
@@ -36,22 +37,11 @@ public class QuestionService {
     public Long registerQuestion(
             QuestionSaveRequestDto dto
     ) {
-
-        Question question = questionRepository.save(createQuestion(dto));
-
-        Long queIdx = question.getQueIdx();
-        String queContent = question.getQueContents();
-
-//        question.updateContent(
-//                fileService.extractPathAndS3Upload(queIdx, ArticleType.QUESTION, queContent)
-//        );
-
-        return queIdx;
+        return questionRepository.save(createQuestion(dto)).getQueIdx();
     }
 
     private Question createQuestion(QuestionSaveRequestDto dto) {
         User user = findAuthor(dto.getUserEmail());
-
         return QuestionDtoAssembler.question(user, dto);
     }
 
@@ -60,99 +50,89 @@ public class QuestionService {
             String keyword,
             Pageable pageable
     ) {
-
-        return QuestionDtoAssembler.questionResponseDtos(
-                questionRepository.findAllQuestionByKeyword(
-                        keyword,
-                        pageable
-                )
-        );
+        return null;
+//        QuestionDtoAssembler.questionResponseDtos(
+//                questionRepository.findAllQuestionByKeyword(keyword, pageable)
+//        );
     }
 
 
     @Transactional(readOnly = true)
     public QuestionDetailResponseDto getQuestionDetail(Long queIdx) {
-        Question question = findQuestion(queIdx);
-
-        if (!question.getQueEnabled())
-            throw new QuestionInactiveException();
-
-        return QuestionDtoAssembler.questionResponseDto(question);
+//        Question question = findQuestion(queIdx);
+//
+//        if (!question.getQueEnabled())
+//            throw new QuestionInactiveException();
+//
+        return null; // QuestionDtoAssembler.questionResponseDto(question);
     }
 
     @Transactional
     public Long modifyQuestion(QuestionUpdateRequestDto dto) {
-        String updateContents = fileService.compareFilePathAndOptimization(
-                dto.getQueIdx(),
-                ArticleType.QUESTION,
-                dto.getQueContents()
-        );
-
-        Question question = findQuestion(dto.getQueIdx());
-
-        User user = findAuthor(dto.getUserEmail());
-
-        question.hasSameAuthor(user);
-
-        if (!question.getQueEnabled())
-            throw new QuestionInactiveException();
-
-        // 이미 해결 된 질문을 수정 할 수 없다.
-        if (question.getQueSolved())
-            throw new SolvedQuestionModifyFailedException();
-
-        question.update(
-                dto.getQueTitle(),
-                updateContents
-        );
-
-        return question.getQueIdx();
+//        QuestionContents updateContents = dto.getQueContents();
+//
+//        Question question = findQuestion(dto.getQueIdx());
+//        User user = findAuthor(dto.getUserEmail());
+//        question.hasSameAuthor(user);
+//
+//        if (!question.getQueEnabled())
+//            throw new QuestionInactiveException();
+//
+//        // 이미 해결 된 질문을 수정 할 수 없다.
+//        if (question.getQueSolved())
+//            throw new SolvedQuestionModifyFailedException();
+//
+//        question.update(
+//                dto.getQueTitle(),
+//                updateContents
+//        );
+//
+        return null; // question.getQueIdx();
     }
 
     // 활성 -> 비활성
     @Transactional
     public void disableQuestion(QuestionBasicRequestDto dto) {
-        Question question = findQuestion(dto.getQueIdx());
-
-        User user = findAuthor(dto.getUserEmail());
-
-        question.hasSameAuthor(user);
-
-        if (question.getQueSolved())
-            throw new SolvedQuestionDisableFailedException();
-
-        question.disableQuestion();
+//        Question question = findQuestion(dto.getQueIdx());
+//
+//        User user = findAuthor(dto.getUserEmail());
+//
+//        question.hasSameAuthor(user);
+//
+//        if (question.getQueSolved())
+//            throw new SolvedQuestionDisableFailedException();
+//
+//        question.disableQuestion();
     }
 
     @Transactional
     public void enableQuestion(QuestionBasicRequestDto dto) {
-        Question question = findQuestion(dto.getQueIdx());
-
-        User user = findAuthor(dto.getUserEmail());
-
-        question.hasSameAuthor(user);
-
-        question.enableQuestion();
+//        Question question = findQuestion(dto.getQueIdx());
+//
+//        User user = findAuthor(dto.getUserEmail());
+//
+//        question.hasSameAuthor(user);
+//        question.enableQuestion();
     }
 
     @Transactional
     public void removeQuestion(QuestionBasicRequestDto dto) {
-        Question question = findQuestion(dto.getQueIdx());
-
-        User user = findAuthor(dto.getUserEmail());
-
-        question.hasSameAuthor(user);
-
-        if (question.getQueSolved())
-            throw new SolvedQuestionDeleteFailedException();
-
-        questionRepository.delete(question);
+//        Question question = findQuestion(dto.getQueIdx());
+//
+//        User user = findAuthor(dto.getUserEmail());
+//
+//        question.hasSameAuthor(user);
+//
+//        if (question.getQueSolved())
+//            throw new SolvedQuestionDeleteFailedException();
+//
+//        questionRepository.delete(question);
     }
 
-    private Question findQuestion(Long queIdx) {
-        return questionRepository.findQuestionByIdx(queIdx)
-                .orElseThrow(QuestionNotFoundException::new);
-    }
+//    private Question findQuestion(Long queIdx) {
+//        return questionRepository.findQuestionByIdx(queIdx)
+//                .orElseThrow(QuestionNotFoundException::new);
+//    }
 
     private User findAuthor(String userEmail) {
         return userRepository.findByUserEmail(userEmail)

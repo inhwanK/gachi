@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.deco.gachicoding.post.question.domain.Question;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -15,7 +16,7 @@ public class QuestionListResponseDto {
     private Long queIdx;
     private User questioner;
     private String queTitle;
-    private String queContents;
+    private QuestionContents queContents;
     private boolean queSolved;
     private boolean queLocked;
     private LocalDateTime createdAt;
@@ -26,7 +27,7 @@ public class QuestionListResponseDto {
             Long queIdx,
             User questioner,
             String queTitle,
-            String queContents,
+            QuestionContents queContents,
             boolean queSolved,
             boolean queLocked,
             LocalDateTime createdAt,
@@ -41,14 +42,4 @@ public class QuestionListResponseDto {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-
-//    @Override
-//    public void setTags(List<TagResponseDto> tags) {
-//        this.tags = tags;
-//    }
-
-//    public void setWriterInfo(Question question) {
-//        User writer = question.getWriter().getUserIdx();
-//        this.userIdx = writer.getUserIdx();
-//    }
 }

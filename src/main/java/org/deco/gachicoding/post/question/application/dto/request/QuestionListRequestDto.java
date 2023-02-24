@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Pageable;
 
+// 안쓰는 클래스인듯
 @Getter
 public class QuestionListRequestDto {
 

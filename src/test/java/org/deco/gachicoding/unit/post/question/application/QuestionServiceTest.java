@@ -33,22 +33,20 @@ public class QuestionServiceTest {
         questioner = UserMock.builder()
                 .userEmail("1234@1234.com")
                 .build();
-
-
     }
 
 
     @Test
     @DisplayName("질문을 등록한다.")
     public void register_Question_Success() {
-        QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
-                .userEmail(questioner.getUserEmail())
-                .build();
-
-        // given
-        Question question = Question.builder()
-                .questioner(questioner)
-                .build();
+//        QuestionSaveRequestDto dto = QuestionSaveRequestDto.builder()
+//                .userEmail(questioner.getUserEmail())
+//                .build();
+//
+//        // given
+//        Question question = Question.builder()
+//                .questioner(questioner)
+//                .build();
 
 //        given(questionRepository.save())
 //                .willReturn(question);

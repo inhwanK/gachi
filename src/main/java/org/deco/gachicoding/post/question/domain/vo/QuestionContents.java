@@ -15,6 +15,13 @@ public class QuestionContents {
     @Column(name = "qs_contents", columnDefinition = "text", nullable = false)
     private String queContents;
 
+    @Column(name = "qs_general_content", columnDefinition = "text", nullable = false)
+    private String queGeneralContent;
+    @Column(name = "qs_code_content", columnDefinition = "text")
+    private String queCodeContent;
+    @Column(name = "qs_error_content", columnDefinition = "text")
+    private String queErrorContent;
+
     protected QuestionContents() {}
 
     public QuestionContents(String queContents) {

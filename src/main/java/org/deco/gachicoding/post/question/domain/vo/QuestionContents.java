@@ -1,5 +1,7 @@
 package org.deco.gachicoding.post.question.domain.vo;
 
+import lombok.Builder;
+import lombok.Getter;
 import org.deco.gachicoding.exception.post.question.QuestionContentsEmptyException;
 import org.deco.gachicoding.exception.post.question.QuestionContentsOverMaximumLengthException;
 import org.deco.gachicoding.exception.post.question.QuestionContentsNullException;
@@ -7,13 +9,12 @@ import org.deco.gachicoding.exception.post.question.QuestionContentsNullExceptio
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+
+@Getter
 @Embeddable
 public class QuestionContents {
 
     public static final int MAXIMUM_CONTENT_LENGTH = 100000;
-
-    @Column(name = "qs_contents", columnDefinition = "text", nullable = false)
-    private String queContents;
 
     @Column(name = "qs_general_content", columnDefinition = "text", nullable = false)
     private String queGeneralContent;
@@ -22,38 +23,46 @@ public class QuestionContents {
     @Column(name = "qs_error_content", columnDefinition = "text")
     private String queErrorContent;
 
-    protected QuestionContents() {}
-
-    public QuestionContents(String queContents) {
-        validateNullContents(queContents);
-        validateEmptyContents(queContents);
-        validateMaximumLength(queContents);
-        this.queContents = queContents;
+    protected QuestionContents() {
     }
 
-    public String getQuestionContents() {
-        return queContents;
+    @Builder
+    public QuestionContents(String queGeneralContent, String queCodeContent, String queErrorContent) {
+        validateEssentialContents(queGeneralContent);
+        validateMaximumLength(queCodeContent);
+        validateMaximumLength(queErrorContent);
+        this.queGeneralContent = queGeneralContent;
+        this.queCodeContent = queCodeContent;
+        this.queErrorContent = queErrorContent;
     }
 
-    public QuestionContents update(String updateContents) {
-        if (queContents.equals(updateContents))
-            return this;
-        return new QuestionContents(updateContents);
+    // 수정 중
+    public QuestionContents getQuestionContents() {
+        return this;
     }
 
-    private void validateNullContents(String queContents) {
-        if (queContents == null)
+    public QuestionContents update(QuestionContents updateContents) {
+        return QuestionContents.builder()
+                .queGeneralContent(updateContents.getQueGeneralContent())
+                .queCodeContent(updateContents.getQueCodeContent())
+                .queErrorContent(updateContents.getQueErrorContent())
+                .build();
+    }
+
+    private void validateEssentialContents(String contents) {
+        validateNullOrBlankContents(contents);
+        validateMaximumLength(contents);
+    }
+
+
+    private void validateNullOrBlankContents(String contents) {
+        if (contents == null || contents.isBlank())
             throw new QuestionContentsNullException();
     }
 
-    private void validateEmptyContents(String queContents) {
-        if (queContents.isEmpty())
-            throw new QuestionContentsEmptyException();
-    }
-
-    private void validateMaximumLength(String queContents) {
+    private void validateMaximumLength(String contents) {
         // 개발
-        if (queContents.length() > MAXIMUM_CONTENT_LENGTH)
+        if (contents != null && contents.length() > MAXIMUM_CONTENT_LENGTH)
             throw new QuestionContentsOverMaximumLengthException();
     }
 }

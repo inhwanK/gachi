@@ -63,7 +63,7 @@ public class Question extends BaseTimeEntity {
             Long queIdx,
             User questioner,
             String queTitle,
-            String queContents,
+            QuestionContents queContents,
             Boolean queSolved,
             Boolean queEnabled,
             LocalDateTime queCreatedAt,
@@ -72,7 +72,7 @@ public class Question extends BaseTimeEntity {
         this.queIdx = queIdx;
         this.questioner = questioner;
         this.queTitle = new QuestionTitle(queTitle);
-        this.queContents = new QuestionContents(queContents);
+        this.queContents = queContents;
         this.queSolved = queSolved;
         this.queEnabled = queEnabled;
         setCreatedAt(queCreatedAt);
@@ -87,9 +87,12 @@ public class Question extends BaseTimeEntity {
         this.answers.add(answer);
     }
 
-    public void update(String queTitle, String queContents) {
+    public void update(
+            String queTitle,
+            QuestionContents queContents
+    ) {
         updateTitle(queTitle);
-        updateContent(queContents);
+        updateContents(queContents);
     }
 
     public void toSolve() {
@@ -120,7 +123,7 @@ public class Question extends BaseTimeEntity {
         return queTitle.getQuestionTitle();
     }
 
-    public String getQueContents() {
+    public QuestionContents getQueContents() {
         return queContents.getQuestionContents();
     }
 
@@ -128,8 +131,7 @@ public class Question extends BaseTimeEntity {
         queTitle = queTitle.update(updateTitle);
     }
 
-    public void updateContent(String updateContents) {
-        queContents = queContents.update(updateContents);
+    public void updateContents(QuestionContents updateContents) {
+        this.queContents = updateContents;
     }
-
 }

@@ -21,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Long createUser(UserSaveRequestDto dto) {
 
         if (userRepository.existsByUserEmail(dto.getUserEmail()))
@@ -51,7 +52,6 @@ public class UserService {
         return user.getUserNick();
     }
 
-    @Transactional
     public boolean confirmUser(
             String confirmPassword,
             String userPassword
@@ -59,7 +59,6 @@ public class UserService {
         if (!passwordEncoder.matches(confirmPassword, userPassword)) {
             return false;
         }
-
         return true;
     }
 

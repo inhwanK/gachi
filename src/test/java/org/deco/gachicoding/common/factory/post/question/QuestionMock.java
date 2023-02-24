@@ -21,7 +21,7 @@ public class QuestionMock {
     public static class Builder {
 
         private Long queIdx;
-        private User questioner = UserMock.builder().userIdx(1L).build();
+        private User questioner;
         private List<Answer> answers = new ArrayList<>();
         private String queTitle = "QUESTION TITLE TEST";
         private String queContents = "QUESTION CONTENTS TEST";

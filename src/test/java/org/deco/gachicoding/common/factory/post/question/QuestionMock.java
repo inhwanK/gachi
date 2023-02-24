@@ -3,6 +3,7 @@ package org.deco.gachicoding.common.factory.post.question;
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.question.domain.Question;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -24,7 +25,9 @@ public class QuestionMock {
         private User questioner;
         private List<Answer> answers = new ArrayList<>();
         private String queTitle = "QUESTION TITLE TEST";
-        private String queContents = "QUESTION CONTENTS TEST";
+        private QuestionContents queContents = QuestionContents.builder()
+                .queGeneralContent("QUESTION CONTENTS TEST")
+                .build();
         private Boolean queSolved;
         private Boolean queEnabled;
         private LocalDateTime queCreatedAt = LocalDateTime.now();
@@ -50,7 +53,7 @@ public class QuestionMock {
             return this;
         }
 
-        public Builder queContents(String queContents) {
+        public Builder queContents(QuestionContents queContents) {
             this.queContents = queContents;
             return this;
         }

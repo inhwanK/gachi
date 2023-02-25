@@ -2,22 +2,19 @@ package org.deco.gachicoding.post.question.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.deco.gachicoding.exception.post.question.*;
+import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
+import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
-import org.deco.gachicoding.file.domain.ArticleType;
+import org.deco.gachicoding.post.question.QuestionDto;
 import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
-import org.deco.gachicoding.file.application.FileService;
-import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
-import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,18 +28,31 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
-    private final FileService fileService;
 
     @Transactional(rollbackFor = Exception.class)
     public Long registerQuestion(
-            QuestionSaveRequestDto dto
+            String questioner,
+            QuestionDto.SaveRequestDto dto
     ) {
-        return questionRepository.save(createQuestion(dto)).getQueIdx();
+        return questionRepository.save(createQuestion(questioner, dto)).getQueIdx();
     }
 
-    private Question createQuestion(QuestionSaveRequestDto dto) {
-        User user = findAuthor(dto.getUserEmail());
+    private Question createQuestion(
+            String questioner,
+            QuestionDto.SaveRequestDto dto
+    ) {
+        User user = findUser(questioner);
         return QuestionDtoAssembler.question(user, dto);
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionDto.DetailResponseDto getQuestionDetail(Long queIdx) {
+
+        Question question = findQuestion(queIdx);
+        if (!question.getQueEnabled())
+            throw new QuestionInactiveException();
+
+        return QuestionDtoAssembler.questionResponseDto(question);
     }
 
     @Transactional(readOnly = true)
@@ -56,16 +66,6 @@ public class QuestionService {
 //        );
     }
 
-
-    @Transactional(readOnly = true)
-    public QuestionDetailResponseDto getQuestionDetail(Long queIdx) {
-//        Question question = findQuestion(queIdx);
-//
-//        if (!question.getQueEnabled())
-//            throw new QuestionInactiveException();
-//
-        return null; // QuestionDtoAssembler.questionResponseDto(question);
-    }
 
     @Transactional
     public Long modifyQuestion(QuestionUpdateRequestDto dto) {
@@ -129,12 +129,12 @@ public class QuestionService {
 //        questionRepository.delete(question);
     }
 
-//    private Question findQuestion(Long queIdx) {
-//        return questionRepository.findQuestionByIdx(queIdx)
-//                .orElseThrow(QuestionNotFoundException::new);
-//    }
+    private Question findQuestion(Long queIdx) {
+        return questionRepository.findById(queIdx)
+                .orElseThrow(QuestionNotFoundException::new);
+    }
 
-    private User findAuthor(String userEmail) {
+    private User findUser(String userEmail) {
         return userRepository.findByUserEmail(userEmail)
                 .orElseThrow(UserNotFoundException::new);
     }

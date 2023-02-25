@@ -3,8 +3,7 @@ package org.deco.gachicoding.post.question.application.dto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
 import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
-import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
+import org.deco.gachicoding.post.question.QuestionDto;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.user.domain.User;
@@ -17,7 +16,10 @@ public class QuestionDtoAssembler {
 
     private QuestionDtoAssembler() {}
 
-    public static Question question(User user, QuestionSaveRequestDto dto) {
+    public static Question question(
+            User user,
+            QuestionDto.SaveRequestDto dto
+    ) {
         return Question.builder()
                 .questioner(user)
                 .queTitle(dto.getQueTitle())
@@ -44,8 +46,8 @@ public class QuestionDtoAssembler {
                 .build();
     }
 
-    public static QuestionDetailResponseDto questionResponseDto(Question question) {
-        return QuestionDetailResponseDto.builder()
+    public static QuestionDto.DetailResponseDto questionResponseDto(Question question) {
+        return QuestionDto.DetailResponseDto.builder()
                 .queIdx(question.getQueIdx())
                 .questioner(question.getQuestioner())
                 .answers(answerResponses(question))

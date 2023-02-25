@@ -8,17 +8,14 @@ import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 @Builder
 public class QuestionSaveRequestDto {
 
-    private String userEmail;
     private String queTitle;
     private QuestionContents queContents;
 
 
     public QuestionSaveRequestDto(
-            String userEmail,
             String queTitle,
             QuestionContents queContents
     ) {
-        this.userEmail = userEmail;
         this.queTitle = queTitle;
         this.queContents = queContents;
     }

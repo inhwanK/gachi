@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 public class QuestionListRequestDto {
 
     private String keyword;
-
     private Pageable pageable;
 
     @Builder

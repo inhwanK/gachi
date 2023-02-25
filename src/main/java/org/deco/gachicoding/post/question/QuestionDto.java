@@ -1,0 +1,80 @@
+package org.deco.gachicoding.post.question;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
+import org.deco.gachicoding.user.domain.User;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+public class QuestionDto {
+
+    @Getter
+    @NoArgsConstructor // 필요한 이유 확실하게 정리
+    public static class SaveRequestDto {
+
+        private String queTitle;
+        private QuestionContents queContents;
+
+        @Builder
+        public SaveRequestDto(
+                String queTitle,
+                String queGeneralContent,
+                String queCodeContent,
+                String queErrorContent
+        ) {
+            this.queTitle = queTitle;
+            this.queContents = QuestionContents.builder()
+                    .queGeneralContent(queGeneralContent)
+                    .queCodeContent(queCodeContent)
+                    .queErrorContent(queErrorContent)
+                    .build();
+        }
+    }
+
+    @Getter
+    public static class DetailResponseDto {
+
+        private Long queIdx;
+        private String userEmail;
+        private String userNick;
+        private List<AnswerResponse> answers;
+        private String queTitle;
+        private String queGeneralContent;
+        private String queCodeContent;
+        private String queErrorContent;
+        private boolean queSolved;
+        private boolean queLocked;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        @Builder
+        public DetailResponseDto(
+                Long queIdx,
+                User questioner,
+                List<AnswerResponse> answers,
+                String queTitle,
+                QuestionContents queContents,
+                Boolean queSolved,
+                Boolean queLocked,
+                LocalDateTime createdAt,
+                LocalDateTime updatedAt
+        ) {
+            this.queIdx = queIdx;
+            this.userEmail = questioner.getUserEmail();
+            this.userNick = questioner.getUserNick();
+            this.answers = answers;
+            this.queTitle = queTitle;
+            this.queGeneralContent = queContents.getQueGeneralContent();
+            this.queCodeContent = queContents.getQueCodeContent();
+            this.queErrorContent = queContents.getQueErrorContent();
+            this.queSolved = queSolved;
+            this.queLocked = queLocked;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+        }
+    }
+}

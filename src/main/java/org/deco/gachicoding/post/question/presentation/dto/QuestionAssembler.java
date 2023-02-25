@@ -20,36 +20,6 @@ public class QuestionAssembler {
 
     private QuestionAssembler() {}
 
-    public static QuestionSaveRequestDto questionSaveRequestDto(
-            String userEmail,
-            QuestionSaveRequest request
-    ) {
-        return QuestionSaveRequestDto.builder()
-                .queTitle(request.getQueTitle())
-                .queContents(request.getQueContents())
-                .queContents(request.getQueContents())
-                .userEmail(userEmail)
-                .build();
-    }
-
-    public static QuestionDetailResponse questionDetailResponse(QuestionDetailResponseDto dto) {
-        User questioner = dto.getQuestioner();
-
-        return QuestionDetailResponse.builder()
-                .queIdx(dto.getQueIdx())
-                .userEmail(questioner.getUserEmail())
-                .userNick(questioner.getUserNick())
-                .answerList(dto.getAnswers())
-                .queTitle(dto.getQueTitle())
-                .queGeneralContent(dto.getQueContents().getQueGeneralContent())
-                .queCodeContent(dto.getQueContents().getQueCodeContent())
-                .queErrorContents(dto.getQueContents().getQueErrorContent())
-                .queSolved(dto.isQueSolved())
-                .createdAt(dto.getCreatedAt())
-                .updatedAt(dto.getUpdatedAt())
-                .build();
-    }
-
     public static List<QuestionListResponse> questionListResponse(List<QuestionListResponseDto> dtos) {
         return dtos.stream()
                 .map(QuestionAssembler::questionListResponse)

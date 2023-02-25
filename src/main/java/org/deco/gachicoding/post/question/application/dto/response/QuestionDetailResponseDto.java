@@ -17,7 +17,9 @@ public class QuestionDetailResponseDto {
     private User questioner;
     private List<AnswerResponse> answers;
     private String queTitle;
-    private QuestionContents queContents;
+    private String queGeneralContent;
+    private String queCodeContent;
+    private String queErrorContent;
     private boolean queSolved;
     private boolean queLocked;
     private LocalDateTime createdAt;
@@ -37,11 +39,11 @@ public class QuestionDetailResponseDto {
     ) {
         this.queIdx = queIdx;
         this.questioner = questioner;
-
         this.answers = answers;
-
         this.queTitle = queTitle;
-        this.queContents = queContents;
+        this.queGeneralContent = queContents.getQueGeneralContent();
+        this.queCodeContent = queContents.getQueCodeContent();
+        this.queErrorContent = queContents.getQueErrorContent();
         this.queSolved = queSolved;
         this.queLocked = queLocked;
         this.createdAt = createdAt;

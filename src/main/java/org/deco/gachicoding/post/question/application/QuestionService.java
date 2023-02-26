@@ -5,17 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
-import org.deco.gachicoding.post.question.QuestionDto;
-import org.deco.gachicoding.post.question.application.dto.QuestionDtoAssembler;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
+import org.deco.gachicoding.post.question.application.dto.QuestionDto;
+import org.deco.gachicoding.post.question.application.dto.QuestionAssembler;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
-import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
-import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +39,7 @@ public class QuestionService {
             QuestionDto.SaveRequestDto dto
     ) {
         User user = findUser(questioner);
-        return QuestionDtoAssembler.question(user, dto);
+        return QuestionAssembler.question(user, dto);
     }
 
     @Transactional(readOnly = true)
@@ -53,11 +49,12 @@ public class QuestionService {
         if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
-        return QuestionDtoAssembler.questionResponseDto(question);
+
+        return QuestionAssembler.questionResponseDto(question);
     }
 
     @Transactional(readOnly = true)
-    public List<QuestionListResponseDto> getQuestionList(
+    public List<QuestionDto.ListResponseDto> getQuestionList(
             String keyword,
             Pageable pageable
     ) {

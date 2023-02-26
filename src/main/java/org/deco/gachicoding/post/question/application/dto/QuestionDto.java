@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.question;
+package org.deco.gachicoding.post.question.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -45,6 +44,7 @@ public class QuestionDto {
         @NotNull(message = "F0001")
         private Long queIdx;
         private String userEmail;
+
         @NotNull(message = "F0001")
         @Size(max = 100, message = "F0004")
         private String queTitle;
@@ -52,7 +52,6 @@ public class QuestionDto {
         private String queCodeContent;
         private String queErrorContent;
     }
-
 
 
     @Getter
@@ -91,6 +90,40 @@ public class QuestionDto {
             this.queGeneralContent = queContents.getQueGeneralContent();
             this.queCodeContent = queContents.getQueCodeContent();
             this.queErrorContent = queContents.getQueErrorContent();
+            this.queSolved = queSolved;
+            this.queLocked = queLocked;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+        }
+    }
+
+    @Getter
+    public static class ListResponseDto {
+
+        private Long queIdx;
+        private User questioner;
+        private String queTitle;
+        private QuestionContents queContents;
+        private boolean queSolved;
+        private boolean queLocked;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+
+        @Builder
+        public ListResponseDto(
+                Long queIdx,
+                User questioner,
+                String queTitle,
+                QuestionContents queContents,
+                boolean queSolved,
+                boolean queLocked,
+                LocalDateTime createdAt,
+                LocalDateTime updatedAt
+        ) {
+            this.queIdx = queIdx;
+            this.questioner = questioner;
+            this.queTitle = queTitle;
+            this.queContents = queContents;
             this.queSolved = queSolved;
             this.queLocked = queLocked;
             this.createdAt = createdAt;

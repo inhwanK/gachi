@@ -1,4 +1,4 @@
-package org.deco.gachicoding.post.question.application.dto.response;
+package org.deco.gachicoding.post.question.application.dto;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,13 +12,12 @@ import java.time.LocalDateTime;
 
 @Getter
 public class QuestionListResponseDto {
-
     private Long queIdx;
     private User questioner;
     private String queTitle;
     private QuestionContents queContents;
-    private boolean queSolved;
-    private boolean queLocked;
+    private Boolean queSolved;
+    private Boolean queLocked;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

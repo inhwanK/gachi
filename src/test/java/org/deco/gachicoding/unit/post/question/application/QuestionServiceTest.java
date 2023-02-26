@@ -2,7 +2,6 @@ package org.deco.gachicoding.unit.post.question.application;
 
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.post.question.application.QuestionService;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionSaveRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.user.domain.User;

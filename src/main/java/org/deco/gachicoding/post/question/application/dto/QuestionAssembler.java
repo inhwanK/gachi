@@ -3,8 +3,6 @@ package org.deco.gachicoding.post.question.application.dto;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
 import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
-import org.deco.gachicoding.post.question.QuestionDto;
-import org.deco.gachicoding.post.question.application.dto.response.QuestionListResponseDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.user.domain.User;
 
@@ -12,9 +10,9 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
-public class QuestionDtoAssembler {
+public class QuestionAssembler {
 
-    private QuestionDtoAssembler() {}
+    private QuestionAssembler() {}
 
     public static Question question(
             User user,
@@ -29,7 +27,7 @@ public class QuestionDtoAssembler {
 
     public static List<QuestionListResponseDto> questionResponseDtos(List<Question> questions) {
         return questions.stream()
-                .map(QuestionDtoAssembler::convertForm)
+                .map(QuestionAssembler::convertForm)
                 .collect(toList());
     }
 
@@ -67,5 +65,4 @@ public class QuestionDtoAssembler {
                 .map(AnswerAssembler::answerResponse)
                 .collect(toList());
     }
-
 }

@@ -1,16 +1,11 @@
 package org.deco.gachicoding.post.question.presentation;
 
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.post.question.QuestionDto;
 import org.deco.gachicoding.post.question.application.QuestionService;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicRequestDto;
-import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.presentation.dto.QuestionAssembler;
-import org.deco.gachicoding.post.question.presentation.dto.request.QuestionUpdateRequest;
-import org.deco.gachicoding.post.question.presentation.dto.response.QuestionDetailResponse;
 import org.deco.gachicoding.post.question.presentation.dto.response.QuestionListResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -18,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -69,7 +63,7 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 수정")
-    @PreAuthorize("#request.userEmail eq principal.name")
+    @PreAuthorize("isAuthenticated() and #request.userEmail eq principal.username")
     @PatchMapping("/question/modify")
     public ResponseEntity modifyQuestion(
             @RequestBody @Valid QuestionDto.UpdateRequestDto request
@@ -83,46 +77,32 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 비활성화")
-    @PreAuthorize("isAuthenticated()") // 작성자 맞는지 체크 해야함
+    @PreAuthorize("isAuthenticated() and userEmail eq principal.username")
     @PatchMapping("/question/disable")
-    public ResponseEntity<Void> disableQuestion(
+    public Long disableQuestion(
             @RequestParam Long queIdx,
             @RequestParam String userEmail
     ) {
-
-        QuestionBasicRequestDto dto =
-                QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);
-
-        questionService.disableQuestion(dto);
-
-        return ResponseEntity.noContent().build();
+        return questionService.disableQuestion(queIdx);
     }
 
     @ApiOperation(value = "질문 활성화")
-    @PreAuthorize("isAuthenticated()") // 작성자 맞는지 체크 해야함
+    @PreAuthorize("isAuthenticated() and userEmail eq principal.username")
     @PatchMapping("/question/enable")
-    public ResponseEntity<Void> enableQuestion(
+    public Long enableQuestion(
             @RequestParam Long queIdx,
-            @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+            @RequestParam String userEmail
     ) {
-
-        QuestionBasicRequestDto dto = QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);
-
-        questionService.enableQuestion(dto);
-
-        return ResponseEntity.noContent().build();
+        return questionService.enableQuestion(queIdx);
     }
 
     @ApiOperation(value = "질문 삭제")
-    @PreAuthorize("isAuthenticated()") // 작성자 맞는지 체크 해야함
+    @PreAuthorize("isAuthenticated() and userEmail eq principal.username")
     @DeleteMapping("/question")
     public void removeQuestion(
             @RequestParam Long queIdx,
-            @RequestParam(value = "userEmail", defaultValue = "") String userEmail
+            @RequestParam String userEmail
     ) {
-
-        QuestionBasicRequestDto dto = QuestionAssembler.questionBasicRequestDto(queIdx, userEmail);
-
-        questionService.removeQuestion(dto);
+        questionService.removeQuestion(queIdx);
     }
 }

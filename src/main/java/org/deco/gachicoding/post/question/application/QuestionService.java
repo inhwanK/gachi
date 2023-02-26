@@ -87,43 +87,25 @@ public class QuestionService {
         return question.getQueIdx();
     }
 
-    // 활성 -> 비활성
+
     @Transactional
-    public void disableQuestion(QuestionBasicRequestDto dto) {
-//        Question question = findQuestion(dto.getQueIdx());
-//
-//        User user = findAuthor(dto.getUserEmail());
-//
-//        question.hasSameAuthor(user);
-//
-//        if (question.getQueSolved())
-//            throw new SolvedQuestionDisableFailedException();
-//
-//        question.disableQuestion();
+    public Long disableQuestion(Long queIdx) {
+        Question question = findQuestion(queIdx);
+        question.disableQuestion();
+        return question.getQueIdx();
     }
 
     @Transactional
-    public void enableQuestion(QuestionBasicRequestDto dto) {
-//        Question question = findQuestion(dto.getQueIdx());
-//
-//        User user = findAuthor(dto.getUserEmail());
-//
-//        question.hasSameAuthor(user);
-//        question.enableQuestion();
+    public Long enableQuestion(Long queIdx) {
+        Question question = findQuestion(queIdx);
+        question.enableQuestion();
+        return question.getQueIdx();
     }
 
     @Transactional
-    public void removeQuestion(QuestionBasicRequestDto dto) {
-//        Question question = findQuestion(dto.getQueIdx());
-//
-//        User user = findAuthor(dto.getUserEmail());
-//
-//        question.hasSameAuthor(user);
-//
-//        if (question.getQueSolved())
-//            throw new SolvedQuestionDeleteFailedException();
-//
-//        questionRepository.delete(question);
+    public void removeQuestion(Long queIdx) {
+        Question question = findQuestion(queIdx);
+        questionRepository.delete(question);
     }
 
     private Question findQuestion(Long queIdx) {

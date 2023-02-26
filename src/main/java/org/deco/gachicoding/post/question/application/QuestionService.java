@@ -49,7 +49,6 @@ public class QuestionService {
         if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
-
         return QuestionAssembler.questionResponseDto(question);
     }
 

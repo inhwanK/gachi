@@ -25,14 +25,14 @@ public class QuestionAssembler {
                 .build();
     }
 
-    public static List<QuestionListResponseDto> questionResponseDtos(List<Question> questions) {
+    public static List<QuestionDto.ListResponseDto> questionResponseDtos(List<Question> questions) {
         return questions.stream()
                 .map(QuestionAssembler::convertForm)
                 .collect(toList());
     }
 
-    private static QuestionListResponseDto convertForm(Question question) {
-        return QuestionListResponseDto.builder()
+    private static QuestionDto.ListResponseDto convertForm(Question question) {
+        return QuestionDto.ListResponseDto.builder()
                 .queIdx(question.getQueIdx())
                 .questioner(question.getQuestioner())
                 .queTitle(question.getQueTitle())

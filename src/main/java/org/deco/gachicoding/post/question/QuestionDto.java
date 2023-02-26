@@ -7,6 +7,9 @@ import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,6 +37,23 @@ public class QuestionDto {
                     .build();
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class UpdateRequestDto {
+
+        @NotNull(message = "F0001")
+        private Long queIdx;
+        private String userEmail;
+        @NotNull(message = "F0001")
+        @Size(max = 100, message = "F0004")
+        private String queTitle;
+        private String queGeneralContent;
+        private String queCodeContent;
+        private String queErrorContent;
+    }
+
+
 
     @Getter
     public static class DetailResponseDto {

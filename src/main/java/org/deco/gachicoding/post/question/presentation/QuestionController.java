@@ -50,7 +50,7 @@ public class QuestionController {
     @GetMapping("/question/list")
     public ResponseEntity<List<QuestionListResponse>> getQuestionList(
             @RequestParam(value = "keyword", defaultValue = "") String keyword,
-            @ApiIgnore @PageableDefault(size = 10) Pageable pageable
+            @PageableDefault(size = 10) Pageable pageable
     ) {
 
         return ResponseEntity.ok(
@@ -69,16 +69,12 @@ public class QuestionController {
     }
 
     @ApiOperation(value = "질문 수정")
-    @PreAuthorize("isAuthenticated()") // 작성자 맞는지 체크 해야함
+    @PreAuthorize("#request.userEmail eq principal.name")
     @PatchMapping("/question/modify")
-    public ResponseEntity<Object> modifyQuestion(
-            @RequestBody @Valid QuestionUpdateRequest request
+    public ResponseEntity modifyQuestion(
+            @RequestBody @Valid QuestionDto.UpdateRequestDto request
     ) {
-
-        QuestionUpdateRequestDto dto = QuestionAssembler.questionUpdateRequestDto(request);
-
-        Long queIdx = questionService.modifyQuestion(dto);
-
+        Long queIdx = questionService.modifyQuestion(request);
         String redirectUrl = String.format("/api/question/%d", queIdx);
 
         return ResponseEntity

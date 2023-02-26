@@ -11,6 +11,7 @@ import org.deco.gachicoding.post.question.application.dto.request.QuestionBasicR
 import org.deco.gachicoding.post.question.application.dto.request.QuestionUpdateRequestDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.deco.gachicoding.post.question.application.dto.response.QuestionDetailResponseDto;
@@ -68,26 +69,22 @@ public class QuestionService {
 
 
     @Transactional
-    public Long modifyQuestion(QuestionUpdateRequestDto dto) {
-//        QuestionContents updateContents = dto.getQueContents();
-//
-//        Question question = findQuestion(dto.getQueIdx());
-//        User user = findAuthor(dto.getUserEmail());
-//        question.hasSameAuthor(user);
-//
-//        if (!question.getQueEnabled())
-//            throw new QuestionInactiveException();
-//
-//        // 이미 해결 된 질문을 수정 할 수 없다.
-//        if (question.getQueSolved())
-//            throw new SolvedQuestionModifyFailedException();
-//
-//        question.update(
-//                dto.getQueTitle(),
-//                updateContents
-//        );
-//
-        return null; // question.getQueIdx();
+    public Long modifyQuestion(
+            QuestionDto.UpdateRequestDto dto
+    ) {
+        Question question = findQuestion(dto.getQueIdx());
+
+        if (!question.getQueEnabled())
+            throw new QuestionInactiveException();
+
+        QuestionContents updateContents = QuestionContents.builder()
+                .queGeneralContent(dto.getQueGeneralContent())
+                .queCodeContent(dto.getQueCodeContent())
+                .queErrorContent(dto.getQueErrorContent())
+                .build();
+
+        question.update(dto.getQueTitle(), updateContents);
+        return question.getQueIdx();
     }
 
     // 활성 -> 비활성

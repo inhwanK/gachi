@@ -29,7 +29,7 @@ public class QuestionMock {
                 .queGeneralContent("QUESTION CONTENTS TEST")
                 .build();
         private Boolean queSolved;
-        private Boolean queEnabled;
+        private Boolean queEnabled = true;
         private LocalDateTime queCreatedAt = LocalDateTime.now();
         private LocalDateTime queUpdatedAt = LocalDateTime.now();
 

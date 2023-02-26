@@ -51,6 +51,23 @@ public class QuestionDto {
         private String queGeneralContent;
         private String queCodeContent;
         private String queErrorContent;
+
+        @Builder
+        public UpdateRequestDto(
+                Long queIdx,
+                String userEmail,
+                String queTitle,
+                String queGeneralContent,
+                String queCodeContent,
+                String queErrorContent
+        ) {
+            this.queIdx = queIdx;
+            this.userEmail = userEmail;
+            this.queTitle = queTitle;
+            this.queGeneralContent = queGeneralContent;
+            this.queCodeContent = queCodeContent;
+            this.queErrorContent = queErrorContent;
+        }
     }
 
 

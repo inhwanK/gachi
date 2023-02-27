@@ -19,7 +19,9 @@ public class QuestionDto {
     public static class SaveRequestDto {
 
         private String queTitle;
-        private QuestionContents queContents;
+        private String queGeneralContent;
+        private String queCodeContent;
+        private String queErrorContent;
 
         @Builder
         public SaveRequestDto(
@@ -29,11 +31,9 @@ public class QuestionDto {
                 String queErrorContent
         ) {
             this.queTitle = queTitle;
-            this.queContents = QuestionContents.builder()
-                    .queGeneralContent(queGeneralContent)
-                    .queCodeContent(queCodeContent)
-                    .queErrorContent(queErrorContent)
-                    .build();
+            this.queGeneralContent = queGeneralContent;
+            this.queCodeContent = queCodeContent;
+            this.queErrorContent = queErrorContent;
         }
     }
 

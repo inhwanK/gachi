@@ -29,8 +29,8 @@ public class QuestionController {
             @Valid QuestionDto.SaveRequestDto request
     ) {
         log.info("{} Register Controller", "Question");
-        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
-        return questionService.registerQuestion(userEmail, request);
+        String loginUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return questionService.registerQuestion(loginUserEmail, request);
     }
 
 
@@ -58,8 +58,8 @@ public class QuestionController {
     public ResponseEntity modifyQuestion(
             @RequestBody @Valid QuestionDto.UpdateRequestDto request
     ) {
-        Long queIdx = questionService.modifyQuestion(request);
-        String redirectUrl = String.format("/api/question/%d", queIdx);
+        Long modifyTargetIdx = questionService.modifyQuestion(request);
+        String redirectUrl = String.format("/api/question/%d", modifyTargetIdx);
 
         return ResponseEntity
                 .created(URI.create(redirectUrl))

@@ -22,7 +22,11 @@ public class QuestionAssembler {
         return Question.builder()
                 .questioner(user)
                 .queTitle(dto.getQueTitle())
-                .queContents(dto.getQueContents())
+                .queContents(QuestionContents.builder()
+                        .queGeneralContent(dto.getQueGeneralContent())
+                        .queCodeContent(dto.getQueCodeContent())
+                        .queErrorContent(dto.getQueCodeContent())
+                        .build())
                 .queSolved(false)
                 .queEnabled(true)
                 .build();

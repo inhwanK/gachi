@@ -21,7 +21,7 @@ import java.util.List;
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@EqualsAndHashCode(of = "userIdx")
+@EqualsAndHashCode(of = "userIdx", callSuper = false)
 @NoArgsConstructor
 @Entity
 @Table(name = "user")

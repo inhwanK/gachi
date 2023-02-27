@@ -2,6 +2,8 @@ package org.deco.gachicoding.post.question.application;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
+import org.deco.gachicoding.exception.post.question.QuestionAlreadyInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionInactiveException;
 import org.deco.gachicoding.exception.post.question.QuestionNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
@@ -85,6 +87,9 @@ public class QuestionService {
     @Transactional
     public Long disableQuestion(Long queIdx) {
         Question question = findQuestion(queIdx);
+        if(!question.getQueEnabled())
+            throw new QuestionAlreadyInactiveException();
+
         question.disableQuestion();
         return question.getQueIdx();
     }
@@ -92,6 +97,9 @@ public class QuestionService {
     @Transactional
     public Long enableQuestion(Long queIdx) {
         Question question = findQuestion(queIdx);
+        if(question.getQueEnabled())
+            throw new QuestionAlreadyActiveException();
+
         question.enableQuestion();
         return question.getQueIdx();
     }

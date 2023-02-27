@@ -73,13 +73,11 @@ public class QuestionService {
         if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
-        QuestionContents updateContents = QuestionContents.builder()
-                .queGeneralContent(dto.getQueGeneralContent())
-                .queCodeContent(dto.getQueCodeContent())
-                .queErrorContent(dto.getQueErrorContent())
-                .build();
+        question.update(
+                dto.getQueTitle(),
+                QuestionAssembler.questionContents(dto)
+        );
 
-        question.update(dto.getQueTitle(), updateContents);
         return question.getQueIdx();
     }
 

@@ -28,7 +28,7 @@ public class QuestionMock {
         private QuestionContents queContents = QuestionContents.builder()
                 .queGeneralContent("QUESTION CONTENTS TEST")
                 .build();
-        private Boolean queSolved;
+        private Boolean queSolved = false;
         private Boolean queEnabled = true;
         private LocalDateTime queCreatedAt = LocalDateTime.now();
         private LocalDateTime queUpdatedAt = LocalDateTime.now();

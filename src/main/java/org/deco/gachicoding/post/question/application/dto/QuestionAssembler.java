@@ -4,6 +4,7 @@ import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
 import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
 import org.deco.gachicoding.post.question.domain.Question;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class QuestionAssembler {
                 .questioner(user)
                 .queTitle(dto.getQueTitle())
                 .queContents(dto.getQueContents())
+                .queSolved(false)
+                .queEnabled(true)
                 .build();
     }
 
@@ -64,5 +67,13 @@ public class QuestionAssembler {
         return answers.stream()
                 .map(AnswerAssembler::answerResponse)
                 .collect(toList());
+    }
+
+    public static QuestionContents questionContents(QuestionDto.UpdateRequestDto dto) {
+        return QuestionContents.builder()
+                .queGeneralContent(dto.getQueGeneralContent())
+                .queCodeContent(dto.getQueCodeContent())
+                .queErrorContent(dto.getQueErrorContent())
+                .build();
     }
 }

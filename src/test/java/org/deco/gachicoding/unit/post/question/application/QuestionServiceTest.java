@@ -3,6 +3,7 @@ package org.deco.gachicoding.unit.post.question.application;
 import org.deco.gachicoding.common.factory.post.question.QuestionMock;
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.post.question.application.QuestionService;
+import org.deco.gachicoding.post.question.application.dto.QuestionAssembler;
 import org.deco.gachicoding.post.question.application.dto.QuestionDto;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
@@ -16,13 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,9 +35,6 @@ public class QuestionServiceTest {
     @Mock
     UserRepository userRepository;
 
-    @Autowired
-    TestEntityManager testEntityManager;
-
     Question question;
     User questioner;
 
@@ -49,12 +44,14 @@ public class QuestionServiceTest {
                 .userEmail("1234@1234.com")
                 .build();
 
-        question = QuestionMock.builder().build();
+        question = QuestionMock.builder()
+                .questioner(questioner)
+                .build();
     }
 
 
     @Test
-    @DisplayName("질문을 등록한다.")
+    @DisplayName("질문을 등록한다.") // Assembler 테스트 아닌가?, 어쩌면 Mock을 쓰는 것의 단점 일수도 있겠다.
     public void register_Question_Success() {
         // given
         QuestionDto.SaveRequestDto dto = QuestionDto.SaveRequestDto.builder()
@@ -65,16 +62,32 @@ public class QuestionServiceTest {
                 .build();
 
         Question question = QuestionMock.builder()
-                .queIdx(1L)
-                .build();
+                .questioner(questioner)
+                .queTitle("새로운 질문")
+                .queContents(
+                        QuestionContents.builder()
+                                .queGeneralContent("새로운 질문의 일반적인 설명들")
+                                .queCodeContent("```java class Test{}```")
+                                .queErrorContent("error ~~~")
+                                .build()
+                ).build();
 
         given(userRepository.findByUserEmail(eq("1234@1234.com")))
                 .willReturn(Optional.of(questioner));
         given(questionRepository.save(any(Question.class)))
                 .willReturn(question);
 
-        assertThat(questionService.registerQuestion(questioner.getUserEmail(), dto))
-                .isEqualTo(1L);
+        // when
+        questionService.registerQuestion(questioner.getUserEmail(), dto);
+        Question expectedQuestion = QuestionAssembler.question(questioner, dto);
+
+        // then
+        assertThat(question)
+                .usingRecursiveComparison()
+                .ignoringFields("queIdx", "createdAt", "updatedAt")
+                .isEqualTo(
+                        expectedQuestion
+                );
     }
 
     @Test
@@ -99,7 +112,6 @@ public class QuestionServiceTest {
 
         given(questionRepository.findById(eq(dto.getQueIdx())))
                 .willReturn(Optional.of(question));
-
 
         // when
         questionService.modifyQuestion(dto);

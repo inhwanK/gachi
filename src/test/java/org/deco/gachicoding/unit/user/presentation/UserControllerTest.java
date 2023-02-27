@@ -234,7 +234,7 @@ public class UserControllerTest {
                 .deleteUser("1234@1234.com");
 
         perform
-                .andExpect(status().isNoContent())
+                .andExpect(status().isOk())
                 .andDo(print());
 
     }

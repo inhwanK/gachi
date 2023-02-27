@@ -25,7 +25,7 @@ public class QuestionAssembler {
                 .queContents(QuestionContents.builder()
                         .queGeneralContent(dto.getQueGeneralContent())
                         .queCodeContent(dto.getQueCodeContent())
-                        .queErrorContent(dto.getQueCodeContent())
+                        .queErrorContent(dto.getQueErrorContent())
                         .build())
                 .queSolved(false)
                 .queEnabled(true)

@@ -46,10 +46,10 @@ public class QuestionController {
 
     @ApiOperation(value = "질문 디테일")
     @GetMapping("/question/{queIdx}")
-    public ResponseEntity<QuestionDto.DetailResponseDto> getQuestionDetail(
+    public QuestionDto.DetailResponseDto getQuestionDetail(
             @PathVariable Long queIdx
     ) {
-        return ResponseEntity.ok(questionService.getQuestionDetail(queIdx));
+        return questionService.getQuestionDetail(queIdx);
     }
 
     @ApiOperation(value = "질문 수정")

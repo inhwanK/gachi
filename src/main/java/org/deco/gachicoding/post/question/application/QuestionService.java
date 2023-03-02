@@ -33,7 +33,8 @@ public class QuestionService {
             String questioner,
             QuestionDto.SaveRequestDto dto
     ) {
-        return questionRepository.save(createQuestion(questioner, dto)).getQueIdx();
+        return questionRepository.save(createQuestion(questioner, dto))
+                .getQueIdx();
     }
 
     private Question createQuestion(

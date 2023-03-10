@@ -166,7 +166,7 @@ public class NoticeMockFactory {
                 .notContents(notice.getNotContents())
                 .notViews(notice.getNotViews())
                 .notPin(notice.getPin())
-                .notEnabled(notice.getEnabled())
+                .notEnabled(notice.getNotEnabled())
                 .createdAt(notice.getCreatedAt())
                 .updatedAt(notice.getUpdatedAt())
                 .build();

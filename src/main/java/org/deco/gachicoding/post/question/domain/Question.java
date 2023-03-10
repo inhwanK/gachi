@@ -2,10 +2,7 @@ package org.deco.gachicoding.post.question.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.deco.gachicoding.common.BaseTimeEntity;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyInactiveException;
@@ -16,7 +13,6 @@ import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.post.question.domain.vo.QuestionTitle;
 import org.deco.gachicoding.user.domain.User;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -26,27 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@Entity
+@EqualsAndHashCode(of = "queIdx", callSuper = false)
 @DynamicInsert
 @DynamicUpdate
+@Entity
 @Table(name = "gachi_q")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question extends BaseTimeEntity {
 
     @Id
-    @Comment("PK")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "qs_idx", columnDefinition = "bigint", nullable = false)
+    @Column(name = "qs_idx")
     private Long queIdx;
 
     @JsonManagedReference
     @JoinColumn(name = "user_idx")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) // EAGER 설정 고려, cascade 변경 고려
     private User questioner;
 
     @JsonBackReference
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "qs_idx", insertable = false, updatable = false)
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY) // 자주 사용될 가능성이 많으므로 EAGER 설정 고려
     private List<Answer> answers = new ArrayList<>();
 
     @Embedded
@@ -60,28 +55,28 @@ public class Question extends BaseTimeEntity {
     private Boolean queSolved;
 
     @ColumnDefault("true")
-    @Column(name = "qs_locked", nullable = false)
-    private Boolean queLocked;
+    @Column(name = "qs_enabled", nullable = false)
+    private Boolean queEnabled;
 
     @Builder
     public Question(
-            User questioner,
             Long queIdx,
+            User questioner,
             String queTitle,
-            String queContents,
+            QuestionContents queContents,
             Boolean queSolved,
-            Boolean queLocked,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            Boolean queEnabled,
+            LocalDateTime queCreatedAt,
+            LocalDateTime queUpdatedAt
     ) {
-        this.questioner = questioner;
         this.queIdx = queIdx;
+        this.questioner = questioner;
         this.queTitle = new QuestionTitle(queTitle);
-        this.queContents = new QuestionContents(queContents);
+        this.queContents = queContents;
         this.queSolved = queSolved;
-        this.queLocked = queLocked;
-        setCreatedAt(createdAt);
-        setUpdatedAt(updatedAt);
+        this.queEnabled = queEnabled;
+        setCreatedAt(queCreatedAt);
+        setUpdatedAt(queUpdatedAt);
     }
 
     public void setUser(User user) {
@@ -92,14 +87,17 @@ public class Question extends BaseTimeEntity {
         this.answers.add(answer);
     }
 
-    public void update(String queTitle, String queContents) {
+    public void update(
+            String queTitle,
+            QuestionContents queContents
+    ) {
         updateTitle(queTitle);
-        updateContent(queContents);
+        updateContents(queContents);
     }
 
     public void toSolve() {
         // 이미 해결 상태의 질문은 채택 불가능
-        if(this.queSolved)
+        if (this.queSolved)
             throw new QuestionAlreadySolvedException();
         this.queSolved = true;
     }
@@ -110,22 +108,22 @@ public class Question extends BaseTimeEntity {
     }
 
     public void enableQuestion() {
-        if (this.queLocked)
+        if (this.queEnabled)
             throw new QuestionAlreadyActiveException();
-        this.queLocked = true;
+        this.queEnabled = true;
     }
 
     public void disableQuestion() {
-        if (!this.queLocked)
+        if (!this.queEnabled)
             throw new QuestionAlreadyInactiveException();
-        this.queLocked = false;
+        this.queEnabled = false;
     }
 
     public String getQueTitle() {
         return queTitle.getQuestionTitle();
     }
 
-    public String getQueContents() {
+    public QuestionContents getQueContents() {
         return queContents.getQuestionContents();
     }
 
@@ -133,8 +131,7 @@ public class Question extends BaseTimeEntity {
         queTitle = queTitle.update(updateTitle);
     }
 
-    public void updateContent(String updateContents) {
-        queContents = queContents.update(updateContents);
+    public void updateContents(QuestionContents updateContents) {
+        this.queContents = updateContents;
     }
-
 }

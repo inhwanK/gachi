@@ -19,7 +19,6 @@ public class QuestionTitle {
 
     public QuestionTitle(String queTitle) {
         validateNullTitle(queTitle);
-        validateEmptyTitle(queTitle);
         validateMaximumLength(queTitle);
         this.queTitle = queTitle;
     }
@@ -35,13 +34,8 @@ public class QuestionTitle {
     }
 
     private void validateNullTitle(String queTitle) {
-        if (queTitle == null)
+        if (queTitle == null || queTitle.isBlank())
             throw new QuestionTitleNullException();
-    }
-
-    private void validateEmptyTitle(String queTitle) {
-        if (queTitle.isEmpty())
-            throw new QuestionTitleEmptyException();
     }
 
     private void validateMaximumLength(String queTitle) {

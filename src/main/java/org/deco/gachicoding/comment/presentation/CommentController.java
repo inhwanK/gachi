@@ -19,7 +19,7 @@ import springfox.documentation.annotations.ApiIgnore;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
-public class RestCommentComtroller {
+public class CommentController {
     private final CommentService commentService;
 
     @ApiOperation(value = "댓글 작성")

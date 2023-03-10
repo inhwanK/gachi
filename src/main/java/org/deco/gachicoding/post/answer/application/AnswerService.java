@@ -33,23 +33,23 @@ public class AnswerService {
     @Transactional(rollbackFor = Exception.class)
     public Long registerAnswer(AnswerSaveRequestDto dto) {
 
-        Answer answer = answerRepository.save(createAnswer(dto));
-
-        Long ansIdx = answer.getAnsIdx();
-        String ansContent = answer.getAnsContents();
-
-        answer.update(
-                fileService.extractPathAndS3Upload(ansIdx, ArticleType.ANSWER, ansContent)
-        );
-
-        return answer.getQueIdx();
+//        Answer answer = answerRepository.save(createAnswer(dto));
+//
+//        Long ansIdx = answer.getAnsIdx();
+//        String ansContent = answer.getAnsContents();
+//
+//        answer.update(
+//                fileService.extractPathAndS3Upload(ansIdx, ArticleType.ANSWER, ansContent)
+//        );
+//
+        return null; // answer.getQueIdx();
     }
 
     private Answer createAnswer(AnswerSaveRequestDto dto) {
-        User user = findAuthor(dto.getUserEmail());
-        Question question = findQuestion(dto.getQueIdx());
+//        User user = findAuthor(dto.getUserEmail());
+//        Question question = findQuestion(dto.getQueIdx());
 
-        return dto.toEntity(user, question);
+        return null; // dto.toEntity(user, question);
     }
 
     @Transactional
@@ -95,7 +95,7 @@ public class AnswerService {
         if (!answer.getAnsLocked())
             throw new AnswerInactiveException();
 
-        if (!question.getQueLocked())
+        if (!question.getQueEnabled())
             throw new QuestionInactiveException();
 
         answer.toSelect();
@@ -146,10 +146,10 @@ public class AnswerService {
         answerRepository.delete(answer);
     }
 
-    private Question findQuestion(Long queIdx) {
-        return questionRepository.findQuestionByIdx(queIdx)
-                .orElseThrow(QuestionNotFoundException::new);
-    }
+//    private Question findQuestion(Long queIdx) {
+//        return questionRepository.findQuestionByIdx(queIdx)
+//                .orElseThrow(QuestionNotFoundException::new);
+//    }
 
     private Answer findAnswer(Long ansIdx) {
         return answerRepository.findAnswerByIdx(ansIdx)

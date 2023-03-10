@@ -32,10 +32,6 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    @Value("${key.value}")
-//    private String webServerAddress;
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 

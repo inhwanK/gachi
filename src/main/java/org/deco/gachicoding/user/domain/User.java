@@ -10,10 +10,8 @@ import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.core.annotation.Order;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +21,7 @@ import java.util.List;
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@EqualsAndHashCode(of = "userIdx")
+@EqualsAndHashCode(of = "userIdx", callSuper = false)
 @NoArgsConstructor
 @Entity
 @Table(name = "user")
@@ -40,7 +38,6 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_nick", nullable = false, unique = true)
     private String userNick;
 
-//    @Embedded
     @Column(name = "user_email", nullable = false, unique = true)
     private String userEmail;
 
@@ -56,8 +53,6 @@ public class User extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoleType userRole;
 
-    // Notice 엔터티와 연관관계 매핑
-    // 연관관계의 주인은 Notice의 author
     @OneToMany(mappedBy = "author")
     private List<Notice> notices = new ArrayList<>();
 

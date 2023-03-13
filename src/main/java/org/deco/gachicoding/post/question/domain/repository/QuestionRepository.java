@@ -23,4 +23,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 //            "AND (q.queTitle.queTitle LIKE %:keyword% " +
 //            "OR q.queContents.queContents LIKE %:keyword%) ")
 //    List<Question> findAllQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);
+
+
+    @Query("select q " +
+            "from Question q join fetch q.answers")
+    List<Question> searchQuestionByContent();
 }

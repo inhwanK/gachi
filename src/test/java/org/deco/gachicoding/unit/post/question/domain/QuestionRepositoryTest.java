@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @DataJpaTest
@@ -42,7 +43,7 @@ public class QuestionRepositoryTest {
         questions.forEach(question -> questionRepository.save(question));
 
         testEntityManager.flush();
-        testEntityManager.clear();
+//        testEntityManager.clear();
     }
 
     private List<Question> createQuestions() {
@@ -82,6 +83,16 @@ public class QuestionRepositoryTest {
         Question actualQuestion = questionRepository.findById(idx).get();
         assertThat(question)
                 .isEqualTo(actualQuestion);
+    }
+
+    @Test
+    @DisplayName("질문을 검색한다.")
+    public void search_Question_Success() {
+
+        List<Question> questions = questionRepository.searchQuestionByContent();
+
+        log.info(questions.toString());
+        fail("검색 기능을 위한 테스트 코드 작성중");
     }
 
     @Test

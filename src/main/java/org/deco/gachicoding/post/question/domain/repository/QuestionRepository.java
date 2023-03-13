@@ -26,6 +26,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
     @Query("select q " +
-            "from Question q join fetch q.answers")
+            "from Question q join q.answers")
     List<Question> searchQuestionByContent();
 }

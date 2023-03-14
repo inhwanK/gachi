@@ -89,9 +89,10 @@ public class QuestionRepositoryTest {
     @DisplayName("질문을 검색한다.")
     public void search_Question_Success() {
 
-        questions = questionRepository.searchQuestionByGeneralContent();
-
-        log.info(questions.toString());
+        long start = System.currentTimeMillis();
+        questions = questionRepository.searchQuestionByGeneralContent("T");
+        long end = System.currentTimeMillis();
+        log.info("start : {}, end : {}, duration : {}", start, end, (double) (end - start) / 1000);
         fail("검색 기능을 위한 테스트 코드 작성중");
     }
 

@@ -44,6 +44,7 @@ public class User extends BaseTimeEntity {
     @Column(name = "user_password", nullable = false)
     private String userPassword;
 
+    // 이메일 인증이 되지 않으면 false
     @Column(name = "user_enabled", nullable = false)
     @ColumnDefault("false")
     private boolean userEnabled;

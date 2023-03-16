@@ -53,10 +53,11 @@ public class QuestionMock {
             return this;
         }
 
-        public Builder queContents(QuestionContents queContents) {
-            this.queContents = queContents;
+        public Builder queContents(String general, String code, String error) {
+            this.queContents = new QuestionContents(general, code, error);
             return this;
         }
+
 
         public Builder queSolved(Boolean queSolved) {
             this.queSolved = queSolved;

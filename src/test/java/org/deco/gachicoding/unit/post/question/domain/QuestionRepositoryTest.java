@@ -5,6 +5,7 @@ import org.deco.gachicoding.common.factory.post.question.QuestionMock;
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
+import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,14 +44,13 @@ public class QuestionRepositoryTest {
         questions.forEach(question -> questionRepository.save(question));
 
         testEntityManager.flush();
-//        testEntityManager.clear();
     }
 
     private List<Question> createQuestions() {
-        Question question1 = QuestionMock.builder().questioner(questioner).queTitle("백엔드 질문").build();
-        Question question2 = QuestionMock.builder().questioner(questioner).queTitle("프론트 질문").build();
-        Question question3 = QuestionMock.builder().questioner(questioner).queTitle("cs 질문").build();
-        Question question4 = QuestionMock.builder().questioner(questioner).queTitle("알고리즘 질문").build();
+        Question question1 = QuestionMock.builder().questioner(questioner).queTitle("백엔드 질문").queContents("백엔드 질문인데여...", null, null).build();
+        Question question2 = QuestionMock.builder().questioner(questioner).queTitle("프론트 질문").queContents("프론트 질문인데여...", null, null).build();
+        Question question3 = QuestionMock.builder().questioner(questioner).queTitle("cs 질문").queContents("cs 질문인데여...", null, null).build();
+        Question question4 = QuestionMock.builder().questioner(questioner).queTitle("알고리즘 질문").queContents("알고리즘 질문인데여...", null, null).build();
         return List.of(
                 question1, question2, question3, question4
         );
@@ -86,14 +86,21 @@ public class QuestionRepositoryTest {
     }
 
     @Test
-    @DisplayName("질문을 검색한다.")
+    @DisplayName("검색어로 질문을 검색한다.")
     public void search_Question_Success() {
 
         long start = System.currentTimeMillis();
-        questions = questionRepository.searchQuestionByGeneralContent("T");
+        log.info("시작 시간 : {}", start);
+        questions = questionRepository.searchQuestionByGeneralContent("백엔드");
         long end = System.currentTimeMillis();
-        log.info("start : {}, end : {}, duration : {}", start, end, (double) (end - start) / 1000);
-        fail("검색 기능을 위한 테스트 코드 작성중");
+        log.info("종료 시간 : {}", end);
+        log.info("duration : {}", (double) (end - start) / 1000);
+
+        assertThat(questions).hasSize(1);
+        assertThat(questions)
+                .extracting("queContents")
+                .extracting("queGeneralContent")
+                .contains("백엔드 질문인데여...");
     }
 
     @Test

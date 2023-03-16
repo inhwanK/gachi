@@ -62,13 +62,8 @@ public class QuestionServiceTest {
         Question question = QuestionMock.builder()
                 .questioner(questioner)
                 .queTitle("새로운 질문")
-                .queContents(
-                        QuestionContents.builder()
-                                .queGeneralContent("새로운 질문의 일반적인 설명들")
-                                .queCodeContent("```java class Test{}```")
-                                .queErrorContent("error ~~~")
-                                .build()
-                ).build();
+                .queContents("새로운 질문의 일반적인 설명들", "```java class Test{}```", "error ~~~")
+                .build();
 
         given(userRepository.findByUserEmail(eq("1234@1234.com")))
                 .willReturn(Optional.of(questioner));

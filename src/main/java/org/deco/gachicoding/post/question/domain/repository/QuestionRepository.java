@@ -25,17 +25,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 //    List<Question> findAllQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
 
-//    @Query("select q " +
-//            "from Question q join q.answers")
-//    List<Question> searchQuestionByContent();
-
-    @Query("select q " +
-            "from Question q " +
-            "where q.queContents.queGeneralContent like %:keyword%")
-    List<Question> searchQuestionByGeneralContent();
-
-
     // 특정 키워드를 포함하는 질문 검색
+    // 작성자 정보 조회는 클라이언트 측에서 다시 요청한다고 가정, 질문에 대한 답변 정보는 패치조인으로 하자.
     @Query("select q " +
             "from Question q " +
             "where q.queContents.queGeneralContent like %:keyword%")

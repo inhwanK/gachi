@@ -5,7 +5,6 @@ import org.deco.gachicoding.common.factory.post.question.QuestionMock;
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
-import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +13,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 @Slf4j
 @DataJpaTest
@@ -91,13 +91,14 @@ public class QuestionRepositoryTest {
 
         long start = System.currentTimeMillis();
         log.info("시작 시간 : {}", start);
-        questions = questionRepository.searchQuestionByGeneralContent("백엔드");
+        Page<Question> expectedQuestions =
+                questionRepository.searchQuestionByKeyword("백엔드", PageRequest.of(0, 10));
         long end = System.currentTimeMillis();
         log.info("종료 시간 : {}", end);
         log.info("duration : {}", (double) (end - start) / 1000);
 
-        assertThat(questions).hasSize(1);
-        assertThat(questions)
+        assertThat(expectedQuestions).hasSize(1);
+        assertThat(expectedQuestions)
                 .extracting("queContents")
                 .extracting("queGeneralContent")
                 .contains("백엔드 질문인데여...");

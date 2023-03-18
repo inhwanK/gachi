@@ -1,7 +1,8 @@
 package org.deco.gachicoding.post.question.domain.repository;
 
 import org.deco.gachicoding.post.question.domain.Question;
-import org.hibernate.validator.constraints.ParameterScriptAssert;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -26,11 +27,10 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
     // 특정 키워드를 포함하는 질문 검색
-    // 작성자 정보 조회는 클라이언트 측에서 다시 요청한다고 가정, 질문에 대한 답변 정보는 패치조인으로 하자.
     @Query("select q " +
             "from Question q " +
             "where q.queContents.queGeneralContent like %:keyword%")
-    List<Question> searchQuestionByGeneralContent(@Param("keyword") String keyword);
+    Page<Question> searchQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     // 질문 상세로 들어갈 때는 답변도 바로 나왔으면 좋겠음... 따라서 패치조인 사용하기
     // 패치조인 사용하지 않는 것과 성능 차이 측정

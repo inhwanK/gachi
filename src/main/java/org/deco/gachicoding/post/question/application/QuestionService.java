@@ -14,6 +14,7 @@ import org.deco.gachicoding.post.question.domain.repository.QuestionRepository;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,14 +57,12 @@ public class QuestionService {
     }
 
     @Transactional(readOnly = true)
-    public List<QuestionDto.ListResponseDto> getQuestionList(
+    public Page<QuestionDto.ListResponseDto> getQuestionList(
             String keyword,
             Pageable pageable
     ) {
-        return null;
-//        QuestionDtoAssembler.questionResponseDtos(
-//                questionRepository.findAllQuestionByKeyword(keyword, pageable)
-//        );
+        return questionRepository.searchQuestionByKeyword(keyword, pageable)
+                .map(entity -> QuestionAssembler.questionListResponseDto(entity));
     }
 
 

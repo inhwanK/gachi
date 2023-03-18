@@ -1,5 +1,6 @@
 package org.deco.gachicoding.unit.post.question.application;
 
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.common.factory.post.question.QuestionMock;
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
@@ -19,13 +20,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class QuestionServiceTest {
 
@@ -210,5 +217,34 @@ public class QuestionServiceTest {
         )
                 .isInstanceOf(QuestionAlreadyActiveException.class)
                 .hasMessageContaining("이미 활성화 된 질문입니다.");
+    }
+
+    @Test
+    @DisplayName("키워드로 질문을 검색한다.")
+    public void search_Question_By_Keyword() {
+
+        // given
+        Question question1 = QuestionMock.builder().questioner(questioner).queTitle("백엔드 질문").queContents("백엔드 질문인데여...", null, null).build();
+        Question question2 = QuestionMock.builder().questioner(questioner).queTitle("프론트 질문").queContents("프론트 질문인데여...", null, null).build();
+        Question question3 = QuestionMock.builder().questioner(questioner).queTitle("cs 질문").queContents("cs 질문인데여...", null, null).build();
+        Question question4 = QuestionMock.builder().questioner(questioner).queTitle("알고리즘 질문").queContents("알고리즘 질문인데여...", null, null).build();
+
+        List<Question> questionList = List.of(
+                question1, question2, question3, question4
+        );
+
+        questionList.forEach(entity -> questionRepository.save(entity));
+//        given(questionRepository.searchQuestionByKeyword(eq("백엔드"), eq(PageRequest.of(0, 10))))
+//                .willReturn();
+//
+//        Page<QuestionDto.ListResponseDto> responseDtoPage =
+//                questionService.getQuestionList("백엔드", PageRequest.of(0, 10));
+//
+//        assertThat(responseDtoPage).hasSize(1);
+//        assertThat(responseDtoPage)
+//                .extracting("queContents")
+//                .extracting("queGeneralContent")
+//                .contains("백엔드 질문인데여...");
+        fail("미구현");
     }
 }

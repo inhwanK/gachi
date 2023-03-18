@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
+import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
@@ -122,9 +123,21 @@ public class QuestionDto {
         private String queTitle;
         private QuestionContents queContents;
         private boolean queSolved;
-        private boolean queLocked;
+        private boolean queEnabled;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+
+        // entity 그대로 넣기
+        public ListResponseDto(Question question) {
+            this.queIdx = question.getQueIdx();
+            this.questioner = question.getQuestioner(); // 조회가 또 일어나나?
+            this.queTitle = question.getQueTitle();
+            this.queContents = question.getQueContents();
+            this.queSolved = question.getQueSolved();
+            this.queEnabled = question.getQueEnabled();
+            this.createdAt = question.getCreatedAt();
+            this.updatedAt = question.getUpdatedAt();
+        }
 
         @Builder
         public ListResponseDto(
@@ -133,7 +146,7 @@ public class QuestionDto {
                 String queTitle,
                 QuestionContents queContents,
                 boolean queSolved,
-                boolean queLocked,
+                boolean queEnabled,
                 LocalDateTime createdAt,
                 LocalDateTime updatedAt
         ) {
@@ -142,7 +155,7 @@ public class QuestionDto {
             this.queTitle = queTitle;
             this.queContents = queContents;
             this.queSolved = queSolved;
-            this.queLocked = queLocked;
+            this.queEnabled = queEnabled;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
         }

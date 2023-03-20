@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
@@ -30,7 +29,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("select q " +
             "from Question q " +
             "where q.queContents.queGeneralContent like %:keyword%")
-    Page<Question> searchQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);
+    Page<Question> retrieveQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
     // 질문 상세로 들어갈 때는 답변도 바로 나왔으면 좋겠음... 따라서 패치조인 사용하기
     // 패치조인 사용하지 않는 것과 성능 차이 측정

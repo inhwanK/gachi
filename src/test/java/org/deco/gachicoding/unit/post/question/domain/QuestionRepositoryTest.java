@@ -92,7 +92,7 @@ public class QuestionRepositoryTest {
         long start = System.currentTimeMillis();
         log.info("시작 시간 : {}", start);
         Page<Question> expectedQuestions =
-                questionRepository.searchQuestionByKeyword("백엔드", PageRequest.of(0, 10));
+                questionRepository.retrieveQuestionByKeyword("백엔드", PageRequest.of(0, 10));
         long end = System.currentTimeMillis();
         log.info("종료 시간 : {}", end);
         log.info("duration : {}", (double) (end - start) / 1000);

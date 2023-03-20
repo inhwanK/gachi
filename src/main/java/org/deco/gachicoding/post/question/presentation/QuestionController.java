@@ -5,6 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.post.question.application.dto.QuestionDto;
 import org.deco.gachicoding.post.question.application.QuestionService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,15 +37,14 @@ public class QuestionController {
     }
 
 
-    // 이거 키워드만 받으면 안되나?
-//    @ApiOperation(value = "질문 리스트")
-//    @GetMapping("/question/list")
-//    public List<QuestionDto.ListResponseDto> getQuestionList(
-//            @RequestParam String keyword,
-//            @PageableDefault(size = 10) Pageable pageable
-//    ) {
-//        return QuestionAssembler.questionListResponse(questionService.getQuestionList(keyword, pageable));
-//    }
+    @ApiOperation(value = "질문 리스트")
+    @GetMapping("/question/list")
+    public Page<QuestionDto.ListResponseDto> searchQuestionList(
+            @RequestParam String keyword,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return questionService.searchQuestionByKeyword(keyword, pageable);
+    }
 
     @ApiOperation(value = "질문 디테일")
     @GetMapping("/question/{queIdx}")

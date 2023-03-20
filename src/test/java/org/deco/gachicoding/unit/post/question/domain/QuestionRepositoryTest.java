@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -42,14 +44,13 @@ public class QuestionRepositoryTest {
         questions.forEach(question -> questionRepository.save(question));
 
         testEntityManager.flush();
-        testEntityManager.clear();
     }
 
     private List<Question> createQuestions() {
-        Question question1 = QuestionMock.builder().questioner(questioner).queTitle("백엔드 질문").build();
-        Question question2 = QuestionMock.builder().questioner(questioner).queTitle("프론트 질문").build();
-        Question question3 = QuestionMock.builder().questioner(questioner).queTitle("cs 질문").build();
-        Question question4 = QuestionMock.builder().questioner(questioner).queTitle("알고리즘 질문").build();
+        Question question1 = QuestionMock.builder().questioner(questioner).queTitle("백엔드 질문").queContents("백엔드 질문인데여...", null, null).build();
+        Question question2 = QuestionMock.builder().questioner(questioner).queTitle("프론트 질문").queContents("프론트 질문인데여...", null, null).build();
+        Question question3 = QuestionMock.builder().questioner(questioner).queTitle("cs 질문").queContents("cs 질문인데여...", null, null).build();
+        Question question4 = QuestionMock.builder().questioner(questioner).queTitle("알고리즘 질문").queContents("알고리즘 질문인데여...", null, null).build();
         return List.of(
                 question1, question2, question3, question4
         );
@@ -82,6 +83,25 @@ public class QuestionRepositoryTest {
         Question actualQuestion = questionRepository.findById(idx).get();
         assertThat(question)
                 .isEqualTo(actualQuestion);
+    }
+
+    @Test
+    @DisplayName("검색어로 질문을 검색한다.")
+    public void search_Question_Success() {
+
+        long start = System.currentTimeMillis();
+        log.info("시작 시간 : {}", start);
+        Page<Question> expectedQuestions =
+                questionRepository.retrieveQuestionByKeyword("백엔드", PageRequest.of(0, 10));
+        long end = System.currentTimeMillis();
+        log.info("종료 시간 : {}", end);
+        log.info("duration : {}", (double) (end - start) / 1000);
+
+        assertThat(expectedQuestions).hasSize(1);
+        assertThat(expectedQuestions)
+                .extracting("queContents")
+                .extracting("queGeneralContent")
+                .contains("백엔드 질문인데여...");
     }
 
     @Test

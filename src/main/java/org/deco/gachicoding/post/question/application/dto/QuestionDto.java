@@ -4,9 +4,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
+import org.deco.gachicoding.post.question.domain.Question;
 import org.deco.gachicoding.post.question.domain.vo.QuestionContents;
 import org.deco.gachicoding.user.domain.User;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
@@ -116,15 +118,32 @@ public class QuestionDto {
 
     @Getter
     public static class ListResponseDto {
-
         private Long queIdx;
-        private User questioner;
+        private Long questionerIdx;
+        private String questionerEmail;
         private String queTitle;
-        private QuestionContents queContents;
+        private String queGeneralContent;
+        private String queCodeContent;
+        private String queErrorContent;
         private boolean queSolved;
-        private boolean queLocked;
+        private boolean queEnabled;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+
+        // entity 그대로 넣기
+        public ListResponseDto(Question question) {
+            this.queIdx = question.getQueIdx();
+            this.questionerEmail = question.getQuestioner().getUserEmail();
+            this.questionerIdx = question.getQuestioner().getUserIdx();
+            this.queTitle = question.getQueTitle();
+            this.queGeneralContent = question.getQueContents().getQueGeneralContent();
+            this.queCodeContent = question.getQueContents().getQueCodeContent();
+            this.queErrorContent = question.getQueContents().getQueErrorContent();
+            this.queSolved = question.getQueSolved();
+            this.queEnabled = question.getQueEnabled();
+            this.createdAt = question.getCreatedAt();
+            this.updatedAt = question.getUpdatedAt();
+        }
 
         @Builder
         public ListResponseDto(
@@ -133,16 +152,19 @@ public class QuestionDto {
                 String queTitle,
                 QuestionContents queContents,
                 boolean queSolved,
-                boolean queLocked,
+                boolean queEnabled,
                 LocalDateTime createdAt,
                 LocalDateTime updatedAt
         ) {
             this.queIdx = queIdx;
-            this.questioner = questioner;
+            this.questionerEmail = questioner.getUserEmail();
+            this.questionerIdx = questioner.getUserIdx();
             this.queTitle = queTitle;
-            this.queContents = queContents;
+            this.queGeneralContent = queContents.getQueGeneralContent();
+            this.queCodeContent = queContents.getQueCodeContent();
+            this.queErrorContent = queContents.getQueErrorContent();
             this.queSolved = queSolved;
-            this.queLocked = queLocked;
+            this.queEnabled = queEnabled;
             this.createdAt = createdAt;
             this.updatedAt = updatedAt;
         }

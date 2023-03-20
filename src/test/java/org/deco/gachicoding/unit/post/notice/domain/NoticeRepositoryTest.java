@@ -104,7 +104,7 @@ public class NoticeRepositoryTest {
 
         // then
         assertThat(savedTestNotices).isNotNull();
-        assertThat(savedTestNotices.size()).isEqualTo(3);
+        assertThat(savedTestNotices).hasSize(3);
     }
 
     @Test
@@ -138,7 +138,7 @@ public class NoticeRepositoryTest {
 
         // then
         assertThat(savedTestNotices).isNotNull();
-        assertThat(savedTestNotices.size()).isEqualTo(1);
+        assertThat(savedTestNotices).hasSize(1);
     }
 
     @Test

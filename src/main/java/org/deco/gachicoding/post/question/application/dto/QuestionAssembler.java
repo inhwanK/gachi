@@ -1,5 +1,6 @@
 package org.deco.gachicoding.post.question.application.dto;
 
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.post.answer.domain.Answer;
 import org.deco.gachicoding.post.answer.presentation.dto.AnswerAssembler;
 import org.deco.gachicoding.post.answer.presentation.dto.response.AnswerResponse;
@@ -32,20 +33,14 @@ public class QuestionAssembler {
                 .build();
     }
 
-    public static List<QuestionDto.ListResponseDto> questionResponseDtos(List<Question> questions) {
-        return questions.stream()
-                .map(QuestionAssembler::convertForm)
-                .collect(toList());
-    }
-
-    private static QuestionDto.ListResponseDto convertForm(Question question) {
+    public static QuestionDto.ListResponseDto questionListResponseDto(Question question) {
         return QuestionDto.ListResponseDto.builder()
                 .queIdx(question.getQueIdx())
                 .questioner(question.getQuestioner())
                 .queTitle(question.getQueTitle())
                 .queContents(question.getQueContents())
                 .queSolved(question.getQueSolved())
-                .queLocked(question.getQueEnabled())
+                .queEnabled(question.getQueEnabled())
                 .createdAt(question.getCreatedAt())
                 .updatedAt(question.getUpdatedAt())
                 .build();

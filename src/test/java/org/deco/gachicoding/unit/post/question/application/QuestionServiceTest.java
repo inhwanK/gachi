@@ -1,5 +1,6 @@
 package org.deco.gachicoding.unit.post.question.application;
 
+import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.common.factory.post.question.QuestionMock;
 import org.deco.gachicoding.common.factory.user.UserMock;
 import org.deco.gachicoding.exception.post.question.QuestionAlreadyActiveException;
@@ -19,13 +20,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 public class QuestionServiceTest {
 
@@ -62,13 +67,8 @@ public class QuestionServiceTest {
         Question question = QuestionMock.builder()
                 .questioner(questioner)
                 .queTitle("새로운 질문")
-                .queContents(
-                        QuestionContents.builder()
-                                .queGeneralContent("새로운 질문의 일반적인 설명들")
-                                .queCodeContent("```java class Test{}```")
-                                .queErrorContent("error ~~~")
-                                .build()
-                ).build();
+                .queContents("새로운 질문의 일반적인 설명들", "```java class Test{}```", "error ~~~")
+                .build();
 
         given(userRepository.findByUserEmail(eq("1234@1234.com")))
                 .willReturn(Optional.of(questioner));
@@ -215,5 +215,32 @@ public class QuestionServiceTest {
         )
                 .isInstanceOf(QuestionAlreadyActiveException.class)
                 .hasMessageContaining("이미 활성화 된 질문입니다.");
+    }
+
+    @Test
+    @DisplayName("키워드로 질문 검색 성공한다.")
+    public void search_Question_By_Keyword() {
+
+        // given
+        Question question1 = QuestionMock.builder()
+                .questioner(questioner)
+                .queTitle("백엔드 질문")
+                .queContents("백엔드 질문인데여...", null, null)
+                .build();
+        List<Question> questionList = List.of(question1);
+
+
+        given(questionRepository.retrieveQuestionByKeyword(eq("백엔드"), eq(PageRequest.of(0, 10))))
+                .willReturn(new PageImpl<>(questionList, PageRequest.of(0, 10), 1));
+
+        // when
+        Page<QuestionDto.ListResponseDto> searchResult =
+                questionService.searchQuestionByKeyword("백엔드", PageRequest.of(0, 10));
+
+        assertThat(searchResult).hasSize(1);
+        assertThat(searchResult)
+                .extracting("queContents")
+                .extracting("queGeneralContent")
+                .contains("백엔드 질문인데여...");
     }
 }

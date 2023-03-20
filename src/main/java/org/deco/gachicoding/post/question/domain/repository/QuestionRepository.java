@@ -26,6 +26,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
 
     // 특정 키워드를 포함하는 질문 검색
+    // 현재 N + 1 문제가 발생함.
     @Query("select q " +
             "from Question q " +
             "where q.queContents.queGeneralContent like %:keyword%")

@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import org.deco.gachicoding.file.application.dto.response.FileResponseDto;
 import org.deco.gachicoding.post.PostResponseDto;
-import org.deco.gachicoding.tag.dto.response.TagResponseDto;
 import org.deco.gachicoding.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -24,7 +23,6 @@ public class BoardResponseDto implements PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-//    private List<TagResponseDto> tags;
 
     @Builder
     public BoardResponseDto(
@@ -51,13 +49,4 @@ public class BoardResponseDto implements PostResponseDto {
         this.updatedAt = updatedAt;
     }
 
-    @Override
-    public void setFiles(List<FileResponseDto> files) {
-//        this.files = files;
-    }
-
-    @Override
-    public void setTags(List<TagResponseDto> tags) {
-//        this.tags = tags;
-    }
 }

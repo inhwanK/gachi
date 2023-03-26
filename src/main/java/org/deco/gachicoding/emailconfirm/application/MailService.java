@@ -1,7 +1,6 @@
-package org.deco.gachicoding.mail;
+package org.deco.gachicoding.emailconfirm.application;
 
 import lombok.RequiredArgsConstructor;
-import org.deco.gachicoding.emailconfirm.domain.EmailConfirmToken;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;

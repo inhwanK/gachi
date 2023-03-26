@@ -7,7 +7,7 @@ import io.swagger.annotations.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.emailconfirm.application.EmailConfirmTokenService;
-import org.deco.gachicoding.mail.MailService;
+import org.deco.gachicoding.emailconfirm.application.MailService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

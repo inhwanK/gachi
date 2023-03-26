@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.notice.NoticeInactiveException;
 import org.deco.gachicoding.exception.post.notice.NoticeNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.file.domain.ArticleType;
+import org.deco.gachicoding.post.notice.application.dto.NoticeDtoAssembler;
 import org.deco.gachicoding.post.notice.application.dto.request.*;
+import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
 import org.deco.gachicoding.post.notice.domain.Notice;
 import org.deco.gachicoding.post.notice.domain.repository.NoticeRepository;
-import org.deco.gachicoding.file.application.FileService;
-import org.deco.gachicoding.post.notice.application.dto.NoticeDtoAssembler;
-import org.deco.gachicoding.post.notice.application.dto.response.NoticeResponseDto;
-import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ public class NoticeService {
     private final NoticeRepository noticeRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
-    private final TagService tagService;
 
     @Transactional(rollbackFor = Exception.class)
     public Long registerNotice(

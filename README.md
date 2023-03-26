@@ -17,18 +17,11 @@
 * aws - ec2, rds, s3
 * swagger2
 
+## ERD
+<img src="document/gachicoding erd.png" width="500">
+
 ## 컨벤션
 - [Commit Convention](document/convention/commit_convention.md)
 - [Issue Convention](document/convention/issue_convention.md)
 - [PR Convention](document/convention/pull_request_convention.md)
 
-## ERD
-<img src="document/erd.png" width="800">
-
-[//]: # (## 저장소)
-
-[//]: # (* [백엔드 저장소 &#40;현재 저장소&#41;]&#40;https://github.com/inhwanK/gachicoding&#41;)
-
-[//]: # (* [프론트엔드 저장소]&#40;https://github.com/kiminpyo/gachicoding-front-next&#41;)
-
-[//]: # (* [DevOps 저장소]&#40;https://github.com/BAE-JI-WANG/gachicoding_DevOps&#41;)

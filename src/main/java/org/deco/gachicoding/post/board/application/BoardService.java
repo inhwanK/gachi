@@ -5,14 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.deco.gachicoding.exception.post.board.BoardInactiveException;
 import org.deco.gachicoding.exception.post.board.BoardNotFoundException;
 import org.deco.gachicoding.exception.user.UserNotFoundException;
+import org.deco.gachicoding.file.application.FileService;
 import org.deco.gachicoding.file.domain.ArticleType;
 import org.deco.gachicoding.post.board.application.dto.BoardDtoAssembler;
 import org.deco.gachicoding.post.board.application.dto.request.*;
 import org.deco.gachicoding.post.board.application.dto.response.BoardResponseDto;
 import org.deco.gachicoding.post.board.domain.Board;
 import org.deco.gachicoding.post.board.domain.repository.BoardRepository;
-import org.deco.gachicoding.file.application.FileService;
-import org.deco.gachicoding.tag.application.TagService;
 import org.deco.gachicoding.user.domain.User;
 import org.deco.gachicoding.user.domain.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,6 @@ public class BoardService {
     private final BoardRepository boardRepository;
     private final UserRepository userRepository;
     private final FileService fileService;
-    private final TagService tagService;
 
     @Transactional(rollbackFor = Exception.class)
     public Long registerBoard(BoardSaveRequestDto dto) {

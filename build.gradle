@@ -2,7 +2,6 @@ plugins {
     id 'org.springframework.boot' version '2.6.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
 group = 'org.deco'
@@ -27,9 +26,6 @@ dependencies {
 
     // 시큐리티 테스트
     testImplementation group: 'org.springframework.security', name: 'spring-security-test'
-
-    // Spring REST Docs
-    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
 
     // tika
     implementation group: 'org.apache.tika', name: 'tika-core', version: '2.4.1'
@@ -66,38 +62,10 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
 }
 
-ext {
-    snippetsDir = file('build/generated-snippets')
-}
-
 test {
-    outputs.dir snippetsDir
     useJUnitPlatform()
 }
 
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
-}
-
-asciidoctor.doFirst {
-    delete file('src/main/resources/static/docs')
-}
-
-bootJar {
-    dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into 'BOOT-INF/classes/static/docs'
-    }
-    finalizedBy 'copyDocument'
-}
-
-task copyDocument(type: Copy) {
-    dependsOn bootJar
-    from file("build/docs/asciidoc")
-    into file("src/main/resources/static/docs")
-}
 
 processResources.dependsOn('copyMainConfig', 'copyTestConfig')
 

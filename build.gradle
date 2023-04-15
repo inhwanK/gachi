@@ -23,6 +23,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-test'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-maven-plugin:2.6.4'
 
     // 시큐리티 테스트
     testImplementation group: 'org.springframework.security', name: 'spring-security-test'

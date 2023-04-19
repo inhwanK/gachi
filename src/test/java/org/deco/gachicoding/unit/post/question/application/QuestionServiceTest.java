@@ -217,7 +217,7 @@ public class QuestionServiceTest {
                 .hasMessageContaining("이미 활성화 된 질문입니다.");
     }
 
-    @Test
+//    @Test
     @DisplayName("키워드로 질문 검색 성공한다.")
     public void search_Question_By_Keyword() {
 

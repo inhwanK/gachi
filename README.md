@@ -10,12 +10,16 @@
 <br>
 
 ## 사용 기술
-* Java 11 (jdk-11.0.13)
+* Java 11
 * Spring Data JPA
 * Spring Security 
 * gradle 7.4
 * aws - ec2, rds, s3
 * swagger2
+  
+<br>
+
+<img src="document/infrastructure.png" width="500">
 
 ## ERD
 <img src="document/gachicoding erd.png" width="500">

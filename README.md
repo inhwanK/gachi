@@ -17,9 +17,9 @@
 * aws - ec2, rds, s3
 * swagger2
   
-<br>
+[//]: # (<br>)
 
-<img src="document/infrastructure.png" width="500">
+[//]: # (<img src="document/infrastructure.png" width="500">)
 
 ## ERD
 <img src="document/gachicoding erd.png" width="500">

@@ -37,13 +37,22 @@ public class QuestionController {
     }
 
 
-    @ApiOperation(value = "질문 리스트")
+    @ApiOperation(value = "질문 검색")
     @GetMapping("/question/list")
     public Page<QuestionDto.ListResponseDto> searchQuestionList(
             @RequestParam String keyword,
             @PageableDefault(size = 10) Pageable pageable
     ) {
         return questionService.searchQuestionByKeyword(keyword, pageable);
+    }
+
+    @ApiOperation(value = "질문 Full Text 검색")
+    @GetMapping("/question/full-text")
+    public Page<QuestionDto.ListResponseDto> searchQuestionFullText(
+            @RequestParam String keyword,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return questionService.searchQuestionFullText(keyword, pageable);
     }
 
     @ApiOperation(value = "질문 디테일")

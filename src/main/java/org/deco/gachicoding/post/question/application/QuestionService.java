@@ -62,6 +62,14 @@ public class QuestionService {
                 .map(entity -> QuestionAssembler.questionListResponseDto(entity));
     }
 
+    @Transactional(readOnly = true)
+    public Page<QuestionDto.ListResponseDto> searchQuestionFullText(
+            String keyword,
+            Pageable pageable
+    ) {
+        return questionRepository.retrieveQuestionFullText(keyword + "*", pageable)
+                .map(entity -> QuestionAssembler.questionListResponseDto(entity));
+    }
 
     @Transactional
     public Long modifyQuestion(

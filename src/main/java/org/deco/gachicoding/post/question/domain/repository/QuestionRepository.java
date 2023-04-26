@@ -32,6 +32,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "where q.queContents.queGeneralContent like %:keyword%")
     Page<Question> retrieveQuestionByKeyword(@Param("keyword") String keyword, Pageable pageable);
 
+    @Query(value = "select * " +
+            "from gachi_q " +
+            "where MATCH(qs_general_content) AGAINST(:keyword in boolean mode)",
+            nativeQuery = true)
+    Page<Question> retrieveQuestionFullText(@Param("keyword") String keyword, Pageable pageable);
+
     // 질문 상세로 들어갈 때는 답변도 바로 나왔으면 좋겠음... 따라서 패치조인 사용하기
     // 패치조인 사용하지 않는 것과 성능 차이 측정
     @Query("select q " +

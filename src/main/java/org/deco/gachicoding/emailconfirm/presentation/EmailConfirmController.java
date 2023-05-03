@@ -17,7 +17,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
-@Api(tags = "이메일 인증 처리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController

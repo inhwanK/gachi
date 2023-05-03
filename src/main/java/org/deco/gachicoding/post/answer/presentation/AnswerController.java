@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
-@Api(tags = "가치답변 정보 처리 API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

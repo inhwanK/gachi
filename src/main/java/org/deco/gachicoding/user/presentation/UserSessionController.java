@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(tags = "사용자 세션 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController

@@ -34,7 +34,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = "select * " +
             "from gachi_q " +
-            "where MATCH(qs_general_content) AGAINST(:keyword in boolean mode)",
+            "where MATCH(qs_general_content) AGAINST(:keyword)",
             nativeQuery = true)
     Page<Question> retrieveQuestionFullText(@Param("keyword") String keyword, Pageable pageable);
 

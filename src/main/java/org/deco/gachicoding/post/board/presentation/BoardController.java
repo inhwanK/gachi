@@ -20,7 +20,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-@Api(tags = "자유게시판 정보 처리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController

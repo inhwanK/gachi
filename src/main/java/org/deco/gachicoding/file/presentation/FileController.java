@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@Api(tags = "파일 처리 API")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor

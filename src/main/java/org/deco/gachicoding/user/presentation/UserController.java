@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 
-@Api(tags = "사용자 정보 처리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController

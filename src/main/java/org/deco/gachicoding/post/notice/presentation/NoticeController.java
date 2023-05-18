@@ -28,7 +28,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
-@Api(tags = "공지사항 정보 처리 API")
 @Slf4j
 @RequiredArgsConstructor
 @RestController

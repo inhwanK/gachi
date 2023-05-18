@@ -67,7 +67,7 @@ public class QuestionService {
             String keyword,
             Pageable pageable
     ) {
-        return questionRepository.retrieveQuestionFullText(keyword + "*", pageable)
+        return questionRepository.retrieveQuestionFullText(keyword, pageable)
                 .map(entity -> QuestionAssembler.questionListResponseDto(entity));
     }
 
